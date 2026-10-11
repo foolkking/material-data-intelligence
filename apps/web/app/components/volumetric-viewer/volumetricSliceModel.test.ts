@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { canonicalOffset, domainBasis, fractionalToWorld, probeCanonicalField, sampleVolumetricSlice } from "./volumetricSliceModel";
+import { canonicalOffset, domainBasis, fractionalToWorld, gridIndexToFractional, probeCanonicalField, sampleVolumetricSlice } from "./volumetricSliceModel";
 import { sha256HexSync } from "./volumetricHash";
 import type { ValidatedVolumetricGrid } from "./volumetricViewerTypes";
 
@@ -14,6 +14,28 @@ beforeEach(() => vi.stubGlobal("crypto", { subtle: { digest: async (_algorithm: 
 afterEach(() => vi.unstubAllGlobals());
 
 describe("Phase 10J-6 canonical lattice slices", () => {
+  it.each(["excluded", "included", "not_applicable"] as const)("round trips source nodes with %s endpoints", (endpointPolicy) => {
+    const source = grid({ endpointPolicy, boundaryConditions: ["non_periodic", "non_periodic", "non_periodic"], periodic: false });
+    const fractional = [gridIndexToFractional(source, 0, 3), gridIndexToFractional(source, 1, 2), gridIndexToFractional(source, 2, 1)] as const;
+    const result = probeCanonicalField({ buffer: values().buffer, dtype: "float64", grid: source, fractional });
+    expect(result.value).toBeCloseTo(321);
+    expect(result.cartesian).toEqual([4.6, 4.2, 4]);
+  });
+
+  it("keeps Cube sample spacing and the last node inside the source domain", () => {
+    const source = grid({ shape: [32, 32, 32], origin: [0, 0, 0], stepMatrix: [[0.375, 0, 0], [0, 0.375, 0], [0, 0, 0.375]], endpointPolicy: "not_applicable", boundaryConditions: ["non_periodic", "non_periodic", "non_periodic"], periodic: false });
+    expect(fractionalToWorld(source, [0, gridIndexToFractional(source, 1, 1), 0.5])).toEqual([0, 0.375, 6]);
+    expect(fractionalToWorld(source, [0, gridIndexToFractional(source, 1, 31), 0.5])).toEqual([0, 11.625, 6]);
+    expect(gridIndexToFractional(grid({ shape: [1, 3, 2], endpointPolicy: "included" }), 0, 0)).toBe(0);
+    expect(() => gridIndexToFractional(source, 1, 32)).toThrow();
+  });
+
+  it("does not wrap the last periodic source node back to the first", () => {
+    const source = grid();
+    const result = probeCanonicalField({ buffer: values().buffer, dtype: "float64", grid: source, fractional: [gridIndexToFractional(source, 0, 3), 0, 0] });
+    expect(result.value).toBe(300);
+    expect(result.cartesian).toEqual([4, 2, 3]);
+  });
   it("uses k-fast canonical indexing and exact planes for all axes", async () => {
     expect(canonicalOffset(1, 2, 1, [4, 3, 2])).toBe(11);
     for (const axis of [0, 1, 2] as const) {

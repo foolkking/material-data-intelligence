@@ -318,6 +318,175 @@ def test_p3_c04_trajectory_msd_diffusion_uses_real_planned_output():
     assert analysis.dependencyBindings[0].consumerInputPort == "msd"
 
 
+@pytest.mark.parametrize("cross_dataset", [False, True])
+def test_two_trajectory_plans_keep_each_diffusion_bound_to_its_own_msd(cross_dataset):
+    trajectories = [ref("trajectory.atomic", "A"), ref("trajectory.atomic", "B")]
+    request = decision([("trajectory.estimate_diffusion", ["obj_1", "obj_2"], {"fit_start_time_ps": 1.0, "fit_end_time_ps": 6.0})])
+    resolution, snapshot = resolve(request, trajectories)
+    plan = build_deterministic_capability_plan(decision=request, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=request, context=snapshot, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    assert len(plan.steps) == 4
+    assert [step.input_bindings["trajectory"][0].source_ref_key for step in plan.steps[:2]] == ["obj_1", "obj_2"]
+    assert [step.input_bindings["msd"][0].producer_step_id for step in plan.steps[2:]] == ["step_1", "step_2"]
+    wrong = plan.steps[3].model_copy(update={"input_bindings": plan.steps[2].input_bindings})
+    with pytest.raises(CapabilityPlanInvalid, match="subject"):
+        CapabilityPlanValidator().validate(plan=plan.model_copy(update={"steps": [*plan.steps[:3], wrong]}), resolution=resolution, decision=request, context=snapshot, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    context = {"dataset_id": "dataset", "profile_id": "profile", "object_refs": dict(zip(["obj_1", "obj_2"], trajectories))}
+    if cross_dataset:
+        context.update(_cross_dataset_context(trajectories))
+    analysis, _ = CapabilityBinder(TOOLS).bind(capability_plan=plan, resolution=resolution,
+        context=context,
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities, decision=request)
+    assert analysis.schemaVersion == ("0.3" if cross_dataset else "0.2")
+    assert [(item.producerStepId, item.consumerStepId) for item in analysis.dependencyBindings] == [("step_1", "step_3"), ("step_2", "step_4")]
+    assert [step.output["sourceObjectVersionIds"] for step in analysis.steps] == [
+        [str(source.version_id)] for source in [*trajectories, *trajectories]
+    ]
+
+
+def _cross_dataset_context(sources):
+    contexts = {f"dataset_{i}": {"dataset_id": f"dataset_{i}", "profile_id": f"profile_{i}",
+                "profile": {"datasetId": f"dataset_{i}", "profileId": f"profile_{i}", "semanticColumns": [], "semanticGroups": []}}
+                for i in range(1, len(sources) + 1)}
+    return {**contexts["dataset_1"], "source_contexts": contexts,
+            "source_versions": {f"obj_{i}": {"objectId": str(source.object_id), "versionId": str(source.version_id),
+                                "datasetId": f"dataset_{i}", "objectType": source.object_type} for i, source in enumerate(sources, 1)}}
+
+
+def test_cross_dataset_profile_parameters_use_each_materials_own_groups():
+    sources = [ref("materials.dataset", "A"), ref("materials.dataset", "B")]
+    request = decision([("ml.evaluate_classification", ["obj_1", "obj_2"], {})])
+    resolution, snapshot = resolve(request, sources)
+    plan = build_deterministic_capability_plan(decision=request, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    context = {**_cross_dataset_context(sources), "object_refs": {f"obj_{i}": source for i, source in enumerate(sources, 1)}}
+    for i, source_context in enumerate(context["source_contexts"].values(), 1):
+        source_context["profile"]["semanticGroups"] = [{"groupId": f"classification_{i}", "kind": "classification", "status": "COMPLETE"}]
+    analysis, _ = CapabilityBinder(TOOLS).bind(capability_plan=plan, resolution=resolution, context=context,
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities, decision=request)
+    assert analysis.schemaVersion == "0.3"
+    assert len(analysis.steps) == 2
+    for i, step in enumerate(analysis.steps, 1):
+        assert [item.ref for item in step.inputRefs if item.refType == "profile"] == [f"profile:profile_{i}"]
+        assert step.params["groupIds"] == [f"classification_{i}"]
+
+
+def test_unused_dataset_context_keeps_exact_single_dataset_plan_routing():
+    sources = [ref("structure.crystal", "A"), ref("structure.crystal", "B")]
+    request = decision([("structure.compute_rdf", ["obj_2"], {})])
+    resolution, _ = resolve(request, sources)
+    plan = build_deterministic_capability_plan(decision=request, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    context = {**_cross_dataset_context(sources), "object_refs": {f"obj_{i}": source for i, source in enumerate(sources, 1)}}
+    analysis, _ = CapabilityBinder(TOOLS).bind(capability_plan=plan, resolution=resolution, context=context,
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities, decision=request)
+    assert analysis.schemaVersion == "0.2"
+    assert analysis.datasetId == "dataset_2" and analysis.profileId == "profile_2"
+    assert analysis.steps[0].inputRefs[0].ref == str(sources[1].version_id)
+
+
+@pytest.mark.parametrize("range_key", ["cutoff_angstrom", "r_max_angstrom"])
+def test_cross_dataset_rdf_keeps_explicit_nondefault_bin_width_and_provenance(range_key):
+    sources = [ref("structure.crystal", "A"), ref("structure.crystal", "B")]
+    request = decision([("structure.compute_rdf", ["obj_1", "obj_2"], {range_key: 6.0, "bin_width_angstrom": 0.2})])
+    resolution, snapshot = resolve(request, sources)
+    plan = build_deterministic_capability_plan(decision=request, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=request, context=snapshot, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    context = {**_cross_dataset_context(sources), "object_refs": {f"obj_{i}": source for i, source in enumerate(sources, 1)}}
+    analysis, _ = CapabilityBinder(TOOLS).bind(capability_plan=plan, resolution=resolution, context=context,
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities, decision=request)
+    assert analysis.schemaVersion == "0.3" and len(analysis.steps) == 2
+    for step in analysis.steps:
+        assert step.params == {"r_max_angstrom": 6.0, "bin_width_angstrom": 0.2}
+        assert {item.parameter for item in step.parameterProvenance if item.origin == "USER_SPECIFIED"} == set(step.params)
+
+
+@pytest.mark.parametrize("second_key", ["cutoff_angstrom", "r_max_angstrom"])
+def test_multi_material_constraints_cannot_silently_overwrite_another_material(second_key):
+    sources = [ref("structure.crystal", "A"), ref("structure.crystal", "B")]
+    compatible = decision([
+        ("structure.compute_rdf", ["obj_1"], {"cutoff_angstrom": 8.0}),
+        ("structure.compute_rdf", ["obj_2"], {second_key: 8.0}),
+    ])
+    resolution, snapshot = resolve(compatible, sources)
+    plan = build_deterministic_capability_plan(decision=compatible, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    assert len(plan.steps) == 2
+    CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=compatible, context=snapshot, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    conflicting = compatible.model_copy(deep=True)
+    conflicting.scientific_requirements[0].constraints["cutoff_angstrom"] = 5.0
+    with pytest.raises(CapabilityPlanInvalid, match="conflicting scientific constraints"):
+        build_deterministic_capability_plan(decision=conflicting, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    # The old last-value-wins plan would have run both materials with 8 Å.
+    with pytest.raises(CapabilityPlanInvalid, match="conflicting scientific constraints"):
+        CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=conflicting, context=snapshot, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+
+
+def test_multi_material_plan_limit_does_not_silently_drop_sources():
+    sources = [ref("structure.crystal", str(index)) for index in range(9)]
+    request = decision([("structure.compute_rdf", [f"obj_{index + 1}" for index in range(9)], {})])
+    resolution, _snapshot = resolve(request, sources)
+    assert len(resolution.candidates[0].bound_source_ref_keys["structure"]) == 9
+    with pytest.raises(CapabilityPlanInvalid, match="step limit"):
+        build_deterministic_capability_plan(decision=request, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+
+
+@pytest.mark.parametrize("subjects,valid", [(["obj_1"], True), (["obj_1", "obj_2"], False)])
+def test_reused_msd_does_not_borrow_scope_from_other_result_types(subjects, valid):
+    sources = [ref("trajectory.atomic", "A"), ref("trajectory.atomic", "B")]
+    request = decision([("trajectory.estimate_diffusion", subjects, {"fit_start_time_ps": 1.0, "fit_end_time_ps": 6.0})])
+    request.reusable_result_ref_keys = ["result_1"]
+    snapshot = {"selection_refs_json": [source.model_dump(mode="json") for source in sources], "active_scope_refs_json": []}
+    resolution = CapabilityResolutionService(DEFAULT_AGENT2_REGISTRIES.capabilities, DEFAULT_AGENT2_REGISTRIES.requirements, TOOLS, build_default_precondition_registry()).resolve(
+        turn={"id": uuid4(), "project_id": "project"}, decision=request, context_snapshot=snapshot,
+        reusable_results={"result_1": {"usable": True, "output_object_refs": [], "result_types": ["trajectory.msd", "trajectory.rdf"],
+            "source_object_refs_by_result_type": {"trajectory.msd": [sources[0]], "trajectory.rdf": [sources[1]]}}})
+    plan = build_deterministic_capability_plan(decision=request, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    validate = lambda: CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=request, context=snapshot, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    if valid:
+        assert validate() == plan
+    else:
+        with pytest.raises(CapabilityPlanInvalid, match="obj_2"):
+            validate()
+
+
+def test_profile_parameter_binding_uses_only_the_exact_step_table():
+    columns, groups = [], []
+    for table in ("a", "b"):
+        group_id = f"group_{table}"
+        groups.append({"groupId": group_id, "kind": "regression", "status": "COMPLETE"})
+        for suffix, role in [("true", "regression_target"), ("pred", "regression_prediction")]:
+            columns.append({"objectId": table, "column": f"{table}_{suffix}", "dtype": "float64", "roles": [{"role": role, "groupId": group_id}]})
+    context = {"profile_id": "p", "profile": {"semanticColumns": columns, "semanticGroups": groups},
+               "resource_facts": {"obj_2": {"resource_id": "b"}}}
+    params, _ = CapabilityBinder._profile_parameters(tool=TOOLS.get_tool_by_id("ml.basic_metrics"), context=context)
+    assert params["targetColumn"] == "b_true"
+    assert params["predictionColumn"] == "b_pred"
+    params, _ = CapabilityBinder._profile_parameters(tool=TOOLS.get_tool_by_id("ml.regression_evaluation"), context=context)
+    assert params["groupIds"] == ["group_b"]
+    with pytest.raises(CapabilityBindingFailed, match="exact step source"):
+        CapabilityBinder._profile_parameters(tool=TOOLS.get_tool_by_id("ml.basic_metrics"), context={**context, "resource_facts": {}})
+
+
+@pytest.mark.parametrize("same_version", [True, False])
+def test_reusable_result_scope_is_exact_and_visible_to_planner(same_version):
+    source = ref("trajectory.atomic", "A")
+    saved = source if same_version else source.model_copy(update={"version_id": uuid4()})
+    request = decision([("trajectory.estimate_diffusion", ["obj_1"], {})])
+    snapshot = {"selection_refs_json": [source.model_dump(mode="json")], "active_scope_refs_json": []}
+    reusable = {"result_1": {"usable": True, "snapshot_id": uuid4(), "relevance_status": "CURRENT",
+        "output_object_refs": [], "result_types": ["trajectory.msd"],
+        "source_object_refs_by_result_type": {"trajectory.msd": [saved]}}}
+    resolution = CapabilityResolutionService(DEFAULT_AGENT2_REGISTRIES.capabilities, DEFAULT_AGENT2_REGISTRIES.requirements, TOOLS).resolve(
+        turn={"id": uuid4(), "project_id": "project"}, decision=request, context_snapshot=snapshot, reusable_results=reusable)
+    view = CapabilityPlanningProcessor._planner_input(request, resolution, snapshot, reusable, DEFAULT_AGENT2_REGISTRIES)
+    candidate = next(item for item in view.candidates if item.capability_id == "trajectory.diffusion")
+    assert candidate.reusable_result_source_ref_keys == {"msd": {"result_1": ["obj_1"] if same_version else []}}
+    plan = build_deterministic_capability_plan(decision=request, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    if same_version:
+        CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=request, context=snapshot, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    else:
+        with pytest.raises(CapabilityPlanInvalid, match="obj_1"):
+            CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=request, context=snapshot, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+
+
 def test_p3_trajectory_diffusion_continuation_retains_transitive_msd_producer():
     trajectory = ref("trajectory.atomic", "MD")
     request = decision(
@@ -1118,3 +1287,51 @@ def test_p3_c17_c18_c20_processor_is_idempotent_and_never_executes():
         assert connection.execute(select(func.count()).select_from(artifacts)).scalar_one() == 0
         stored_turn = connection.execute(select(research_turns).where(research_turns.c.id == turn_id)).mappings().one()
         assert stored_turn["analysis_plan_id"] == first["analysis_plan_id"] and stored_turn["job_id"] is None
+
+
+@pytest.mark.parametrize("provider_code, turn_code", [
+    ("PROVIDER_TIMEOUT", "CAPABILITY_PLANNER_TIMEOUT"),
+    ("DEEPSEEK_TIMEOUT", "CAPABILITY_PLANNER_TIMEOUT"),
+    ("LLM_TIMEOUT", "CAPABILITY_PLANNER_TIMEOUT"),
+    ("OPENAI_TIMEOUT", "CAPABILITY_PLANNER_TIMEOUT"),
+    ("EXTERNAL_UNAVAILABLE", "CAPABILITY_PLANNER_UNAVAILABLE"),
+])
+def test_planner_provider_timeout_retains_question_and_cannot_resume_without_retry(monkeypatch, provider_code, turn_code):
+    from tests.test_agent2_processor import (
+        FakeStructuredClient, foundation, receive, structure,
+        decision as turn_decision, processor as turn_processor,
+    )
+
+    engine, owner, factory, objects, turns = foundation()
+    source = structure(objects)
+    turn = receive(turns, owner, "保留这个结构的 RDF 问题", refs=[source])
+    client = FakeStructuredClient([turn_decision(
+        "ANALYZE", assistant_message="准备 RDF 分析。", research_objective="计算所选结构的 RDF。",
+        selected_scope_ref_keys=["obj_1"], scientific_requirements=[{
+            "requirement_id": "structure.compute_rdf", "criticality": "REQUIRED", "subject_ref_keys": ["obj_1"], "constraints": {},
+        }],
+    )])
+    assert asyncio.run(turn_processor(factory, client).process(turn.turn_id)).status == "READY_TO_PLAN"
+    calls = []
+
+    async def fail_provider(self, **kwargs):
+        assert not transaction_active()
+        calls.append(1)
+        raise LLMProviderError("Model request ended without a response", code=provider_code)
+
+    monkeypatch.setattr(ScientificCapabilityPlanner, "plan", fail_provider)
+    planner = CapabilityPlanningProcessor(factory)
+    try:
+        with pytest.raises(LLMProviderError):
+            planner.process(turn.turn_id)
+        with factory.session() as session:
+            stored = session.agent2.research_turns.get(turn.turn_id)
+            events = session.agent2.research_turn_events.list_for_turn(turn.turn_id)
+            assert session.agent2.research_turns.get_message(stored["user_message_id"])["content_summary"] == "保留这个结构的 RDF 问题"
+        assert stored["status"] == "FAILED" and stored["error_code"] == turn_code
+        assert stored["analysis_plan_id"] is None and stored["job_id"] is None
+        assert sum(event["event_type"] == "TURN_FAILED" for event in events) == 1
+        assert planner.process(turn.turn_id)["status"] == "NOOP"
+        assert calls == [1]
+    finally:
+        engine.dispose()

@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, Callable, Mapping, Protocol
 
 from mdi_adapters import ToolExecutionContext, execute_tool_request
+from mdi_adapters.errors import ToolExecutionError
 from mdi_api.application.jobs import execute_queued_job
 from mdi_api.application.jobs.leases import ExecutionLease, ExecutionLeaseLost
 from mdi_api.application.research import synchronize_queued_execution_progress
@@ -25,6 +26,9 @@ from mdi_api.unit_of_work import RepositoryFactory
 from mdi_schemas import (
     AnalysisPlan,
     AnalysisPlanV02,
+    AnalysisPlanV03,
+    AnalysisPlanV04,
+    ProjectArtifactLineageRecord,
     ArtifactLineageRecord,
     BindingExecutionState,
     DependencyBindingExecution,
@@ -37,7 +41,10 @@ from mdi_schemas import (
     ToolExecutionRequest,
     dependency_semantic_hash,
     deterministic_dependency_id,
+    parse_analysis_plan,
+    parse_dependency_plan,
 )
+from mdi_schemas.multi_source_planning import MultiSourceArtifactLineageRecord, parse_artifact_lineage, step_source_inventory
 from mdi_schemas.worker_queues import worker_queue_definition
 from mdi_tool_registry import (
     ToolRegistry,
@@ -46,8 +53,10 @@ from mdi_tool_registry import (
     validate_dependency_plan,
 )
 from mdi_tool_registry.plan_validator import validate_plan
+from mdi_tool_registry.project_tools import project_tool_references
 
 from .object_store import DurableObjectStoreResolver
+from .source_resources import SOURCE_RESOURCE_INDEX_KEY, preflight_execution_resources
 
 
 ToolExecutor = Callable[[ToolExecutionRequest, "QueueWorkerContext"], Any]
@@ -77,6 +86,7 @@ class QueueSubmitResult:
     enqueued: bool
     backend: str
     message: str
+    already_queued: bool = False
 
 
 @dataclass(frozen=True)
@@ -180,7 +190,7 @@ class InMemoryQueueBackend:
 
     def enqueue_job(self, job_id: str) -> QueueSubmitResult:
         if job_id in self._known:
-            return QueueSubmitResult(job_id=job_id, enqueued=False, backend="memory", message="job already queued")
+            return QueueSubmitResult(job_id=job_id, enqueued=False, backend="memory", message="job already queued", already_queued=True)
         self._known.add(job_id)
         self._queued.append(job_id)
         return QueueSubmitResult(job_id=job_id, enqueued=True, backend="memory", message="job queued")
@@ -210,20 +220,55 @@ class RedisRQQueueBackend:
     def enqueue_job(self, job_id: str) -> QueueSubmitResult:
         try:
             from redis import Redis
+            from redis.exceptions import WatchError
             from rq import Queue
+            from rq.exceptions import NoSuchJobError
+            from rq.job import Job
         except ImportError as exc:
             raise RuntimeError("RedisRQQueueBackend requires redis and rq dependencies.") from exc
 
         connection = Redis.from_url(self.redis_url)
         queue = Queue(self.queue_name, connection=connection)
-        if queue.fetch_job(job_id) is not None:
-            return QueueSubmitResult(job_id=job_id, enqueued=False, backend="rq", message=f"job already queued on {self.queue_name}")
-        queue.enqueue(
-            worker_queue_definition("execution").handler,
-            job_id,
-            job_id=job_id,
-        )
-        return QueueSubmitResult(job_id=job_id, enqueued=True, backend="rq", message=f"job queued on {self.queue_name}")
+        try:
+            for _attempt in range(4):
+                try:
+                    with connection.pipeline() as pipeline:
+                        # Guard both initial publication and terminal-record
+                        # replacement against another producer or live worker.
+                        pipeline.watch(Job.key_for(job_id))
+                        # Queue.fetch_job hides a receipt owned by another
+                        # queue. Read the global identity before checking owner.
+                        try:
+                            existing = Job.fetch(job_id, connection=connection)
+                        except NoSuchJobError:
+                            existing = None
+                        if existing is not None:
+                            if existing.origin != self.queue_name:
+                                raise RuntimeError("Job queue ownership does not match the execution queue")
+                            current_status = existing.get_status(refresh=False)
+                            status = str(getattr(current_status, "value", current_status))
+                            if status in {"queued", "started", "deferred", "scheduled"}:
+                                return QueueSubmitResult(job_id=job_id, enqueued=False, backend="rq", message=f"job already queued on {self.queue_name}", already_queued=True)
+                            if status not in {"finished", "failed", "stopped", "canceled", "cancelled"}:
+                                raise RuntimeError("Job queue status cannot be confirmed")
+                        pipeline.multi()
+                        if existing is not None:
+                            # Only replace this exact terminal wakeup. The
+                            # durable Job lease still owns scientific work.
+                            existing.delete(pipeline=pipeline)
+                        queue.enqueue(
+                            worker_queue_definition("execution").handler,
+                            job_id,
+                            job_id=job_id,
+                            pipeline=pipeline,
+                        )
+                        pipeline.execute()
+                    return QueueSubmitResult(job_id=job_id, enqueued=True, backend="rq", message=f"job queued on {self.queue_name}")
+                except WatchError:
+                    continue
+            raise RuntimeError("Job queue publication changed concurrently; retry the same Job")
+        finally:
+            connection.close()
 
 
 class QueueWorkerRuntime:
@@ -403,6 +448,18 @@ class QueueWorkerRuntime:
 
         try:
             expected_profile_id = str((plan_payload or {}).get("profileId") or "") or None
+            multi_source = (plan_payload or {}).get("schemaVersion") == "0.3"
+            project_scoped = (plan_payload or {}).get("schemaVersion") == "0.4"
+            if project_scoped:
+                project_plan = AnalysisPlanV04.model_validate(plan_payload)
+                if (plan_record is None or project_plan.projectId != str(job.get("projectId") or job.get("project_id") or "")
+                    or str(plan_record.get("projectId") or "") != project_plan.projectId
+                    or job.get("datasetId") is not None or job.get("dataset_id") is not None or object_store):
+                    raise ValueError("Project execution requires its exact persisted project scope and no material inputs.")
+            if multi_source and (plan_record is None
+                or str(plan_record.get("projectId") or "") != str(job.get("projectId") or job.get("project_id") or "")
+                or str((plan_payload or {}).get("datasetId")) != str(job.get("datasetId") or job.get("dataset_id") or "")):
+                raise ValueError("Multi-source execution requires the exact persisted project/plan routing context.")
             exact_version_plan = any(
                 str(item.get("refType") or "") == "normalized_object"
                 and _looks_like_uuid(item.get("ref"))
@@ -411,8 +468,14 @@ class QueueWorkerRuntime:
                 for item in step.get("inputRefs") or []
                 if isinstance(item, Mapping)
             )
-            if object_store is not None:
+            if project_scoped:
+                effective_object_store = {}
+            elif object_store is not None:
                 effective_object_store = dict(object_store)
+            elif multi_source:
+                # The exact multi-source hydrator loads all declared profiles
+                # and versions; the routing dataset's legacy export is unused.
+                effective_object_store = {}
             else:
                 try:
                     effective_object_store = dict(
@@ -428,18 +491,19 @@ class QueueWorkerRuntime:
                         raise
                     effective_object_store = {}
             hydrate_agent2_sources = getattr(self.object_store_resolver, "hydrate_agent2_sources", None)
-            if callable(hydrate_agent2_sources):
+            if callable(hydrate_agent2_sources) and not project_scoped:
                 effective_object_store = dict(hydrate_agent2_sources(
                     effective_object_store,
                     job=job,
                     plan_payload=plan_payload or {},
                 ))
-            _validate_profile_binding(
-                effective_object_store,
-                dataset_id=str(job.get("datasetId") or job.get("dataset_id") or ""),
-                profile_id=expected_profile_id,
-            )
-            if (plan_payload or {}).get("schemaVersion") == "0.2":
+            if not project_scoped:
+                _validate_profile_binding(
+                    effective_object_store,
+                    dataset_id=str(job.get("datasetId") or job.get("dataset_id") or ""),
+                    profile_id=expected_profile_id,
+                )
+            if (plan_payload or {}).get("schemaVersion") in {"0.2", "0.3", "0.4"}:
                 return self._handle_dependency_plan(
                     repos,
                     job,
@@ -503,11 +567,11 @@ class QueueWorkerRuntime:
         job_id = str(job.get("jobId") or job["id"])
         if plan_record is None:
             raise ValueError("AnalysisPlan 0.2 must be loaded from exact persisted plan state.")
-        plan = AnalysisPlanV02.model_validate(plan_payload)
+        plan = parse_dependency_plan(plan_payload)
         plan_id = str(plan_record.get("planId") or plan_record.get("id"))
         plan_hash = str(plan_record.get("planHash") or plan_record.get("plan_hash"))
         if _runtime_plan_hash(plan) != plan_hash:
-            raise ValueError("Persisted AnalysisPlan 0.2 hash verification failed.")
+            raise ValueError("Persisted dependency AnalysisPlan hash verification failed.")
         dependency_validation = validate_dependency_plan(plan, registry=self.registry)
         if not dependency_validation.ok:
             return self._abort_dependency_validation(
@@ -552,6 +616,12 @@ class QueueWorkerRuntime:
             object_store=object_store,
             ports=ports,
         )
+        if isinstance(plan, AnalysisPlanV03):
+            preflight = preflight_execution_resources(plan, object_store=object_store, registry=self.registry, dataset_id=plan.datasetId)
+            if not preflight.ok:
+                return self._abort_dependency_validation(repos, job, plan, plan_record,
+                    code=preflight.issues[0].code, message=preflight.issues[0].message)
+        repos.dependency_execution.save_plan_bindings(plan_id, plan_hash, plan.graphHash, plan.dependencyBindings)
 
         for index, step_id in enumerate(dependency_validation.topological_order, start=1):
             if self._cancel_requested(repos, job_id):
@@ -670,7 +740,7 @@ class QueueWorkerRuntime:
                     event_type="dependency.binding_failed",
                     status="error",
                     message=redact_sensitive_text(binding_failure[1]),
-                    payload={"stepId": step_id, "errorCode": binding_failure[0]},
+                    payload={"stepId": step_id, "errorCode": binding_failure[0], "executionAttempt": self._require_active_lease().attempt},
                     progress=1.0,
                 )
                 continue
@@ -678,6 +748,8 @@ class QueueWorkerRuntime:
             states[step_id] = DependencyStepExecution(stepId=step_id, toolId=step.toolId, state=StepExecutionState.ready)
             try:
                 states[step_id] = DependencyStepExecution(stepId=step_id, toolId=step.toolId, state=StepExecutionState.running)
+                if isinstance(plan, AnalysisPlanV03):
+                    step_store = _multi_source_step_store(plan, step_id, step_payload, step_store)
                 produced = self._run_step(
                     repos, job, step_payload, index=index, object_store=step_store, plan_record=plan_record
                 )
@@ -798,7 +870,7 @@ class QueueWorkerRuntime:
         self._set_job_status(repos, job_id, JobStatus.failed)
         repos.job_events.append_event(
             job_id, event_type="dependency.validation_aborted", status="error", message=message,
-            payload={"errorCode": code, "executionId": record.executionId}, progress=1.0,
+            payload={"errorCode": code, "executionId": record.executionId, "executionAttempt": self._require_active_lease().attempt}, progress=1.0,
         )
         return self._result(repos, job_id, message=f"dependency validation aborted: {message}", plan_record=plan_record)
 
@@ -825,6 +897,11 @@ class QueueWorkerRuntime:
         dataset_id = str(job.get("datasetId") or job.get("dataset_id") or "")
         for step in plan.steps:
             tool_ports = ports.get(step.toolId)
+            actual_sources = {ref.ref for ref in step.inputRefs if ref.refType == "normalized_object"}
+            if isinstance(plan, AnalysisPlanV03):
+                actual_sources.update(source_id for binding in plan.dependencyBindings if binding.consumerStepId == step.stepId
+                    for producer in plan.steps if producer.stepId == binding.producerStepId
+                    for source_id in producer.output["sourceObjectVersionIds"])
             for input_ref in step.inputRefs:
                 if input_ref.refType != "artifact":
                     continue
@@ -854,7 +931,9 @@ class QueueWorkerRuntime:
                         "Persisted Artifact belongs to another project.",
                     )
                 artifact_dataset = str(artifact.get("datasetId") or "")
-                if artifact_dataset and dataset_id and artifact_dataset != dataset_id:
+                if isinstance(plan, AnalysisPlanV03):
+                    actual_sources.update(_verified_artifact_sources(repos, artifact, plan=plan, consumer_step_id=step.stepId))
+                elif artifact_dataset and dataset_id and artifact_dataset != dataset_id:
                     raise DependencyBindingError(
                         "SCOPE_MISMATCH",
                         "Persisted Artifact belongs to another Dataset.",
@@ -912,6 +991,8 @@ class QueueWorkerRuntime:
                     "consumerStepId": step.stepId,
                     "consumerInputPort": port.portId,
                 }
+            if isinstance(plan, AnalysisPlanV03) and actual_sources != set(step.output["sourceObjectVersionIds"]):
+                raise DependencyBindingError("SCOPE_MISMATCH", "Step sources differ from its exact inputs and persisted artifact lineage.")
         hydrated["__mdi_artifact_bindings__"] = artifact_bindings
         return hydrated
 
@@ -931,6 +1012,9 @@ class QueueWorkerRuntime:
         job_id = str(job.get("jobId") or job["id"])
         project_id = str(job.get("projectId") or job.get("project_id") or "")
         dataset_id = str(job.get("datasetId") or job.get("dataset_id") or "")
+        if isinstance(plan, AnalysisPlanV03):
+            producer_contexts, _ = step_source_inventory(plan, binding.producerStepId)
+            dataset_id = producer_contexts[0].datasetId if len(producer_contexts) == 1 else ""
         expected = [item for item in producer_artifacts if str(item.get("type")) == binding.artifactKind.value]
         if len(expected) != 1:
             raise DependencyBindingError("MISSING_ARTIFACT", "Producer did not emit exactly one declared artifact kind.")
@@ -941,6 +1025,8 @@ class QueueWorkerRuntime:
             or str(artifact.get("datasetId") or "") != dataset_id
         ):
             raise DependencyBindingError("SCOPE_MISMATCH", "Artifact project/job/dataset scope does not match the current execution.")
+        if isinstance(plan, AnalysisPlanV03):
+            _verified_artifact_sources(repos, artifact, plan=plan, consumer_step_id=binding.consumerStepId)
         metadata = artifact.get("metadata") or {}
         provenance = metadata.get("provenance") or {}
         if str(provenance.get("planId") or "") != plan_id or str(provenance.get("planHash") or "") != plan_hash:
@@ -1057,8 +1143,27 @@ class QueueWorkerRuntime:
             "caps": {"steps": 4, "bindings": 6, "depth": 4},
             "createdAt": str(artifact.get("createdAt") or metadata.get("createdAt") or _utc_now()),
         }
+        lineage_type = ArtifactLineageRecord
+        if isinstance(plan, AnalysisPlanV04):
+            draft.update(schemaVersion="1.2", planSchemaVersion="0.4",
+                         runtimeVersion="queue_worker_project_1.0", datasetId=None, profileId=None,
+                         referenceSources=[item.model_dump(mode="json") for item in project_tool_references(self.registry.get_tool_by_id(step.toolId))])
+            lineage_type = ProjectArtifactLineageRecord
+        elif isinstance(plan, AnalysisPlanV03):
+            contexts, versions = step_source_inventory(plan, step.stepId)
+            reused = [repos.artifacts.get(ref.ref) for ref in step.inputRefs if ref.refType == "artifact"]
+            draft.update(schemaVersion="1.1", planSchemaVersion="0.3",
+                runtimeVersion="queue_worker_dependency_1.1", caps={"steps": 8, "bindings": 6, "depth": 4},
+                datasetId=contexts[0].datasetId if len(contexts) == 1 else None,
+                profileId=contexts[0].profileId if len(contexts) == 1 else None,
+                datasetVersion=None, profileSemanticHash=None,
+                sourceContexts=[item.model_dump(mode="json") for item in contexts],
+                sourceVersions=[item.model_dump(mode="json") for item in versions],
+                upstreamArtifactIds=sorted(set(draft["upstreamArtifactIds"]) | {str(item["id"]) for item in reused}),
+                upstreamArtifactHashes=sorted(set(draft["upstreamArtifactHashes"]) | {str(item.get("sha256") or item.get("contentHash")) for item in reused}))
+            lineage_type = MultiSourceArtifactLineageRecord
         lineage_hash = dependency_semantic_hash(draft, identity_fields=("createdAt",))
-        return ArtifactLineageRecord(
+        return lineage_type(
             lineageId=deterministic_dependency_id("lineage", lineage_hash),
             lineageHash=lineage_hash,
             **draft,
@@ -1217,6 +1322,8 @@ class QueueWorkerRuntime:
             try:
                 plan_payload = _parse_plan_payload(explicit_plan)
             except Exception:
+                if explicit_plan.get("schemaVersion") in {"0.3", "0.4"} or any(key in explicit_plan for key in ("sourceContexts", "sourceVersions", "scope", "referenceSources")):
+                    raise
                 plan_payload = dict(explicit_plan)
             repos.job_events.append_event(
                 job_id,
@@ -1257,6 +1364,15 @@ class QueueWorkerRuntime:
         project_id = str(job.get("projectId") or job["project_id"])
         dataset_id = job.get("datasetId")
         step_id = str(step.get("stepId") or f"step_{index:02d}")
+        source_inventory: dict[str, Any] = {}
+        raw_plan = (plan_record or {}).get("analysisPlan") or {}
+        if raw_plan.get("schemaVersion") == "0.4":
+            source_inventory = {"executionScope": "PROJECT", "referenceSources": [item.model_dump(mode="json") for item in project_tool_references(self.registry.get_tool_by_id(str(step["toolId"])))]}
+        elif raw_plan.get("schemaVersion") == "0.3":
+            contexts, versions = step_source_inventory(parse_analysis_plan(raw_plan), step_id)
+            dataset_id = contexts[0].datasetId if len(contexts) == 1 else None
+            source_inventory = {"sourceContexts": [item.model_dump(mode="json") for item in contexts],
+                                "sourceVersions": [item.model_dump(mode="json") for item in versions]}
         tool_id = str(step["toolId"])
         tool_call_id = _safe_id(f"call_{job_id}_{step_id}")
         existing = _find_tool_call(repos, job_id=job_id, step_id=step_id)
@@ -1361,6 +1477,18 @@ class QueueWorkerRuntime:
                 raise
             if isinstance(exc, ExecutionLeaseLost):
                 raise
+            # Preserve reviewed failure identity for product recovery without
+            # copying arbitrary adapter details into events or read models.
+            failure_identity: dict[str, Any] = {}
+            if isinstance(exc, ToolExecutionError) and exc.code in {"TOOL_INPUT_INVALID", "TOOL_PARAM_INVALID"}:
+                failure_identity["code"] = exc.code
+                reason = exc.details.get("errorType") if isinstance(exc.details, dict) else None
+                if isinstance(reason, str) and reason in {
+                    "CORRELATION_PARAMS_INVALID", "CORRELATION_COLUMN_LIMIT_EXCEEDED", "CORRELATION_COLUMN_IDENTITY_INVALID", "CORRELATION_NO_VALID_PAIRS",
+                    "HISTOGRAM_PARAMS_INVALID", "HISTOGRAM_COLUMN_INVALID", "HISTOGRAM_VALUES_INVALID", "HISTOGRAM_RANGE_INVALID", "HISTOGRAM_GROUP_INVALID", "HISTOGRAM_GROUP_LIMIT",
+                    "SCATTER_PARAMS_INVALID", "SCATTER_COLUMN_INVALID", "SCATTER_VALUES_INVALID", "SCATTER_RANGE_INVALID", "SCATTER_GROUP_INVALID", "SCATTER_GROUP_LIMIT",
+                }:
+                    failure_identity["details"] = {"errorType": reason}
             self._save_tool_call(
                 repos,
                 {
@@ -1371,7 +1499,7 @@ class QueueWorkerRuntime:
                     "status": "failed",
                     "idempotencyKey": f"{job_id}:{step_id}",
                     "params": request.params,
-                    "error": {"message": redact_sensitive_text(str(exc)), "type": type(exc).__name__},
+                    "error": {"message": redact_sensitive_text(str(exc)), "type": type(exc).__name__, **failure_identity},
                 },
             )
             repos.job_events.append_event(
@@ -1379,7 +1507,8 @@ class QueueWorkerRuntime:
                 event_type="tool.failed",
                 status="error",
                 message=redact_sensitive_text(str(exc)),
-                payload={"toolCallId": tool_call_id, "toolId": tool_id, "stepId": step_id},
+                payload={"toolCallId": tool_call_id, "toolId": tool_id, "stepId": step_id,
+                    "executionAttempt": self._require_active_lease().attempt, **({"error": failure_identity} if failure_identity else {})},
                 progress=1.0,
             )
             raise
@@ -1399,6 +1528,8 @@ class QueueWorkerRuntime:
             )
             lease = self._require_active_lease()
             metadata = dict(record.get("metadata") or {})
+            if source_inventory:
+                metadata["provenance"] = {**metadata.get("provenance", {}), **source_inventory}
             metadata["executionAttempt"] = lease.attempt
             record["metadata"] = metadata
             self._assert_current(repos)
@@ -1443,7 +1574,7 @@ class QueueWorkerRuntime:
         adapter_context = ToolExecutionContext(
             job_id=context.job_id,
             project_id=context.project_id,
-            dataset_id=context.dataset_id or "",
+            dataset_id=context.dataset_id,
             tool_id=tool.toolId,
             tool_version=tool.version,
             adapter_version="0.1.0",
@@ -1583,9 +1714,58 @@ def _validate_profile_binding(
 
 
 def _parse_plan_payload(value: Mapping[str, Any]) -> dict[str, Any]:
-    version = str(value.get("schemaVersion") or "0.1")
-    parsed = AnalysisPlanV02.model_validate(value) if version == "0.2" else AnalysisPlan.model_validate(value)
+    parsed = parse_analysis_plan(value)
     return parsed.model_dump(mode="json")
+
+
+def _multi_source_step_store(plan: AnalysisPlanV03, step_id: str, step: Mapping[str, Any], store: Mapping[str, Any]) -> dict[str, Any]:
+    contexts, _ = step_source_inventory(plan, step_id)
+    refs = {str(item["ref"]) for item in step.get("inputRefs", [])}
+    scoped = {key: value for key, value in store.items() if key in refs}
+    index = store.get(SOURCE_RESOURCE_INDEX_KEY, {})
+    scoped[SOURCE_RESOURCE_INDEX_KEY] = {key: value for key, value in index.items() if key in refs}
+    scoped["__mdi_artifact_bindings__"] = {key: value for key, value in store.get("__mdi_artifact_bindings__", {}).items() if key in refs}
+    if len(contexts) == 1:
+        profile_key = f"profile:{contexts[0].profileId}"
+        scoped["profile"] = store[profile_key]
+    return scoped
+
+
+def _verified_artifact_sources(repos: Any, artifact: Mapping[str, Any], *, plan: AnalysisPlanV03, consumer_step_id: str) -> set[str]:
+    record = repos.dependency_execution.get_lineage_for_artifact(str(artifact["id"]))
+    if record is None:
+        raise DependencyBindingError("SCOPE_MISMATCH", "Multi-source artifact reuse requires persisted lineage.")
+    lineage = parse_artifact_lineage(record.get("artifactLineageRecord") or record)
+    if (lineage.artifactId != str(artifact["id"]) or lineage.projectId != str(artifact.get("projectId"))
+        or lineage.jobId != str(artifact.get("jobId")) or lineage.producerToolCallId != str(artifact.get("toolCallId"))
+        or lineage.artifactKind.value != str(artifact.get("type"))
+        or lineage.artifactContractVersion != str(((artifact.get("metadata") or {}).get("provenance") or {}).get("schemaVersion"))
+        or lineage.contentHash != str(artifact.get("sha256") or artifact.get("contentHash"))
+        or (lineage.datasetId or "") != str(artifact.get("datasetId") or "")):
+        raise DependencyBindingError("SCOPE_MISMATCH", "Artifact identity differs from its persisted lineage.")
+    producer_record = repos.analysis_plans.get_plan(lineage.planId)
+    producer_plan = parse_dependency_plan(producer_record["analysisPlan"])
+    if (_runtime_plan_hash(producer_plan) != lineage.planHash or producer_record.get("planHash") != lineage.planHash
+        or str(producer_record.get("projectId")) != lineage.projectId):
+        raise DependencyBindingError("SCOPE_MISMATCH", "Artifact producing plan identity is invalid.")
+    producer = next((item for item in producer_plan.steps if item.stepId == lineage.producerStepId), None)
+    if producer is None or producer.toolId != lineage.producerToolId:
+        raise DependencyBindingError("SCOPE_MISMATCH", "Artifact producing Tool differs from its persisted plan.")
+    consumer = next(item for item in plan.steps if item.stepId == consumer_step_id)
+    source_ids = set(producer.output.get("sourceObjectVersionIds", [])) if producer is not None else set()
+    if not source_ids or not source_ids.issubset(consumer.output["sourceObjectVersionIds"]):
+        raise DependencyBindingError("SCOPE_MISMATCH", "Artifact lineage is outside this step's exact source versions.")
+    sources = {str(item.versionId): item for item in plan.sourceVersions if str(item.versionId) in source_ids}
+    if isinstance(producer_plan, AnalysisPlanV03):
+        contexts, versions = step_source_inventory(producer_plan, lineage.producerStepId)
+        if (not isinstance(lineage, MultiSourceArtifactLineageRecord)
+            or lineage.sourceContexts != contexts or lineage.sourceVersions != versions
+            or any(sources.get(str(item.versionId)) != item for item in versions)):
+            raise DependencyBindingError("SCOPE_MISMATCH", "Artifact source inventory differs from its producing and consuming plans.")
+    elif (lineage.datasetId != producer_plan.datasetId or lineage.profileId != producer_plan.profileId
+          or any(item.datasetId != producer_plan.datasetId for item in sources.values())):
+        raise DependencyBindingError("SCOPE_MISMATCH", "Historical artifact sources belong to a different dataset or profile.")
+    return source_ids
 
 
 def _runtime_plan_hash(plan: AnalysisPlan | AnalysisPlanV02 | Mapping[str, Any]) -> str:

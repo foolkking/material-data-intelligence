@@ -28,6 +28,11 @@ WORKSPACE_MAX_WARNINGS = 64
 WORKSPACE_MAX_DIAGNOSTICS = 64
 
 _ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:-]{0,95}$")
+# Dataset adapters use the durable dataset-version sample identity
+# `${dataset_id}@${dataset_version}:${object_hash}:${row_index}`. Keep this
+# allowance scoped to sampleRef; other identities retain the stricter ID
+# grammar above.
+_SAMPLE_REF = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,95}$")
 _N2_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:,|@/-]{0,3071}$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _CONTRACT = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$")
@@ -128,6 +133,7 @@ class WorkspaceSelectionKind(StrEnum):
     ELECTRONIC_DOS_PROJECTION = "ELECTRONIC_DOS_PROJECTION"
     ELECTRONIC_DOS_POINT = "ELECTRONIC_DOS_POINT"
     PHONON_Q_POINT = "PHONON_Q_POINT"
+    PHONON_DOS_POINT = "PHONON_DOS_POINT"
     PHONON_BRANCH = "PHONON_BRANCH"
     RECIPROCAL_POINT = "RECIPROCAL_POINT"
     VOLUMETRIC_FIELD = "VOLUMETRIC_FIELD"
@@ -352,6 +358,7 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
     projectionId: str | None = Field(default=None, max_length=96)
     energyPointId: str | None = Field(default=None, max_length=96)
     phononArtifactId: str | None = Field(default=None, max_length=96)
+    frequencyPointId: str | None = Field(default=None, max_length=96)
     qPointId: str | None = Field(default=None, max_length=96)
     branchId: str | None = Field(default=None, max_length=96)
     reciprocalArtifactId: str | None = Field(default=None, max_length=96)
@@ -375,9 +382,9 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
     claimId: str | None = Field(default=None, max_length=96)
 
     @field_validator(
-        "projectId", "datasetId", "jobId", "objectId", "sampleRef", "structureId", "siteId",
+        "projectId", "datasetId", "jobId", "objectId", "structureId", "siteId",
         "trajectoryId", "atomId", "frameId", "speciesPairId", "rdfBinId", "msdSeriesId", "msdLagId",
-        "diffusionWindowId", "diffusionDiagnosticId", "phononArtifactId", "qPointId", "branchId",
+        "diffusionWindowId", "diffusionDiagnosticId", "phononArtifactId", "qPointId", "branchId", "frequencyPointId",
         "electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId", "bandEdgeId", "dosChannelId", "projectionId", "energyPointId",
         "reciprocalArtifactId", "reciprocalPointId", "segmentId", "fieldId", "regionId",
         "artifactId", "toolCallId", "bundleId", "evidenceItemId", "sourceArtifactId",
@@ -388,6 +395,13 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
     @classmethod
     def validate_ids(cls, value: str | None) -> str | None:
         return _validate_id(value)
+
+    @field_validator("sampleRef")
+    @classmethod
+    def validate_sample_ref(cls, value: str | None) -> str | None:
+        if value is not None and not _SAMPLE_REF.fullmatch(value):
+            raise ValueError("Sample reference identity is invalid")
+        return value
 
     @field_validator("vertexId", "faceId")
     @classmethod
@@ -448,6 +462,7 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
             WorkspaceSelectionKind.ELECTRONIC_DOS_PROJECTION: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "projectionId"},
             WorkspaceSelectionKind.ELECTRONIC_DOS_POINT: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "energyPointId"},
             WorkspaceSelectionKind.PHONON_Q_POINT: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId"},
+            WorkspaceSelectionKind.PHONON_DOS_POINT: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "frequencyPointId", "dosChannelId"},
             WorkspaceSelectionKind.PHONON_BRANCH: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "branchId"},
             WorkspaceSelectionKind.RECIPROCAL_POINT: {"datasetId", "datasetVersion", "reciprocalArtifactId", "artifactChecksum", "reciprocalPointId"},
             WorkspaceSelectionKind.VOLUMETRIC_FIELD: {"datasetId", "datasetVersion", "fieldId", "artifactId", "artifactChecksum"},
@@ -471,7 +486,7 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
             WorkspaceSelectionKind.EXPERIMENTAL_XRD_PEAK: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "peakId"},
             WorkspaceSelectionKind.THEORETICAL_XRD_PEAK: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "peakId"},
             WorkspaceSelectionKind.XRD_MATCH: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId"},
-            WorkspaceSelectionKind.TRAJECTORY_ATOM: {"datasetId", "datasetVersion", "trajectoryId", "atomId", "artifactId", "artifactChecksum"},
+            WorkspaceSelectionKind.TRAJECTORY_ATOM: {"datasetId", "datasetVersion", "trajectoryId", "atomId", "frameId", "artifactId", "artifactChecksum"},
             WorkspaceSelectionKind.TRAJECTORY_FRAME: {"datasetId", "datasetVersion", "trajectoryId", "frameId", "artifactId", "artifactChecksum"},
             WorkspaceSelectionKind.TRAJECTORY_RDF_PAIR: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "speciesPairId"},
             WorkspaceSelectionKind.TRAJECTORY_RDF_BIN: {"datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "speciesPairId", "rdfBinId"},
@@ -488,6 +503,7 @@ class WorkspaceSelectionRef(StrictWorkspaceModel):
             WorkspaceSelectionKind.ELECTRONIC_DOS_PROJECTION: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "projectionId"},
             WorkspaceSelectionKind.ELECTRONIC_DOS_POINT: {"datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "projectionId", "energyPointId"},
             WorkspaceSelectionKind.PHONON_Q_POINT: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId", "branchId"},
+            WorkspaceSelectionKind.PHONON_DOS_POINT: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "frequencyPointId", "dosChannelId"},
             WorkspaceSelectionKind.PHONON_BRANCH: {"datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "branchId", "qPointId"},
             WorkspaceSelectionKind.RECIPROCAL_POINT: {"datasetId", "datasetVersion", "reciprocalArtifactId", "artifactChecksum", "reciprocalPointId", "segmentId"},
             WorkspaceSelectionKind.VOLUMETRIC_FIELD: {"datasetId", "datasetVersion", "fieldId", "artifactId", "artifactChecksum", "regionId"},
@@ -781,15 +797,11 @@ def make_layout_revision(
 
 def encode_workspace_selection_url(context: WorkspaceSelectionContext) -> str:
     payload = context.model_dump(mode="json")
-    electronic_fields = {
-        "electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId",
-        "bandEdgeId", "dosChannelId", "projectionId", "energyPointId",
-    }
     for ref in [payload.get("primary"), *payload.get("secondary", [])]:
         if isinstance(ref, dict):
-            for field in electronic_fields:
-                if ref.get(field) is None:
-                    ref.pop(field, None)
+            for field in list(ref):
+                if ref[field] is None:
+                    ref.pop(field)
     raw = canonical_workspace_json(payload).encode("utf-8")
     token = base64.urlsafe_b64encode(raw).rstrip(b"=").decode("ascii")
     if len(token.encode("ascii")) > WORKSPACE_MAX_SELECTION_URL_BYTES:
@@ -809,7 +821,11 @@ def decode_workspace_selection_url(token: str) -> WorkspaceSelectionContext:
         raise ValueError("Selection URL token is invalid") from exc
     parsed = strict_workspace_json_loads(raw.decode("utf-8"))
     context = WorkspaceSelectionContext.model_validate(parsed)
-    if encode_workspace_selection_url(context) != token:
+    canonical_bytes = base64.urlsafe_b64encode(raw).rstrip(b"=").decode("ascii")
+    if canonical_bytes != token or (
+        encode_workspace_selection_url(context) != token
+        and canonical_workspace_json(parsed).encode("utf-8") != raw
+    ):
         raise ValueError("Selection URL token is not canonical")
     return context
 

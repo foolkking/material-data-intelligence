@@ -11,7 +11,6 @@ from ..composition_common import (
     FormulaStats,
     element_value_map,
     export_composition_payloads,
-    formula_list,
     formula_statistics,
     normalize_count_mode,
     plotly_metadata,
@@ -31,7 +30,7 @@ class ElementsHistResult:
 
 class ElementsHistAdapter(BaseToolAdapter):
     tool_id = "composition.elements_hist"
-    adapter_version = "0.2.0"
+    adapter_version = "0.3.0"
 
     def prepare(self, context: ToolExecutionContext, input_refs: list[Any], params: dict[str, Any]) -> FormulaStats:
         if not self._resolved_inputs:
@@ -63,42 +62,66 @@ class ElementsHistAdapter(BaseToolAdapter):
             {"element": element, "count": float(count), "fraction": float(count) / total}
             for element, count in ordered
         ]
+        labels = [item["element"] for item in bars]
+        counts = [item["count"] for item in bars]
+        show_values = params.get("showValues", "percent")
+        if isinstance(show_values, bool):
+            show_values = "percent" if show_values else None
+        if show_values not in ("percent", "count", None):
+            raise ToolExecutionError("TOOL_PARAM_INVALID", "showValues must be percent, count, or a boolean.", self.tool_id)
+        text = None if show_values is None else [
+            f"{item['fraction']:.0%}" if show_values == "percent"
+            else str(int(item["count"])) if item["count"].is_integer() else str(item["count"])
+            for item in bars
+        ]
+        log_y = bool(params.get("logY", False))
+        y_title = {"occurrence": "元素出现次数", "stoichiometric": "化学计量总数", "fractional": "分数贡献总和"}[count_mode]
+        source_function = "pymatviz.elements_hist"
 
         try:
-            pymatviz_mode = {
-                "occurrence": "occurrence",
-                "stoichiometric": "composition",
-                "fractional": "fractional_composition",
-            }[count_mode]
+            # Counting, tie-breaking and top-N selection are already complete.
+            # The library supplies styling, never a second scientific selection.
             figure = pmv.elements_hist(
-                formula_list(prepared.parsed),
-                count_mode=pymatviz_mode,
-                keep_top=top_n,
-                log_y=bool(params.get("logY", False)),
-                show_values=params.get("showValues", "percent"),
+                dict(ordered), log_y=log_y, show_values=None,
             )
-            figure.update_layout(title_text=params.get("title") or "Element Histogram")
         except Exception:
             figure = simple_bar_figure(
-                [item["element"] for item in bars],
-                [item["count"] for item in bars],
+                labels, counts,
                 title=str(params.get("title") or "Element Histogram"),
                 x_title="Element",
-                y_title=count_mode,
+                y_title=y_title,
             )
+            source_function = "mdi_adapters.composition_common.simple_bar_figure"
+        figure.update_traces(x=labels, y=counts, text=text, textposition="outside", width=0.7)
+        figure.update_layout(
+            title_text=params.get("title") or "Element Histogram", showlegend=False,
+            xaxis={"type": "category", "categoryorder": "array", "categoryarray": labels, "title": "元素"},
+            yaxis={"type": "log" if log_y else "linear", "title": f"{y_title}（对数刻度）" if log_y else y_title},
+        )
+        omitted = len(values) - len(bars)
+        warnings = list(prepared.payload.get("warnings", []))
+        if omitted:
+            warnings.append(f"仅显示前 {len(bars)} 个元素，省略 {omitted} 个元素；百分比以显示元素的合计值为分母。")
 
         metadata = {
+            "schemaVersion": "mdi.element-histogram/1.0",
             "artifactType": "composition.elements_hist",
             "chartType": "bar",
             "formulaColumn": prepared.payload["formulaColumn"],
             "countMode": count_mode,
             "elementCount": len(values),
+            "omittedElementCount": omitted,
+            "fractionScope": "displayed_elements",
+            "totalElementValue": float(sum(values.values())),
+            "retainedElementValue": float(sum(counts)),
+            "showValues": show_values,
+            "sourceFunction": source_function,
             "bars": bars,
             "plotlyFigure": plotly_metadata(figure),
             "formulaCount": prepared.payload["formulaCount"],
             "parsedFormulaCount": prepared.payload["parsedFormulaCount"],
             "failedFormulaCount": prepared.payload["failedFormulaCount"],
-            "warnings": list(prepared.payload.get("warnings", [])),
+            "warnings": warnings,
         }
         return ElementsHistResult(metadata=metadata, figure=figure, params=params)
 
@@ -112,7 +135,7 @@ class ElementsHistAdapter(BaseToolAdapter):
             json_name="elements_hist.json",
             title="Element Histogram",
             provenance={
-                "sourceFunction": "pymatviz.elements_hist",
+                "sourceFunction": result.metadata["sourceFunction"],
                 "adapter": self.tool_id,
                 "formulaColumn": result.metadata["formulaColumn"],
                 "countMode": result.metadata["countMode"],

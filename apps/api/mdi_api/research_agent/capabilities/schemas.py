@@ -5,6 +5,7 @@ from typing import Any, Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+from mdi_schemas.project_planning import PlatformReferenceDescription
 
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 
@@ -25,6 +26,7 @@ class CapabilityCandidate(BaseModel):
     bound_source_inputs: dict[str, list[ScientificObjectRef]] = Field(default_factory=dict)
     bound_source_ref_keys: dict[str, list[str]] = Field(default_factory=dict)
     reusable_result_bindings: dict[str, list[str]] = Field(default_factory=dict)
+    reusable_result_source_ref_keys: dict[str, dict[str, list[str]]] = Field(default_factory=dict)
     missing_input_slots: list[str] = Field(default_factory=list)
     possible_producers: dict[str, list[str]] = Field(default_factory=dict)
     reason_codes: list[str] = Field(default_factory=list)
@@ -43,7 +45,7 @@ class CapabilityResolution(BaseModel):
     unsatisfied_required_requirement_ids: list[str]
     optional_requirement_ids_not_covered: list[str]
     registry_fingerprint: str = Field(pattern=r"^[0-9a-f]{64}$")
-    resolver_version: str = "agent2.capability-resolver/1.0"
+    resolver_version: str = "agent2.capability-resolver/1.1"
 
 
 class CapabilityBindingKind(str, Enum):
@@ -148,6 +150,7 @@ class PlannerCapabilityView(BaseModel):
     output_slots: list[PlannerOutputSlotView]
     bound_source_ref_keys: dict[str, list[str]] = Field(default_factory=dict)
     reusable_result_bindings: dict[str, list[str]] = Field(default_factory=dict)
+    reusable_result_source_ref_keys: dict[str, dict[str, list[str]]] = Field(default_factory=dict)
     missing_input_slots: list[str] = Field(default_factory=list)
     possible_producer_ref_keys: dict[str, list[str]] = Field(default_factory=dict)
     qualification_level: str = "UNKNOWN"
@@ -156,6 +159,7 @@ class PlannerCapabilityView(BaseModel):
     scientific_contract_fingerprint: str | None = None
     validated_domains: list[str] = Field(default_factory=list, max_length=16)
     known_limitations: list[str] = Field(default_factory=list, max_length=3)
+    reference_sources: list[PlatformReferenceDescription] = Field(default_factory=list, max_length=8)
 
 
 class PlannerSourceRef(BaseModel):

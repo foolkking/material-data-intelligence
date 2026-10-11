@@ -1,7 +1,7 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import type { Artifact } from "../../lib/planner-api";
+import { localEnvironmentArtifactFixture as environmentArtifact } from "../../../scientific-viewers/workspace/saved-local-environment.fixture";
 import { LocalEnvironmentPolyhedraPanel } from "./LocalEnvironmentPolyhedraPanel";
 import { workspaceSnapshotFixture } from "./workspace-test-fixture";
 
@@ -9,15 +9,30 @@ const HASH = "a".repeat(64);
 const STRUCTURE_HASH = "b".repeat(64);
 
 describe("LocalEnvironmentPolyhedraPanel", () => {
+  it("highlights saved vertices in a result preview without fabricating a workspace selection", () => {
+    const artifact = environmentArtifact();
+    const workspace = { ...workspaceSnapshotFixture().workspace, datasetId: null };
+    const { container } = render(<LocalEnvironmentPolyhedraPanel artifacts={[artifact]} selected={artifact} workspace={workspace} />);
+    expect(screen.queryByRole("button", { name: "选中配位环境" })).toBeNull();
+    fireEvent.click(screen.getByText("顶点与周期近邻（4）"));
+    fireEvent.click(screen.getByRole("button", { name: "顶点 1" }));
+    expect(container.querySelector('[data-vertex-id="vertex:0"]')).toHaveAttribute("data-selected", "true");
+    fireEvent.click(screen.getByText("多面体的面（4）"));
+    fireEvent.click(screen.getByRole("button", { name: "面 1" }));
+    expect(container.querySelector('polygon[data-selected="true"]')).toBeTruthy();
+  });
+
   it("renders persisted geometry and emits exact source-bound site selection", () => {
     const artifact = environmentArtifact();
     const onSelection = vi.fn();
     render(<LocalEnvironmentPolyhedraPanel artifacts={[artifact]} selected={artifact} workspace={workspaceSnapshotFixture().workspace} onSelection={onSelection} />);
-    expect(screen.getByRole("heading", { name: "Geometry-derived local environment" })).toBeTruthy();
-    expect(screen.getByText("tetrahedral")).toBeTruthy();
-    expect(screen.getByRole("img", { name: /Persisted polyhedron/u })).toBeTruthy();
-    expect(screen.getByText(/not definitive bonding chemistry/u)).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "0" }));
+    expect(screen.getByRole("heading", { name: "配位多面体" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "位点 0 · 四面体" })).toBeTruthy();
+    expect(screen.getByRole("img", { name: /配位多面体，4 个近邻顶点/u })).toBeTruthy();
+    expect(screen.getByText(/不代表确定的化学键/u)).toBeTruthy();
+    expect(screen.getByText("来源与参数").closest("details")).not.toHaveAttribute("open");
+    fireEvent.click(screen.getByText("位点列表（1）"));
+    fireEvent.click(screen.getByRole("button", { name: "选择位点 0" }));
     expect(onSelection).toHaveBeenCalledWith(expect.objectContaining({
       compatibility: "EXACT",
       primary: expect.objectContaining({
@@ -29,13 +44,15 @@ describe("LocalEnvironmentPolyhedraPanel", () => {
         artifactChecksum: HASH,
       }),
     }));
-    fireEvent.click(screen.getByRole("button", { name: "Select environment" }));
+    fireEvent.click(screen.getByRole("button", { name: "选中配位环境" }));
     expect(onSelection).toHaveBeenLastCalledWith(expect.objectContaining({ primary: expect.objectContaining({ kind: "LOCAL_ENVIRONMENT", environmentId: "environment:demo", sourceArtifactId: "artifact_n1", sourceArtifactChecksum: HASH }) }));
-    fireEvent.click(screen.getByRole("button", { name: "Select polyhedron" }));
+    fireEvent.click(screen.getByRole("button", { name: "选中多面体" }));
     expect(onSelection).toHaveBeenLastCalledWith(expect.objectContaining({ primary: expect.objectContaining({ kind: "COORDINATION_POLYHEDRON", polyhedronId: "polyhedron:demo" }) }));
-    fireEvent.click(screen.getByRole("button", { name: "Select vertex 1" }));
+    fireEvent.click(screen.getByText("顶点与周期近邻（4）"));
+    fireEvent.click(screen.getByRole("button", { name: "顶点 1" }));
     expect(onSelection).toHaveBeenLastCalledWith(expect.objectContaining({ primary: expect.objectContaining({ kind: "POLYHEDRON_VERTEX", vertexId: "vertex:0" }) }));
-    fireEvent.click(screen.getByRole("button", { name: "Select face 1" }));
+    fireEvent.click(screen.getByText("多面体的面（4）"));
+    fireEvent.click(screen.getByRole("button", { name: "面 1" }));
     expect(onSelection).toHaveBeenLastCalledWith(expect.objectContaining({ primary: expect.objectContaining({ kind: "POLYHEDRON_FACE", faceId: "face:0" }) }));
   });
 
@@ -51,32 +68,68 @@ describe("LocalEnvironmentPolyhedraPanel", () => {
     ["dangling face identity", (payload: Record<string, any>) => { payload.siteResults[0].polyhedron.faces[0].vertexIdentities[0] = "vertex:missing"; }],
     ["oversized vertices", (payload: Record<string, any>) => { payload.siteResults[0].polyhedron.vertices = Array.from({ length: 65 }, () => payload.siteResults[0].polyhedron.vertices[0]); }],
     ["unsafe object key", (payload: Record<string, any>) => { Object.defineProperty(payload.resolvedParameters, "constructor", { value: "alert(1)", enumerable: true }); }],
+    ["duplicate vertex identity", (payload: Record<string, any>) => { payload.siteResults[0].polyhedron.vertices[1].vertexIdentity = "vertex:0"; }],
+    ["degenerate face identity", (payload: Record<string, any>) => { payload.siteResults[0].polyhedron.faces[0].vertexIdentities = ["vertex:0", "vertex:0", "vertex:1"]; }],
   ])("rejects %s", (_name, mutate) => {
     const artifact = environmentArtifact();
     mutate(artifact.content as Record<string, any>);
     render(<LocalEnvironmentPolyhedraPanel artifacts={[artifact]} selected={artifact} workspace={workspaceSnapshotFixture().workspace} onSelection={vi.fn()} />);
     expect(screen.getByRole("alert")).toHaveTextContent("N2_LOCAL_ENVIRONMENT_CONTRACT_INVALID");
   });
-});
 
-function environmentArtifact(): Artifact {
-  return {
-    id: "artifact_n2", artifactId: "artifact_n2", jobId: "job_demo", toolCallId: "call_n2", type: "table_json", version: "1", contentHash: HASH, sha256: HASH,
-    metadata: { projectId: "project_demo" }, content: {
-      schema_version: "phase10n2.local_environment_polyhedra.v1", artifactType: "structure.local_environment_polyhedra",
-      tool: { toolId: "structure.local_environment_polyhedra", toolVersion: "0.1.0", adapterVersion: "0.1.0" },
-      algorithm: { classification: "mdi.angular_spectrum_reference_match@1.0.0", faceConstruction: "scipy.spatial.ConvexHull@1.17.1" },
-      referenceCatalog: { catalogId: "mdi.local_geometry_reference_catalog", catalogVersion: "1.0.0", geometryIds: ["tetrahedral"] },
-      resolvedParameters: {}, parameterHash: HASH, scope: { sourceResourceId: "structure_resource", sourceResourceHash: HASH, structureHash: STRUCTURE_HASH },
-      sourceCoordination: { artifactId: "artifact_n1", artifactChecksum: HASH, toolId: "structure.coordination_crystalnn", toolVersion: "0.1.0", algorithmId: "pymatgen.crystalnn", algorithmVersion: "2026.5.4", parameterHash: HASH, contractVersion: "phase10n1.crystalnn_coordination.v1" },
-      coverage: { status: "COMPLETE", requestedSites: 1, evaluatedSites: 1, unavailableSites: 0, classifiedSites: 1, ambiguousSites: 0, unclassifiedSites: 0, ratio: 1 }, warnings: [],
-      siteResults: [{ environmentIdentity: "environment:demo", polyhedronIdentity: "polyhedron:demo", siteId: `site:${STRUCTURE_HASH}:0`, siteIndex: 0, structureHash: STRUCTURE_HASH,
-        classification: { status: "CLASSIFIED", referenceGeometryId: "tetrahedral", referenceGeometryVersion: "1.0.0", geometryDistanceRms: 0, geometryScore: 1, alternatives: [] },
-        sourceCoordinationValue: 4, sourceCoordinationSemantics: "crystalnn_weight_sum", neighborRelationIdentities: ["neighbor:0", "neighbor:1", "neighbor:2", "neighbor:3"],
-        polyhedron: { status: "AVAILABLE", unavailableReason: null, vertices: [0, 1, 2, 3].map((index) => ({ vertexIdentity: `vertex:${index}`, neighborIdentity: `neighbor:${index}`, neighborSiteId: `site:${STRUCTURE_HASH}:${index + 1}`, periodicImage: [0, 0, 0], relativeCartesian: [index, index % 2, 0] as [number, number, number], distance: index + 1, distanceUnit: "angstrom" })), faces: [{ faceIdentity: "face:0", vertexIdentities: ["vertex:0", "vertex:1", "vertex:2"] }] },
-        distortionMetrics: { geometryDistanceRms: 0, radialDistanceMean: 2.3 }, warnings: [],
-      }],
-      runtimeDiagnostics: {}, provenance: {}, limits: {}, security: {},
-    },
-  };
-}
+  it("does not substitute another artifact when the selected result is invalid", () => {
+    const artifact = environmentArtifact();
+    render(<LocalEnvironmentPolyhedraPanel artifacts={[artifact]} selected={{ ...artifact, id: "invalid", artifactId: "invalid", content: {} }} workspace={workspaceSnapshotFixture().workspace} onSelection={vi.fn()} />);
+    expect(screen.getByRole("alert")).toBeTruthy();
+    expect(screen.queryByRole("img")).toBeNull();
+  });
+
+  it("rotates with the keyboard and restores the fitted view without changing scientific selection", () => {
+    const artifact = environmentArtifact();
+    const before = JSON.stringify(artifact.content);
+    const onSelection = vi.fn();
+    const { container } = render(<LocalEnvironmentPolyhedraPanel artifacts={[artifact]} selected={artifact} workspace={workspaceSnapshotFixture().workspace} onSelection={onSelection} />);
+    const point = container.querySelector('[data-vertex-id="vertex:0"]')!;
+    const initial = [point.getAttribute("cx"), point.getAttribute("cy")];
+    const view = screen.getByRole("group", { name: "多面体视图，方向键旋转，Home 适配" });
+    fireEvent.keyDown(view, { key: "ArrowRight" });
+    expect([point.getAttribute("cx"), point.getAttribute("cy")]).not.toEqual(initial);
+    fireEvent.keyDown(view, { key: "Home" });
+    expect([point.getAttribute("cx"), point.getAttribute("cy")]).toEqual(initial);
+    expect(onSelection).not.toHaveBeenCalled();
+    expect(JSON.stringify(artifact.content)).toEqual(before);
+  });
+
+  it("keeps an unavailable surface and ambiguous classification explicit", () => {
+    const artifact = environmentArtifact();
+    const site = (artifact.content as Record<string, any>).siteResults[0];
+    site.polyhedron = { ...site.polyhedron, status: "UNAVAILABLE", faces: [], unavailableReason: "COPLANAR_POLYHEDRON" };
+    site.classification.status = "AMBIGUOUS";
+    render(<LocalEnvironmentPolyhedraPanel artifacts={[artifact]} selected={artifact} workspace={workspaceSnapshotFixture().workspace} onSelection={vi.fn()} />);
+    expect(screen.getByRole("heading", { name: "位点 0 · 分类不唯一" })).toBeTruthy();
+    expect(screen.getByText("近邻共面，未生成三维封闭多面体。")).toBeTruthy();
+    expect(screen.queryByText("多面体的面（4）")).toBeNull();
+  });
+
+  it("shows the saved scientific number without stripping zeros from its exponent", () => {
+    const artifact = environmentArtifact();
+    (artifact.content as Record<string, any>).siteResults[0].distortionMetrics.polyhedronVolume = 1e-10;
+    render(<LocalEnvironmentPolyhedraPanel artifacts={[artifact]} selected={artifact} workspace={workspaceSnapshotFixture().workspace} onSelection={vi.fn()} />);
+    fireEvent.click(screen.getByText("几何指标"));
+    expect(screen.getByText("1e-10 Å³")).toBeVisible();
+  });
+
+  it("makes sites beyond the old 250-row limit reachable with exact selection", () => {
+    const artifact = environmentArtifact();
+    const payload = artifact.content as Record<string, any>;
+    payload.siteResults = Array.from({ length: 251 }, (_, index) => ({ ...payload.siteResults[0], siteId: "site:" + STRUCTURE_HASH + ":" + index, siteIndex: index, environmentIdentity: "environment:" + index }));
+    const onSelection = vi.fn();
+    render(<LocalEnvironmentPolyhedraPanel artifacts={[artifact]} selected={artifact} workspace={workspaceSnapshotFixture().workspace} onSelection={onSelection} />);
+    fireEvent.click(screen.getByText("位点列表（251）"));
+    for (let page = 0; page < 5; page++) fireEvent.click(screen.getByRole("button", { name: "下一页位点" }));
+    fireEvent.click(screen.getByRole("button", { name: "选择位点 250" }));
+    expect(onSelection).toHaveBeenLastCalledWith(expect.objectContaining({ primary: expect.objectContaining({ siteId: "site:" + STRUCTURE_HASH + ":250", kind: "PERIODIC_SITE" }) }));
+    expect(screen.getByRole("heading", { name: "位点 250 · 四面体" })).toBeTruthy();
+    expect(within(screen.getByRole("region", { name: "位点配位列表" })).getAllByRole("row")).toHaveLength(2);
+  });
+});

@@ -42,11 +42,43 @@ class Agent2ScientificReportGenerationRepository(_Repository):
             return dict(connection.execute(select(agent2_scientific_report_generations).where(agent2_scientific_report_generations.c.id == generation_id)).mappings().one())
         return self._run(run)
 
-    def claim(self, generation_id: UUID) -> dict[str, Any] | None:
+    def compare_status(
+        self, generation_id: UUID, status: str, *, expected_status: str,
+        expected_attempt: int, expected_updated_at: datetime | None = None,
+        error_code: str | None = None, error_summary: str | None = None,
+        increment_attempt: bool = False,
+    ) -> dict[str, Any] | None:
+        table = agent2_scientific_report_generations
+        statement = update(table).where(
+            table.c.id == generation_id, table.c.status == expected_status,
+            table.c.attempt_count == expected_attempt,
+        )
+        if expected_updated_at is not None:
+            statement = statement.where(table.c.updated_at == expected_updated_at)
+        statement = statement.values(status=status, error_code=error_code,
+            error_summary=error_summary, updated_at=datetime.now(timezone.utc))
+        if increment_attempt:
+            statement = statement.values(attempt_count=table.c.attempt_count + 1)
+        def run(connection: Connection) -> dict[str, Any] | None:
+            if connection.execute(statement).rowcount != 1:
+                return None
+            return dict(connection.execute(select(table).where(table.c.id == generation_id)).mappings().one())
+        return self._run(run)
+
+    def lock_attempt(self, generation_id: UUID, attempt: int) -> bool:
+        """Fence publication against expiry/retry without renewing the deadline."""
+        table = agent2_scientific_report_generations
+        statement = update(table).where(
+            table.c.id == generation_id, table.c.status == "COMPOSING",
+            table.c.attempt_count == attempt,
+        ).values(status="COMPOSING")
+        return self._run(lambda connection: connection.execute(statement).rowcount == 1)
+
+    def claim(self, generation_id: UUID, *, expected_attempt: int | None = None) -> dict[str, Any] | None:
         now = datetime.now(timezone.utc)
         statement = update(agent2_scientific_report_generations).where(
             agent2_scientific_report_generations.c.id == generation_id,
-            agent2_scientific_report_generations.c.status.in_(("REQUESTED", "FAILED")),
+            agent2_scientific_report_generations.c.status == "REQUESTED",
         ).values(
             status="COMPOSING",
             attempt_count=agent2_scientific_report_generations.c.attempt_count + 1,
@@ -54,6 +86,8 @@ class Agent2ScientificReportGenerationRepository(_Repository):
             error_summary=None,
             updated_at=now,
         )
+        if expected_attempt is not None:
+            statement = statement.where(agent2_scientific_report_generations.c.attempt_count == expected_attempt - 1)
         def run(connection: Connection) -> dict[str, Any] | None:
             result = connection.execute(statement)
             if result.rowcount != 1:

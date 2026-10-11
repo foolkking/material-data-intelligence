@@ -18,11 +18,19 @@ def _persist_worker_boundary_failure(turn_id: str, error: BaseException) -> None
     try:
         from mdi_api.bootstrap.repository_factory import create_repository_factory
         from mdi_api.research_agent.service import ResearchTurnService
+        from mdi_api.research_agent.schemas import ResearchTurnStatus
 
         ResearchTurnService(create_repository_factory()).fail_if_active(
             UUID(str(turn_id)),
             "PLANNING_WORKER_BOUNDARY_FAILURE",
-            f"{type(error).__name__}: {error}",
+            "Research planning worker could not complete this stage",
+            # QUEUED belongs to the durable execution dispatcher. A failed
+            # publish there must remain recoverable with the same Job.
+            expected_statuses=frozenset({
+                ResearchTurnStatus.READY_TO_PLAN,
+                ResearchTurnStatus.PLANNING,
+                ResearchTurnStatus.PLAN_READY,
+            }),
         )
     except Exception:
         logger.exception(

@@ -173,7 +173,7 @@ def test_fresh_upgrade_creates_complete_foundation_schema(tmp_path: Path) -> Non
     with engine.connect() as connection:
         assert connection.execute(
             text("SELECT version_num FROM alembic_version")
-        ).scalar_one() == "0035_job_execution_leases"
+        ).scalar_one() == "0038_user_model_connections"
     engine.dispose()
 
 

@@ -67,6 +67,8 @@ export type ScientificViewerProjection = {
   };
   payload_status: "READY" | "METADATA_ONLY" | "SOURCE_MISSING" | "INVALIDATED";
   payload: unknown;
+  viewer_scene?: unknown;
+  viewer_scene_issue?: string | null;
   canonical_metadata: Record<string, unknown>;
   source_resource_refs: Array<Record<string, unknown>>;
   content_hash: string;
@@ -86,23 +88,29 @@ export const listScientificObjects = (
   projectId: string,
   signal?: AbortSignal,
   lifecycleStatus?: "ACTIVE" | "ARCHIVED" | "TRASHED",
+  cursor?: string,
 ) => request<{ items: ScientificObjectSummary[]; next_cursor: string | null }>(
-  `/api/projects/${encodeURIComponent(projectId)}/scientific-objects?limit=100${lifecycleStatus ? `&lifecycle_status=${lifecycleStatus}` : ""}`,
+  `/api/projects/${encodeURIComponent(projectId)}/scientific-objects?limit=100${lifecycleStatus ? `&lifecycle_status=${lifecycleStatus}` : ""}${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`,
   signal,
 );
+
+export const getScientificObjectSummary = (objectId: string, signal?: AbortSignal) =>
+  request<ScientificObjectSummary>(`/api/scientific-objects/${encodeURIComponent(objectId)}`, signal);
 
 export const getScientificViewerProjection = (objectId: string, versionId: string, signal?: AbortSignal) => request<ScientificViewerProjection>(`/api/scientific-objects/${encodeURIComponent(objectId)}/versions/${encodeURIComponent(versionId)}/viewer`, signal);
 
 export const updateScientificObject = (
   objectId: string,
   changes: { display_name?: string; archived?: boolean; lifecycle?: "ACTIVE" | "ARCHIVED" | "TRASHED" },
+  signal?: AbortSignal,
 ) => fetch(apiUrl(`/api/scientific-objects/${encodeURIComponent(objectId)}`), {
   method: "PATCH",
   credentials: "include",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify(changes),
+  signal,
 }).then(async (response) => {
-  if (!response.ok) throw new Error(`Scientific object update failed (${response.status})`);
+  if (!response.ok) throw Object.assign(new Error("Scientific object update failed"), { status: response.status });
   const result = await response.json() as ScientificObjectSummary;
   invalidateProjectHistory(result.project_id);
   return result;
@@ -112,6 +120,7 @@ export const bulkUpdateScientificObjects = (
   projectId: string,
   objectIds: string[],
   lifecycle: "ACTIVE" | "ARCHIVED" | "TRASHED",
+  signal?: AbortSignal,
 ) =>
   fetch(
     apiUrl(`/api/projects/${encodeURIComponent(projectId)}/scientific-objects/bulk`),
@@ -120,10 +129,11 @@ export const bulkUpdateScientificObjects = (
       credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ object_ids: objectIds, lifecycle }),
+      signal,
     },
   ).then(async (response) => {
     if (!response.ok)
-      throw new Error(`Scientific object bulk update failed (${response.status})`);
+      throw Object.assign(new Error("Scientific object bulk update failed"), { status: response.status });
     const result = await response.json() as {
       project_id: string;
       lifecycle: "ACTIVE" | "ARCHIVED" | "TRASHED";
@@ -134,9 +144,10 @@ export const bulkUpdateScientificObjects = (
     return result;
   });
 
-export const getScientificObjectDependencyImpact = (objectId: string) =>
+export const getScientificObjectDependencyImpact = (objectId: string, signal?: AbortSignal) =>
   request<ScientificObjectDependencyImpact>(
     `/api/scientific-objects/${encodeURIComponent(objectId)}/dependency-impact`,
+    signal,
   );
 
 export type ScientificDatasetQuery = {

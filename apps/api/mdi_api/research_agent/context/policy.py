@@ -75,9 +75,9 @@ CONTEXT_BUDGET_POLICIES: dict[ContextOperation, ContextBudgetPolicy] = {
     ),
     ContextOperation.REPORT: ContextBudgetPolicy(
         provider_context_limit=16_384,
-        product_global_limit=12_560,
-        operation_specific_limit=12_560,
-        reserved_output_tokens=2_048,
+        product_global_limit=16_384,
+        operation_specific_limit=16_384,
+        reserved_output_tokens=6_144,
         repair_margin=512,
     ),
 }

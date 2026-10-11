@@ -82,6 +82,7 @@ import {
   type Agent2SessionMemory,
 } from "../../app/lib/agent2-memory-api";
 import { ScientificReportAction } from "./ScientificReportAction";
+import { readReportContent } from "./report-read";
 import {
   Agent2ReadError,
   createAgent2ResearchTurn,
@@ -115,7 +116,7 @@ import {
   type ResearchPerformanceSample,
 } from "../../app/lib/research-performance";
 import { projectRoleAllows } from "../../app/lib/project-permissions";
-import { artifactLabel, displayEvidenceValue, evidenceLabel, formatPercent, groundedEvidenceNarrative, researchRunHref, researchSessionReferencesRun, userFacingClaims, userFacingLimitations } from "../research/ResearchPages";
+import { displayEvidenceValue, evidenceLabel, formatPercent, groundedEvidenceNarrative, researchRunHref, researchSessionReferencesRun, userFacingClaims, userFacingLimitations } from "../research/ResearchPages";
 
 
 export function ReportsPage({ projectId }: { projectId: string }) {
@@ -222,6 +223,16 @@ export function ReportReaderPage({
   projectId: string;
   reportId: string;
 }) {
+  return <ReportReaderContent key={`${projectId}:${reportId}`} projectId={projectId} reportId={reportId} />;
+}
+
+function ReportReaderContent({
+  projectId,
+  reportId,
+}: {
+  projectId: string;
+  reportId: string;
+}) {
   const [history, setHistory] = useState<ProjectHistory | null>(null);
   const [artifacts, setArtifacts] = useState<Artifact[]>([]);
   const [interpretation, setInterpretation] =
@@ -235,78 +246,90 @@ export function ReportReaderPage({
   const [loadState, setLoadState] = useState<"loading" | "ready" | "error">(
     "loading",
   );
-  useEffect(() => {
-    void getProjectHistory(projectId).then(setHistory);
-  }, [projectId]);
+  const [loadFailures, setLoadFailures] = useState<string[]>([]);
+  const [reloadKey, setReloadKey] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+  const [artifactsRead, setArtifactsRead] = useState(false);
+  const [interpretationRead, setInterpretationRead] = useState(false);
+  const [editorialError, setEditorialError] = useState(false);
+  const [editorialRefreshing, setEditorialRefreshing] = useState(false);
   useEffect(() => {
     const controller = new AbortController();
-    setLoadState("loading");
-    void Promise.allSettled([
-      getPlannerJobArtifacts(reportId),
-      getPlannerJobInterpretations(reportId),
-      getPlannerJob(reportId),
-    ])
-      .then(([artifactResult, interpretationResult, detailResult]) => {
-        if (controller.signal.aborted) return;
-        setArtifacts(
-          artifactResult.status === "fulfilled" ? artifactResult.value : [],
-        );
-        const nextInterpretation =
-          interpretationResult.status === "fulfilled"
-            ? interpretationResult.value.interpretations?.at(-1) || null
-            : null;
+    setRefreshing(true);
+    async function readPart<T>(label: string, request: (signal: AbortSignal) => Promise<T>, accept: (value: T) => void | Promise<void>) {
+      try {
+        const value = await readReportContent(request, controller.signal);
+        if (controller.signal.aborted) return false;
+        setLoadFailures((current) => current.filter((item) => item !== label));
+        await accept(value);
+        return true;
+      } catch {
+        if (!controller.signal.aborted) {
+          setLoadFailures((current) => current.includes(label) ? current : [...current, label]);
+        }
+        return false;
+      }
+    }
+    // Each section becomes readable independently; a slow or failed sibling
+    // must not hide successful content, including content from an earlier read.
+    void Promise.all([
+      readPart("科学结果列表", (signal) => getPlannerJobArtifacts(reportId, { signal }), (value) => {
+        setArtifacts(value);
+        setArtifactsRead(true);
+      }),
+      readPart("项目历史", () => getProjectHistory(projectId, { forceRefresh: reloadKey > 0 }), setHistory),
+      readPart("结果解读", (signal) => getPlannerJobInterpretations(reportId, { signal }), async (value) => {
+        const nextInterpretation = value.interpretations?.at(-1) || null;
         setInterpretation(nextInterpretation);
-        setRunDetail(
-          detailResult.status === "fulfilled" ? detailResult.value : null,
-        );
-        if (nextInterpretation)
-          void getPlannerInterpretationEvidence(
-            nextInterpretation.interpretationId,
-          )
-            .then(setReportEvidence)
-            .catch(() => setReportEvidence(null));
-        setLoadState(
-          artifactResult.status === "fulfilled" ||
-            interpretationResult.status === "fulfilled" ||
-            detailResult.status === "fulfilled"
-            ? "ready"
-            : "error",
-        );
-      })
-      .catch(() => {
-        if (!controller.signal.aborted) setLoadState("error");
+        setInterpretationRead(true);
+        // Evidence can only be retained for the same saved interpretation.
+        setReportEvidence((current) => nextInterpretation && current?.interpretationId === nextInterpretation.interpretationId ? current : null);
+        if (nextInterpretation) {
+          await readPart("解读依据", (signal) => getPlannerInterpretationEvidence(nextInterpretation.interpretationId, { signal }), setReportEvidence);
+        } else {
+          setLoadFailures((current) => current.filter((item) => item !== "解读依据"));
+        }
+      }),
+      readPart("运行详情", (signal) => getPlannerJob(reportId, { signal }), setRunDetail),
+    ])
+      .then((readResults) => {
+        if (controller.signal.aborted) return;
+        setRefreshing(false);
+        setLoadState(readResults.some(Boolean) ? "ready" : "error");
       });
     return () => controller.abort();
-  }, [reportId]);
+  }, [projectId, reportId, reloadKey]);
   const report = history?.analyses.find((item) => item.jobId === reportId);
   useEffect(() => {
     if (!report?.workspaceId) {
       setEditorial(null);
+      setEditorialError(false);
+      setEditorialRefreshing(false);
       return;
     }
     const controller = new AbortController();
-    void listReportCompositions(report.workspaceId, controller.signal)
-      .then((value) =>
-        value.items.find((item) => item.sourceJobId === reportId),
-      )
-      .then((item) =>
-        item
-          ? getReportComposition(
-              report.workspaceId!,
-              item.reportId,
-              controller.signal,
-            )
-          : null,
-      )
+    setEditorialRefreshing(true);
+    void readReportContent(async (signal) => {
+      const value = await listReportCompositions(report.workspaceId!, signal);
+      const item = value.items.find((candidate) => candidate.sourceJobId === reportId);
+      return item ? getReportComposition(report.workspaceId!, item.reportId, signal) : null;
+    }, controller.signal)
       .then((detail) => {
-        if (!controller.signal.aborted)
+        if (!controller.signal.aborted) {
           setEditorial(detail?.editorialProjection || null);
+          setEditorialError(false);
+        }
       })
       .catch(() => {
-        if (!controller.signal.aborted) setEditorial(null);
+        if (!controller.signal.aborted) setEditorialError(true);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setEditorialRefreshing(false);
       });
     return () => controller.abort();
-  }, [report?.workspaceId, reportId]);
+  }, [report?.workspaceId, reportId, reloadKey]);
+  const failures = [...loadFailures, ...(editorialError ? ["报告正文"] : [])];
+  const isRefreshing = refreshing || editorialRefreshing;
   const reportArtifacts = projectScientificArtifacts(artifacts);
   const researchQuestion =
     editorial?.researchQuestion ||
@@ -331,8 +354,10 @@ export function ReportReaderPage({
     : limitations;
   const canManageReport = projectRoleAllows(history?.project?.role, "write");
   const [archiveBusy, setArchiveBusy] = useState(false);
+  const [archiveError, setArchiveError] = useState("");
   const toggleArchive = async () => {
     setArchiveBusy(true);
+    setArchiveError("");
     try {
       if (report?.archived) await restoreProjectRun(projectId, reportId);
       else await archiveProjectRun(projectId, reportId);
@@ -352,6 +377,8 @@ export function ReportReaderPage({
             }
           : current,
       );
+    } catch {
+      setArchiveError("报告状态未能更新，请重试。已有报告内容未被更改。");
     } finally {
       setArchiveBusy(false);
     }
@@ -399,6 +426,12 @@ export function ReportReaderPage({
             </div>
           </div>
           <h1>{reportTitle}</h1>
+          {failures.length ? <div className="product-state report-read-error" role="alert">
+            <h2>{loadState === "error" && !artifactsRead && !history && !runDetail && !interpretationRead ? "报告内容暂时无法读取" : "部分报告内容暂时无法读取"}</h2>
+            <p>未能读取：{failures.join("、")}。已读取的内容保留在下方；重试只会重新读取，不会重新运行分析。</p>
+            <button type="button" className="product-secondary-action" disabled={isRefreshing} onClick={() => setReloadKey((key) => key + 1)}>{isRefreshing ? "正在重新加载…" : "重新加载报告内容"}</button>
+          </div> : null}
+          {archiveError ? <p className="product-form-error" role="alert">{archiveError}</p> : null}
           <p className="report-meta">
             {report?.archived ? "已归档 · " : ""}
             {scientistDatasetLabel(
@@ -417,15 +450,7 @@ export function ReportReaderPage({
             aria-labelledby="report-primary-result-title"
           >
             <h2 id="report-primary-result-title">主要结果</h2>
-            {loadState === "loading" ? (
-              <p className="product-loading" role="status">
-                正在加载运行结果…
-              </p>
-            ) : loadState === "error" ? (
-              <p className="product-form-error" role="alert">
-                运行结果暂时无法读取，历史摘要仍然可用。
-              </p>
-            ) : primaryArtifact ? (
+            {primaryArtifact ? (
               <ReportArtifactFigure
                 artifact={primaryArtifact}
                 projectId={projectId}
@@ -433,6 +458,10 @@ export function ReportReaderPage({
                 reportId={reportId}
                 artifacts={artifacts}
               />
+            ) : loadFailures.includes("科学结果列表") ? (
+              <p className="product-form-error">运行结果暂时无法读取，请重新加载报告内容。</p>
+            ) : !artifactsRead ? (
+              <p className="product-loading" role="status">正在加载运行结果…</p>
             ) : (
               <div className="product-state">
                 <h3>本次运行没有可展示的结果</h3>
@@ -449,7 +478,7 @@ export function ReportReaderPage({
               {editorial?.summary ||
                 claims[0]?.renderedText ||
                 narrative.finding ||
-                "本次报告汇总已验证的科学输出、依据和限制。"}
+                (loadFailures.includes("结果解读") ? "结果解读暂时无法读取，请重新加载报告内容。" : !interpretationRead ? "正在读取结果解读…" : "尚无已保存的结果解读，可先复核上方科学输出与来源。")}
             </p>
             {claims.length ? (
               <ul className="report-findings">
@@ -481,21 +510,21 @@ export function ReportReaderPage({
             )}
           </section>
           {supportingArtifacts.length ? (
-            <details className="report-supporting-results">
-              <summary>支持性结果 · {supportingArtifacts.length} 项</summary>
-              <div className="report-artifact-list">
-                {supportingArtifacts.map((artifact) => (
+            <section className="report-supporting-results" aria-label="补充结果">
+              {supportingArtifacts.map((artifact) => (
+                <details key={artifact.artifactId || artifact.id} className="report-supplementary-result">
+                  <summary>{artifact.resultTitle}</summary>
                   <ReportArtifactFigure
-                    key={artifact.artifactId || artifact.id}
+                    showHeading={false}
                     artifact={artifact}
                     projectId={projectId}
                     datasetId={report?.datasetId}
                     reportId={reportId}
                     artifacts={artifacts}
                   />
-                ))}
-              </div>
-            </details>
+                </details>
+              ))}
+            </section>
           ) : null}
           <h2>研究问题</h2>
           <p>{researchQuestion}</p>
@@ -537,12 +566,14 @@ export function ReportReaderPage({
 
 function ReportArtifactFigure({
   artifact,
+  showHeading = true,
   projectId,
   datasetId,
   reportId,
   artifacts,
 }: {
   artifact: ReturnType<typeof projectScientificArtifacts>[number];
+  showHeading?: boolean;
   projectId: string;
   datasetId?: string;
   reportId: string;
@@ -550,15 +581,9 @@ function ReportArtifactFigure({
 }) {
   return (
     <section
-      className={`report-figure result-role-${artifact.resultRole.toLowerCase()}`}
+      className={`report-figure result-role-${artifact.resultRole.toLowerCase()}${artifact.type === "phonon_band_dos_json" ? " report-figure-phonon-combined" : ""}`}
     >
-      <span>
-        {artifact.resultRole === "PRIMARY_FIGURE" ||
-        artifact.resultRole === "PRIMARY_TABLE"
-          ? "主要结果"
-          : artifactLabel(artifact.type)}
-      </span>
-      <strong>{artifact.resultTitle}</strong>
+      {showHeading && !["metrics_json", "phonon_band_dos_json"].includes(artifact.type || "") ? <strong>{artifact.resultTitle}</strong> : null}
       <LazyScientificResultViewer
         projectId={projectId}
         datasetId={datasetId}
@@ -566,12 +591,6 @@ function ReportArtifactFigure({
         selected={artifact}
         artifacts={artifacts}
       />
-      <p>
-        {artifact.resultRole === "PRIMARY_FIGURE" ||
-        artifact.resultRole === "PRIMARY_TABLE"
-          ? "图表、表格和单位来自本次运行的已验证输出。"
-          : "支持性科学输出，供结果复核使用。"}
-      </p>
     </section>
   );
 }

@@ -5,7 +5,9 @@ from datetime import datetime, timezone
 from typing import Any, Mapping, Sequence
 
 from mdi_api.domain.workspaces.contracts import WorkspaceDomainError, WorkspaceSnapshot
+from mdi_api.application.jobs.source_datasets import job_source_dataset_summaries
 
+from mdi_schemas import AnalysisPlanV03
 from mdi_schemas.workspace import (
     WORKSPACE_MAX_LAYOUT_REVISIONS,
     WORKSPACE_MAX_PANELS,
@@ -113,6 +115,7 @@ class _SourceProjection:
     project: Mapping[str, Any] | None
     job: Mapping[str, Any] | None
     research_turn_id: str | None
+    research_session_id: str | None
     dataset: Mapping[str, Any] | None
     profile: Mapping[str, Any] | None
     intent: Mapping[str, Any] | None
@@ -530,6 +533,7 @@ class WorkspaceProjectionService:
             "sourceSummary": {
                 "jobStatus": _identity(source.job, "status"),
                 "researchTurnId": source.research_turn_id,
+                "researchSessionId": source.research_session_id,
                 "analysisPlanSchemaVersion": source.plan_schema_version,
                 "dependencyOutcome": source.dependency_outcome,
                 "artifactCount": len(source.artifacts),
@@ -923,9 +927,11 @@ class WorkspaceProjectionService:
                     "jobId": job_id,
                     "projectId": project_id,
                     "datasetId": _identity(job, "datasetId", "dataset_id"),
+                    "sourceDatasets": self._source_dataset_summaries(source),
                     "jobStatus": _identity(job, "status"),
                     "workspaceProjectionStatus": source.status.value,
                     "researchTurnId": source.research_turn_id,
+                    "researchSessionId": source.research_session_id,
                     "analysisPlanSchemaVersion": source.plan_schema_version,
                     "dependencyOutcome": source.dependency_outcome,
                     "artifactCount": len(source.artifacts),
@@ -1066,9 +1072,11 @@ class WorkspaceProjectionService:
             "jobId": job_id,
             "projectId": project_id,
             "datasetId": _identity(job, "datasetId", "dataset_id"),
+            "sourceDatasets": self._source_dataset_summaries(source),
             "jobStatus": _identity(job, "status"),
             "workspaceProjectionStatus": source.status.value,
             "researchTurnId": source.research_turn_id,
+            "researchSessionId": source.research_session_id,
             "analysisPlanSchemaVersion": source.plan_schema_version,
             "dependencyOutcome": source.dependency_outcome,
             "artifactCount": len(source.artifacts),
@@ -1096,6 +1104,7 @@ class WorkspaceProjectionService:
         plan_record = (
             {
                 "planId": metadata.get("plan_id"),
+                "projectId": metadata.get("plan_project_id"),
                 "datasetId": metadata.get("plan_dataset_id"),
                 "profileId": metadata.get("plan_profile_id"),
                 "planHash": metadata.get("plan_hash"),
@@ -1150,14 +1159,21 @@ class WorkspaceProjectionService:
         )
         workspace_id = metadata.get("workspace_id")
         research_turn_id = metadata.get("research_turn_id")
+        research_session_id = metadata.get("research_session_id")
         return {
             "jobId": job_id,
             "projectId": str(project["projectId"]),
             "datasetId": _identity(job, "datasetId", "dataset_id"),
+            "sourceDatasets": job_source_dataset_summaries(
+                job, plan_record, metadata.get("source_datasets") or [],
+            ),
             "jobStatus": _identity(job, "status"),
             "workspaceProjectionStatus": status.value,
             "researchTurnId": (
                 str(research_turn_id) if research_turn_id is not None else None
+            ),
+            "researchSessionId": (
+                str(research_session_id) if research_session_id is not None else None
             ),
             "researchQuestion": _task_research_question(
                 metadata.get("research_question")
@@ -1177,6 +1193,19 @@ class WorkspaceProjectionService:
             "createdAt": job.get("createdAt"),
             "updatedAt": job.get("updatedAt"),
         }
+
+    def _source_dataset_summaries(self, source: _SourceProjection) -> list[dict[str, str]]:
+        datasets = [source.dataset] if source.dataset else []
+        if source.plan_schema_version == "0.3":
+            try:
+                plan = AnalysisPlanV03.model_validate(source.plan)
+            except (TypeError, ValueError):
+                return []
+            datasets = [
+                dataset for context in plan.sourceContexts
+                if (dataset := _repo_get(self.repositories.datasets, context.datasetId)) is not None
+            ]
+        return job_source_dataset_summaries(source.job or {}, source.plan_record, datasets)
 
     def list_panels(self, workspace_id: str) -> tuple[WorkspacePanel, ...]:
         workspace = self.get_stored_workspace(workspace_id)
@@ -1238,17 +1267,22 @@ class WorkspaceProjectionService:
         if job is None and not allow_missing_job:
             raise WorkspaceDomainError("JOB_NOT_FOUND", "Analysis job not found.", 404)
 
+        project_id = _identity(job, "projectId", "project_id") or fallback_project_id
         research_turn_id: str | None = None
+        research_session_id: str | None = None
         research_turn_lookup = getattr(self.repositories, "get_research_turn_for_job", None)
         if callable(research_turn_lookup) and job is not None:
             try:
                 turn = research_turn_lookup(job_id)
-                if turn is not None:
+                if (turn is not None
+                        and _identity(turn, "project_id", "projectId") == project_id
+                        and _identity(turn, "job_id", "jobId") == job_id):
                     research_turn_id = _identity(turn, "id", "turnId", "researchTurnId")
+                    research_session_id = _identity(turn, "research_session_id", "researchSessionId")
             except (KeyError, LookupError, TypeError, ValueError):
                 research_turn_id = None
+                research_session_id = None
 
-        project_id = _identity(job, "projectId", "project_id") or fallback_project_id
         project = (
             _repo_get(getattr(self.repositories, "projects", None), project_id)
             if project_id
@@ -1403,6 +1437,7 @@ class WorkspaceProjectionService:
             project=project,
             job=job,
             research_turn_id=research_turn_id,
+            research_session_id=research_session_id,
             dataset=dataset,
             profile=profile,
             intent=intent,

@@ -14,8 +14,9 @@ from typing import Any
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import ValidationError
 
-from mdi_schemas import AnalysisPlan, AnalysisPlanV02, ArtifactType
+from mdi_schemas import AnalysisPlan, AnalysisPlanV02, AnalysisPlanV04, ArtifactType, parse_analysis_plan
 from mdi_tool_registry import ToolRegistry
+from .project_tools import project_reference_inventory
 
 
 @dataclass
@@ -52,8 +53,7 @@ def validate_plan(plan: dict[str, Any] | AnalysisPlan | AnalysisPlanV02, *, regi
 
     # 2. Must parse as AnalysisPlan
     try:
-        version = plan.get("schemaVersion") if isinstance(plan, dict) else plan.schemaVersion
-        parsed = AnalysisPlanV02.model_validate(plan) if version == "0.2" else AnalysisPlan.model_validate(plan)
+        parsed = parse_analysis_plan(plan)
     except Exception as exc:
         return PlanValidationResult(ok=False, errors=[_error("PLAN_SCHEMA_INVALID", "Plan does not match AnalysisPlan schema.", detail=str(exc))])
 
@@ -75,6 +75,15 @@ def validate_plan(plan: dict[str, Any] | AnalysisPlan | AnalysisPlanV02, *, regi
 
     # 6. Tool must be MVP stage (no V1/V2 tools)
     tool_by_id = {t.toolId: t for t in registry.tools}
+    if isinstance(parsed, AnalysisPlanV04):
+        try:
+            required_references = project_reference_inventory(tool_by_id[step.toolId] for step in parsed.steps)
+            if required_references != parsed.referenceSources:
+                raise ValueError("Plan platform references differ from the registered tools.")
+        except (ValueError, KeyError) as exc:
+            errors.append(_error("PROJECT_TOOL_SCOPE_INVALID", str(exc)))
+    elif any(tool_by_id.get(step.toolId) and tool_by_id[step.toolId].source.get("execution_scope") == "project" for step in parsed.steps):
+        errors.append(_error("PROJECT_TOOL_SCOPE_INVALID", "Reference and parameter-only tools require an explicit project-scoped Plan."))
     for step in parsed.steps:
         tool = tool_by_id.get(step.toolId)
         if tool is None:

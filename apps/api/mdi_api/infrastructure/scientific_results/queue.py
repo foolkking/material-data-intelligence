@@ -54,23 +54,51 @@ class RedisRQResultProjectionQueue:
 
     def enqueue_turn(self, turn_id: UUID) -> ResultProjectionQueueSubmitResult:
         from redis import Redis
+        from redis.backoff import NoBackoff
+        from redis.exceptions import WatchError
+        from redis.retry import Retry
         from rq import Queue
+        from rq.exceptions import NoSuchJobError
+        from rq.job import Job
 
-        queue = Queue(self.queue_name, connection=Redis.from_url(self.redis_url))
-        job_id = f"agent2-result-{turn_id}"
-        existing = queue.fetch_job(job_id)
-        if existing is not None:
-            status = existing.get_status(refresh=True)
-            status_value = str(getattr(status, "value", status))
-            if status_value in {"queued", "started", "deferred", "scheduled"}:
-                return ResultProjectionQueueSubmitResult(turn_id, False, "rq", "turn already queued")
-            existing.delete()
-        queue.enqueue(
-            worker_queue_definition("result_projection").handler,
-            str(turn_id),
-            job_id=job_id,
+        connection = Redis.from_url(
+            self.redis_url, socket_connect_timeout=2, socket_timeout=2,
+            retry=Retry(NoBackoff(), 0),
         )
-        return ResultProjectionQueueSubmitResult(turn_id, True, "rq", "turn queued")
+        queue = Queue(self.queue_name, connection=connection)
+        job_id = f"agent2-result-{turn_id}"
+        try:
+            for _attempt in range(4):
+                try:
+                    with connection.pipeline() as pipeline:
+                        pipeline.watch(Job.key_for(job_id))
+                        try:
+                            existing = Job.fetch(job_id, connection=connection)
+                        except NoSuchJobError:
+                            existing = None
+                        if existing is not None:
+                            if existing.origin != self.queue_name:
+                                raise RuntimeError("Result queue ownership does not match")
+                            status = existing.get_status(refresh=False)
+                            status_value = str(getattr(status, "value", status))
+                            if status_value in {"queued", "started", "deferred", "scheduled"}:
+                                return ResultProjectionQueueSubmitResult(turn_id, False, "rq", "turn already queued")
+                            if status_value not in {"finished", "failed", "stopped", "canceled", "cancelled"}:
+                                raise RuntimeError("Result queue status cannot be confirmed")
+                        pipeline.multi()
+                        if existing is not None:
+                            existing.delete(pipeline=pipeline)
+                        queue.enqueue(
+                            worker_queue_definition("result_projection").handler,
+                            str(turn_id), job_id=job_id, pipeline=pipeline,
+                        )
+                        pipeline.execute()
+                    return ResultProjectionQueueSubmitResult(turn_id, True, "rq", "turn queued")
+                except WatchError:
+                    continue
+            raise RuntimeError("Result queue publication changed concurrently; retry the same Turn")
+        finally:
+            connection.close()
 
 
 def result_projection_queue_from_settings(settings: object) -> ResultProjectionQueue:

@@ -49,6 +49,11 @@ class JobRepository(Protocol):
     def request_cancel(self, job_id: str) -> dict[str, Any]:
         ...
 
+    def expire_abandoned_execution(
+        self, job_id: str, *, stale_after_seconds: int, cancel_requested: bool = False
+    ) -> dict[str, Any] | None:
+        ...
+
     def acknowledge_cancel(
         self, job_id: str, *, owner: str | None = None, attempt: int | None = None
     ) -> dict[str, Any]:

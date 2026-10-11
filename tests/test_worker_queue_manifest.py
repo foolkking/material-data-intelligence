@@ -5,6 +5,9 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+from uuid import uuid4
+
+import pytest
 
 from mdi_api.config import ApiSettings
 from mdi_api.interpretation.queue import RedisRQInterpretationQueue
@@ -84,6 +87,49 @@ def test_worker_queue_manifest_cli_is_launcher_readable() -> None:
 
     assert completed.returncode == 0, completed.stderr
     assert json.loads(completed.stdout)["schemaVersion"] == WORKER_QUEUE_MANIFEST_VERSION
+
+
+@pytest.mark.parametrize("producer_type,method", [(RedisRQReportQueue, "enqueue_generation"), (RedisRQInterpretationQueue, "enqueue_turn")])
+def test_communication_queue_deadline_covers_generation_and_one_repair(monkeypatch, producer_type, method):
+    from redis import Redis
+    import rq
+
+    calls = []
+
+    class QueueCapture:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def fetch_job(self, _job_id):
+            return None
+
+        def enqueue(self, *args, **kwargs):
+            calls.append((args, kwargs))
+
+    class ConnectionCapture:
+        def pipeline(self): return self
+        def __enter__(self): return self
+        def __exit__(self, *_args): pass
+        def watch(self, *_args): pass
+        def multi(self): pass
+        def execute(self): pass
+        def close(self): pass
+
+    from rq.exceptions import NoSuchJobError
+    from rq.job import Job
+    def missing_job(*_args, **_kwargs):
+        raise NoSuchJobError()
+    monkeypatch.setattr(Job, "fetch", missing_job)
+    monkeypatch.setattr(Redis, "from_url", lambda *_args, **_kwargs: ConnectionCapture())
+    monkeypatch.setattr(rq, "Queue", QueueCapture)
+    identity = uuid4()
+    result = getattr(producer_type(redis_url="redis://example.invalid/0"), method)(identity)
+
+    assert result.enqueued is True
+    assert len(calls) == 1
+    assert calls[0][0][1] == str(identity)
+    assert calls[0][1]["job_timeout"] == 300
+    assert calls[0][1]["job_timeout"] > 2 * 120
 
 
 def test_dev_controller_runs_one_worker_for_all_current_queues() -> None:

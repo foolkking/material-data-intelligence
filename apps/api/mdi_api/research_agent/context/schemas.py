@@ -5,7 +5,7 @@ from enum import Enum
 from typing import Annotated, Any, Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from mdi_api.research_agent.context.provenance import (
     ContextAuthorityClass,
@@ -19,6 +19,7 @@ from mdi_api.research_agent.context.provenance import (
     support_eligibility_for_item,
 )
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
+from mdi_api.research_agent.schemas import ScientificSelectionContext
 
 
 BoundedContextText = Annotated[str, Field(min_length=1, max_length=1000)]
@@ -138,6 +139,7 @@ class ResearchContextCandidateBundle(BaseModel):
     research_session_id: str = Field(min_length=1, max_length=64)
     research_turn_id: UUID
     active_object_candidates: list[ReferenceCandidate] = Field(max_length=80)
+    scientific_selections: list[ScientificSelectionContext] = Field(default_factory=list, max_length=16)
     result_candidates: list[ReferenceCandidate] = Field(max_length=16)
     finding_candidates: list[ReferenceCandidate] = Field(max_length=16)
     literature_candidates: list[ReferenceCandidate] = Field(
@@ -151,7 +153,7 @@ class ResearchContextCandidateBundle(BaseModel):
     pinned_result_ids: list[UUID] = Field(default_factory=list, max_length=64)
     omitted_supporting_items: list[str] = Field(default_factory=list, max_length=16)
     current_user_message: str | None = Field(default=None, max_length=16000)
-    assembly_version: str = "agent2.context-assembly/1.0"
+    assembly_version: str = "agent2.context-assembly/1.1"
 
     @model_validator(mode="after")
     def unique_candidate_keys(self) -> "ResearchContextCandidateBundle":
@@ -166,6 +168,14 @@ class ResearchContextCandidateBundle(BaseModel):
             raise ValueError("candidate_key values must be unique")
         if any(item.object_ref and item.object_ref.project_id != self.project_id for item in candidates):
             raise ValueError("object candidates must belong to project_id")
+        identities = {
+            (item.object_ref.object_id, item.object_ref.version_id, item.object_ref.object_type)
+            for item in self.active_object_candidates if item.object_ref is not None
+        }
+        for selection in self.scientific_selections:
+            ref = selection.object_ref
+            if ref.project_id != self.project_id or (ref.object_id, ref.version_id, ref.object_type) not in identities:
+                raise ValueError("scientific selection must bind an exact authorized context candidate")
         return self
 
 
@@ -182,6 +192,25 @@ class CompactObjectSummary(BaseModel):
         "EVIDENCE", "CONTINUITY", "SUBJECT", "CONSTRAINT", "PREFERENCE"
     ] = "SUBJECT"
     support_eligible: bool = False
+
+
+class CompactScientificSelection(BaseModel):
+    """Viewer-reported subject context, never an authoritative result."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    ref_key: str = Field(pattern=r"^obj_[1-9][0-9]*$")
+    selection_type: str = Field(pattern=r"^[A-Z][A-Z0-9_]{1,63}$")
+    semantic_locator: dict[str, Any] = Field(max_length=24)
+    context_role: Literal["SUBJECT"] = "SUBJECT"
+    support_eligible: Literal[False] = False
+    source_class: Literal["EXPLICIT_UI_SELECTION"] = "EXPLICIT_UI_SELECTION"
+    verification_status: Literal["VIEWER_REPORTED"] = "VIEWER_REPORTED"
+
+    @field_validator("semantic_locator")
+    @classmethod
+    def validate_locator(cls, value: dict[str, Any]) -> dict[str, Any]:
+        return ScientificSelectionContext.validate_locator(value)
 
 
 class CompactResultSummary(BaseModel):
@@ -236,6 +265,7 @@ class CompactResearchContext(BaseModel):
     project_summary: str = Field(min_length=1, max_length=1000)
     current_goal: str | None = Field(max_length=2048)
     objects: list[CompactObjectSummary]
+    scientific_selections: list[CompactScientificSelection] = Field(default_factory=list, max_length=16)
     results: list[CompactResultSummary]
     relevant_findings: list[CompactFindingSummary] = Field(default_factory=list, max_length=16)
     literature_evidence: list[CompactLiteratureEvidenceSummary] = Field(

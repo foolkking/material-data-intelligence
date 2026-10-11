@@ -5,71 +5,30 @@ import { useMemo, useState } from "react";
 import type { Artifact } from "../../app/lib/planner-api";
 import type { ScientificWorkspace, WorkspaceSelectionContext } from "../../app/lib/workspace-api";
 import { coordinationSiteSelection, localEnvironmentSelection } from "../../shared/workspace/workspace-selection-runtime";
+import { LocalEnvironmentPolyhedronView } from "./LocalEnvironmentPolyhedronView";
+import styles from "./LocalEnvironmentPolyhedra.module.css";
 
-type Point = Readonly<{ vertexIdentity: string; neighborIdentity: string; neighborSiteId: string; periodicImage: readonly [number, number, number]; relativeCartesian: readonly [number, number, number]; distance: number; distanceUnit: "angstrom" }>;
-type Face = Readonly<{ faceIdentity: string; vertexIdentities: readonly string[] }>;
+import { readSavedLocalEnvironment, algorithmLabel, classificationLabel, geometryLabel, faceReason, metricLabel, metricUnit,
+  type SavedEnvironmentSite as SiteResult, type SavedLocalEnvironment as Payload } from "./saved-local-environment";
+
 type N2SelectionKind = "LOCAL_ENVIRONMENT" | "COORDINATION_POLYHEDRON" | "POLYHEDRON_VERTEX" | "POLYHEDRON_FACE";
-type SiteResult = Readonly<{
-  environmentIdentity: string;
-  polyhedronIdentity: string;
-  siteId: string;
-  siteIndex: number;
-  structureHash: string;
-  classification: Readonly<{ status: string; referenceGeometryId: string | null; referenceGeometryVersion: string | null; geometryDistanceRms: number | null; geometryScore: number | null; alternatives: readonly unknown[] }>;
-  sourceCoordinationValue: number;
-  sourceCoordinationSemantics: string;
-  neighborRelationIdentities: readonly string[];
-  polyhedron: Readonly<{ status: string; vertices: readonly Point[]; faces: readonly Face[]; unavailableReason: string | null }>;
-  distortionMetrics: Readonly<Record<string, unknown>>;
-  warnings: readonly string[];
-}>;
-type Payload = Readonly<{
-  schema_version: "phase10n2.local_environment_polyhedra.v1";
-  artifactType: "structure.local_environment_polyhedra";
-  tool: Readonly<{ toolId: "structure.local_environment_polyhedra"; toolVersion: "0.1.0"; adapterVersion: "0.1.0" }>;
-  algorithm: Readonly<{ classification: string; faceConstruction: string }>;
-  referenceCatalog: Readonly<{ catalogId: string; catalogVersion: string; geometryIds: readonly string[] }>;
-  resolvedParameters: Readonly<Record<string, unknown>>;
-  parameterHash: string;
-  scope: Readonly<{ sourceResourceId: string; sourceResourceHash: string; structureHash: string }>;
-  sourceCoordination: Readonly<{ artifactId: string; artifactChecksum: string; toolId: string; toolVersion: string; algorithmId: string; algorithmVersion: string; contractVersion: string; parameterHash: string }>;
-  coverage: Readonly<{ status: string; requestedSites: number; evaluatedSites: number; unavailableSites: number; classifiedSites: number; ambiguousSites: number; unclassifiedSites: number; ratio: number }>;
-  siteResults: readonly SiteResult[];
-  warnings: readonly string[];
-}>;
 
 export function LocalEnvironmentPolyhedraPanel({ artifacts, selected, workspace, onSelection }: Readonly<{
   artifacts: readonly Artifact[];
   selected: Artifact;
   workspace: ScientificWorkspace;
-  onSelection: (selection: WorkspaceSelectionContext) => void;
+  onSelection?: (selection: WorkspaceSelectionContext) => void;
 }>) {
   const loaded = useMemo(() => artifacts.map(parsePayload).filter((item): item is { artifact: Artifact; payload: Payload } => item !== null), [artifacts]);
-  const selectedLoaded = parsePayload(selected);
-  const active = selectedLoaded ?? loaded[0] ?? null;
-  const [activeSiteId, setActiveSiteId] = useState<string | null>(null);
-  if (!active) return <section className="workspace-generic-renderer" role="alert"><h5>Local environment Artifact unavailable</h5><p>N2_LOCAL_ENVIRONMENT_CONTRACT_INVALID</p></section>;
-  const site = active.payload.siteResults.find((item) => item.siteId === activeSiteId) ?? active.payload.siteResults[0] ?? null;
+  const active = useMemo(() => parsePayload(selected), [selected]);
+  if (!active) return <InvalidEnvironment />;
   const comparison = loaded.filter((item) => item.payload.scope.sourceResourceHash === active.payload.scope.sourceResourceHash);
-  const visibleSiteResults = active.payload.siteResults.slice(0, 250);
-  return <section className="workspace-generic-renderer local-environment-result" aria-label="Geometry-derived local environment" data-testid="local-environment-polyhedra-panel">
-    <header><div><h5>Geometry-derived local environment</h5><strong>{active.payload.sourceCoordination.algorithmId}</strong></div><span className="status-chip">{active.payload.coverage.status}</span></header>
-    <dl className="workspace-artifact-metadata">
-      <dt>Source coordination</dt><dd>{active.payload.sourceCoordination.toolId} / {active.payload.sourceCoordination.artifactId}</dd>
-      <dt>N2 Tool</dt><dd>{active.payload.tool.toolId}@{active.payload.tool.toolVersion}</dd>
-      <dt>Reference catalog</dt><dd>{active.payload.referenceCatalog.catalogId}@{active.payload.referenceCatalog.catalogVersion}</dd>
-      <dt>Coverage</dt><dd>{active.payload.coverage.evaluatedSites}/{active.payload.coverage.requestedSites} sites ({formatRatio(active.payload.coverage.ratio)})</dd>
-      <dt>Classification</dt><dd>{active.payload.algorithm.classification}</dd>
-      <dt>Parameter hash</dt><dd><code>{active.payload.parameterHash}</code></dd>
-    </dl>
-    {active.payload.warnings.length ? <ul className="workspace-artifact-warning">{active.payload.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul> : null}
-    {comparison.length > 1 ? <section><h6>Source algorithm comparison</h6><p>Results remain independent persisted Artifacts; no consensus classification is generated.</p><div className="workspace-table-scroll"><table><thead><tr><th scope="col">Source</th><th scope="col">Artifact</th><th scope="col">Evaluated</th><th scope="col">Classified</th></tr></thead><tbody>{comparison.map((item) => <tr key={item.payload.sourceCoordination.artifactId}><th scope="row">{item.payload.sourceCoordination.algorithmId}</th><td>{item.payload.sourceCoordination.artifactId}</td><td>{item.payload.coverage.evaluatedSites}</td><td>{item.payload.coverage.classifiedSites}</td></tr>)}</tbody></table></div></section> : null}
-    <section><h6>Environment results</h6><p role="status">Showing {visibleSiteResults.length} of {active.payload.siteResults.length} persisted site rows.</p><div className="workspace-table-scroll"><table><thead><tr><th scope="col">Site</th><th scope="col">Status</th><th scope="col">Reference</th><th scope="col">Score</th><th scope="col">Faces</th></tr></thead><tbody>{visibleSiteResults.map((item) => <tr key={item.siteId} className={item.siteId === site?.siteId ? "active" : undefined}><td><button type="button" className="coordination-site-button" aria-pressed={item.siteId === site?.siteId} onClick={() => { setActiveSiteId(item.siteId); onSelection(coordinationSiteSelection(workspace, active.artifact, { sourceResourceId: active.payload.scope.sourceResourceId, structureHash: item.structureHash, siteId: item.siteId })); }}>{item.siteIndex}</button></td><td>{item.classification.status}</td><td>{item.classification.referenceGeometryId ?? "unclassified"}</td><td>{displayNumber(item.classification.geometryScore)}</td><td>{item.polyhedron.faces.length} / {item.polyhedron.status}</td></tr>)}</tbody></table></div></section>
-    {site ? <EnvironmentInspector site={site} source={active.payload.sourceCoordination} onExactSelection={(kind, exactId) => onSelection(localEnvironmentSelection(workspace, active.artifact, {
-      kind,
-      sourceResourceId: active.payload.scope.sourceResourceId,
-      structureHash: site.structureHash,
-      siteId: site.siteId,
+  return <LocalEnvironmentContent key={active.artifact.artifactId ?? active.artifact.id} payload={active.payload} comparison={comparison}
+    onSiteSelection={onSelection ? (site) => onSelection(coordinationSiteSelection(workspace, active.artifact, {
+      sourceResourceId: active.payload.scope.sourceResourceId, structureHash: site.structureHash, siteId: site.siteId,
+    })) : undefined}
+    onExactSelection={onSelection ? (site, kind, exactId) => onSelection(localEnvironmentSelection(workspace, active.artifact, {
+      kind, sourceResourceId: active.payload.scope.sourceResourceId, structureHash: site.structureHash, siteId: site.siteId,
       sourceArtifactId: active.payload.sourceCoordination.artifactId,
       sourceArtifactChecksum: active.payload.sourceCoordination.artifactChecksum,
       environmentId: kind === "LOCAL_ENVIRONMENT" || kind === "COORDINATION_POLYHEDRON" ? site.environmentIdentity : undefined,
@@ -77,105 +36,151 @@ export function LocalEnvironmentPolyhedraPanel({ artifacts, selected, workspace,
       vertexId: kind === "POLYHEDRON_VERTEX" ? exactId : undefined,
       faceId: kind === "POLYHEDRON_FACE" ? exactId : undefined,
       geometryReferenceId: kind === "LOCAL_ENVIRONMENT" || kind === "COORDINATION_POLYHEDRON" ? site.classification.referenceGeometryId : undefined,
-    }))} /> : null}
-    <details><summary>Resolved parameters and provenance</summary><pre>{JSON.stringify({ parameters: active.payload.resolvedParameters, algorithm: active.payload.algorithm, sourceCoordination: active.payload.sourceCoordination }, null, 2)}</pre></details>
-    <p className="workspace-artifact-warning">Geometry-derived and source-algorithm-dependent; not definitive bonding chemistry, oxidation state, or structural stability.</p>
+    })) : undefined} />;
+}
+
+export function LocalEnvironmentReportPreview({ payload }: Readonly<{ payload: unknown }>) {
+  const saved = useMemo(() => readSavedLocalEnvironment(payload), [payload]);
+  return saved ? <LocalEnvironmentContent payload={saved} /> : <InvalidEnvironment />;
+}
+
+function InvalidEnvironment() {
+  return <section className={styles.panel} role="alert"><h5>配位多面体暂不可用</h5><p>结果内容未通过校验，请重新加载该结果。</p><details><summary>错误详情</summary><code>N2_LOCAL_ENVIRONMENT_CONTRACT_INVALID</code></details></section>;
+}
+
+function LocalEnvironmentContent({ payload, comparison = [], onSiteSelection, onExactSelection }: Readonly<{
+  payload: Payload;
+  comparison?: readonly { artifact: Artifact; payload: Payload }[];
+  onSiteSelection?: (site: SiteResult) => void;
+  onExactSelection?: (site: SiteResult, kind: N2SelectionKind, exactId?: string) => void;
+}>) {
+  const [activeSiteId, setActiveSiteId] = useState<string | null>(null);
+  const sites = payload.siteResults;
+  const siteIndex = Math.max(0, sites.findIndex((item) => item.siteId === activeSiteId));
+  const site = sites[siteIndex] ?? null;
+  const selectSite = (item: SiteResult) => {
+    setActiveSiteId(item.siteId);
+    onSiteSelection?.(item);
+  };
+  return <section className={styles.panel} aria-label="局域配位与多面体" data-testid="local-environment-polyhedra-panel">
+    <header className={styles.heading}>
+      <h5>配位多面体</h5>
+      <span className={styles.secondary}>{algorithmLabel(payload.sourceCoordination.algorithmId)} · {payload.coverage.evaluatedSites}/{payload.coverage.requestedSites} 个位点</span>
+    </header>
+    {payload.coverage.status !== "COMPLETE" ? <p role="status" className={styles.notice}>{payload.coverage.status === "PARTIAL" ? "部分位点未能生成几何结果。" : "未能生成可用的位点几何。"} {payload.coverage.unavailableSites} 个位点不可用。</p> : null}
+    {sites.length > 0 ? <details className={styles.disclosure}><summary>位点列表（{sites.length}）</summary>
+      <SiteList sites={sites} selectedSiteId={site?.siteId} onSelect={selectSite} />
+    </details> : null}
+    {site ? <>
+      <div className={styles.heading}>
+        <div className={styles.siteHeading}>
+          <h6>位点 {site.siteIndex} · {site.classification.status === "CLASSIFIED" ? geometryLabel(site.classification.referenceGeometryId) : classificationLabel(site.classification.status)}</h6>
+          {site.classification.status !== "CLASSIFIED" && site.classification.referenceGeometryId ? <span className={styles.secondary}>最近参考：{geometryLabel(site.classification.referenceGeometryId)}</span> : null}
+        </div>
+        {sites.length > 1 ? <div className={styles.navigation} role="group" aria-label="切换配位位点">
+          <button type="button" aria-label="上一个位点" disabled={siteIndex === 0} onClick={() => selectSite(sites[siteIndex - 1])}>←</button>
+          <span className={styles.secondary}>{siteIndex + 1} / {sites.length}</span>
+          <button type="button" aria-label="下一个位点" disabled={siteIndex === sites.length - 1} onClick={() => selectSite(sites[siteIndex + 1])}>→</button>
+        </div> : null}
+      </div>
+      <EnvironmentInspector key={site.environmentIdentity}
+        site={site}
+        onExactSelection={onExactSelection ? (kind, exactId) => onExactSelection(site, kind, exactId) : undefined} />
+    </> : <p role="status">没有已保存的位点几何，可展开来源查看执行状态。</p>}
+    <p className={styles.notice}>几何近邻由 {algorithmLabel(payload.sourceCoordination.algorithmId)} 判定，不代表确定的化学键。</p>
+    {comparison.length > 1 ? <details className={styles.disclosure}><summary>不同来源的配位结果（{comparison.length}）</summary>
+      <div className={"workspace-table-scroll " + styles.scroll} role="region" aria-label="配位来源比较" tabIndex={0}>
+        <table><thead><tr><th scope="col">近邻方法</th><th scope="col">已评估位点</th><th scope="col">已分类位点</th><th scope="col">来源</th></tr></thead>
+          <tbody>{comparison.map((item) => <tr key={item.artifact.artifactId ?? item.artifact.id}>
+            <th scope="row">{algorithmLabel(item.payload.sourceCoordination.algorithmId)}</th><td>{item.payload.coverage.evaluatedSites}</td><td>{item.payload.coverage.classifiedSites}</td><td>{item.payload.sourceCoordination.artifactId}</td>
+          </tr>)}</tbody></table>
+      </div>
+    </details> : null}
+    <details className={styles.disclosure}><summary>来源与参数</summary><div className={styles.detailsBody}>
+      <dl className={styles.metadata}>
+        <dt>近邻方法</dt><dd>{algorithmLabel(payload.sourceCoordination.algorithmId)} {payload.sourceCoordination.algorithmVersion}</dd>
+        <dt>原始配位结果</dt><dd><code>{payload.sourceCoordination.artifactId}</code></dd>
+        <dt>配位结果校验值</dt><dd><code>{payload.sourceCoordination.artifactChecksum}</code></dd>
+        <dt>几何参考</dt><dd>{payload.referenceCatalog.catalogId} · {payload.referenceCatalog.catalogVersion}</dd>
+        <dt>分类算法</dt><dd>{payload.algorithm.classification}</dd>
+        <dt>表面构建</dt><dd>{payload.algorithm.faceConstruction}</dd>
+        <dt>参数校验值</dt><dd><code>{payload.parameterHash}</code></dd>
+      </dl>
+      <pre>{JSON.stringify({ parameters: payload.resolvedParameters, scope: payload.scope, coverage: payload.coverage, sourceCoordination: payload.sourceCoordination, warnings: payload.warnings, selectedSite: site }, null, 2)}</pre>
+    </div></details>
   </section>;
 }
 
-function EnvironmentInspector({ site, source, onExactSelection }: Readonly<{ site: SiteResult; source: Payload["sourceCoordination"]; onExactSelection: (kind: N2SelectionKind, exactId?: string) => void }>) {
-  return <section aria-label="Selected local environment Inspector"><h6>Site {site.siteIndex} Inspector</h6><p><strong>{site.siteId}</strong> | {site.classification.status} | source {source.algorithmId}</p><div className="workspace-row-actions"><button type="button" onClick={() => onExactSelection("LOCAL_ENVIRONMENT")}>Select environment</button><button type="button" onClick={() => onExactSelection("COORDINATION_POLYHEDRON")}>Select polyhedron</button></div><PolyhedronOverlay vertices={site.polyhedron.vertices} faces={site.polyhedron.faces} faceStatus={site.polyhedron.status} /><div className="workspace-table-scroll"><table><thead><tr><th scope="col">Metric</th><th scope="col">Value</th></tr></thead><tbody>{Object.entries(site.distortionMetrics).map(([key, value]) => <tr key={key}><th scope="row">{key}</th><td>{displayNumber(value)}</td></tr>)}<tr><th scope="row">Source coordination value</th><td>{displayNumber(site.sourceCoordinationValue)}</td></tr><tr><th scope="row">Source coordination semantics</th><td>{site.sourceCoordinationSemantics}</td></tr><tr><th scope="row">Geometry score</th><td>{displayNumber(site.classification.geometryScore)}</td></tr><tr><th scope="row">Geometry distance RMS</th><td>{displayNumber(site.classification.geometryDistanceRms)}</td></tr></tbody></table></div><h6>Exact vertices</h6><div className="workspace-table-scroll"><table><thead><tr><th scope="col">Vertex identity</th><th scope="col">Neighbor</th><th scope="col">Periodic image</th><th scope="col">Relative Cartesian (A)</th></tr></thead><tbody>{site.polyhedron.vertices.map((vertex, index) => <tr key={vertex.vertexIdentity}><td><button type="button" onClick={() => onExactSelection("POLYHEDRON_VERTEX", vertex.vertexIdentity)}>Select vertex {index + 1}</button><br /><code>{vertex.vertexIdentity}</code></td><td><code>{vertex.neighborIdentity}</code></td><td>[{vertex.periodicImage.join(", ")}]</td><td>[{vertex.relativeCartesian.map((value) => displayNumber(value)).join(", ")}]</td></tr>)}</tbody></table></div><h6>Exact faces</h6><div className="workspace-table-scroll"><table><thead><tr><th scope="col">Face</th><th scope="col">Persisted vertex identities</th></tr></thead><tbody>{site.polyhedron.faces.map((face, index) => <tr key={face.faceIdentity}><td><button type="button" onClick={() => onExactSelection("POLYHEDRON_FACE", face.faceIdentity)}>Select face {index + 1}</button><br /><code>{face.faceIdentity}</code></td><td>{face.vertexIdentities.map((identity) => <code key={identity}>{identity}<br /></code>)}</td></tr>)}</tbody></table></div><p>Face status: {site.polyhedron.status}{site.polyhedron.unavailableReason ? ` (${site.polyhedron.unavailableReason})` : ""}. Faces are rendered only from the persisted backend Artifact.</p></section>;
+function SiteList({ sites, selectedSiteId, onSelect }: Readonly<{ sites: readonly SiteResult[]; selectedSiteId?: string; onSelect: (site: SiteResult) => void }>) {
+  const [page, setPage] = useState(0);
+  const pageCount = Math.ceil(sites.length / 50);
+  const currentPage = Math.min(page, pageCount - 1);
+  const rows = sites.slice(currentPage * 50, (currentPage + 1) * 50);
+  return <div className={styles.detailsBody}>
+    <div className={"workspace-table-scroll " + styles.scroll} role="region" aria-label="位点配位列表" tabIndex={0}>
+      <table><thead><tr><th scope="col">位点</th><th scope="col">分类</th><th scope="col">参考几何</th><th scope="col">匹配分数</th></tr></thead>
+        <tbody>{rows.map((site) => <tr key={site.siteId} data-selected={site.siteId === selectedSiteId}>
+          <td><button type="button" aria-label={"选择位点 " + site.siteIndex} aria-pressed={site.siteId === selectedSiteId} onClick={() => onSelect(site)}>{site.siteIndex}</button></td>
+          <td>{classificationLabel(site.classification.status)}</td><td>{geometryLabel(site.classification.referenceGeometryId)}</td><td>{displayNumber(site.classification.geometryScore)}</td>
+        </tr>)}</tbody></table>
+    </div>
+    {pageCount > 1 ? <div className={styles.pagination}>
+      <span>{currentPage * 50 + 1}–{currentPage * 50 + rows.length} / {sites.length}</span>
+      <button type="button" disabled={currentPage === 0} onClick={() => setPage(currentPage - 1)}>上一页位点</button>
+      <button type="button" disabled={currentPage === pageCount - 1} onClick={() => setPage(currentPage + 1)}>下一页位点</button>
+    </div> : null}
+  </div>;
 }
 
-function PolyhedronOverlay({ vertices, faces, faceStatus }: Readonly<{ vertices: readonly Point[]; faces: readonly Face[]; faceStatus: string }>) {
-  if (vertices.length === 0) return <p role="status">No persisted polyhedron vertices are available. {faceStatus}</p>;
-  const xs = vertices.map((vertex) => vertex.relativeCartesian[0]);
-  const ys = vertices.map((vertex) => vertex.relativeCartesian[1]);
-  const xMin = Math.min(...xs), xSpan = Math.max(...xs) - xMin || 1;
-  const yMin = Math.min(...ys), ySpan = Math.max(...ys) - yMin || 1;
-  const points = vertices.map((vertex, index) => ({ ...vertex, x: 24 + (vertex.relativeCartesian[0] - xMin) / xSpan * 152, y: 24 + (vertex.relativeCartesian[1] - yMin) / ySpan * 92, index }));
-  const byId = new Map(points.map((point) => [point.vertexIdentity, point]));
-  return <figure aria-label="Persisted coordination polyhedron overlay"><svg viewBox="0 0 200 140" role="img" aria-label={`Persisted polyhedron with ${vertices.length} vertices and ${faces.length} faces`}><g stroke="currentColor" strokeOpacity="0.6" fill="none">{faces.map((face) => <polygon key={face.faceIdentity} points={face.vertexIdentities.map((id) => byId.get(id)).filter(Boolean).map((point) => `${point!.x},${point!.y}`).join(" ")} />)}</g>{points.map((point) => <circle key={point.vertexIdentity} cx={point.x} cy={point.y} r="4" fill="currentColor"><title>{point.neighborIdentity}</title></circle>)}</svg><figcaption>Persisted backend geometry; visual projection only. {faceStatus}.</figcaption></figure>;
+function EnvironmentInspector({ site, onExactSelection }: Readonly<{ site: SiteResult; onExactSelection?: (kind: N2SelectionKind, exactId?: string) => void }>) {
+  const [selected, setSelected] = useState<{ kind: N2SelectionKind; id?: string } | null>(null);
+  const select = (kind: N2SelectionKind, id?: string) => { setSelected({ kind, id }); onExactSelection?.(kind, id); };
+  const vertexNumbers = new Map(site.polyhedron.vertices.map((vertex, index) => [vertex.vertexIdentity, index + 1]));
+  return <section className={styles.inspector} aria-label={"位点 " + site.siteIndex + " 配位详情"}>
+    {site.polyhedron.vertices.length ? <LocalEnvironmentPolyhedronView vertices={site.polyhedron.vertices} faces={site.polyhedron.faces}
+      selectedVertexId={selected?.kind === "POLYHEDRON_VERTEX" ? selected.id : undefined} selectedFaceId={selected?.kind === "POLYHEDRON_FACE" ? selected.id : undefined} /> : <p role="status">该位点没有已保存的近邻顶点。</p>}
+    {site.polyhedron.status === "UNAVAILABLE" ? <p role="status" className={styles.notice}>{faceReason(site.polyhedron.unavailableReason)}</p> : null}
+    {site.classification.status === "AMBIGUOUS" ? <p role="status" className={styles.notice}>存在多个相近的参考几何，分类尚不唯一。</p> : null}
+    <dl className={styles.metrics}>
+      <div><dt>配位权重和</dt><dd>{displayNumber(site.sourceCoordinationValue)}</dd></div>
+      <div><dt>平均近邻距离</dt><dd>{displayNumber(site.distortionMetrics.radialDistanceMean)} Å</dd></div>
+      <div><dt>几何匹配分数</dt><dd>{displayNumber(site.classification.geometryScore)}</dd></div>
+    </dl>
+    {onExactSelection ? <div className={styles.actions}>
+      <button type="button" aria-pressed={selected?.kind === "LOCAL_ENVIRONMENT"} onClick={() => select("LOCAL_ENVIRONMENT")}>选中配位环境</button>
+      <button type="button" aria-pressed={selected?.kind === "COORDINATION_POLYHEDRON"} onClick={() => select("COORDINATION_POLYHEDRON")}>选中多面体</button>
+    </div> : null}
+    <details className={styles.disclosure}><summary>顶点与周期近邻（{site.polyhedron.vertices.length}）</summary>
+      <div className={"workspace-table-scroll " + styles.scroll} role="region" aria-label="多面体顶点数据" tabIndex={0}>
+        <table><thead><tr><th scope="col">顶点</th><th scope="col">周期偏移</th><th scope="col">相对坐标（Å）</th><th scope="col">距离（Å）</th></tr></thead>
+          <tbody>{site.polyhedron.vertices.map((vertex, index) => <tr key={vertex.vertexIdentity} data-selected={selected?.id === vertex.vertexIdentity}>
+            <td><button type="button" title={vertex.neighborSiteId} aria-pressed={selected?.id === vertex.vertexIdentity} onClick={() => select("POLYHEDRON_VERTEX", vertex.vertexIdentity)}>顶点 {index + 1}</button></td>
+            <td>[{vertex.periodicImage.join(", ")}]</td><td>[{vertex.relativeCartesian.map(displayNumber).join(", ")}]</td><td>{displayNumber(vertex.distance)}</td>
+          </tr>)}</tbody></table>
+      </div>
+    </details>
+    {site.polyhedron.faces.length ? <details className={styles.disclosure}><summary>多面体的面（{site.polyhedron.faces.length}）</summary>
+      <div className={"workspace-table-scroll " + styles.scroll} role="region" aria-label="多面体面数据" tabIndex={0}>
+        <table><thead><tr><th scope="col">面</th><th scope="col">组成顶点</th></tr></thead><tbody>{site.polyhedron.faces.map((face, index) =>
+          <tr key={face.faceIdentity} data-selected={selected?.id === face.faceIdentity}><td><button type="button" aria-pressed={selected?.id === face.faceIdentity} onClick={() => select("POLYHEDRON_FACE", face.faceIdentity)}>面 {index + 1}</button></td>
+            <td>{face.vertexIdentities.map((identity) => vertexNumbers.get(identity)).join(" · ")}</td></tr>)}</tbody></table>
+      </div>
+    </details> : null}
+    <details className={styles.disclosure}><summary>几何指标</summary>
+      <div className={"workspace-table-scroll " + styles.scroll} role="region" aria-label="配位几何指标" tabIndex={0}>
+        <table><thead><tr><th scope="col">指标</th><th scope="col">值</th></tr></thead><tbody>
+          {Object.entries(site.distortionMetrics).filter(([key]) => !key.endsWith("Unit")).map(([key, value]) => <tr key={key}><th scope="row">{metricLabel(key)}</th><td>{displayNumber(value)}{metricUnit(key)}</td></tr>)}
+          <tr><th scope="row">配位权重定义</th><td>{site.sourceCoordinationSemantics === "crystalnn_weight_sum" ? "CrystalNN 权重和" : "VoronoiNN 归一化立体角权重和"}</td></tr>
+        </tbody></table>
+      </div>
+      {site.classification.alternatives.length ? <pre>{JSON.stringify(site.classification.alternatives, null, 2)}</pre> : null}
+    </details>
+  </section>;
 }
 
 function parsePayload(artifact: Artifact): { artifact: Artifact; payload: Payload } | null {
-  const value = asRecord(artifact.content ?? artifact.payload);
-  if (!value || value.schema_version !== "phase10n2.local_environment_polyhedra.v1" || value.artifactType !== "structure.local_environment_polyhedra") return null;
-  if (!isPayload(value)) return null;
-  return { artifact, payload: value as unknown as Payload };
+  const payload = readSavedLocalEnvironment(artifact.content ?? artifact.payload);
+  return payload ? { artifact, payload } : null;
 }
 
-function isPayload(value: Record<string, unknown>): boolean {
-  const tool = asRecord(value.tool), scope = asRecord(value.scope), source = asRecord(value.sourceCoordination), coverage = asRecord(value.coverage), algorithm = asRecord(value.algorithm), catalog = asRecord(value.referenceCatalog);
-  return Boolean(
-    !hasUnsafeValue(value)
-    && tool && scope && source && coverage && algorithm && catalog
-    && tool.toolId === "structure.local_environment_polyhedra" && tool.toolVersion === "0.1.0" && tool.adapterVersion === "0.1.0"
-    && algorithm.classification === "mdi.angular_spectrum_reference_match@1.0.0" && algorithm.faceConstruction === "scipy.spatial.ConvexHull@1.17.1"
-    && catalog.catalogId === "mdi.local_geometry_reference_catalog" && catalog.catalogVersion === "1.0.0"
-    && Array.isArray(catalog.geometryIds) && catalog.geometryIds.length <= 9 && catalog.geometryIds.every((item) => GEOMETRY_IDS.has(item as string))
-    && boundedString(scope.sourceResourceId, 512) && hashString(scope.sourceResourceHash) && hashString(scope.structureHash)
-    && boundedString(source.artifactId, 256) && hashString(source.artifactChecksum) && N1_TOOL_IDS.has(source.toolId as string)
-    && source.toolVersion === "0.1.0" && N1_ALGORITHM_IDS.has(source.algorithmId as string) && boundedString(source.algorithmVersion, 64)
-    && N1_CONTRACTS.has(source.contractVersion as string) && hashString(source.parameterHash)
-    && hashString(value.parameterHash) && isSafeRecord(value.resolvedParameters)
-    && Array.isArray(value.warnings) && value.warnings.length <= 1000 && value.warnings.every((item) => optionalBoundedString(item, 512))
-    && finiteInteger(coverage.requestedSites, 0, 5000) && finiteInteger(coverage.evaluatedSites, 0, 5000) && finiteInteger(coverage.unavailableSites, 0, 5000)
-    && finiteInteger(coverage.classifiedSites, 0, 5000) && finiteInteger(coverage.ambiguousSites, 0, 5000) && finiteInteger(coverage.unclassifiedSites, 0, 5000) && finiteNumber(coverage.ratio, 0, 1)
-    && Array.isArray(value.siteResults) && value.siteResults.length <= 5000 && value.siteResults.every((item) => isSiteResult(item, scope.structureHash as string))
-  );
-}
-
-const GEOMETRY_IDS = new Set(["linear", "trigonal_planar", "tetrahedral", "square_planar", "trigonal_bipyramidal", "square_pyramidal", "octahedral", "pentagonal_bipyramidal", "cubic"]);
-const N1_TOOL_IDS = new Set(["structure.coordination_crystalnn", "structure.coordination_voronoinn"]);
-const N1_ALGORITHM_IDS = new Set(["pymatgen.crystalnn", "pymatgen.voronoinn"]);
-const N1_CONTRACTS = new Set(["phase10n1.crystalnn_coordination.v1", "phase10n1.voronoinn_coordination.v1"]);
-
-function isSiteResult(value: unknown, structureHash: string): boolean {
-  const site = asRecord(value), classification = asRecord(site?.classification), polyhedron = asRecord(site?.polyhedron), metrics = asRecord(site?.distortionMetrics);
-  if (!site || !classification || !polyhedron || !metrics || site.structureHash !== structureHash || !boundedString(site.environmentIdentity, 2048) || !boundedString(site.polyhedronIdentity, 2048) || !boundedString(site.siteId, 256) || !finiteInteger(site.siteIndex, 0, 4999)) return false;
-  if (!new Set(["CLASSIFIED", "AMBIGUOUS", "UNCLASSIFIED", "UNSUPPORTED"]).has(classification.status as string) || !nullableGeometryId(classification.referenceGeometryId) || !nullableBoundedString(classification.referenceGeometryVersion, 64) || !nullableFiniteNumber(classification.geometryDistanceRms, 0, 2) || !nullableFiniteNumber(classification.geometryScore, 0, 1) || !Array.isArray(classification.alternatives) || classification.alternatives.length > 7 || !classification.alternatives.every(isClassificationCandidate)) return false;
-  if (!new Set(["crystalnn_weight_sum", "voronoinn_solid_angle_weight_sum"]).has(site.sourceCoordinationSemantics as string) || !finiteNumber(site.sourceCoordinationValue, 0, Number.MAX_VALUE) || !Array.isArray(site.neighborRelationIdentities) || site.neighborRelationIdentities.length > 64 || !site.neighborRelationIdentities.every((item) => boundedString(item, 1024))) return false;
-  if (!new Set(["AVAILABLE", "UNAVAILABLE"]).has(polyhedron.status as string) || !nullableBoundedString(polyhedron.unavailableReason, 128) || !Array.isArray(polyhedron.vertices) || polyhedron.vertices.length > 64 || !Array.isArray(polyhedron.faces) || polyhedron.faces.length > 128 || !polyhedron.vertices.every(isVertex)) return false;
-  const vertexIds = new Set((polyhedron.vertices as Record<string, unknown>[]).map((item) => item.vertexIdentity as string));
-  if (!(polyhedron.faces as unknown[]).every((face) => isFace(face, vertexIds))) return false;
-  return Object.entries(metrics).every(([key, item]) => boundedString(key, 128) && (item === null || typeof item === "string" ? optionalBoundedString(item, 64) : typeof item === "number" && Number.isFinite(item))) && Array.isArray(site.warnings) && site.warnings.length <= 64 && site.warnings.every((item) => optionalBoundedString(item, 512));
-}
-
-function isVertex(value: unknown): boolean {
-  const vertex = asRecord(value);
-  return Boolean(vertex && boundedString(vertex.vertexIdentity, 1024) && boundedString(vertex.neighborIdentity, 1024) && boundedString(vertex.neighborSiteId, 256) && integerTriplet(vertex.periodicImage) && finiteVector3(vertex.relativeCartesian) && finiteNumber(vertex.distance, 0, Number.MAX_VALUE) && vertex.distanceUnit === "angstrom");
-}
-
-function isFace(value: unknown, vertexIds: ReadonlySet<string>): boolean {
-  const face = asRecord(value);
-  return Boolean(face && boundedString(face.faceIdentity, 3072) && Array.isArray(face.vertexIdentities) && face.vertexIdentities.length === 3 && face.vertexIdentities.every((item) => boundedString(item, 1024) && vertexIds.has(item)));
-}
-
-function isClassificationCandidate(value: unknown): boolean {
-  const candidate = asRecord(value);
-  return Boolean(candidate && nullableGeometryId(candidate.referenceGeometryId) && nullableBoundedString(candidate.referenceGeometryVersion, 64) && nullableFiniteNumber(candidate.geometryDistanceRms, 0, 2) && nullableFiniteNumber(candidate.geometryScore, 0, 1));
-}
-
-function hasUnsafeValue(value: unknown, depth = 0): boolean {
-  if (depth > 12) return true;
-  if (typeof value === "number") return !Number.isFinite(value);
-  if (value === null || typeof value !== "object") return false;
-  if (Array.isArray(value)) return value.some((item) => hasUnsafeValue(item, depth + 1));
-  return Object.entries(value as Record<string, unknown>).some(([key, item]) => ["__proto__", "prototype", "constructor"].includes(key) || hasUnsafeValue(item, depth + 1));
-}
-
-function asRecord(value: unknown): Record<string, unknown> | null { return value !== null && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null; }
-function boundedString(value: unknown, maximum: number): value is string { return typeof value === "string" && value.length > 0 && value.length <= maximum && !/[<>]/u.test(value); }
-function optionalBoundedString(value: unknown, maximum: number): value is string { return typeof value === "string" && value.length <= maximum && !/[<>]/u.test(value); }
-function hashString(value: unknown): value is string { return typeof value === "string" && /^[0-9a-f]{64}$/u.test(value); }
-function finiteNumber(value: unknown, minimum: number, maximum: number): value is number { return typeof value === "number" && Number.isFinite(value) && value >= minimum && value <= maximum; }
-function finiteInteger(value: unknown, minimum: number, maximum: number): value is number { return finiteNumber(value, minimum, maximum) && Number.isInteger(value); }
-function nullableFiniteNumber(value: unknown, minimum: number, maximum: number): boolean { return value === null || finiteNumber(value, minimum, maximum); }
-function nullableBoundedString(value: unknown, maximum: number): boolean { return value === null || boundedString(value, maximum); }
-function nullableGeometryId(value: unknown): boolean { return value === null || GEOMETRY_IDS.has(value as string); }
-function finiteVector3(value: unknown): boolean { return Array.isArray(value) && value.length === 3 && value.every((item) => finiteNumber(item, -Number.MAX_VALUE, Number.MAX_VALUE)); }
-function integerTriplet(value: unknown): boolean { return Array.isArray(value) && value.length === 3 && value.every((item) => finiteInteger(item, -2147483648, 2147483647)); }
-function isSafeRecord(value: unknown): boolean { return asRecord(value) !== null && !hasUnsafeValue(value); }
-function displayNumber(value: unknown) { return typeof value === "number" && Number.isFinite(value) ? value.toPrecision(7).replace(/\.?0+$/, "") : "unavailable"; }
-function formatRatio(value: number) { return `${(value * 100).toFixed(1)}%`; }
+function displayNumber(value: unknown) { return typeof value === "number" && Number.isFinite(value) ? String(value) : "—"; }

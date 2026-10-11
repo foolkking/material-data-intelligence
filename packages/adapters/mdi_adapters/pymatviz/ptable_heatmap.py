@@ -28,7 +28,7 @@ class PTableHeatmapResult:
 
 class PTableHeatmapAdapter(BaseToolAdapter):
     tool_id = "composition.ptable_heatmap"
-    adapter_version = "0.2.0"
+    adapter_version = "0.2.1"
 
     def prepare(self, context: ToolExecutionContext, input_refs: list[Any], params: dict[str, Any]) -> FormulaStats:
         if not self._resolved_inputs:

@@ -256,6 +256,56 @@ def test_p10_c12_wrong_object_type_fails_closed(wrong_type):
     assert resolution.candidates == []
 
 
+@pytest.mark.parametrize("method,producer", [("crystalnn", "structure.coordination_crystalnn"), ("voronoi", "structure.coordination_voronoinn")])
+def test_local_environment_requirement_binds_exact_neighbor_dependency(method, producer):
+    source = ref("structure.crystal")
+    decision = request([(f"structure.inspect_local_environment_{method}", "structure.crystal")])
+    decision.scientific_requirements[0].constraints = {"site_indices": [0, 3]}
+    resolution, snapshot = resolve(decision, [source])
+    plan = build_deterministic_capability_plan(decision=decision, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=decision, context=snapshot, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    analysis, _ = CapabilityBinder(TOOLS).bind(
+        capability_plan=plan, resolution=resolution, decision=decision,
+        context={"dataset_id": "d", "profile_id": "p", "object_refs": {"obj_1": source}},
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities,
+    )
+    assert [step.toolId for step in analysis.steps] == [producer, "structure.local_environment_polyhedra"]
+    assert "site_indices" not in analysis.steps[0].params
+    assert analysis.steps[1].params["site_indices"] == [0, 3]
+    assert all(step.inputRefs[0].ref == str(source.version_id) for step in analysis.steps)
+    assert len(analysis.dependencyBindings) == 1
+    dependency = analysis.dependencyBindings[0]
+    assert dependency.producerStepId == analysis.steps[0].stepId
+    assert dependency.consumerStepId == analysis.steps[1].stepId
+    assert dependency.producerOutputPort == "coordination-table"
+    assert dependency.consumerInputPort == "coordination"
+
+
+@pytest.mark.parametrize("method", ["crystalnn", "voronoi"])
+def test_polyhedron_request_coalesces_only_its_identical_coordination_scope(method):
+    from mdi_api.research_agent.orchestration.processor import AgentTurnProcessor
+    decision = request([(f"structure.inspect_coordination_{method}", "structure.crystal"),
+                        (f"structure.inspect_local_environment_{method}", "structure.crystal")])
+    decision.scientific_requirements[1].subject_ref_keys = ["obj_1"]
+    decision.selected_scope_ref_keys = ["obj_1"]
+    decision.scientific_requirements[1].constraints = {"site_indices": [0]}
+    before = decision.model_dump()
+    normalized = AgentTurnProcessor._coalesce_local_environment_requirements(decision)
+    assert decision.model_dump() == before
+    assert [item.requirement_id for item in normalized.scientific_requirements] == [f"structure.inspect_local_environment_{method}"]
+    resolution, snapshot = resolve(normalized, [ref("structure.crystal")])
+    plan = build_deterministic_capability_plan(decision=normalized, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    assert len(plan.steps) == 1
+    assert plan.steps[0].parameters == {"site_indices": [0]}
+    for change in ("source", "constraints", "optional", "method"):
+        separate = decision.model_copy(deep=True)
+        if change == "source": separate.scientific_requirements[0].subject_ref_keys = ["obj_2"]
+        elif change == "constraints": separate.scientific_requirements[0].constraints = {"cutoff": 3}
+        elif change == "optional": separate.scientific_requirements[1].criticality = RequirementCriticality.OPTIONAL
+        else: separate.scientific_requirements[0].requirement_id = f"structure.inspect_coordination_{'voronoi' if method == 'crystalnn' else 'crystalnn'}"
+        assert AgentTurnProcessor._coalesce_local_environment_requirements(separate) == separate
+
+
 def test_p10_c15_multi_capability_plan_keeps_exact_versions_and_typed_steps():
     band, dos = ref("electronic.band_structure", "band"), ref("electronic.dos", "dos")
     decision = ResearchTurnDecision(
@@ -270,6 +320,52 @@ def test_p10_c15_multi_capability_plan_keeps_exact_versions_and_typed_steps():
     CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=decision, context=snapshot, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
     assert {resolution.candidates[int(step.capability_ref_key.removeprefix("cap_")) - 1].capability_id for step in plan.steps} == {"electronic.band_structure", "electronic.dos"}
     assert {step.input_bindings[next(iter(step.input_bindings))][0].source_ref_key for step in plan.steps} == {"obj_1", "obj_2"}
+
+
+def _two_structure_rdf_request():
+    decision = request([("structure.compute_rdf", "structure.crystal")])
+    decision.selected_scope_ref_keys = ["obj_1", "obj_2"]
+    decision.scientific_requirements[0].subject_ref_keys = ["obj_1", "obj_2"]
+    sources = [ref("structure.crystal", "A"), ref("structure.crystal", "B")]
+    resolution, snapshot = resolve(decision, sources)
+    return decision, sources, resolution, snapshot
+
+
+def test_multi_material_resolution_retains_every_requested_source():
+    _decision, sources, resolution, _snapshot = _two_structure_rdf_request()
+    candidate = next(item for item in resolution.candidates if item.capability_id == "structure.rdf")
+    assert candidate.bound_source_ref_keys["structure"] == ["obj_1", "obj_2"]
+    assert candidate.bound_source_inputs["structure"] == sources
+
+
+def test_multi_material_plan_runs_each_exact_structure_separately():
+    decision, sources, resolution, snapshot = _two_structure_rdf_request()
+    plan = build_deterministic_capability_plan(decision=decision, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    assert len(plan.steps) == 2
+    assert [step.input_bindings["structure"][0].source_ref_key for step in plan.steps] == ["obj_1", "obj_2"]
+    CapabilityPlanValidator().validate(plan=plan, resolution=resolution, decision=decision, context=snapshot, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    analysis, _ = CapabilityBinder(TOOLS).bind(capability_plan=plan, resolution=resolution,
+        context={"dataset_id": "d", "profile_id": "p", "object_refs": dict(zip(["obj_1", "obj_2"], sources))},
+        registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    assert [step.inputRefs[0].ref for step in analysis.steps] == [str(source.version_id) for source in sources]
+
+
+def test_planner_rejects_omitted_material_even_when_requirement_id_is_present():
+    from mdi_api.agent2_errors import CapabilityPlanInvalid
+    decision, _sources, resolution, snapshot = _two_structure_rdf_request()
+    plan = build_deterministic_capability_plan(decision=decision, resolution=resolution, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+    partial = plan.model_copy(update={"steps": plan.steps[:1]})
+    with pytest.raises(CapabilityPlanInvalid, match="subject"):
+        CapabilityPlanValidator().validate(plan=partial, resolution=resolution, decision=decision, context=snapshot, registry=DEFAULT_AGENT2_REGISTRIES.capabilities)
+
+
+def test_capability_sources_follow_their_requirement_not_another_same_type_source():
+    decision = request([("structure.compute_rdf", "structure.crystal"), ("structure.inspect_coordination_hist", "structure.crystal")])
+    resolution, _snapshot = resolve(decision, [ref("structure.crystal", "A"), ref("structure.crystal", "B")])
+    rdf = next(item for item in resolution.candidates if item.capability_id == "structure.rdf")
+    coordination = next(item for item in resolution.candidates if item.capability_id == "structure.coordination_hist")
+    assert rdf.bound_source_ref_keys["structure"] == ["obj_1"]
+    assert coordination.bound_source_ref_keys["structure"] == ["obj_2"]
 
 
 def test_p10_c16_unknown_tool_is_not_agent_authority():
@@ -392,7 +488,7 @@ def test_plan_context_projects_only_registered_exact_version_resource_facts():
                 list_for_project=lambda project_id: [{"id": "dataset"}]
             ),
             data_profiles=SimpleNamespace(
-                list_for_dataset=lambda dataset_id: [{"id": "profile"}]
+                list_for_dataset=lambda dataset_id: [{"id": "profile", "datasetId": dataset_id}]
             ),
         ),
     )
@@ -570,23 +666,12 @@ def test_structure_summary_and_view_request_plans_distinct_authoritative_steps()
     )
 
     assert [step.toolId for step in analysis.steps] == [
-        "structure.lattice_summary",
-        "structure.preview_metadata",
-        "structure.spacegroup_summary",
         "structure.summary",
-        "structure.structure_3d",
         "structure.viewer_3d",
-        "structure.viewer_scene",
     ]
-    assert {item.type.value for item in analysis.expectedArtifacts} == {
-        "plotly_html",
-        "plotly_json",
-        "preview_png",
-        "recipe_json",
-        "structure_json",
-        "summary_md",
-        "table_json",
-    }
+    assert {item.type.value for item in analysis.expectedArtifacts} == {"structure_json"}
+    assert len(analysis.steps) == 2
+    assert all(step.inputRefs for step in analysis.steps)
 
 
 @pytest.mark.parametrize(
@@ -596,8 +681,8 @@ def test_structure_summary_and_view_request_plans_distinct_authoritative_steps()
         ("agent2.structure.coordination_crystalnn", {"artifactType": "structure.coordination_crystalnn", "schema_version": "phase10n1.crystalnn_coordination.v1", "coverage": {"successfulSites": 2}}),
         ("agent2.structure.coordination_voronoinn", {"artifactType": "structure.coordination_voronoinn", "schema_version": "phase10n1.voronoinn_coordination.v1", "coverage": {"successfulSites": 2}}),
         ("agent2.trajectory.rdf", {"artifactType": "trajectory.rdf", "schema_version": "phase10n4.trajectory_rdf.v1"}),
-        ("agent2.electronic.band_structure", {"artifactType": "electronic.band_structure", "schemaVersion": "phase10n5.electronic_band_structure.v1", "gap": {"valueEv": 1.2}, "coverage": {"kpointCount": 4}}),
-        ("agent2.electronic.dos", {"artifactType": "electronic.dos", "schemaVersion": "phase10n5.electronic_dos.v1", "coverage": {"energyPointCount": 8}}),
+        ("agent2.electronic.band_structure", {"artifactType": "electronic.band_structure", "schemaVersion": "phase10n5.electronic_band_structure.v1", "energy": {"reference": "source_absolute"}, "spin": {"mode": "non_spin_polarized"}, "gap": {"valueEv": 1.2}, "coverage": {"kpointCount": 4}}),
+        ("agent2.electronic.dos", {"artifactType": "electronic.dos", "schemaVersion": "phase10n5.electronic_dos.v1", "energy": {"reference": "source_absolute"}, "spin": {"mode": "non_spin_polarized"}, "dosUnitSemantic": "states_per_ev", "projectionCompleteness": "total_only", "coverage": {"energyPointCount": 8}}),
         (
             "agent2.structure.summary",
             {
@@ -716,7 +801,11 @@ def test_structure_summary_projects_authoritative_lattice_and_symmetry_facts() -
         ],
     }
 
-    bundle = projector.project(_context(payload, projector.projector_id)).bundle
+    from dataclasses import replace
+    context = _context(payload, projector.projector_id)
+    # The authoritative summary must stand alone, without redundant companion tools.
+    context = replace(context, artifacts=context.artifacts[:1], tool_calls=())
+    bundle = projector.project(context).bundle
     facts = {item.predicate: item for item in bundle.facts}
 
     assert facts["structure.reduced_formula"].value == "Fe3O4"

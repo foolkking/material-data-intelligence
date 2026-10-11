@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { savedXrdTableRows } from "../app/lib/scientific-xrd-table";
+import type { Agent2ScientificFact } from "../app/lib/agent2-research-api";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   getPlannerArtifactContent,
@@ -8,121 +10,122 @@ import {
   type DatasetSourceResource,
 } from "../app/lib/planner-api";
 import type { ScientificWorkspace, WorkspaceSelectionContext } from "../app/lib/workspace-api";
+import { WorkspaceSelectionStore, type WorkspaceSelectionDelivery } from "../shared/workspace/workspace-selection-runtime";
 import { VOLUMETRIC_BROWSER_CAPS } from "./volumetric-viewer/volumetricViewerTypes";
 import { sha256HexSync } from "./volumetric-viewer/volumetricHash";
 import { ScientificArtifactRenderer } from "./workspace/WorkspaceArtifactGallery";
 import { artifactIdentity, resolveArtifactRenderer, resolveLoadedArtifactRenderer } from "../shared/workspace/workspace-renderer-registry";
 import { ProductLink as Link } from "../shared/layout/ProductNavigation";
+import { validateViewerSceneForRenderer } from "./viewer-scene/viewerSceneRendererValidation";
 
-export function ScientificSourceViewer({ projectId, resource, resources = [resource], onSelection = () => undefined }: Readonly<{ projectId: string; resource: DatasetSourceResource; resources?: readonly DatasetSourceResource[]; onSelection?: (selection: WorkspaceSelectionContext) => void }>) {
+export function ScientificSourceViewer({ projectId, resource, resources = [resource], selection = null, onSelection = () => undefined }: Readonly<{ projectId: string; resource: DatasetSourceResource; resources?: readonly DatasetSourceResource[]; selection?: WorkspaceSelectionContext | null; onSelection?: (selection: WorkspaceSelectionContext) => void }>) {
   const artifacts = useMemo(() => sourceResourceArtifacts(resource, resources), [resource, resources]);
   const artifact = useMemo(() => sourcePrimaryArtifact(resource, artifacts), [resource, artifacts]);
-  const workspace = useMemo(() => sourceViewerContext(projectId, resource), [projectId, resource]);
+  const renderArtifact = (item: Artifact) => {
+    const owner = item.metadata?.sourceObjectId === resource.objectId ? resource
+      : resources.find(candidate => candidate.datasetId === resource.datasetId && candidate.objectId === item.metadata?.sourceObjectId);
+    return owner ? <ScientificSourceArtifact key={artifactIdentity(item)} projectId={projectId} resource={owner}
+      artifact={item} artifacts={artifacts} selection={selection} onSelection={onSelection} /> : null;
+  };
   const phononBand = artifacts.find((item) => item.type === "phonon_band_json");
   const phononDos = artifacts.find((item) => item.type === "phonon_dos_json");
   const xrdPattern = artifacts.find((item) => item.type === "plotly_json");
   const xrdStructure = artifacts.find((item) => item.type === "structure_json");
   if (["PhononBand", "PhononDos"].includes(resource.objectType) && phononBand && phononDos) {
-    return <section aria-label="声子能带与声子态密度"><ScientificArtifactRenderer selected={phononBand} artifacts={artifacts} workspace={workspace} onSelection={onSelection} /><ScientificArtifactRenderer selected={phononDos} artifacts={artifacts} workspace={workspace} onSelection={onSelection} /></section>;
+    const ordered = resource.objectType === "PhononDos" ? [artifact, phononBand] : [artifact, phononDos];
+    return <section className="phonon-source-group" aria-label="声子能带与声子态密度">{ordered.map(renderArtifact)}</section>;
   }
-  if (["DataFrame", "Structure"].includes(resource.objectType) && xrdPattern && xrdStructure && artifacts.some((item) => item.type === "plotly_json") && artifacts.some((item) => item.type === "structure_json")) {
-    return <section aria-label="实验 XRD 与结构上下文"><ScientificArtifactRenderer selected={xrdPattern} artifacts={artifacts} workspace={workspace} onSelection={onSelection} /><ScientificArtifactRenderer selected={xrdStructure} artifacts={artifacts} workspace={workspace} onSelection={onSelection} /></section>;
+  if (["DataFrame", "Structure"].includes(resource.objectType) && xrdPattern && xrdStructure) {
+    const ordered = resource.objectType === "Structure" ? [artifact, xrdPattern] : [artifact, xrdStructure];
+    return <section aria-label="实验 XRD 与结构上下文">{ordered.map(renderArtifact)}</section>;
   }
-  return <ScientificArtifactRenderer selected={artifact} artifacts={artifacts} workspace={workspace} onSelection={onSelection} />;
+  return renderArtifact(artifact);
 }
 
-export function ScientificResultViewer({
-  projectId,
-  datasetId,
-  jobId,
-  selected,
-  artifacts,
-}: Readonly<{
+function ScientificSourceArtifact({ projectId, resource, artifact, artifacts, selection, onSelection }: {
+  projectId: string; resource: DatasetSourceResource; artifact: Artifact; artifacts: readonly Artifact[];
+  selection: WorkspaceSelectionContext | null; onSelection: (selection: WorkspaceSelectionContext) => void;
+}) {
+  const workspace = useMemo(() => sourceViewerContext(projectId, resource), [projectId, resource]);
+  const delivery = useMemo<WorkspaceSelectionDelivery | null>(() => {
+    if (!selection || selection.cleared || selection.compatibility !== "EXACT") return null;
+    try {
+      const context = new WorkspaceSelectionStore(workspace, selection).current();
+      return { panelId: "source-view", originPanelId: null, context, compatibility: "EXACT", reason: "Restored exact scientific source selection.", transaction: 0 };
+    } catch {
+      return null;
+    }
+  }, [selection, workspace]);
+  return <ScientificArtifactRenderer selected={artifact} artifacts={artifacts} workspace={workspace} delivery={delivery} onSelection={onSelection} />;
+}
+
+type ScientificResultViewerProps = Readonly<{
   projectId: string;
   datasetId?: string | null;
   jobId: string;
   selected: Artifact;
   artifacts: readonly Artifact[];
-}>) {
-  const [loaded, setLoaded] = useState<Artifact[]>([]);
-  const [state, setState] = useState<
-    "loading" | "ready" | "missing" | "gone" | "oversized" | "failed"
-  >("loading");
-  const [failureCode, setFailureCode] = useState("");
-  const [partialFailures, setPartialFailures] = useState<Array<{ artifactId: string; label: string; code: string }>>([]);
-  const [retryAttempt, setRetryAttempt] = useState(0);
+  resultFacts?: readonly Agent2ScientificFact[];
+}>;
+
+export function ScientificResultViewer(props: ScientificResultViewerProps) {
+  // A different exact result must never briefly render the previous payload.
+  const scope = JSON.stringify([props.projectId, props.datasetId, resultViewerLoadKey(props.jobId, [props.selected])]);
+  return <ScopedScientificResultViewer key={scope} {...props} />;
+}
+
+function ScopedScientificResultViewer({
+  projectId,
+  datasetId,
+  jobId,
+  selected,
+  artifacts,
+  resultFacts = [],
+}: ScientificResultViewerProps) {
   const viewerSelected = normalizeResultArtifactForViewer(selected);
   const descriptor = resolveArtifactRenderer(viewerSelected).descriptor;
   const bundleTypes = new Set(descriptor?.bundleArtifactTypes ?? [viewerSelected.type]);
-  const bundle = selectResultViewerBundle(viewerSelected, artifacts.filter((item) => bundleTypes.has(item.type as never)));
-  if (!bundle.some((item) => artifactIdentity(item) === artifactIdentity(selected))) bundle.unshift(selected);
-  const loadKey = resultViewerLoadKey(jobId, bundle);
-  useEffect(() => {
-    const controller = new AbortController();
-    setState("loading");
-    setFailureCode("");
-    setPartialFailures([]);
-    void Promise.allSettled(bundle.map(async (artifact) => {
-      const id = artifactIdentity(artifact);
-      if (!id || artifact.content !== undefined) return artifact;
-      const bytes = await getPlannerArtifactContent(jobId, id, { signal: controller.signal, maximumBytes: descriptor?.maximumPayloadBytes });
-      return { ...artifact, content: decodeArtifactPayload(bytes, artifact) };
-    })).then((results) => {
-      if (controller.signal.aborted) return;
-      const items = results.flatMap((result) => result.status === "fulfilled" ? [result.value] : []);
-      const failures = results.flatMap((result, index) => {
-        if (result.status !== "rejected") return [];
-        const artifactId = artifactIdentity(bundle[index]);
-        if (!artifactId) return [];
-        return [{
-          artifactId,
-          label: String(bundle[index]?.name || artifactId || `Artifact ${index + 1}`),
-          code: artifactContentFailureCode(result.reason),
-        }];
-      });
-      const selectedIdentity = artifactIdentity(selected);
-      const selectedLoaded = items.some((item) => artifactIdentity(item) === selectedIdentity);
-      // A selected result is required; optional companions are best-effort so
-      // one corrupt sibling cannot hide an otherwise readable scientific result.
-      if (!selectedLoaded) {
-        const selectedIndex = bundle.findIndex((item) => artifactIdentity(item) === selectedIdentity);
-        const selectedFailure = selectedIndex >= 0 ? results[selectedIndex] : undefined;
-        const code = selectedFailure?.status === "rejected"
-          ? artifactContentFailureCode(selectedFailure.reason)
-          : "ARTIFACT_CONTENT_LOAD_FAILED";
-        setFailureCode(code);
-        setState(
-          code === "ARTIFACT_CONTENT_NOT_FOUND"
-            ? "missing"
-            : code === "ARTIFACT_CONTENT_GONE"
-              ? "gone"
-              : code === "ARTIFACT_CONTENT_TOO_LARGE"
-                ? "oversized"
-                : "failed",
-        );
-      }
-      else {
-        setLoaded(items);
-        setPartialFailures(failures);
-        setState("ready");
-      }
-    }).catch(() => {
-      if (!controller.signal.aborted) {
-        setFailureCode("ARTIFACT_CONTENT_LOAD_FAILED");
-        setState("failed");
-      }
-    });
-    return () => controller.abort();
-  }, [loadKey, retryAttempt]);
-
+  const bundle = [selected, ...selectResultViewerBundle(viewerSelected, artifacts.filter((item) => bundleTypes.has(item.type as never)), jobId)
+    .filter((item) => artifactIdentity(item) !== artifactIdentity(selected))];
+  const { entries, retry } = useResultArtifactReads(jobId, bundle);
+  const selectedKey = resultViewerLoadKey(jobId, [selected]);
+  const selectedEntry = entries.find((entry) => entry.key === selectedKey);
+  const companions = entries.filter((entry) => entry.key !== selectedKey);
+  const incomplete = companions.filter((entry) => entry.status !== "ready");
+  const normalized = useMemo(() => entries.flatMap((entry) => entry.loaded ? [normalizeResultArtifactForViewer(entry.loaded)] : []), [entries]);
+  const loadedSelected = normalized.find((item) => artifactIdentity(item) === artifactIdentity(selected));
   const workspace = useMemo(() => resultViewerContext(projectId, datasetId, jobId, viewerSelected), [datasetId, jobId, projectId, viewerSelected]);
-  if (state === "loading") return <ResultViewerLoadingState artifact={viewerSelected} projectId={projectId} datasetId={datasetId} />;
+  return <>
+    {incomplete.length ? <div className="product-state scientific-viewer-partial-state" role="status">
+      <strong>辅助内容尚未完整读取</strong>
+      <p>已读取的内容会保留，重试仅重新读取失败项。</p>
+      <ul>{incomplete.map((entry) => <li key={entry.key}>
+        {entry.artifact.name || artifactIdentity(entry.artifact) || "辅助结果"}：{entry.status === "pending" ? "正在读取…" : artifactContentFailureMessage(entry.code)}
+      </li>)}</ul>
+      {incomplete.some((entry) => entry.status === "failed" && artifactContentCanRetry(entry.code)) ?
+        <button type="button" className="product-secondary-action" onClick={() => retry(incomplete)}>重新加载缺失内容</button> : null}
+    </div> : null}
+    {loadedSelected ? <ScientificArtifactRenderer selected={selectProductRendererArtifact(loadedSelected, normalized)} artifacts={normalized} workspace={workspace} resultFacts={resultFacts} /> : <>
+      {companions.some((entry) => entry.status === "ready") ? <p>已读取 {companions.filter((entry) => entry.status === "ready").length} 项辅助内容，等待当前结果恢复。</p> : null}
+      {!selectedEntry || selectedEntry.status === "pending"
+        ? <ResultViewerLoadingState artifact={viewerSelected} projectId={projectId} datasetId={datasetId} />
+        : <ResultViewerFailureState selected={selected} projectId={projectId} datasetId={datasetId} failureCode={selectedEntry.code || "ARTIFACT_CONTENT_LOAD_FAILED"} retry={() => retry([selectedEntry])} />}
+    </>}
+  </>;
+}
+
+function ResultViewerFailureState({ selected, projectId, datasetId, failureCode, retry }: {
+  selected: Artifact; projectId: string; datasetId?: string | null; failureCode: string; retry: () => void;
+}) {
+  const state = failureCode === "ARTIFACT_CONTENT_NOT_FOUND" ? "missing"
+    : failureCode === "ARTIFACT_CONTENT_GONE" ? "gone"
+      : failureCode === "ARTIFACT_CONTENT_TOO_LARGE" ? "oversized" : "failed";
   if (state === "missing") return <div className="product-state" role="status">
     <p className="product-kicker">Artifact 可用性</p>
     <h3>原始结果内容当前不可用</h3>
     <p>Artifact 元数据、校验值与科学谱系仍然保留；系统没有替换为其他结果或较新版本。</p>
     <div className="product-row-actions">
-      <button type="button" className="product-secondary-action" onClick={() => setRetryAttempt((value) => value + 1)}>重新检查存储</button>
+      <button type="button" className="product-secondary-action" onClick={retry}>重新检查存储</button>
       {datasetId ? <Link className="product-secondary-action" href={`/projects/${encodeURIComponent(projectId)}/data?dataset=${encodeURIComponent(datasetId)}`}>返回数据源</Link> : null}
     </div>
     <ViewerArtifactMetadata artifact={selected} />
@@ -144,38 +147,16 @@ export function ScientificResultViewer({
   </div>;
   if (state === "failed") return <div className="product-state" role="alert">
     <p className="product-kicker">科学结果</p>
-    <h3>科学结果加载失败</h3>
-    <p>这可能是临时服务或网络问题。已保存的 Result 与 Artifact 元数据不会因重新加载而改变。</p>
+    <h3>{failureCode === "ARTIFACT_CONTENT_TIMEOUT" ? "科学结果读取超时" : "科学结果加载失败"}</h3>
+    <p>{artifactContentFailureMessage(failureCode)}。已读取的辅助内容和结果来源会保留。</p>
     <div className="product-row-actions">
-      <button type="button" className="product-primary-action" onClick={() => setRetryAttempt((value) => value + 1)}>重新加载</button>
+      {artifactContentCanRetry(failureCode) ? <button type="button" className="product-primary-action" onClick={retry}>重新加载</button> : null}
       {datasetId ? <Link className="product-secondary-action" href={`/projects/${encodeURIComponent(projectId)}/data?dataset=${encodeURIComponent(datasetId)}`}>返回数据源</Link> : null}
     </div>
     <ViewerArtifactMetadata artifact={selected} />
     <details><summary>技术详情</summary><code>{failureCode || "ARTIFACT_CONTENT_LOAD_FAILED"}</code></details>
   </div>;
-  const normalized = loaded.map(normalizeResultArtifactForViewer);
-  const loadedSelected = normalized.find((item) => artifactIdentity(item) === artifactIdentity(selected)) ?? viewerSelected;
-  const rendererSelected = selectProductRendererArtifact(loadedSelected, normalized);
-  return (
-    <>
-      {partialFailures.length ? (
-        <div className="product-state scientific-viewer-partial-state" role="status">
-          <strong>部分 Artifact 暂时不可用</strong>
-          <p>已保留可读取的科学结果；以下辅助内容需要稍后重试，不会替换为其他版本。</p>
-          <ul>
-            {partialFailures.map((failure) => (
-              <li key={failure.artifactId}>
-                <span>{failure.label}</span>
-                <code>{failure.code}</code>
-              </li>
-            ))}
-          </ul>
-          <button type="button" className="product-secondary-action" onClick={() => setRetryAttempt((value) => value + 1)}>重新加载缺失内容</button>
-        </div>
-      ) : null}
-      <ScientificArtifactRenderer selected={rendererSelected} artifacts={normalized} workspace={workspace} />
-    </>
-  );
+  return null;
 }
 
 function ResultViewerLoadingState({ artifact, projectId, datasetId }: { artifact: Artifact; projectId: string; datasetId?: string | null }) {
@@ -202,6 +183,123 @@ function ViewerArtifactMetadata({ artifact }: { artifact: Artifact }) {
   </details>;
 }
 
+type ResultArtifactRead = {
+  key: string;
+  artifact: Artifact;
+  status: "pending" | "ready" | "failed";
+  loaded?: Artifact;
+  code?: string;
+};
+
+/** Each exact payload owns its deadline and retry. Reconciliation only drops
+ * changed/removed identities; pending and successful siblings stay intact. */
+function useResultArtifactReads(jobId: string, bundle: readonly Artifact[]) {
+  const [snapshot, setSnapshot] = useState<Map<string, ResultArtifactRead>>(new Map());
+  const reads = useRef(new Map<string, ResultArtifactRead>());
+  const requests = useRef(new Map<string, { controller: AbortController; timer: ReturnType<typeof setTimeout> }>());
+  const loadKey = resultViewerLoadKey(jobId, bundle);
+  const publish = () => setSnapshot(new Map(reads.current));
+  const start = (artifact: Artifact) => {
+    const key = resultViewerLoadKey(jobId, [artifact]);
+    const prior = reads.current.get(key);
+    if (prior?.status === "ready" || requests.current.has(key)) return;
+    const id = artifactIdentity(artifact);
+    if (artifact.jobId && artifact.jobId !== jobId) {
+      reads.current.set(key, { key, artifact, status: "failed", code: "ARTIFACT_CONTENT_SCOPE_MISMATCH" });
+      publish();
+      return;
+    }
+    if (artifact.content !== undefined) {
+      reads.current.set(key, { key, artifact, status: "ready", loaded: artifact });
+      publish();
+      return;
+    }
+    if (!id) {
+      reads.current.set(key, { key, artifact, status: "failed", code: "ARTIFACT_CONTENT_LOAD_FAILED" });
+      publish();
+      return;
+    }
+    reads.current.set(key, { key, artifact, status: "pending" });
+    const controller = new AbortController();
+    const settle = (result: Pick<ResultArtifactRead, "status" | "loaded" | "code">) => {
+      if (requests.current.get(key)?.controller !== controller) return;
+      clearTimeout(requests.current.get(key)?.timer);
+      requests.current.delete(key);
+      reads.current.set(key, { key, artifact, ...result });
+      publish();
+    };
+    const timer = setTimeout(() => {
+      controller.abort();
+      settle({ status: "failed", code: "ARTIFACT_CONTENT_TIMEOUT" });
+    }, 10_000);
+    requests.current.set(key, { controller, timer });
+    publish();
+    void (async () => {
+      try {
+        const bytes = await getPlannerArtifactContent(jobId, id, {
+          signal: controller.signal,
+          maximumBytes: resolveArtifactRenderer(artifact).descriptor?.maximumPayloadBytes,
+        });
+        if (!controller.signal.aborted) settle({ status: "ready", loaded: { ...artifact, content: decodeArtifactPayload(bytes, artifact) } });
+      } catch (reason) {
+        if (!controller.signal.aborted) settle({ status: "failed", code: artifactContentFailureCode(reason) });
+      }
+    })();
+  };
+  useEffect(() => () => {
+    requests.current.forEach(({ controller, timer }) => { clearTimeout(timer); controller.abort(); });
+    requests.current.clear();
+    reads.current.clear();
+  }, []);
+  useEffect(() => {
+    const keys = new Set(bundle.map((artifact) => resultViewerLoadKey(jobId, [artifact])));
+    for (const key of reads.current.keys()) {
+      if (keys.has(key)) continue;
+      const request = requests.current.get(key);
+      if (request) { clearTimeout(request.timer); request.controller.abort(); }
+      requests.current.delete(key);
+      reads.current.delete(key);
+    }
+    for (const artifact of bundle) {
+      if (!reads.current.has(resultViewerLoadKey(jobId, [artifact]))) start(artifact);
+    }
+    publish();
+  }, [loadKey]);
+  const entries = useMemo(() => bundle.map((artifact): ResultArtifactRead => {
+    const key = resultViewerLoadKey(jobId, [artifact]);
+    return snapshot.get(key) ?? { key, artifact, status: "pending" };
+  }), [loadKey, snapshot]);
+  return {
+    entries,
+    retry: (failed: readonly ResultArtifactRead[]) => {
+      for (const entry of failed) {
+        const current = reads.current.get(entry.key);
+        if (current?.status === "failed" && artifactContentCanRetry(current.code)) start(current.artifact);
+      }
+    },
+  };
+}
+
+const ARTIFACT_FAILURE_MESSAGES: Record<string, string> = {
+  ARTIFACT_CONTENT_LOAD_FAILED: "暂时无法读取，请重试",
+  ARTIFACT_CONTENT_TIMEOUT: "读取超过 10 秒，请重试",
+  ARTIFACT_CONTENT_INVALID: "内容格式校验失败，请重试",
+  ARTIFACT_CONTENT_BYTE_MISMATCH: "内容完整性校验失败，请重试",
+  ARTIFACT_CONTENT_SCOPE_MISMATCH: "结果与当前任务的来源不一致，未加载内容",
+  ARTIFACT_CONTENT_LIMIT_EXCEEDED: "内容大小未通过浏览校验，请重试",
+  ARTIFACT_CONTENT_NOT_FOUND: "原始内容当前不可用，可重新检查存储",
+  ARTIFACT_CONTENT_GONE: "原始内容已永久不可用，无法通过重试恢复",
+  ARTIFACT_CONTENT_TOO_LARGE: "内容超出安全浏览范围，无法在此加载",
+};
+
+function artifactContentFailureMessage(code?: string): string {
+  return ARTIFACT_FAILURE_MESSAGES[code || ""] || ARTIFACT_FAILURE_MESSAGES.ARTIFACT_CONTENT_LOAD_FAILED;
+}
+
+function artifactContentCanRetry(code?: string): boolean {
+  return !["ARTIFACT_CONTENT_GONE", "ARTIFACT_CONTENT_TOO_LARGE", "ARTIFACT_CONTENT_SCOPE_MISMATCH"].includes(code || "");
+}
+
 function artifactContentFailureCode(reason: unknown): string {
   if (reason instanceof SyntaxError) return "ARTIFACT_CONTENT_INVALID";
   if (reason && typeof reason === "object") {
@@ -209,14 +307,11 @@ function artifactContentFailureCode(reason: unknown): string {
     if (details && typeof details === "object" && "detail" in details) {
       const detail = (details as { detail?: unknown }).detail;
       if (detail && typeof detail === "object" && "code" in detail && typeof detail.code === "string") {
-        return detail.code;
+        return Object.hasOwn(ARTIFACT_FAILURE_MESSAGES, detail.code) ? detail.code : "ARTIFACT_CONTENT_LOAD_FAILED";
       }
     }
     if ("message" in reason && typeof reason.message === "string") {
-      if (/json|unexpected token|expected property name/i.test(reason.message)) {
-        return "ARTIFACT_CONTENT_INVALID";
-      }
-      return reason.message;
+      return Object.hasOwn(ARTIFACT_FAILURE_MESSAGES, reason.message) ? reason.message : "ARTIFACT_CONTENT_LOAD_FAILED";
     }
   }
   return "ARTIFACT_CONTENT_LOAD_FAILED";
@@ -226,38 +321,41 @@ function artifactContentFailureCode(reason: unknown): string {
  * declares compatible types, but a Job can contain the same type for several
  * independent steps. Loading every sibling table makes a result appear stuck
  * while the renderer only needs the selected scientific bundle. */
-export function selectResultViewerBundle(selected: Artifact, candidates: readonly Artifact[]): Artifact[] {
+export function selectResultViewerBundle(selected: Artifact, candidates: readonly Artifact[], jobId = selected.jobId): Artifact[] {
+  const producer = artifactProducerIdentity(selected);
+  // Type and filename describe format, never source ownership. A multi-material
+  // Job can publish identically named companions for independent ToolCalls.
+  if (!producer) return [selected];
+  const scoped = candidates.filter((item) => (!jobId || !item.jobId || item.jobId === jobId)
+    && artifactProducerIdentity(item) === producer);
   const name = String(selected.name || "").toLowerCase();
   const keepName = (item: Artifact, pattern: RegExp) => pattern.test(String(item.name || "").toLowerCase());
   if (selected.type === "phonon_band_dos_json" || /phonon_band_dos/.test(name)) {
-    return candidates.filter((item) => keepName(item, /^phonon_band_dos(?:_|\.)/) || item === selected);
+    return scoped.filter((item) => keepName(item, /^phonon_band_dos(?:_|\.)/) || item === selected);
   }
   if (selected.type === "phonon_band_json" || /phonon_band(?:_|\.)/.test(name)) {
-    return candidates.filter((item) => keepName(item, /^phonon_band(?:_|\.)/) && !keepName(item, /^phonon_band_dos(?:_|\.)/) || item === selected);
+    return scoped.filter((item) => keepName(item, /^phonon_band(?:_|\.)/) && !keepName(item, /^phonon_band_dos(?:_|\.)/) || item === selected);
   }
   if (selected.type === "phonon_dos_json" || /phonon_dos/.test(name)) {
-    return candidates.filter((item) => keepName(item, /^phonon_dos(?:_|\.)/) && !keepName(item, /^phonon_band_dos(?:_|\.)/) || item === selected);
+    return scoped.filter((item) => keepName(item, /^phonon_dos(?:_|\.)/) && !keepName(item, /^phonon_band_dos(?:_|\.)/) || item === selected);
   }
   if (selected.type === "plotly_json") {
-    const producer = artifactProducerIdentity(selected);
     // A generic figure can have a richer, authoritative product contract in a
     // table_json companion. Keep that pair exact to one ToolCall so a
     // multi-capability Job cannot mix XRD, trajectory, or Dataset products.
-    return producer
-      ? candidates.filter((item) => artifactProducerIdentity(item) === producer && ["plotly_json", "table_json"].includes(String(item.type)))
-      : [selected];
+    return scoped.filter((item) => ["plotly_json", "table_json"].includes(String(item.type)));
   }
   if (["electronic_band_json", "electronic_dos_json"].includes(String(selected.type))) {
-    return candidates.filter((item) => ["electronic_band_json", "electronic_dos_json"].includes(String(item.type)));
+    return scoped.filter((item) => ["electronic_band_json", "electronic_dos_json"].includes(String(item.type)));
   }
-  return [...candidates];
+  return scoped;
 }
 
 export function selectProductRendererArtifact(selected: Artifact, candidates: readonly Artifact[]): Artifact {
   if (selected.type !== "plotly_json") return selected;
   const producer = artifactProducerIdentity(selected);
   if (!producer) return selected;
-  const product = candidates.find((item) => {
+  const product = selectResultViewerBundle(selected, candidates).find((item) => {
     if (item.type !== "table_json" || artifactProducerIdentity(item) !== producer) return false;
     const descriptor = resolveLoadedArtifactRenderer(item).descriptor;
     return Boolean(descriptor && !["GENERIC_TABLE", "GENERIC_PLOT", "JSON", "TEXT"].includes(descriptor.component));
@@ -273,6 +371,8 @@ export function resultViewerLoadKey(jobId: string, artifacts: readonly Artifact[
     artifact.sha256 || artifact.contentHash || "no-content-hash",
     artifact.sizeBytes ?? "unknown-size",
     artifact.content === undefined ? "remote" : "inline",
+    artifact.jobId || jobId,
+    artifactProducerIdentity(artifact) || "unknown-producer",
   ].join(":"));
   return `${jobId}\u0000${artifactKeys.sort().join("\u0001")}`;
 }
@@ -280,20 +380,22 @@ export function resultViewerLoadKey(jobId: string, artifacts: readonly Artifact[
 function artifactProducerIdentity(artifact: Artifact): string | null {
   const metadata = artifact.metadata && typeof artifact.metadata === "object" ? artifact.metadata as Record<string, unknown> : {};
   const provenance = artifact.provenance && typeof artifact.provenance === "object" ? artifact.provenance as Record<string, unknown> : {};
-  for (const value of [
+  const identities = (values: unknown[]) => [...new Set(values.filter((value): value is string => typeof value === "string" && Boolean(value.trim())).map(value => value.trim()))];
+  const calls = identities([
     artifact.toolCallId,
     metadata.toolCallId,
     metadata.tool_call_id,
-    metadata.stepId,
-    metadata.step_id,
     provenance.toolCallId,
     provenance.tool_call_id,
+  ]);
+  if (calls.length) return calls.length === 1 ? `call:${calls[0]}` : null;
+  const steps = identities([
+    metadata.stepId,
+    metadata.step_id,
     provenance.stepId,
     provenance.step_id,
-  ]) {
-    if (typeof value === "string" && value.trim()) return value.trim();
-  }
-  return null;
+  ]);
+  return steps.length === 1 ? `step:${steps[0]}` : null;
 }
 
 export function normalizeResultArtifactForViewer(artifact: Artifact): Artifact {
@@ -339,8 +441,16 @@ export function sourceResourceArtifact(resource: DatasetSourceResource): Artifac
   const experimentalXrd = experimentalXrdPlot(resource.payload);
   const electronic = projectElectronicSource(resource);
   const type = experimentalXrd ? "plotly_json" : electronic ? sourceArtifactType(resource.objectType) : resource.objectType === "VolumetricData" ? "table_json" : sourceArtifactType(resource.objectType);
-  const structureScene = resource.objectType === "Structure" ? projectStructureSource(resource.payload, resource.objectHash) : null;
-  const atomsScene = resource.objectType === "Atoms" ? projectAtomsSource(resource.payload, resource.objectHash) : null;
+  const sourceScene = sourceStructurePreview(resource);
+  const structureScene = resource.objectType === "Structure" ? sourceScene ?? projectStructureSource(resource.payload, resource.objectHash) : null;
+  const atomsScene = resource.objectType === "Atoms" ? sourceScene ?? projectAtomsSource(resource.payload, resource.objectHash) : null;
+  const fallbackScene = structureScene ?? atomsScene;
+  if (isRecord(fallbackScene) && !sourceScene && resource.viewerSceneIssue) {
+    fallbackScene.metadata = { ...(isRecord(fallbackScene.metadata) ? fallbackScene.metadata : {}), display_only: true };
+    fallbackScene.warnings = [...(Array.isArray(fallbackScene.warnings) ? fallbackScene.warnings : []), {
+      code: "VIEWER_PREVIEW_CONNECTIONS_UNAVAILABLE", message: sourcePreviewIssue(resource.viewerSceneIssue),
+    }];
+  }
   const content = experimentalXrd ?? electronic ?? structureScene ?? atomsScene ?? (resource.objectType === "VolumetricData" ? projectVolumetricSourceSummary(resource.payload) : null) ?? (resource.objectType === "DataFrame" && Array.isArray(resource.payload)
     ? { rows: resource.payload }
     : resource.payload);
@@ -358,9 +468,35 @@ export function sourceResourceArtifact(resource: DatasetSourceResource): Artifac
   };
 }
 
+function sourceStructurePreview(resource: DatasetSourceResource): Record<string, unknown> | null {
+  if (!["Structure", "Atoms"].includes(resource.objectType) || !resource.objectHash) return null;
+  const scene = resource.viewerScene;
+  if (!isRecord(scene) || !isRecord(scene.provenance) || !isRecord(scene.source)) return null;
+  const provenance = scene.provenance;
+  if (provenance.projection !== "source_structure_preview/1.0"
+      || provenance.source_hash !== resource.objectHash || scene.source.hash !== resource.objectHash
+      || provenance.source_object_id !== resource.objectId
+      || (provenance.source_version_id ?? undefined) !== (resource.versionId ?? undefined)
+      || (provenance.source_dataset_id != null && provenance.source_dataset_id !== resource.datasetId)
+      || !validateViewerSceneForRenderer(scene).valid) return null;
+  return scene;
+}
+
+function sourcePreviewIssue(code: string): string {
+  if (["VIEWER_NEIGHBOR_SITE_LIMIT", "VIEWER_NEIGHBOR_WORK_LIMIT", "VIEWER_NEIGHBOR_OFFSET_LIMIT", "VIEWER_NEIGHBOR_SPECIES_LIMIT"].includes(code)) {
+    return "近邻搜索超出快速预览范围，当前仅显示原子；可在研究中选择适合此结构的连接规则。";
+  }
+  return "当前结构尚不能生成可靠的近邻预览，原始原子坐标仍然保留。";
+}
+
 export function sourceResourceArtifacts(selected: DatasetSourceResource, resources: readonly DatasetSourceResource[]): Artifact[] {
   const companions = resources.filter((item) => item.datasetId === selected.datasetId && isCompanionResource(selected, item));
-  const source = companions.some((item) => item.objectId === selected.objectId) ? companions : [selected, ...companions];
+  const counts = new Map<string, number>();
+  for (const item of companions) counts.set(item.objectType, (counts.get(item.objectType) || 0) + 1);
+  // The selected resource owns its exact version. Other same-type resources
+  // are alternatives in Data navigation, not part of this viewer's payload.
+  // Keep cross-type context only when it has one unambiguous candidate.
+  const source = [selected, ...companions.filter(item => counts.get(item.objectType) === 1)];
   return [...new Map(source.flatMap((item) => {
     const volumetric = projectVolumetricSourceArtifacts(item);
     const artifacts = volumetric ?? [sourceResourceArtifact(item)];
@@ -369,10 +505,7 @@ export function sourceResourceArtifacts(selected: DatasetSourceResource, resourc
 }
 
 function sourcePrimaryArtifact(resource: DatasetSourceResource, artifacts: readonly Artifact[]): Artifact {
-  if (["ElectronicBand", "ElectronicDos"].includes(resource.objectType)) {
-    return artifacts.find((item) => item.type === "electronic_dos_json") ?? artifacts.find((item) => item.type === "electronic_band_json") ?? sourceResourceArtifact(resource);
-  }
-  return artifacts.find((item) => artifactIdentity(item) === `source:${resource.objectId}`) ?? sourceResourceArtifact(resource);
+  return artifacts.find((item) => item.metadata?.sourceObjectId === resource.objectId) ?? sourceResourceArtifact(resource);
 }
 
 function companionTypes(objectType: string): string[] {
@@ -383,7 +516,7 @@ function companionTypes(objectType: string): string[] {
 }
 
 function isCompanionResource(selected: DatasetSourceResource, candidate: DatasetSourceResource): boolean {
-  if (candidate.objectId === selected.objectId) return true;
+  if (candidate.objectId === selected.objectId || candidate.objectType === selected.objectType) return false;
   if (selected.objectType === "Structure" && candidate.objectType === "DataFrame") return experimentalXrdPlot(candidate.payload) !== null;
   if (selected.objectType === "DataFrame" && candidate.objectType === "Structure") return experimentalXrdPlot(selected.payload) !== null;
   if (companionTypes(selected.objectType).includes(candidate.objectType)) {
@@ -558,6 +691,7 @@ export function projectVolumetricSourceArtifacts(resource: DatasetSourceResource
   const fields: Record<string, unknown>[] = [];
   const payloads: Record<string, unknown>[] = [];
   const binaryArtifacts: Artifact[] = [];
+  const sourceFields: { fieldId: string; channelId: string }[] = [];
   for (let index = 0; index < channels.length; index += 1) {
     const channel = channels[index];
     if (!isRecord(channel) || !Array.isArray(channel.values) || channel.values.length !== voxelCount || !channel.values.every((value) => typeof value === "number" && Number.isFinite(value))) return null;
@@ -571,11 +705,19 @@ export function projectVolumetricSourceArtifacts(resource: DatasetSourceResource
       schema_version: "phase10j.volumetric_field.v1", field_id: "pending", field_name: fieldName, grid_id: gridCore.grid_id, grid_content_hash: gridCore.content_hash,
       payload_id: payloadId, payload_logical_sha256: logicalHash, quantity: safeText(channel.quantity, "unknown"), custom_quantity: null, value_kind: "real", field_rank: "scalar", logical_component_count: 1, stored_component_count: 1,
       component_labels: ["value"], component_basis: "not_applicable", unit: { canonical_unit: safeText(channel.canonical_unit, "unknown"), source_unit: safeText(channel.source_unit, safeText(channel.canonical_unit, "unknown")) },
-      normalization_semantics: safeText(channel.normalization_semantics, "unknown"), integral_semantics: safeText(channel.integral_semantics, "unknown"), spin: null, potential_reference: null, complex_semantics: null,
-      statistics: sourceStatistics(values), provenance: { source_sha256: sourceSha, producer: "mdi_source_viewer_projection", producer_version: "1.0.0", transformations: [{ kind: "dtype_conversion", detail: "有限源数值以确定性的 little-endian float64 内联载荷展示。" }] }, warnings: [], security: volumetricSecurity(), content_hash: "pending",
+      normalization_semantics: safeText(channel.normalization_semantics, "unknown"), integral_semantics: safeText(channel.integral_semantics, "unknown"), spin: null,
+      // Match the controlled adapter's source-zero policy; this declares no
+      // alignment and makes no claim about an absolute physical reference.
+      potential_reference: ["local_potential", "electrostatic_potential"].includes(String(channel.quantity)) ? {
+        kind: "source_defined", reference_value: 0, reference_unit: safeText(channel.canonical_unit, "unknown"),
+        shift_applied: false, shift_amount: 0, source_metadata: "No alignment or mean shift was applied.",
+      } : null,
+      complex_semantics: null,
+      statistics: sourceStatistics(values, Math.abs(determinant)), provenance: { source_sha256: sourceSha, producer: "mdi_source_viewer_projection", producer_version: "1.1.0", transformations: [{ kind: "dtype_conversion", detail: "有限源数值以确定性的 little-endian float64 内联载荷展示。" }] }, warnings: [], security: volumetricSecurity(), content_hash: "pending",
     };
     fieldCore.field_id = `field:${hashJson({ ...fieldCore, field_id: undefined, content_hash: undefined })}`;
     fieldCore.content_hash = hashJson({ ...fieldCore, field_id: undefined, content_hash: undefined });
+    sourceFields.push({ fieldId: String(fieldCore.field_id), channelId: `channel:${index}` });
     fields.push(fieldCore);
     payloads.push({ schema_version: "phase10j.volumetric_payload.v1", payload_id: payloadId, encoding: inline ? "inline_json" : "raw_binary", dtype: "float64", endianness: "little", stored_component_count: 1, flatten_order: "ijkc_component_fastest", grid_shape: shape, logical_shape: [...shape, 1], value_count: voxelCount, uncompressed_bytes: voxelCount * 8, compressed_bytes: voxelCount * 8, media_type: inline ? "application/json" : "application/octet-stream", artifact_name: inline ? null : artifactName, inline_values: inline ? values : null, chunks: [], compression: null, logical_sha256: logicalHash, storage_sha256: logicalHash, storage_layout_hash: hashJson({ payloadId, shape }), security: volumetricSecurity() });
     if (!inline) binaryArtifacts.push({ id: `source:${resource.objectId}:${artifactName}`, artifactId: `source:${resource.objectId}:${artifactName}`, jobId: "source-view", type: "volumetric_binary", version: "1", name: artifactName, contentType: "application/octet-stream", sizeBytes: voxelCount * 8, sha256: logicalHash, content: float64Bytes(values), metadata: { sourceObjectType: resource.objectType, sourceDatasetId: resource.datasetId } });
@@ -588,7 +730,7 @@ export function projectVolumetricSourceArtifacts(resource: DatasetSourceResource
   const manifestCore: Record<string, unknown> = { schema_version: "phase10j.volumetric_manifest.v1", manifest_id: "pending", dataset_id: datasetId, dataset_content_hash: datasetCore.content_hash, schema_versions: { dataset: "phase10j.volumetric_dataset.v1", field: "phase10j.volumetric_field.v1", grid: "phase10j.volumetric_grid.v1", manifest: "phase10j.volumetric_manifest.v1", payload: "phase10j.volumetric_payload.v1" }, artifacts: manifestArtifacts, capabilities: { renderer_included: false, isosurface_included: false, slice_included: false, metadata_preview: true }, external_resources: [], executable_assets: [], preview_mode: "metadata_json_only", caps: { max_fields_per_dataset: 8, max_grid_dimension: 512 }, security: volumetricSecurity(), content_hash: "pending" };
   manifestCore.manifest_id = `volume-manifest:${hashJson({ ...manifestCore, manifest_id: undefined, content_hash: undefined })}`;
   manifestCore.content_hash = hashJson({ ...manifestCore, content_hash: undefined });
-  const base = { jobId: "source-view", version: "1", contentType: "application/json", metadata: { sourceObjectType: resource.objectType, sourceDatasetId: resource.datasetId } };
+  const base = { jobId: "source-view", version: "1", sha256: resource.objectHash || null, contentType: "application/json", metadata: { sourceObjectType: resource.objectType, sourceDatasetId: resource.datasetId, sourceObjectId: resource.objectId, sourceVersionId: resource.versionId || resource.objectHash, sourceFields } };
   return [
     { ...base, id: `source:${resource.objectId}:volumetric-dataset`, artifactId: `source:${resource.objectId}:volumetric-dataset`, type: "volumetric_dataset_json", name: "volumetric_dataset.json", content: datasetCore },
     { ...base, id: `source:${resource.objectId}:volumetric-manifest`, artifactId: `source:${resource.objectId}:volumetric-manifest`, type: "volumetric_manifest_json", name: "volumetric_manifest.json", content: manifestCore },
@@ -609,7 +751,7 @@ function float64Bytes(values: readonly number[]): ArrayBuffer { const bytes = ne
 function hashFloat64(values: readonly number[]): string { return sha256HexSync(new Uint8Array(float64Bytes(values))); }
 function hashJson(value: unknown): string { return sha256HexSync(new TextEncoder().encode(canonicalJson(value))); }
 function canonicalJson(value: unknown): string { if (value === undefined) return "null"; if (value === null || typeof value !== "object") return JSON.stringify(value); if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`; const record = value as Record<string, unknown>; return `{${Object.keys(record).filter((key) => record[key] !== undefined).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(record[key])}`).join(",")}}`; }
-function sourceStatistics(values: readonly number[]) {
+function sourceStatistics(values: readonly number[], voxelVolume: number) {
   let minimum = Number.POSITIVE_INFINITY;
   let maximum = Number.NEGATIVE_INFINITY;
   let sum = 0;
@@ -635,7 +777,7 @@ function sourceStatistics(values: readonly number[]) {
       mean,
       standard_deviation: Math.sqrt(variance),
       rms: Math.sqrt(sumSquares / values.length),
-      integral: sum,
+      integral: sum * voxelVolume,
     }],
   };
 }
@@ -737,25 +879,8 @@ function decodeArtifactPayload(bytes: ArrayBuffer, artifact: Artifact): unknown 
 function normalizeScientificPayload(payload: unknown): unknown {
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) return payload;
   const value = payload as Record<string, unknown>;
-  if (value.schema_version === "phase10e4.xrd_pattern.v1") {
-    const pattern = value.pattern && typeof value.pattern === "object" && !Array.isArray(value.pattern)
-      ? value.pattern as Record<string, unknown>
-      : null;
-    const peaks = Array.isArray(pattern?.peaks) ? pattern.peaks : [];
-    return {
-      ...value,
-      rows: peaks.map((peak) => {
-        if (!peak || typeof peak !== "object" || Array.isArray(peak)) return peak;
-        const item = peak as Record<string, unknown>;
-        const hkls = Array.isArray(item.hkls) ? item.hkls.map((entry) => {
-          if (!entry || typeof entry !== "object" || Array.isArray(entry)) return "";
-          const hkl = (entry as Record<string, unknown>).hkl;
-          return Array.isArray(hkl) ? `(${hkl.join(" ")})` : "";
-        }).filter(Boolean).join(" · ") : "";
-        return { "2θ (°)": item.two_theta_deg, "相对强度": item.intensity, "晶面 hkl": hkls || "—", "晶面间距 (Å)": item.d_spacing_angstrom };
-      }),
-    };
-  }
+  const xrdRows = savedXrdTableRows(payload);
+  if (xrdRows) return { ...value, rows: xrdRows };
   if (!["phase10n3.experimental_xrd_comparison_plot.v1", "phase10e4.static_chart.v1"].includes(String(value.schema_version)) || !Array.isArray(value.series)) return payload;
   const data = value.series.flatMap((item) => {
     if (!item || typeof item !== "object" || Array.isArray(item)) return [];

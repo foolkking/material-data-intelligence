@@ -736,6 +736,35 @@ secrets = Table(
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
 )
 
+user_model_settings = Table(
+    "user_model_settings",
+    metadata,
+    Column("user_id", String(64), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True),
+    Column("label", String(120), nullable=False, server_default=""),
+    Column("protocol", String(32), nullable=False, server_default="openai_chat_json"),
+    Column("base_url", String(512), nullable=False, server_default=""),
+    Column("encrypted_api_key", Text, nullable=False, server_default=""),
+    Column("catalog_json", JSON, nullable=False, server_default="[]"),
+    Column("selected_json", JSON, nullable=False, server_default="[]"),
+    Column("revision", Integer, nullable=False, server_default="1"),
+    Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
+user_model_connections = Table(
+    "user_model_connections",
+    metadata,
+    Column("user_id", String(64), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True),
+    Column("id", String(36), primary_key=True),
+    Column("label", String(120), nullable=False, server_default=""),
+    Column("protocol", String(32), nullable=False, server_default="openai_chat_json"),
+    Column("base_url", String(512), nullable=False, server_default=""),
+    Column("encrypted_api_key", Text, nullable=False, server_default=""),
+    Column("catalog_json", JSON, nullable=False, server_default="[]"),
+    Column("selected_json", JSON, nullable=False, server_default="[]"),
+    Column("revision", Integer, nullable=False, server_default="1"),
+    Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
 provider_connections = Table(
     "provider_connections",
     metadata,
@@ -748,6 +777,26 @@ provider_connections = Table(
     Column("encrypted_api_key", Text, nullable=False),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
+platform_model_offerings = Table(
+    "platform_model_offerings", metadata,
+    Column("id", String(64), primary_key=True),
+    Column("provider", String(64), ForeignKey("provider_connections.provider", ondelete="CASCADE"), nullable=False),
+    Column("model", String(128), nullable=False),
+    Column("label", String(120), nullable=False),
+    Column("protocol", String(32), nullable=False),
+    Column("audience", String(16), nullable=False),
+    Column("plans_json", JSON, nullable=False),
+    Column("enabled", Boolean, nullable=False),
+    CheckConstraint("audience in ('all', 'plans')", name="platform_model_audience"),
+)
+
+user_model_plan_grants = Table(
+    "user_model_plan_grants", metadata,
+    Column("user_id", String(64), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True),
+    Column("plan", String(64), primary_key=True),
+    Column("expires_at", DateTime(timezone=True), nullable=True),
 )
 
 literature_works = Table(

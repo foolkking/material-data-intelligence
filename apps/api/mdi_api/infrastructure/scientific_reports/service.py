@@ -1,20 +1,23 @@
 from __future__ import annotations
 
+from mdi_api.application.scientific_results.figure_titles import scientific_figure_title, scientific_table_title
+
 import asyncio
 import hashlib
 import json
 import re
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, Callable
 from uuid import UUID, uuid4, uuid5, NAMESPACE_URL
 
 from pydantic import ValidationError
+from mdi_llm.providers import LLMProviderError, PROVIDER_TIMEOUT_CODES
 
-from mdi_api.application.interpretation.grounding import project_grounded_communication
+from mdi_api.application.interpretation.grounding import project_grounded_communication, validate_interpretation
 from mdi_api.lifecycle_policy import retention_policy_snapshot
 from mdi_api.domain.interpretation.contracts import ScientificInterpretationOutput
 from mdi_api.domain.scientific_results.relevance import ScientificResultRelevanceEvaluator
-from mdi_api.domain.scientific_results.contracts import ScientificResultBundle
+from mdi_api.domain.scientific_results.contracts import ScientificResultBundle, ScientificFigure
 from mdi_api.unit_of_work import RepositoryFactory
 from mdi_api.research_agent.context.manifest import build_operation_manifest
 from mdi_api.research_agent.context.policy import ContextOperation
@@ -23,12 +26,15 @@ from mdi_api.db import project_configs
 from sqlalchemy import func, insert, select, update
 
 from mdi_api.application.scientific_reports.assembler import ReportComposerInputAssembler
+from mdi_api.application.scientific_reports.artifact_sources import artifact_input_versions, volumetric_report_figures
+from mdi_api.application.scientific_reports.basis import report_scientific_basis
 from mdi_api.application.scientific_knowledge.service import (
     render_literature_citation,
 )
 from mdi_api.infrastructure.scientific_reports.client import DeepSeekReportComposerClient, StructuredReportComposerClient
 from mdi_api.application.scientific_reports.grounded import DeterministicScientificReportComposer
 from mdi_api.application.scientific_reports.grounding import ReportGroundingValidator
+from mdi_api.application.scientific_reasoning.follow_ups import report_next_steps_text
 from mdi_api.domain.scientific_knowledge.contracts import LiteratureSnapshot
 from mdi_api.domain.scientific_reports.errors import ScientificReportError
 from mdi_api.domain.scientific_reports.contracts import (
@@ -41,6 +47,31 @@ from mdi_api.domain.scientific_reports.contracts import (
 
 
 
+def _report_schema_repair_context(error: ValidationError) -> list[str]:
+    """Describe contract failures without echoing rejected provider values."""
+    schema = ScientificReportOutput.model_json_schema()
+    known_fields = set(schema.get("properties", {}))
+    for definition in schema.get("$defs", {}).values():
+        known_fields.update(definition.get("properties", {}))
+    feedback = []
+    for entry in error.errors(include_input=False, include_url=False)[:16]:
+        location = ".".join(str(part) if isinstance(part, int) or part in known_fields else "<field>" for part in entry["loc"])
+        message = f"{location}: {entry['type']}."
+        if entry["type"] == "too_long":
+            context = entry.get("ctx", {})
+            message += f" Maximum length: {context.get('max_length')}; actual length: {context.get('actual_length')}."
+            message += (
+                " Reorganize the prose and its exact supporting references together."
+                " Keep detailed scientific subjects in separate main_findings;"
+                " discussion and conclusion should be short syntheses citing only"
+                " the supplied facts or evidence needed for their own statements."
+                " Do not truncate citations while retaining unsupported claims,"
+                " copy every reference into a synthesis, or omit requested subjects."
+            )
+        feedback.append(message)
+    return feedback
+
+
 class ScientificReportService:
     """Phase 8 report lifecycle; no scientific execution is reachable here."""
 
@@ -51,7 +82,25 @@ class ScientificReportService:
         self.timeout_seconds = timeout_seconds
         self.validator = ReportGroundingValidator()
 
-    def generate_for_turn(self, turn_id: UUID, *, created_by: str = "user_local") -> dict[str, Any]:
+    @staticmethod
+    def _require_report_attempt(unit: Any, turn_id: UUID, generation_id: UUID | None, attempt: int | None) -> None:
+        if generation_id is None and attempt is None:
+            return
+        if generation_id is None or attempt is None:
+            raise ScientificReportError("REPORT_ATTEMPT_REVOKED", "报告生成尝试已失效。")
+        generation = unit.agent2.scientific_report_generations.get(generation_id)
+        if generation["research_turn_id"] != turn_id or not unit.agent2.scientific_report_generations.lock_attempt(generation_id, attempt):
+            raise ScientificReportError("REPORT_ATTEMPT_REVOKED", "报告生成尝试已失效。")
+
+    def generate_for_turn(
+        self, turn_id: UUID, *, created_by: str = "user_local",
+        generation_id: UUID | None = None, expected_attempt: int | None = None,
+    ) -> dict[str, Any]:
+        def ensure_current() -> None:
+            if generation_id is not None or expected_attempt is not None:
+                with self.repository_factory.unit_of_work() as unit:
+                    self._require_report_attempt(unit, turn_id, generation_id, expected_attempt)
+        ensure_current()
         with self.repository_factory.session() as session:
             turn = session.agent2.research_turns.get(turn_id)
             existing = session.agent2.scientific_reports.get_for_turn(turn_id)
@@ -66,6 +115,11 @@ class ScientificReportService:
                 interpretation=interpretation,
             )
             bundle = ScientificResultBundle.model_validate(snapshot["bundle_json"])
+            readable = project_grounded_communication(
+                ScientificInterpretationOutput.model_validate(interpretation["output_json"]["interpretation"]), bundle,
+            )
+            if interpretation["grounding_status"] != "VALID" or not validate_interpretation(readable, bundle).valid:
+                raise ScientificReportError("REPORT_INTERPRETATION_REJECTED", "原解读未通过当前事实校验。请先重新解读或编辑问题后重试。", 409)
             objects: dict[str, dict[str, Any]] = {}
             versions: dict[str, dict[str, Any]] = {}
             for ref in bundle.source_object_refs:
@@ -76,6 +130,8 @@ class ScientificReportService:
                     pass
             source_labels = [
                 str(
+                    (ref.display_name if len(bundle.source_object_refs) > 1 else None)
+                    or
                     (objects.get(str(ref.object_id)) or {}).get("display_name")
                     or ref.display_name
                     or ref.object_type
@@ -102,11 +158,14 @@ class ScientificReportService:
             input_payload=input_payload,
             context_fingerprint=input_fingerprint,
             literature_sources=literature_sources,
+            generation_id=generation_id, expected_attempt=expected_attempt,
         )
         output, provider_meta, repair_attempted = self._compose_with_one_repair(
+            turn_id=turn_id,
             input_payload=input_payload,
             bundle=bundle,
             interpretation=interpretation["output_json"],
+            ensure_current=ensure_current,
         )
         output = self._project_authoritative_report(
             output,
@@ -167,6 +226,13 @@ class ScientificReportService:
                 "groundingStatus": "VALID", "reportType": "AGENT2_SCIENTIFIC_REPORT",
             }
         with self.repository_factory.unit_of_work() as unit:
+            self._require_report_attempt(unit, turn_id, generation_id, expected_attempt)
+            if generation_id is not None:
+                # Status and immutable publication commit together under the
+                # same generation lock; expiry cannot race a saved report.
+                unit.agent2.scientific_report_generations.compare_status(
+                    generation_id, "READY", expected_status="COMPOSING", expected_attempt=expected_attempt,
+                )
             existing = unit.agent2.scientific_reports.get_for_turn(turn_id)
             if existing is not None:
                 if str(existing["source_fingerprint"]) != source_fingerprint:
@@ -235,7 +301,7 @@ class ScientificReportService:
     ) -> ScientificReportOutput:
         """Keep provider organization inside the validated scientific boundary.
 
-        The provider may organize prose and suggest bounded next steps, but
+        The provider may organize prose and retain source-bound next steps, but
         scientific summary/finding/method/source statements are projected
         deterministically from the already validated Interpretation and
         ScientificResult. This prevents qualitative claims such as method
@@ -249,6 +315,8 @@ class ScientificReportService:
                 ScientificInterpretationOutput.model_validate(raw_interpretation),
                 bundle,
             )
+            if not validate_interpretation(readable_interpretation, bundle).valid:
+                raise ScientificReportError("REPORT_INTERPRETATION_REJECTED", "原解读未通过当前事实校验。请先重新解读或编辑问题后重试。", 409)
             interpretation_payload["interpretation"] = readable_interpretation.model_dump(
                 mode="json"
             )
@@ -267,6 +335,7 @@ class ScientificReportService:
                 "summary": authoritative.summary,
                 "discussion": authoritative.discussion,
                 "conclusion": authoritative.conclusion,
+                "next_steps": authoritative.next_steps,
                 "main_findings": authoritative.main_findings,
                 "primary_figures": authoritative.primary_figures,
                 "supporting_results": authoritative.supporting_results,
@@ -373,6 +442,8 @@ class ScientificReportService:
         input_payload: dict[str, Any],
         context_fingerprint: str,
         literature_sources: list[ReportLiteratureSource] | None = None,
+        generation_id: UUID | None = None,
+        expected_attempt: int | None = None,
     ) -> None:
         """Persist a bounded report context selection before composition."""
         items: list[dict[str, Any]] = []
@@ -399,7 +470,7 @@ class ScientificReportService:
             "content": {
                 "result_snapshot_id": str(snapshot["id"]),
                 "result_id": str(bundle.result_id),
-                "fact_ids": [str(item.fact_id) for item in bundle.facts[:64]],
+                "fact_ids": list((input_payload.get("opaque_refs") or {}).get("facts") or []),
                 "result_item_ids": [str(item.id) for item in bundle.result_items[:24]],
                 "figure_ids": [str(item.figure_id) for item in bundle.figures[:16]],
                 "table_ids": [str(item.table_id) for item in bundle.tables[:16]],
@@ -471,6 +542,7 @@ class ScientificReportService:
             input_state="ACTUAL",
         )
         with self.repository_factory.unit_of_work() as unit:
+            self._require_report_attempt(unit, turn_id, generation_id, expected_attempt)
             unit.agent2.research_turn_events.append_turn_event({
                 "id": uuid4(),
                 "turn_id": turn_id,
@@ -486,34 +558,106 @@ class ScientificReportService:
     def _compose_with_one_repair(
         self,
         *,
+        turn_id: UUID | None = None,
         input_payload: dict[str, Any],
         bundle: ScientificResultBundle,
         interpretation: dict[str, Any],
+        ensure_current: Callable[[], None] | None = None,
     ) -> tuple[ScientificReportOutput, dict[str, Any], bool]:
+        output_schema = ScientificReportOutput.model_json_schema()
+        next_steps_text = report_next_steps_text(interpretation, bundle)
+        if next_steps_text is None:
+            output_schema["properties"]["next_steps"] = {"type": "null", "default": None}
+        else:
+            narrative = output_schema["$defs"]["ReportNarrativeSection"]
+            output_schema["properties"]["next_steps"] = {"anyOf": [
+                {"type": "null"},
+                {**narrative, "properties": {
+                    **narrative["properties"],
+                    "text": {**narrative["properties"]["text"], "const": next_steps_text},
+                }},
+            ], "default": None}
+        limitation_sources = output_schema["$defs"]["ReportLimitation"]["properties"]["source_refs"]
+        limitation_sources["description"] = "Only matching IDs from input.opaque_refs.limitations or input.opaque_refs.evidence. Never a finding_id."
+        supplied_refs = input_payload.get("opaque_refs") or {}
+        allowed_sources = sorted(set([*supplied_refs.get("limitations", []), *supplied_refs.get("evidence", [])]))
+        # Make reference categories concrete in the provider's schema without
+        # introducing a new, unbounded copy of the complete evidence context.
+        # Validation still checks every returned reference against the Result.
+        if allowed_sources and len(json.dumps(allowed_sources)) <= 4096:
+            limitation_sources["items"]["enum"] = allowed_sources
         repair_errors: list[str] | None = None
         for attempt in range(2):
+            if ensure_current is not None:
+                ensure_current()
+            repair = {"validation_errors": repair_errors[:16]} if repair_errors else None
+            if repair is not None and any(error.startswith("figure contains an unsupported") for error in repair_errors):
+                repair["figure_caption_guidance"] = (
+                    "Review every primary_figures caption. A figure_ref or plot evidence"
+                    " does not supply missing quantitative fact support. Prefer a short"
+                    " qualitative caption describing the saved visual; keep requested"
+                    " measurements and their exact references in main_findings."
+                    " If a caption retains any number or unit, its own fact_refs or"
+                    " evidence_refs must support that exact claim. Preserve all supplied"
+                    " figure_ref identities and all requested scientific subjects."
+                )
+            if repair is not None and any(error.startswith("limitation.source_refs contains unknown reference:") for error in repair_errors):
+                repair["limitation_reference_guidance"] = {
+                    "supplied_limitation_ids": list((input_payload.get("opaque_refs") or {}).get("limitations") or [])[:32],
+                    "instruction": "Use the matching supplied limitation_id or an evidence_id from the input. A finding_id belongs only in finding_refs, never limitation.source_refs. Keep the limitation statement; do not invent or substitute an unrelated source.",
+                }
             try:
                 result = asyncio.run(self.client.generate_structured(
                     input_payload=input_payload,
-                    output_schema=ScientificReportOutput.model_json_schema(),
+                    output_schema=output_schema,
                     timeout_seconds=self.timeout_seconds,
                     request_context={
+                        "turn_id": str(turn_id) if turn_id else None,
                         "repair_attempted": attempt == 1,
-                        "repair": {"validation_errors": repair_errors[:16]} if repair_errors else None,
+                        "repair": repair,
                     },
                 ))
                 output = ScientificReportOutput.model_validate(result.parsed)
             except ValidationError as exc:
                 if attempt == 0:
-                    repair_errors = [str(error) for error in exc.errors()][:16]
+                    repair_errors = _report_schema_repair_context(exc)
                     continue
                 raise ScientificReportError("REPORT_SCHEMA_INVALID", "报告输出未通过结构化 schema 校验。", 422) from exc
+            except LLMProviderError as exc:
+                provider_code = "PROVIDER_TIMEOUT" if exc.code in PROVIDER_TIMEOUT_CODES else exc.code
+                provider_failures = {
+                    "PROVIDER_TIMEOUT": "模型响应超时，报告尚未生成。",
+                    "PROVIDER_RATE_LIMITED": "模型服务请求受限，请稍后重试报告生成。",
+                    "PROVIDER_AUTH_FAILED": "模型连接认证失败，请检查密钥和使用权限。",
+                    "PROVIDER_REQUEST_REJECTED": "模型服务拒绝报告请求，请检查所选模型和请求协议。",
+                    "PROVIDER_OUTPUT_TRUNCATED": "模型输出达到长度上限，报告内容不完整。",
+                    "PROVIDER_INVALID_RESPONSE": "模型服务未返回有效的结构化报告内容。",
+                    "EXTERNAL_UNAVAILABLE": "暂时无法连接模型服务，报告尚未生成。",
+                }
+                if provider_code in provider_failures:
+                    raise ScientificReportError(f"REPORT_{provider_code}", provider_failures[provider_code], 503) from None
+                raise ScientificReportError("REPORT_COMPOSITION_FAILED", "科学结果已完成，但报告整理暂时未完成。", 503) from None
             except Exception as exc:
                 raise ScientificReportError("REPORT_COMPOSITION_FAILED", "科学结果已完成，但报告整理暂时未完成。", 503) from exc
             errors = self.validator.validate(output, bundle=bundle, interpretation=interpretation)
             if errors and attempt == 0:
                 repair_errors = errors[:16]
                 continue
+            if errors and all(error.startswith("summary ") or error.startswith("summary:") for error in errors):
+                # The abstract is a deterministic scope overview, never a
+                # provider's extra scientific claim. After the bounded repair,
+                # replace only this discarded field and revalidate the whole
+                # report. Findings, captions and references cannot use this path.
+                readable = project_grounded_communication(
+                    ScientificInterpretationOutput.model_validate(interpretation["interpretation"]), bundle,
+                )
+                if validate_interpretation(readable, bundle).valid:
+                    authoritative = DeterministicScientificReportComposer().compose(
+                        bundle=bundle, interpretation={**interpretation, "interpretation": readable.model_dump(mode="json")},
+                        relevance_status=bundle.relevance_status.value,
+                    )
+                    output = output.model_copy(update={"summary": authoritative.summary})
+                    errors = self.validator.validate(output, bundle=bundle, interpretation=interpretation)
             if errors and all(
                 error.startswith("report.data_sources contains unknown reference:")
                 for error in errors
@@ -986,6 +1130,11 @@ class ScientificReportService:
     def _with_viewer_sources(payload: dict[str, Any], session: Any, row: dict[str, Any]) -> dict[str, Any]:
         snapshot = session.agent2.scientific_result_snapshots.get(row["scientific_result_snapshot_id"])
         bundle = ScientificResultBundle.model_validate(snapshot["bundle_json"])
+        if (str(snapshot.get("id")) != str(row["scientific_result_snapshot_id"])
+                or str(snapshot.get("project_id")) != str(row.get("project_id"))
+                or bundle.project_id != str(row.get("project_id"))
+                or str(bundle.research_turn_id) != str(snapshot.get("research_turn_id"))):
+            raise ScientificReportError("REPORT_RESULT_BINDING_INVALID", "报告的科学结果来源未能核对。", 409)
         sources = []
         for index, ref in enumerate(bundle.source_object_refs[:8], start=1):
             try:
@@ -993,9 +1142,17 @@ class ScientificReportService:
                 version = session.agent2.scientific_objects.get_version(ref.version_id)
             except Exception:
                 continue
+            if (str(obj.get("id")) != str(ref.object_id) or str(obj.get("project_id")) != bundle.project_id
+                    or str(version.get("id")) != str(ref.version_id)
+                    or str(version.get("scientific_object_id")) != str(ref.object_id)
+                    or str(version.get("object_type")) != ref.object_type):
+                continue
             sources.append({
                 "source_ref": f"source_{index}", "object_id": str(ref.object_id), "version_id": str(ref.version_id),
-                "object_type": str(version["object_type"]), "display_name": str(obj["display_name"]),
+                "object_type": str(version["object_type"]),
+                # Multi-source snapshots retain the exact, validated file label;
+                # the parent objects may all share their dataset's display name.
+                "display_name": str((ref.display_name if len(bundle.source_object_refs) > 1 else None) or obj["display_name"]),
                 "is_current_version": str(obj.get("current_version_id")) == str(ref.version_id),
                 # Lifecycle remains communication metadata derived from the
                 # authoritative object. It is intentionally separate from
@@ -1008,23 +1165,99 @@ class ScientificReportService:
         # artifact authority. Keep this bounded and derived from the immutable
         # ScientificResult bundle; never accept arbitrary report-provided URLs.
         job_id = str(bundle.provenance.job_id or row.get("job_id") or "")
+        artifact_repository = getattr(getattr(session, "repositories", None), "artifacts", None)
+        job_artifacts = artifact_repository.list_for_job(job_id) if artifact_repository and job_id else []
+        owned_artifacts = {
+            str(item.get("id") or item.get("artifactId")): item
+            for item in job_artifacts
+            if str(item.get("jobId")) == job_id and str(item.get("projectId")) == bundle.project_id
+            and str(item.get("id") or item.get("artifactId")) in bundle.provenance.artifact_ids
+        }
+        # Reclassify historical scene tables for display without changing snapshots.
+        scene_figures = list(bundle.figures)
+        depicted = {aid for figure in scene_figures for aid in figure.artifact_ids}
+        for table in bundle.tables[:16]:
+            if table.table_type != "structure.viewer_scene":
+                continue
+            scene_ids = [aid for aid in table.artifact_ids if aid not in depicted
+                         and owned_artifacts.get(aid, {}).get("type") == "structure_json"]
+            if scene_ids:
+                scene_figures.append(ScientificFigure(
+                    figure_id=f"figure.{table.table_id}", figure_type="structure.viewer_scene",
+                    role=table.role, title="晶体结构", artifact_ids=scene_ids,
+                    fact_refs=list(table.fact_refs), evidence_refs=list(table.evidence_refs),
+                ))
+                depicted.update(scene_ids)
+        bundle = bundle.model_copy(update={"figures": scene_figures})
+        phonon_file_types = {"phonon_band_json", "phonon_summary_json"}
+        repositories = getattr(session, "repositories", None)
+        plan_repository = getattr(repositories, "analysis_plans", None)
+        call_repository = getattr(repositories, "tool_calls", None)
+        job_repository = getattr(repositories, "jobs", None)
+        plan = {}
+        plan_id = ""
+        if plan_repository and job_repository and job_id:
+            try:
+                job = job_repository.get(job_id)
+                candidate_id = str(job.get("planId") or "")
+                snapshot_plan_id = str(bundle.provenance.analysis_plan_id or "")
+                if (str(job.get("projectId")) == bundle.project_id and candidate_id
+                        and (not snapshot_plan_id or snapshot_plan_id == candidate_id)
+                        and (not row.get("job_id") or str(row["job_id"]) == job_id)):
+                    plan_id = candidate_id
+                    plan = plan_repository.get_plan(plan_id)
+            except LookupError:
+                pass
+        calls = call_repository.list_for_job(job_id) if call_repository and job_id else []
+        saved_calls = [call for call in calls if str(call.get("id")) in bundle.provenance.tool_call_ids]
+        bundle = bundle.model_copy(update={"figures": [
+            figure.model_copy(update={"title": scientific_figure_title(
+                figure.title, figure.artifact_ids, artifacts=job_artifacts,
+                calls=saved_calls,
+                job_id=job_id, project_id=bundle.project_id,
+            )}) if all(aid in owned_artifacts for aid in figure.artifact_ids) else figure
+            for figure in bundle.figures
+        ], "tables": [
+            table.model_copy(update={"title": scientific_table_title(
+                table.title, table.artifact_ids, artifacts=job_artifacts, calls=saved_calls,
+                job_id=job_id, project_id=bundle.project_id,
+            )}) if all(aid in owned_artifacts for aid in table.artifact_ids) else table
+            for table in bundle.tables
+        ]})
+        volumetric = volumetric_report_figures(bundle, job_artifacts, calls)
+        volume_descriptors = {figure.figure_id: descriptors for figure, descriptors in volumetric}
+        if volumetric:
+            volume_ids = {aid for figure, _ in volumetric for aid in figure.artifact_ids}
+            bundle = bundle.model_copy(update={"figures": [
+                *(figure for figure in bundle.figures if not volume_ids.intersection(figure.artifact_ids)),
+                *(figure for figure, _ in volumetric),
+            ]})
+        figure_versions = {
+            str(figure.figure_id): artifact_input_versions(
+                artifact_ids=[str(value) for value in figure.artifact_ids], artifacts=owned_artifacts,
+                calls=calls, plan=plan, project_id=bundle.project_id, job_id=job_id,
+                plan_id=plan_id,
+            ) for figure in bundle.figures[:16]
+        }
         figure_sources = [
             {
                 "figure_ref": str(figure.figure_id),
                 "artifact_ids": [str(artifact_id) for artifact_id in figure.artifact_ids[:8]],
                 "job_id": job_id or None,
+                **({"renderer": "volumetric", "artifacts": volume_descriptors[figure.figure_id]}
+                   if figure.figure_id in volume_descriptors else {}),
                 **(
                     {
                         "object_id": str(source["object_id"]),
                         "version_id": str(source["version_id"]),
                         "object_type": str(source["object_type"]),
                     }
-                    if (
+                    if len(figure_versions[str(figure.figure_id)]) == 1 and (
                         source := next(
                             (
                                 candidate
                                 for candidate in sources
-                                if str(candidate["object_type"]) == str(figure.figure_type)
+                                if str(candidate["version_id"]) in figure_versions[str(figure.figure_id)]
                             ),
                             None,
                         )
@@ -1034,11 +1267,22 @@ class ScientificReportService:
             }
             for figure in bundle.figures[:16]
         ]
+        table_versions = {
+            str(table.table_id): artifact_input_versions(
+                artifact_ids=[str(value) for value in table.artifact_ids], artifacts=owned_artifacts,
+                calls=calls, plan=plan, project_id=bundle.project_id, job_id=job_id,
+                plan_id=plan_id,
+            ) for table in bundle.tables[:16]
+        }
+        phonon_file_ids = {
+            artifact_id for artifact_id, artifact in owned_artifacts.items()
+            if artifact.get("type") in phonon_file_types
+        }
         table_sources = [
             {
                 "table_ref": str(table.table_id),
                 "title": str(table.title or table.table_type or table.table_id),
-                "artifact_ids": [str(artifact_id) for artifact_id in table.artifact_ids[:8]],
+                "artifact_ids": [str(artifact_id) for artifact_id in table.artifact_ids[:8] if str(artifact_id) not in phonon_file_ids],
                 "job_id": job_id or None,
                 "source_refs": [
                     {
@@ -1047,9 +1291,34 @@ class ScientificReportService:
                         "object_type": str(source["object_type"]),
                     }
                     for source in sources
+                    if str(source["version_id"]) in table_versions[str(table.table_id)]
                 ],
             }
             for table in bundle.tables[:16]
+            if table.table_type not in {"trajectory.viewer", "volumetric.field", "structure.viewer_scene"}
+            and any(str(artifact_id) not in phonon_file_ids for artifact_id in table.artifact_ids)
+        ]
+        # Older snapshots classified viewer/field JSON as tables. Keep
+        # their immutable bytes and identities, but expose files as files.
+        file_ids = list(dict.fromkeys(
+            artifact_id
+            for item in bundle.result_items
+            for artifact_id in item.artifact_ids
+            if artifact_id in bundle.provenance.artifact_ids
+            and (item.result_type in {"trajectory.viewer", "volumetric.field"} or artifact_id in phonon_file_ids
+                 or (item.result_type == "structure.viewer_scene" and artifact_id in owned_artifacts
+                     and owned_artifacts[artifact_id].get("type") != "structure_json"))
+        ))[:32]
+        file_names = {
+            str(item.get("id") or item.get("artifactId")): str(item.get("name") or "").strip()
+            for item in owned_artifacts.values()
+            if str(item.get("jobId")) == job_id and str(item.get("projectId")) == bundle.project_id
+            and str(item.get("id") or item.get("artifactId")) in file_ids
+        }
+        file_sources = [
+            {"artifact_id": artifact_id, "job_id": job_id or None,
+             "title": file_names.get(artifact_id) or artifact_id}
+            for artifact_id in file_ids
         ]
         report = payload.get("report")
         if isinstance(report, dict):
@@ -1062,6 +1331,11 @@ class ScientificReportService:
             interpretation_id = row.get("scientific_interpretation_id")
             if interpretation_repository is not None and interpretation_id is not None:
                 interpretation_row = interpretation_repository.get(UUID(str(interpretation_id)))
+                if (str(interpretation_row.get("id")) != str(interpretation_id)
+                        or str(interpretation_row.get("project_id")) != str(row.get("project_id"))
+                        or str(interpretation_row.get("research_turn_id")) != str(row.get("research_turn_id"))
+                        or str(interpretation_row.get("result_snapshot_id")) != str(snapshot["id"])):
+                    raise ScientificReportError("REPORT_INTERPRETATION_BINDING_INVALID", "报告的解读与科学结果来源未能核对。", 409)
                 report = ScientificReportService._project_authoritative_report(
                     ScientificReportOutput.model_validate(report),
                     bundle=bundle,
@@ -1091,12 +1365,27 @@ class ScientificReportService:
                 # provider response omitted this optional presentation field.
                 "data_sources": [str(source["source_ref"]) for source in sources],
             }
+        basis = report_scientific_basis(
+            snapshot_id=str(snapshot["id"]), bundle=bundle,
+            report=report if isinstance(report, dict) else {}, artifacts=job_artifacts, calls=saved_calls,
+            artifact_versions={
+                artifact_id: artifact_input_versions(
+                    artifact_ids=[artifact_id], artifacts=owned_artifacts, calls=saved_calls, plan=plan,
+                    project_id=bundle.project_id, job_id=job_id, plan_id=plan_id,
+                ) for artifact_id in {
+                    *(fact.source.artifact_id for fact in bundle.facts if fact.source.artifact_id),
+                    *(evidence.artifact_id for evidence in bundle.evidence if evidence.artifact_id),
+                }
+            },
+        )
         return {
             **payload,
             **({"report": report} if report is not None else {}),
             "viewer_sources": sources,
             "figure_sources": figure_sources,
             "table_sources": table_sources,
+            "file_sources": file_sources,
+            "scientific_basis": basis,
         }
 
     def list_project(self, project_id: str, *, limit: int = 50) -> dict[str, Any]:

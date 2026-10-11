@@ -1,0 +1,38 @@
+.tables { display: grid; gap: var(--ds-space-6); min-width: 0; }
+.group { min-width: 0; }
+.heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: var(--ds-space-2); }
+.heading h4 { margin: 0; color: var(--product-ink); font-size: 15px; font-weight: 600; }
+.heading a { display: inline-flex; min-height: var(--ds-control-touch); align-items: center; color: var(--product-accent); font-size: 14px; }
+.source { color: var(--product-secondary); font-size: 13px; overflow-wrap: anywhere; }
+.more { min-width: 0; }
+.more > summary { min-height: var(--ds-control-touch); padding-block: var(--ds-space-2); font-size: 14px; cursor: pointer; }
+.more > summary:focus-visible { outline: 2px solid var(--product-accent); outline-offset: 2px; }
+.more[open] > summary { margin-bottom: var(--ds-space-3); }
+.summary { display: flex; flex-wrap: wrap; gap: var(--ds-space-2) var(--ds-space-5); margin: var(--ds-space-2) 0 var(--ds-space-3); font-size: 13px; }
+.summary > div { display: flex; gap: var(--ds-space-2); align-items: baseline; }
+.summary dt { color: var(--product-secondary); }
+.summary dd { margin: 0; font-variant-numeric: tabular-nums; }
+.toolbar { display: flex; flex-wrap: wrap; gap: var(--ds-space-2); margin-block: var(--ds-space-2); }
+.toolbar input { flex: 1 1 160px; width: 100%; max-width: 300px; min-width: 0; min-height: var(--ds-control-touch); border: 1px solid var(--product-border); border-radius: var(--ds-radius-sm); padding: var(--ds-space-2) var(--ds-space-3); background: var(--product-subtle); color: var(--product-ink); font: inherit; font-size: 14px; }
+.toolbar button, .pagination button { min-height: var(--ds-control-touch); padding: var(--ds-space-2) var(--ds-space-3); border: 1px solid var(--product-border); border-radius: var(--ds-radius-sm); background: var(--product-surface); color: var(--product-ink); font: inherit; font-size: 13px; cursor: pointer; }
+.toolbar button:hover, .pagination button:not(:disabled):hover { background: var(--product-subtle); }
+.pagination button:disabled { opacity: .45; cursor: default; }
+.group :focus-visible { outline: 2px solid var(--product-accent); outline-offset: 2px; }
+.scroll { position: relative; max-width: 100%; overflow-x: auto; border-block: 1px solid var(--product-border); margin-top: var(--ds-space-2); }
+.scroll table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.scroll th, .scroll td { padding: var(--ds-space-3); border-bottom: 1px solid var(--product-border); vertical-align: top; }
+.scroll tbody tr:last-child > * { border-bottom: 0; }
+.scroll thead th { color: var(--product-secondary); font-weight: 500; background: var(--product-subtle); white-space: nowrap; }
+.scroll tbody th { font-weight: 500; }
+.scroll .name { text-align: left; min-width: 120px; max-width: 260px; overflow-wrap: anywhere; }
+.scroll .number { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.scroll.pairs table { table-layout: fixed; min-width: 0; }
+.pairs .name { width: 34%; min-width: 0; }
+.pairs .number { width: 32%; white-space: nowrap; }
+.pagination { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: var(--ds-space-2); margin-top: var(--ds-space-2); }
+.pagination > span { margin-right: auto; font-size: 13px; color: var(--product-secondary); font-variant-numeric: tabular-nums; }
+.empty { color: var(--product-secondary); font-size: 14px; padding-block: var(--ds-space-3); }
+@media (max-width: 480px) {
+  .scroll th, .scroll td { padding: var(--ds-space-2); }
+  .summary { gap: var(--ds-space-1) var(--ds-space-3); }
+}

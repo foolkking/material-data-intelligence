@@ -25,8 +25,8 @@ class InMemoryAnalysisPlanRepository(_InMemoryRecordRepository):
         if existing is not None:
             existing_schema = (existing.get("analysisPlan") or {}).get("schemaVersion")
             new_schema = normalized["analysisPlan"].get("schemaVersion")
-            if "0.2" in {existing_schema, new_schema} and existing.get("planHash") != normalized["planHash"]:
-                raise ValueError("AnalysisPlan 0.2 records are immutable")
+            if {"0.2", "0.3", "0.4"}.intersection({existing_schema, new_schema}) and existing.get("planHash") != normalized["planHash"]:
+                raise ValueError("Dependency AnalysisPlan records are immutable")
         return _analysis_plan_from_record(self._save(normalized, record_id=plan_id))
 
     def get_plan(self, plan_id: str) -> dict[str, Any]:

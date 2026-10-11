@@ -61,6 +61,9 @@ export type ValidatedRenderScene = {
   }>;
   readonly formula: string;
   readonly warnings: readonly string[];
+  readonly sourcePreview?: boolean;
+  readonly sourcePreviewWarning?: string;
+  readonly connectivity?: Readonly<{ method: "covalent_radii"; radiusScale: number; radiusReference: string } | { method: "ideal_first_shell" }>;
 };
 
 export type ViewerSceneValidation = {

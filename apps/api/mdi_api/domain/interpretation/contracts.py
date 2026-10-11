@@ -25,7 +25,7 @@ class FindingConfidence(str, Enum):
     LIMITED = "LIMITED"
 
 
-class ScientificFinding(BaseModel):
+class ScientificFindingProposal(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
     finding_id: str = Field(min_length=1, max_length=128)
@@ -41,26 +41,31 @@ class ScientificFinding(BaseModel):
     qualifiers: list[str] = Field(default_factory=list, max_length=16)
     comparison_status: MethodComparisonStatus | None = None
     hypothesis_status: str | None = Field(default=None, max_length=64)
+
+
+class ScientificFinding(ScientificFindingProposal):
+    """Stored finding, including the server-owned support assessment."""
+
     reasoning_assessment: ClaimSupportAssessment | None = None
 
 
-class ScientificInterpretationOutput(BaseModel):
-    """The only provider output accepted by the Agent2 conversation path."""
+class ScientificInterpretationProposal(BaseModel):
+    """Provider-authored fields before deterministic scientific assessment."""
 
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
     contract_version: Literal["1.0", "1.1"]
     title: str = Field(min_length=1, max_length=256)
     answer_lead: str = Field(min_length=1, max_length=4000)
-    primary_findings: list[ScientificFinding] = Field(default_factory=list, max_length=8)
-    supporting_findings: list[ScientificFinding] = Field(default_factory=list, max_length=16)
+    primary_findings: list[ScientificFindingProposal] = Field(default_factory=list, max_length=8)
+    supporting_findings: list[ScientificFindingProposal] = Field(default_factory=list, max_length=16)
     limitations: list[str] = Field(default_factory=list, max_length=16)
     primary_result_refs: list[str] = Field(default_factory=list, max_length=16)
     supporting_result_refs: list[str] = Field(default_factory=list, max_length=32)
     follow_up_suggestions: list[str] = Field(default_factory=list, max_length=8)
 
     @model_validator(mode="after")
-    def validate_ids(self) -> "ScientificInterpretationOutput":
+    def validate_ids(self) -> "ScientificInterpretationProposal":
         findings = [*self.primary_findings, *self.supporting_findings]
         ids = [item.finding_id for item in findings]
         if len(ids) != len(set(ids)):
@@ -68,6 +73,13 @@ class ScientificInterpretationOutput(BaseModel):
         if not findings:
             raise ValueError("at least one grounded finding is required")
         return self
+
+
+class ScientificInterpretationOutput(ScientificInterpretationProposal):
+    """Persisted and readable interpretation with server support assessments."""
+
+    primary_findings: list[ScientificFinding] = Field(default_factory=list, max_length=8)
+    supporting_findings: list[ScientificFinding] = Field(default_factory=list, max_length=16)
 
 
 class InterpretationInputEnvelope(BaseModel):

@@ -12,7 +12,7 @@ from .analysis_intent import CapabilityNeed, DesiredOutput, ScientificIntent
 
 
 CAPABILITY_PLANNING_SCHEMA_VERSION = "1.0"
-CAPABILITY_PLANNING_MAX_REGISTRY_TOOLS = 64
+CAPABILITY_PLANNING_MAX_REGISTRY_TOOLS = 128
 CAPABILITY_PLANNING_MAX_ELIGIBLE_TOOLS = 32
 CAPABILITY_PLANNING_MAX_DIAGNOSTICS = 256
 CAPABILITY_PLANNING_MAX_BINDING_VALUES = 64
@@ -83,12 +83,13 @@ class ToolPlannerMetadata(StrictCapabilityModel):
     scientificIntents: list[ScientificIntent] = Field(min_length=1, max_length=16)
     capabilityNeeds: list[CapabilityNeed] = Field(default_factory=list, max_length=16)
     desiredOutputs: list[DesiredOutput] = Field(min_length=1, max_length=16)
-    acceptedObjectTypes: list[str] = Field(min_length=1, max_length=16)
-    inputObjectTypeOptions: list[list[str]] = Field(min_length=1, max_length=16)
+    executionScope: Literal["MATERIAL", "PROJECT"] = "MATERIAL"
+    acceptedObjectTypes: list[str] = Field(default_factory=list, max_length=16)
+    inputObjectTypeOptions: list[list[str]] = Field(default_factory=list, max_length=16)
     requiredProfileCapabilities: list[str] = Field(default_factory=list, max_length=16)
     requiredTargetRoles: list[str] = Field(default_factory=list, max_length=16)
-    minInputs: int = Field(default=1, ge=1, le=32)
-    maxInputs: int = Field(default=1, ge=1, le=32)
+    minInputs: int = Field(default=1, ge=0, le=32)
+    maxInputs: int = Field(default=1, ge=0, le=32)
     minTargets: int = Field(default=0, ge=0, le=32)
     maxTargets: int = Field(default=32, ge=0, le=32)
     parameterBindings: list[PlannerParameterBinding] = Field(default_factory=list, max_length=32)
@@ -100,6 +101,12 @@ class ToolPlannerMetadata(StrictCapabilityModel):
 
     @model_validator(mode="after")
     def validate_metadata(self) -> "ToolPlannerMetadata":
+        if self.executionScope == "PROJECT":
+            if (self.acceptedObjectTypes or self.inputObjectTypeOptions or self.minInputs or self.maxInputs
+                    or self.requiredProfileCapabilities or self.requiredTargetRoles or self.parameterBindings):
+                raise ValueError("Project tools cannot require material, profile or resource bindings.")
+        elif not self.acceptedObjectTypes or not self.inputObjectTypeOptions or self.minInputs < 1 or self.maxInputs < 1:
+            raise ValueError("Material tools require explicit non-empty source inputs.")
         if self.minInputs > self.maxInputs or self.minTargets > self.maxTargets:
             raise ValueError("Planner metadata cardinality is impossible.")
         collections = (

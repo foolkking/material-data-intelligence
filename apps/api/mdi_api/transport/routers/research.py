@@ -9,35 +9,33 @@ from typing import Any, Literal
 from fastapi import Depends, HTTPException
 from pydantic import BaseModel, Field, model_validator
 from sqlalchemy import func, insert, inspect, select, update
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from mdi_api.config import load_settings
 from mdi_api.infrastructure.persistence.engine import create_engine_from_settings
 from mdi_api.access import require_project_access
 from mdi_api.db import (
-    agent2_scientific_interpretations,
     data_profiles,
     datasets,
     jobs,
     messages,
     research_session_runs,
     research_turns,
-    scientific_result_snapshots,
     sessions,
     metadata,
 )
-from mdi_api.application.interpretation.grounding import project_grounded_communication
-from mdi_api.application.interpretation.projector import AssistantResponseProjector
-from mdi_api.domain.interpretation.contracts import ScientificInterpretationOutput
+from mdi_api.infrastructure.interpretation.message_projection import (
+    scientific_message_projections as _scientific_message_projections,
+)
 from mdi_api.lifecycle_policy import retention_policy_snapshot
 from mdi_api.transport.routers.auth import CurrentUser, get_current_user
-from mdi_api.domain.scientific_results.contracts import ScientificResultBundle
 from mdi_llm.research_roles import orchestrate_research_turn
 
 
 class ResearchSessionCreate(BaseModel):
     title: str = Field(default="未命名研究", min_length=1, max_length=200)
     datasetId: str | None = None
+    creationKey: uuid.UUID | None = None
 
 
 class ResearchSessionUpdate(BaseModel):
@@ -207,7 +205,14 @@ def list_sessions(project_id: str, current_user: CurrentUser = Depends(get_curre
 
 def create_session(project_id: str, request: ResearchSessionCreate, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
     engine = create_engine_from_settings(load_settings())
-    session_id = f"research_{uuid.uuid4().hex}"
+    # Scope retry identity to the authenticated creator and initial data scope.
+    # The existing primary key also arbitrates concurrent deliveries; no runtime
+    # cache or new migration is needed. Titles/lifecycle remain user-editable.
+    identity = uuid.uuid5(uuid.NAMESPACE_URL, json.dumps(
+        ["mdi:research-session", project_id, current_user.id, request.datasetId, str(request.creationKey)],
+        separators=(",", ":"),
+    )) if request.creationKey else uuid.uuid4()
+    session_id = f"research_{identity.hex}"
     now = datetime.now(timezone.utc)
     requested_title = request.title.strip()
     title_override = (
@@ -219,13 +224,27 @@ def create_session(project_id: str, request: ResearchSessionCreate, current_user
         require_project_access(connection, project_id, current_user, write=True)
         if request.datasetId:
             _require_dataset_or_runtime(connection, project_id, request.datasetId)
-        connection.execute(insert(sessions).values(
-            id=session_id, project_id=project_id, dataset_id=request.datasetId,
-            mode="project", status="active", title_override=title_override,
-            is_pinned=False, created_by=current_user.id, created_at=now,
-        ))
+        row = connection.execute(select(sessions).where(sessions.c.id == session_id)).mappings().first()
+        if row is None:
+            try:
+                with connection.begin_nested():
+                    connection.execute(insert(sessions).values(
+                        id=session_id, project_id=project_id, dataset_id=request.datasetId,
+                        mode="project", status="active", title_override=title_override,
+                        is_pinned=False, created_by=current_user.id, created_at=now,
+                    ))
+            except IntegrityError:
+                # Only an identical keyed request can be reconciled. Preserve
+                # unrelated integrity failures and the outer transaction.
+                if not request.creationKey or connection.execute(
+                    select(sessions.c.id).where(sessions.c.id == session_id)
+                ).first() is None:
+                    raise
         row = connection.execute(select(sessions).where(sessions.c.id == session_id)).mappings().one()
-        return _session_view(row, connection)
+        result = _session_view(row, connection)
+        if request.creationKey:
+            result["creationKey"] = str(request.creationKey)
+        return result
 
 
 def get_session(session_id: str, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
@@ -1163,6 +1182,7 @@ def _message_view(row, *, content_override: str | None = None) -> dict[str, Any]
     payload = dict(row["payload_json"] or {})
     if content_override is not None:
         payload["contentProjection"] = "GROUNDED_READ_MODEL_2_0"
+        payload["responseFormat"] = "markdown"
     return {
         "id": row["id"],
         "sessionId": row["session_id"],
@@ -1173,85 +1193,6 @@ def _message_view(row, *, content_override: str | None = None) -> dict[str, Any]
         "createdAt": created_at,
         "created_at": created_at,
     }
-
-
-def _scientific_message_projections(
-    message_rows: list[Any],
-    connection: Any,
-    *,
-    project_id: str,
-) -> dict[str, str]:
-    """Batch-project historical scientific finals through current grounding.
-
-    Persisted Message content remains immutable audit evidence. The session
-    read model uses the exact persisted Interpretation and Result to present a
-    bounded, current communication projection without N+1 queries or any
-    scientific recomputation.
-    """
-    message_by_interpretation: dict[uuid.UUID, list[str]] = {}
-    for row in message_rows:
-        payload = row["payload_json"] or {}
-        if (
-            row["role"] != "agent"
-            or payload.get("messageKind") != "ASSISTANT_FINAL"
-            or payload.get("source") != "agent2_scientific_interpreter"
-        ):
-            continue
-        try:
-            interpretation_id = uuid.UUID(str(payload.get("interpretationId")))
-        except (TypeError, ValueError):
-            continue
-        message_by_interpretation.setdefault(interpretation_id, []).append(str(row["id"]))
-    if not message_by_interpretation:
-        return {}
-    try:
-        interpretation_rows = connection.execute(
-            select(agent2_scientific_interpretations).where(
-                agent2_scientific_interpretations.c.id.in_(
-                    list(message_by_interpretation)
-                ),
-                agent2_scientific_interpretations.c.project_id == project_id,
-            )
-        ).mappings().all()
-        snapshot_ids = [row["result_snapshot_id"] for row in interpretation_rows]
-        snapshot_rows = connection.execute(
-            select(scientific_result_snapshots).where(
-                scientific_result_snapshots.c.id.in_(snapshot_ids),
-                scientific_result_snapshots.c.project_id == project_id,
-            )
-        ).mappings().all()
-    except SQLAlchemyError:
-        # Pre-Phase-6 compatibility databases remain readable; no historical
-        # content is rewritten or treated as a new scientific authority.
-        return {}
-    snapshots = {row["id"]: row for row in snapshot_rows}
-    projected: dict[str, str] = {}
-    projector = AssistantResponseProjector()
-    for interpretation_row in interpretation_rows:
-        snapshot = snapshots.get(interpretation_row["result_snapshot_id"])
-        if (
-            snapshot is None
-            or str(interpretation_row["project_id"]) != project_id
-            or str(snapshot["project_id"]) != project_id
-        ):
-            continue
-        try:
-            bundle = ScientificResultBundle.model_validate(snapshot["bundle_json"])
-            raw = (interpretation_row["output_json"] or {}).get("interpretation")
-            interpretation = project_grounded_communication(
-                ScientificInterpretationOutput.model_validate(raw),
-                bundle,
-            )
-            content = projector.project(
-                interpretation,
-                bundle,
-                effective_relevance=bundle.relevance_status.value,
-            )
-        except (TypeError, ValueError):
-            continue
-        for message_id in message_by_interpretation.get(interpretation_row["id"], []):
-            projected[message_id] = content
-    return projected
 
 
 def _bind_run(connection: Any, *, session_id: str, job_id: str, created_at: datetime) -> bool:

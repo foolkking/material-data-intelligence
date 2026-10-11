@@ -88,15 +88,16 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     expect(getWorkspaceMock).toHaveBeenCalledWith("workspace_demo", expect.objectContaining({ signal: expect.any(AbortSignal) }));
   });
 
-  it("returns to Research with the persisted Turn relation when available", async () => {
+  it.each([undefined, "session_exact"])("returns to Research with the persisted relation (session=%s)", async (sessionId) => {
     const snapshot = workspaceSnapshotFixture();
     snapshot.sourceSummary.researchTurnId = "turn_exact";
+    snapshot.sourceSummary.researchSessionId = sessionId;
     getWorkspaceMock.mockResolvedValue({ data: snapshot, status: 200, etag: "etag", idempotentReplay: null });
     render(<ScientificWorkspaceShell workspaceId="workspace_demo" />);
     await screen.findByTestId("scientific-workspace-shell");
     expect(screen.getByRole("link", { name: "返回项目研究" })).toHaveAttribute(
       "href",
-      "/projects/project_demo/research?run=job_demo&turn=turn_exact",
+      sessionId ? "/projects/project_demo/research/session_exact?turn=turn_exact" : "/projects/project_demo/research?run=job_demo&turn=turn_exact",
     );
   });
 
@@ -210,7 +211,7 @@ describe("Phase 10M-2 ScientificWorkspaceShell", () => {
     expect(await screen.findByText(/bounded payload record/u)).not.toBeNull();
     expect(getContentMock).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("table")).toHaveTextContent("object_1");
-    expect(screen.getByRole("region", { name: "已验证的数据表，可横向滚动查看完整列" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "数据表，可横向滚动查看完整列" })).toBeInTheDocument();
     expect(screen.getByTestId("workspace-scientific-viewer")).toHaveTextContent("Validated, exact-scope payload");
   });
 

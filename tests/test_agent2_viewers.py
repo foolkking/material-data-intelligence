@@ -7,6 +7,7 @@ from uuid import UUID, uuid4
 from botocore.exceptions import ClientError
 from fastapi.testclient import TestClient
 import pytest
+from pymatgen.core import Lattice, Structure
 from sqlalchemy import create_engine, func, insert, select
 from sqlalchemy.pool import StaticPool
 
@@ -85,7 +86,8 @@ def _object(objects, storage, *, object_type: str, kind: ScientificObjectKind, p
 _HISTORICAL_VIEWER_CASES = (
     ("materials.dataset", ScientificObjectKind.DATASET, {"rows": [{"sample_id": "v1"}]}),
     ("materials.table", ScientificObjectKind.TABLE, {"rows": [{"sample_id": "v1"}]}),
-    ("structure.crystal", ScientificObjectKind.STRUCTURE, {"sites": [{"species": "Si", "abc": [0, 0, 0]}]}),
+    ("structure.crystal", ScientificObjectKind.STRUCTURE, json.loads(json.dumps(Structure.from_spacegroup("Fd-3m", Lattice.cubic(5.43), ["Si"], [[0, 0, 0]]).as_dict()))),
+    ("structure.atomic", ScientificObjectKind.STRUCTURE, {"symbols": ["O", "H", "H"], "positions": [[0, 0, 0], [0.9572, 0, 0], [-0.2399872, 0.927297, 0]]}),
     ("trajectory.atomic", ScientificObjectKind.TRAJECTORY, {"frames": [{"time_ps": 0, "positions": []}]}),
     ("diffraction.xrd.experimental", ScientificObjectKind.DIFFRACTION, {"x": [1.0], "y": [2.0]}),
     ("diffraction.xrd.theoretical", ScientificObjectKind.DIFFRACTION, {"x": [1.0], "y": [3.0]}),
@@ -159,6 +161,13 @@ def test_phase14r_historical_viewers_remain_exact_after_new_version_and_archive(
     assert projection.version_id != UUID(str(second["id"]))
     assert projection.is_current_version is False
     assert projection.payload_status == "READY"
+
+    if object_type.startswith("structure."):
+        assert projection.payload == payload
+        assert projection.viewer_scene is not None
+        assert projection.viewer_scene["provenance"]["source_version_id"] == str(first["id"])
+        assert projection.viewer_scene["provenance"]["source_hash"] == first["content_hash"]
+        assert len(projection.viewer_scene["scene"]["bonds"]) == (16 if object_type == "structure.crystal" else 2)
 
     restored = objects.update_metadata(logical["id"], lifecycle="ACTIVE")
     assert restored["id"] == logical["id"]
@@ -321,6 +330,17 @@ def test_phase9_authorized_viewer_api_is_read_only_and_cross_project_safe(
     assert response.json()["version_id"] == str(version["id"])
     assert response.json()["viewer"]["renderer_key"]
     assert before == after == [0, 0, 0, 0, 0]
+
+    if object_type.startswith("structure."):
+        body = response.json()
+        assert body["payload"] == payload
+        assert body["viewer_scene_issue"] is None
+        scene = body["viewer_scene"]
+        assert scene["provenance"]["source_object_id"] == str(logical["id"])
+        assert scene["provenance"]["source_version_id"] == str(version["id"])
+        assert scene["provenance"]["source_hash"] == version["content_hash"]
+        assert scene["provenance"]["scientific_analysis_result"] is False
+        assert len(scene["scene"]["bonds"]) == (16 if object_type == "structure.crystal" else 2)
 
     active["user"] = stranger
     rejected = client.get(f"/api/scientific-objects/{logical['id']}/versions/{version['id']}/viewer")

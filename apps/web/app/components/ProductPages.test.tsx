@@ -1,10 +1,13 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
+  searchQuery: "",
+  sourceSelection: null as unknown,
   listProjects: vi.fn(),
   createProject: vi.fn(),
+  getAuthUser: vi.fn(),
   updateProject: vi.fn(),
   bulkProjectAction: vi.fn(),
   deleteEmptyProject: vi.fn(),
@@ -29,7 +32,7 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("next/link", () => ({ default: ({ children, href, prefetch: _prefetch, ...props }: { children: React.ReactNode; href: string; prefetch?: boolean | null }) => <a href={href} {...props}>{children}</a> }));
 vi.mock("next/navigation", () => ({
-  useSearchParams: () => new URLSearchParams(),
+  useSearchParams: () => new URLSearchParams(mocks.searchQuery),
   useRouter: () => ({
     back: vi.fn(),
     forward: vi.fn(),
@@ -39,6 +42,7 @@ vi.mock("next/navigation", () => ({
     replace: mocks.routerReplace,
   }),
 }));
+vi.mock("../lib/product-api", async (original) => ({ ...await original<typeof import("../lib/product-api")>(), getAuthUser: mocks.getAuthUser }));
 vi.mock("../lib/planner-api", () => ({
   listProjects: mocks.listProjects,
   createProject: mocks.createProject,
@@ -67,10 +71,10 @@ vi.mock("../lib/scientific-viewer-api", () => ({
   updateScientificObject: mocks.updateScientificObject,
 }));
 vi.mock("../../scientific-viewers/ScientificViewerAdapter", () => ({
-  ScientificSourceViewer: ({ resource, onSelection }: { resource: { objectType: string }; onSelection?: (selection: unknown) => void }) => <div data-testid="quick-preview-scientific-viewer">{resource.objectType}{onSelection ? <button type="button" aria-label="选择第一条科学数据" onClick={() => onSelection({ schemaVersion: "1.0", sourceScopeHash: "scope", primary: { kind: "DATASET_SAMPLE", sampleRef: "BaTiO3" }, secondary: [], propagation: "EXACT_COMPATIBLE_ONLY", compatibility: "EXACT", cleared: false })}>选择</button> : null}</div>,
+  ScientificSourceViewer: ({ resource, selection, onSelection }: { resource: { objectType: string; objectId?: string }; selection?: { primary?: { sampleRef?: string } }; onSelection?: (selection: unknown) => void }) => <div data-testid="quick-preview-scientific-viewer" data-object={resource.objectId} data-sample={selection?.primary?.sampleRef}>{resource.objectType}{onSelection ? <button type="button" aria-label="选择第一条科学数据" onClick={() => onSelection(mocks.sourceSelection || { schemaVersion: "1.0", sourceScopeHash: "scope", primary: { kind: "DATASET_SAMPLE", sampleRef: "BaTiO3" }, secondary: [], propagation: "EXACT_COMPATIBLE_ONLY", compatibility: "EXACT", cleared: false })}>选择</button> : null}</div>,
 }));
 vi.mock("../../scientific-viewers/scientific-viewer/ScientificObjectViewer", () => ({
-  ScientificObjectViewer: () => <div data-testid="scientific-object-viewer" />,
+  ScientificObjectViewer: ({ objectId, versionId, canManage, canResearch }: { objectId: string; versionId: string; canManage: boolean; canResearch: boolean }) => <div data-testid="scientific-object-viewer" data-object={objectId} data-version={versionId} data-can-manage={String(canManage)} data-can-research={String(canResearch)} />,
 }));
 
 import {
@@ -89,8 +93,14 @@ import {
   validateWorkspaceSelectionContext,
 } from "./workspace/workspace-selection-contract";
 
+afterEach(() => vi.unstubAllGlobals());
+
 beforeEach(() => {
   vi.clearAllMocks();
+  window.sessionStorage.clear();
+  mocks.getAuthUser.mockResolvedValue({ id: "creation-user", displayName: "研究员", roles: [] });
+  mocks.searchQuery = "";
+  mocks.sourceSelection = null;
   mocks.listProjects.mockResolvedValue([{ id: "project_1", projectId: "project_1", name: "Perovskite stability study", description: "材料稳定性研究", status: "active", role: "owner" }]);
   mocks.createProject.mockResolvedValue({ id: "project_2", projectId: "project_2", name: "新项目", status: "active", role: "owner" });
   mocks.updateProject.mockImplementation(async (projectId: string, changes: Record<string, unknown>) => ({
@@ -98,13 +108,13 @@ beforeEach(() => {
     projectId,
     name: typeof changes.name === "string" ? changes.name : "新项目",
     description: typeof changes.description === "string" ? changes.description : undefined,
-    status: changes.lifecycle === "TRASHED" ? "trashed" : "active",
+    status: changes.lifecycle === "TRASHED" ? "trashed" : changes.archived ? "archived" : "active",
     role: "owner",
     ...(changes.pinned === undefined ? {} : { pinned: changes.pinned }),
     ...(changes.tags === undefined ? {} : { tags: changes.tags }),
     ...changes,
   }));
-  mocks.bulkProjectAction.mockResolvedValue({ action: "archive", projectIds: ["project_1"], count: 1 });
+  mocks.bulkProjectAction.mockImplementation(async (ids: string[], action: string) => ({ action, projectIds: ids, count: ids.length }));
   mocks.deleteEmptyProject.mockResolvedValue({ projectId: "project_1", deleted: true });
   mocks.getProjectDependencyImpact.mockResolvedValue({ entity: "project", entityId: "project_1", displayName: "项目", canDelete: true, dependencyCount: 0, dependencies: [], impact: { removedFromActiveDiscovery: false, historicalProvenanceProtected: false, historicalResearchRemainsAccessible: false } });
   mocks.getProjectExportManifest.mockResolvedValue({
@@ -117,7 +127,7 @@ beforeEach(() => {
     bounds: { truncated: {} }, excluded: ["credentials and secrets"],
   });
   mocks.updateDataset.mockResolvedValue({ id: "dataset_1", datasetId: "dataset_1", projectId: "project_1", name: "materials-table", status: "profile_ready" });
-  mocks.bulkDatasetAction.mockResolvedValue({ action: "archive", datasetIds: ["dataset_1"], count: 1 });
+  mocks.bulkDatasetAction.mockImplementation(async (datasetIds: string[], action: string) => ({ action, datasetIds, count: datasetIds.length }));
   mocks.deleteEmptyDataset.mockResolvedValue({ datasetId: "dataset_1", deleted: true });
   mocks.getDatasetDependencyImpact.mockResolvedValue({ entity: "dataset", entityId: "dataset_1", displayName: "数据集", canDelete: true, dependencyCount: 0, dependencies: [], impact: { removedFromActiveDiscovery: false, historicalProvenanceProtected: false, historicalResearchRemainsAccessible: false } });
   mocks.getProjectHistory.mockResolvedValue({ project: { id: "project_1", name: "研究项目", role: "owner" }, datasets: [{ datasetId: "dataset_1", name: "materials-table", import: { fileCount: 1, resources: [] }, profile: { rowCount: 3, semanticRoles: {} }, status: "profile_ready" }], analyses: [] });
@@ -125,12 +135,10 @@ beforeEach(() => {
   mocks.getDatasetSourceResources.mockResolvedValue([{ objectId: "object_1", objectType: "DataFrame", datasetId: "dataset_1", payload: [{ formula: "BaTiO3" }] }]);
   mocks.uploadDatasetFiles.mockResolvedValue({ datasetId: "dataset_2" });
   mocks.listScientificObjects.mockResolvedValue({ items: [], next_cursor: null });
-  mocks.bulkUpdateScientificObjects.mockResolvedValue({
-    project_id: "project_1",
-    lifecycle: "ARCHIVED",
-    count: 1,
-    items: [],
-  });
+  mocks.bulkUpdateScientificObjects.mockImplementation(async (projectId: string, ids: string[], lifecycle: string) => ({
+    project_id: projectId, lifecycle, count: ids.length,
+    items: ids.map((id) => ({ id, project_id: projectId, lifecycle_status: lifecycle, display_name: id, kind: "STRUCTURE", object_type: "structure.crystal", current_version_id: "version_1" })),
+  }));
   mocks.getScientificObjectDependencyImpact.mockResolvedValue({
     entity: "scientific_object",
     entityId: "object_1",
@@ -201,10 +209,11 @@ it("restores focus after closing quick preview", async () => {
   await waitFor(() => expect(document.activeElement).toBe(trigger));
 });
 
-it("binds the three phonon roles on the canonical upload page and enters durable Research", async () => {
+it("binds the three phonon roles and offers the exact uploaded dataset for Research", async () => {
   const user = userEvent.setup();
   render(<DatasetUploadPage projectId="project_1" />);
   await user.type(await screen.findByLabelText("数据集名称"), "phonon bundle");
+  await user.click(screen.getByRole("button", { name: "声子组合" }));
   await user.upload(
     await screen.findByLabelText("结构文件"),
     new File(["structure"], "UPLOAD_structure.vasp", {
@@ -224,7 +233,7 @@ it("binds the three phonon roles on the canonical upload page and enters durable
     }),
   );
   await user.click(
-    screen.getByRole("button", { name: "上传声子数据并开始研究" }),
+    screen.getByRole("button", { name: "上传并解析" }),
   );
   await waitFor(() => expect(mocks.uploadDatasetFiles).toHaveBeenCalled());
   const files = mocks.uploadDatasetFiles.mock.calls[0][2];
@@ -246,17 +255,19 @@ it("binds the three phonon roles on the canonical upload page and enters durable
       companionGroupId: "phonon_bundle",
     }),
   ]);
-  expect(mocks.routerPush).toHaveBeenCalledWith(
-    "/projects/project_1/research?dataset=dataset_2",
-  );
+  expect(await screen.findByRole("link", { name: "开始研究" })).toHaveAttribute("href", "/projects/project_1/research?dataset=dataset_2");
+  expect(screen.getByRole("link", { name: "查看数据" })).toHaveAttribute("href", "/projects/project_1/data?dataset=dataset_2");
+  expect(screen.getByRole("heading", { name: "文件已上传" })).toHaveFocus();
+  expect(mocks.routerPush).not.toHaveBeenCalled();
 });
 
 it("keeps the typed phonon action disabled until all three roles are selected", async () => {
   const user = userEvent.setup();
   render(<DatasetUploadPage projectId="project_1" />);
   await user.type(await screen.findByLabelText("数据集名称"), "phonon bundle");
+  await user.click(screen.getByRole("button", { name: "声子组合" }));
   const action = screen.getByRole("button", {
-    name: "上传声子数据并开始研究",
+    name: "上传并解析",
   });
   expect(action).toBeDisabled();
   await user.upload(
@@ -300,10 +311,104 @@ it("recovers a failed project history read from the current overview route", asy
 
   render(<ProjectOverviewPage projectId="project_1" />);
 
-  expect(await screen.findByRole("alert")).toHaveTextContent("PROJECT_HISTORY_TEMPORARY_FAILURE");
+  expect(await screen.findByRole("alert")).toHaveTextContent("暂时无法读取项目数据，请重试。");
   await user.click(screen.getByRole("button", { name: "重新加载项目数据" }));
-  expect(await screen.findByRole("heading", { name: "研究项目" })).toBeInTheDocument();
+  expect(await screen.findByRole("region", { name: "研究项目的项目概览" })).toBeInTheDocument();
   expect(mocks.getProjectHistory).toHaveBeenCalledTimes(2);
+  expect(mocks.getProjectHistory).toHaveBeenLastCalledWith("project_1", { forceRefresh: true });
+});
+
+it("preserves each upload mode's files and submits only the selected mode", async () => {
+  const user = userEvent.setup();
+  render(<DatasetUploadPage projectId="project_1" />);
+  await user.type(await screen.findByLabelText("数据集名称"), "材料表");
+  expect(screen.getByRole("group", { name: "普通文件" })).toBeVisible();
+  expect(screen.queryByRole("group", { name: "声子组合文件" })).not.toBeInTheDocument();
+  await user.upload(screen.getByLabelText("源文件"), new File(["material,value\nFe,1"], "materials.csv"));
+  await user.click(screen.getByRole("button", { name: "声子组合" }));
+  expect(screen.getByRole("button", { name: "上传并解析" })).toBeDisabled();
+  await user.upload(screen.getByLabelText("结构文件"), new File(["structure"], "POSCAR"));
+  await user.click(screen.getByRole("button", { name: "普通文件" }));
+  expect(screen.getByRole("list", { name: "源文件已选择文件" })).toHaveTextContent("materials.csv");
+  expect(screen.getByLabelText("数据集名称")).toHaveValue("材料表");
+  await user.click(screen.getByRole("button", { name: "上传并解析" }));
+  await screen.findByRole("heading", { name: "文件已上传" });
+  expect(mocks.uploadDatasetFiles).toHaveBeenCalledWith("project_1", "材料表", [expect.objectContaining({ file: expect.objectContaining({ name: "materials.csv" }) })]);
+  expect(mocks.uploadDatasetFiles).toHaveBeenCalledTimes(1);
+});
+
+it("removes selected files, permits choosing the same file again, and starts another clean upload", async () => {
+  const user = userEvent.setup();
+  render(<DatasetUploadPage projectId="project_1" />);
+  await user.type(await screen.findByLabelText("数据集名称"), "再次上传");
+  const file = new File(["Fe"], "材料.csv");
+  await user.upload(screen.getByLabelText("源文件"), file);
+  await user.click(screen.getByRole("button", { name: "移除 源文件 材料.csv" }));
+  await waitFor(() => expect(screen.getByLabelText("源文件")).toHaveFocus());
+  expect(screen.queryByRole("list", { name: "源文件已选择文件" })).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "上传并解析" })).toBeDisabled();
+  await user.upload(screen.getByLabelText("源文件"), file);
+  await user.click(screen.getByRole("button", { name: "上传并解析" }));
+  await user.click(await screen.findByRole("button", { name: "继续上传" }));
+  expect(screen.getByLabelText("数据集名称")).toHaveValue("");
+  await waitFor(() => expect(screen.getByLabelText("数据集名称")).toHaveFocus());
+  expect(screen.queryByRole("list", { name: "源文件已选择文件" })).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "上传并解析" })).toBeDisabled();
+});
+
+it("blocks duplicate uploads and edits while pending, then keeps the draft after failure", async () => {
+  const user = userEvent.setup();
+  let rejectUpload!: (reason: Error) => void;
+  mocks.uploadDatasetFiles.mockImplementationOnce(() => new Promise((_resolve, reject) => { rejectUpload = reject; }));
+  render(<DatasetUploadPage projectId="project_1" />);
+  await user.type(await screen.findByLabelText("数据集名称"), "保留草稿");
+  await user.upload(screen.getByLabelText("源文件"), new File(["Fe"], "table.csv"));
+  const form = screen.getByRole("form", { name: "上传数据" });
+  act(() => { fireEvent.submit(form); fireEvent.submit(form); });
+  expect(mocks.uploadDatasetFiles).toHaveBeenCalledTimes(1);
+  expect(screen.getByLabelText("数据集名称")).toBeDisabled();
+  expect(screen.getByLabelText("源文件")).toBeDisabled();
+  expect(screen.getByRole("button", { name: "声子组合" })).toBeDisabled();
+  expect(screen.getByRole("button", { name: "移除 源文件 table.csv" })).toBeDisabled();
+  await act(async () => { rejectUpload(new Error("UPLOAD_RECEIPT_INTERNAL_DETAIL")); });
+  expect(screen.getByRole("alert")).toHaveTextContent("名称和文件已保留");
+  expect(screen.queryByText("UPLOAD_RECEIPT_INTERNAL_DETAIL")).not.toBeInTheDocument();
+  expect(screen.getByLabelText("数据集名称")).toHaveValue("保留草稿");
+  expect(screen.getByRole("list", { name: "源文件已选择文件" })).toHaveTextContent("table.csv");
+  await user.click(screen.getByRole("button", { name: "重试上传" }));
+  await screen.findByRole("heading", { name: "文件已上传" });
+  expect(mocks.uploadDatasetFiles).toHaveBeenCalledTimes(2);
+});
+
+it("keeps a completed upload visible when its response lacks a dataset link", async () => {
+  mocks.uploadDatasetFiles.mockResolvedValueOnce({});
+  const user = userEvent.setup();
+  render(<DatasetUploadPage projectId="project_1" />);
+  await user.type(await screen.findByLabelText("数据集名称"), "已接收文件");
+  await user.upload(screen.getByLabelText("源文件"), new File(["Fe"], "table.csv"));
+  await user.click(screen.getByRole("button", { name: "上传并解析" }));
+  await screen.findByRole("heading", { name: "文件已上传" });
+  expect(screen.getByRole("link", { name: "查看项目数据" })).toHaveAttribute("href", "/projects/project_1/data");
+  expect(screen.queryByRole("link", { name: "开始研究" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "重试上传" })).not.toBeInTheDocument();
+  expect(mocks.uploadDatasetFiles).toHaveBeenCalledTimes(1);
+});
+
+it("does not carry an upload draft or late completion into another project", async () => {
+  const user = userEvent.setup();
+  let finishUpload!: (result: unknown) => void;
+  mocks.uploadDatasetFiles.mockImplementationOnce(() => new Promise((resolve) => { finishUpload = resolve; }));
+  const { rerender } = render(<DatasetUploadPage projectId="project_1" />);
+  await user.type(await screen.findByLabelText("数据集名称"), "第一个项目的文件");
+  await user.upload(screen.getByLabelText("源文件"), new File(["Fe"], "first.csv"));
+  await user.click(screen.getByRole("button", { name: "上传并解析" }));
+  mocks.getProjectHistory.mockResolvedValueOnce({ project: { projectId: "project_2", name: "第二个项目", role: "owner" }, datasets: [], analyses: [] });
+  rerender(<DatasetUploadPage projectId="project_2" />);
+  expect(await screen.findByLabelText("数据集名称")).toHaveValue("");
+  expect(screen.queryByRole("list", { name: "源文件已选择文件" })).not.toBeInTheDocument();
+  await act(async () => { finishUpload({ datasetId: "old_dataset", projectId: "project_1" }); });
+  expect(screen.queryByRole("heading", { name: "文件已上传" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("link", { name: "开始研究" })).not.toBeInTheDocument();
 });
 
 it("paints a warmed project overview without showing a second loading state", async () => {
@@ -316,9 +421,163 @@ it("paints a warmed project overview without showing a second loading state", as
 
   render(<ProjectOverviewPage projectId="project_1" />);
 
-  expect(screen.getByRole("heading", { name: "已预热项目" })).toBeInTheDocument();
+  expect(screen.getByRole("region", { name: "已预热项目的项目概览" })).toBeInTheDocument();
   expect(screen.queryByText("正在加载研究内容…")).not.toBeInTheDocument();
   expect(mocks.getProjectHistory).not.toHaveBeenCalled();
+});
+
+it("never substitutes another dataset for a missing explicit link", async () => {
+  expect(resolveDatasetSelection("missing", "dataset_1", ["dataset_1"])).toBe("");
+  render(<ProjectDataPage projectId="project_1" initialDatasetId="missing" />);
+  expect(await screen.findByRole("alert")).toHaveTextContent("暂时无法打开这份数据");
+  expect(screen.queryByRole("heading", { name: "materials-table" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("link", { name: "研究此数据" })).not.toBeInTheDocument();
+  expect(mocks.getDatasetSourceResources).not.toHaveBeenCalled();
+  expect(screen.getByRole("link", { name: "浏览项目数据" })).toHaveAttribute("href", "/projects/project_1/data");
+});
+
+it.each([true, false])("accepts the canonical API projectId in project history (cached: %s)", async (cached) => {
+  const history = { schemaVersion: "ProjectHistoryView/1.0", project: { projectId: "project_1", name: "接口中的项目", role: "owner" }, datasets: [], analyses: [] };
+  if (cached) mocks.getCachedProjectHistory.mockReturnValue(history);
+  else mocks.getProjectHistory.mockResolvedValueOnce(history);
+  render(<ProjectOverviewPage projectId="project_1" />);
+  expect(await screen.findByRole("region", { name: "接口中的项目的项目概览" })).toBeInTheDocument();
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+});
+
+it("keeps the explicit dataset open when the directory lifecycle filter changes", async () => {
+  const user = userEvent.setup();
+  render(<ProjectDataPage projectId="project_1" initialDatasetId="dataset_1" />);
+  await screen.findByTestId("quick-preview-scientific-viewer");
+  for (const label of ["已归档", "回收站", "当前"]) {
+    await user.click(screen.getByRole("button", { name: label }));
+    expect(screen.getByRole("heading", { name: "materials-table" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "研究此数据" })).toHaveAttribute("href", "/projects/project_1/research?dataset=dataset_1");
+  }
+  expect(mocks.getDatasetSourceResources).toHaveBeenCalledTimes(1);
+});
+
+it("removes the old source immediately when the live query addresses a missing dataset", async () => {
+  mocks.searchQuery = "dataset=dataset_1";
+  const { rerender } = render(<ProjectDataPage projectId="project_1" initialDatasetId="dataset_1" />);
+  await screen.findByTestId("quick-preview-scientific-viewer");
+  mocks.searchQuery = "dataset=missing";
+  rerender(<ProjectDataPage projectId="project_1" initialDatasetId="dataset_1" />);
+  expect(screen.getByRole("alert")).toHaveTextContent("暂时无法打开这份数据");
+  expect(screen.queryByTestId("quick-preview-scientific-viewer")).not.toBeInTheDocument();
+  expect(screen.queryByRole("link", { name: "研究此数据" })).not.toBeInTheDocument();
+  expect(mocks.getDatasetSourceResources).toHaveBeenCalledTimes(1);
+});
+
+it("refreshes a warm incomplete directory and recovers only the dataset in the link", async () => {
+  mocks.getDatasetSourceResources.mockResolvedValue([{ objectId: "recovered-resource", datasetId: "dataset_2", objectType: "DataFrame", payload: [] }]);
+  const history = await mocks.getProjectHistory();
+  const target = { ...history.datasets[0], datasetId: "dataset_2", name: "Recovered source" };
+  mocks.getCachedProjectHistory.mockReturnValue(history);
+  mocks.getProjectHistory.mockClear().mockResolvedValue({ ...history, datasets: [...history.datasets, target] });
+  render(<ProjectDataPage projectId="project_1" initialDatasetId="dataset_2" />);
+  expect(screen.getByRole("alert")).toHaveTextContent("暂时无法打开这份数据");
+  expect(mocks.getDatasetSourceResources).not.toHaveBeenCalled();
+  await userEvent.setup().click(screen.getByRole("button", { name: "重新检查" }));
+  expect(await screen.findByRole("heading", { name: "Recovered source" })).toBeInTheDocument();
+  await screen.findByTestId("quick-preview-scientific-viewer");
+  expect(mocks.getProjectHistory).toHaveBeenCalledTimes(1);
+  expect(mocks.getProjectHistory).toHaveBeenLastCalledWith("project_1", { forceRefresh: true });
+  expect(mocks.getDatasetSourceResources).toHaveBeenCalledTimes(1);
+  expect(mocks.getDatasetSourceResources).toHaveBeenLastCalledWith("dataset_2", expect.any(AbortSignal));
+  expect(screen.getByRole("link", { name: "研究此数据" })).toHaveAttribute("href", "/projects/project_1/research?dataset=dataset_2");
+});
+
+it("retains the directory after a failed link recheck without duplicate errors", async () => {
+  const history = await mocks.getProjectHistory();
+  mocks.getCachedProjectHistory.mockReturnValue(history);
+  mocks.getProjectHistory.mockRejectedValueOnce(new Error("RAW_STORAGE_ERROR"));
+  render(<ProjectDataPage projectId="project_1" initialDatasetId="missing" />);
+  await userEvent.setup().click(screen.getByRole("button", { name: "重新检查" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent("暂时无法读取项目数据");
+  expect(screen.queryByText("RAW_STORAGE_ERROR")).not.toBeInTheDocument();
+  expect(within(screen.getByRole("complementary", { name: "项目数据目录" })).getByRole("link", { name: /materials-table/ })).toBeInTheDocument();
+  expect(mocks.getDatasetSourceResources).not.toHaveBeenCalled();
+});
+
+it("bounds a stalled project read, retries once and ignores the late response", async () => {
+  let resolveStalled!: (item: unknown) => void;
+  mocks.getProjectHistory.mockImplementationOnce(() => new Promise((resolve) => { resolveStalled = resolve; }));
+  vi.useFakeTimers();
+  try {
+    await act(async () => { render(<ProjectOverviewPage projectId="project_1" />); });
+    await act(async () => { await vi.advanceTimersByTimeAsync(10_000); });
+    expect(screen.getByRole("alert")).toHaveTextContent("项目数据读取超时");
+  } finally {
+    vi.useRealTimers();
+  }
+  const retryButton = screen.getByRole("button", { name: "重新加载项目数据" });
+  act(() => { fireEvent.click(retryButton); fireEvent.click(retryButton); });
+  await screen.findByRole("region", { name: "研究项目的项目概览" });
+  expect(mocks.getProjectHistory).toHaveBeenCalledTimes(2);
+  expect(mocks.getProjectHistory).toHaveBeenLastCalledWith("project_1", { forceRefresh: true });
+  await act(async () => { resolveStalled({ project: { id: "project_1", name: "过期的项目内容" }, datasets: [], analyses: [] }); });
+  expect(screen.queryByRole("region", { name: "过期的项目内容的项目概览" })).not.toBeInTheDocument();
+});
+
+it("rejects foreign project cache and responses and can recover the correct project", async () => {
+  const foreign = { project: { id: "foreign", name: "其他项目" }, datasets: [], analyses: [] };
+  mocks.getCachedProjectHistory.mockReturnValue(foreign);
+  mocks.getProjectHistory.mockResolvedValueOnce(foreign);
+  render(<ProjectOverviewPage projectId="project_1" />);
+  expect(screen.queryByRole("region", { name: "其他项目的项目概览" })).not.toBeInTheDocument();
+  expect(await screen.findByRole("alert")).toHaveTextContent("暂时无法读取项目数据");
+  expect(mocks.getProjectHistory).toHaveBeenCalledTimes(1);
+  expect(mocks.getProjectHistory).toHaveBeenLastCalledWith("project_1", { forceRefresh: true });
+  await userEvent.setup().click(screen.getByRole("button", { name: "重新加载项目数据" }));
+  expect(await screen.findByRole("region", { name: "研究项目的项目概览" })).toBeInTheDocument();
+  expect(screen.queryByRole("region", { name: "其他项目的项目概览" })).not.toBeInTheDocument();
+});
+
+it("opens and focuses the available views when upload records are empty", async () => {
+  mocks.getProjectHistory.mockResolvedValue({ project: { id: "project_1", name: "研究项目", role: "owner" }, datasets: [], analyses: [] });
+  mocks.listScientificObjects.mockResolvedValue({ items: [{ id: "object_1", project_id: "project_1", display_name: "材料表", object_type: "DataFrame", current_version_id: "version_1", lifecycle_status: "ACTIVE" }], next_cursor: null });
+  render(<ProjectDataPage projectId="project_1" />);
+  await screen.findByRole("heading", { name: "选择一份数据开始查看" });
+  expect(screen.queryByRole("heading", { name: "尚无项目数据" })).not.toBeInTheDocument();
+  expect(screen.getByText("还没有上传记录。")).toBeInTheDocument();
+  await userEvent.setup().click(screen.getByRole("button", { name: "浏览数据视图" }));
+  const link = screen.getByRole("link", { name: /材料表/ });
+  expect(link).toHaveAttribute("href", "/projects/project_1/data?object=object_1&version=version_1");
+  expect(screen.getByRole("button", { name: "数据视图" })).toHaveAttribute("aria-pressed", "true");
+  await waitFor(() => expect(link).toHaveFocus());
+  expect(document.getElementById("data-navigator-content")).toHaveAttribute("data-mobile-collapsed", "false");
+});
+
+it("explains unavailable versions without hiding their names or offering invalid links", async () => {
+  mocks.getProjectHistory.mockResolvedValue({ project: { id: "project_1", name: "研究项目", role: "owner" }, datasets: [], analyses: [] });
+  mocks.listScientificObjects.mockResolvedValue({ items: [{ id: "object_pending", project_id: "project_1", lifecycle_status: "ACTIVE", display_name: "待处理的材料表", object_type: "DataFrame", current_version_id: null }], next_cursor: null });
+  render(<ProjectDataPage projectId="project_1" />);
+  await screen.findByRole("heading", { name: "这些数据暂时无法查看" });
+  await userEvent.setup().click(screen.getByRole("button", { name: "查看数据视图" }));
+  const directory = screen.getByRole("region", { name: "数据视图" });
+  expect(within(directory).getByText("待处理的材料表")).toBeInTheDocument();
+  expect(within(directory).getByText("1 项数据")).toBeInTheDocument();
+  expect(within(directory).queryByRole("link")).not.toBeInTheDocument();
+  await userEvent.setup().click(screen.getByRole("button", { name: "选择多个数据或科研对象" }));
+  expect(screen.queryByRole("button", { name: "全选对象" })).not.toBeInTheDocument();
+  expect(within(directory).queryByRole("checkbox")).not.toBeInTheDocument();
+  mocks.listScientificObjects.mockRejectedValueOnce(new Error("Directory unavailable"));
+  await userEvent.setup().click(screen.getByRole("button", { name: "重新加载数据视图" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent("目录暂时无法更新，请重新加载。");
+  expect(within(directory).queryByRole("alert")).not.toBeInTheDocument();
+  expect(within(directory).getByText("待处理的材料表")).toBeInTheDocument();
+});
+
+it("shows read failure rather than an empty project and recovers the available views", async () => {
+  mocks.getProjectHistory.mockResolvedValue({ project: { id: "project_1", name: "研究项目", role: "owner" }, datasets: [], analyses: [] });
+  mocks.listScientificObjects.mockRejectedValueOnce(new Error("Directory unavailable")).mockResolvedValueOnce({ items: [{ id: "object_1", project_id: "project_1", lifecycle_status: "ACTIVE", display_name: "材料表", object_type: "DataFrame", current_version_id: "version_1" }], next_cursor: null });
+  render(<ProjectDataPage projectId="project_1" />);
+  await screen.findByRole("heading", { name: "暂时无法读取数据目录" });
+  expect(screen.queryByText("尚无项目数据")).not.toBeInTheDocument();
+  await userEvent.setup().click(screen.getByRole("button", { name: "重新加载目录" }));
+  expect(await screen.findByRole("heading", { name: "选择一份数据开始查看" })).toBeInTheDocument();
+  expect(mocks.listScientificObjects).toHaveBeenCalledTimes(2);
 });
 
 it("gives the scientific property table an accessible name and caption", () => {
@@ -449,17 +708,102 @@ it("preserves exact Data authority while restoring only authorized canonical sel
   expect(resolveDataPageSelection("not-canonical!", "project_1")).toBeNull();
 });
 
-it("restores focus to the exact scientific selection after closing the Inspector", async () => {
+it("keeps selection in the viewer and opens source details only on request with focus return", async () => {
   const user = userEvent.setup();
   render(<ProjectDataPage projectId="project_1" />);
 
   const trigger = await screen.findByRole("button", { name: "选择第一条科学数据" });
   await user.click(trigger);
+  expect(screen.queryByRole("button", { name: "关闭详情" })).toBeNull();
+  expect(trigger).toHaveFocus();
+  const details = screen.getByRole("button", { name: "查看来源与属性" });
+  await user.click(details);
+  expect(screen.getByRole("heading", { name: "已选数据样本" })).toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: "关闭详情" }));
-  await waitFor(() => expect(document.activeElement).toBe(trigger));
+  await waitFor(() => expect(document.activeElement).toBe(details));
 });
 
-it("groups case, phase and other projects while searching scientific capabilities", async () => {
+it("opens exact shared research from a participating dataset without assigning the routing dataset's outputs to it", async () => {
+  const user = userEvent.setup();
+  const history = await mocks.getProjectHistory();
+  history.project.role = "viewer";
+  history.datasets[0].import.files = [{ name: "NaCl_synthetic.cif" }];
+  history.datasets[0].resultSummary = { artifactCount: 4 };
+  const shared = { datasetId: "routing-dataset", sourceDatasetIds: ["routing-dataset", "dataset_1"], toolIds: ["structure.rdf"], artifactCount: 12, researchSessionId: "joint-session" };
+  history.analyses = [
+    { ...shared, jobId: "completed-job", researchTurnId: "completed-turn", status: "succeeded", researchTurnStatus: "COMPLETED", userQuestion: "比较两份材料的 RDF", createdAt: "2026-10-03T08:00:00Z" },
+    { ...shared, jobId: "failed-job", researchTurnId: "failed-turn", status: "failed", userQuestion: "比较两份材料的 RDF", createdAt: "2026-10-02T08:00:00Z" },
+    { jobId: "legacy-job", datasetId: "dataset_1", status: "succeeded", userQuestion: "原有的单材料分析", createdAt: "2026-10-01T08:00:00Z" },
+    { ...shared, jobId: "foreign", datasetId: "dataset_1", sourceDatasetIds: ["another-dataset"], userQuestion: "路由字段不能代表来源" },
+    { ...shared, jobId: "unverified", datasetId: "dataset_1", sourceDatasetIds: [], userQuestion: "未验证的历史来源" },
+  ];
+  render(<ProjectDataPage projectId="project_1" />);
+  expect(screen.queryByRole("region", { name: "相关研究" })).toBeNull();
+  await user.click(await screen.findByRole("button", { name: "查看来源与属性" }));
+  expect(screen.getByRole("region", { name: "源文件" })).toHaveTextContent("NaCl_synthetic.cif");
+  const studies = screen.getByRole("region", { name: "相关研究" });
+  const links = within(studies).getAllByRole("link");
+  expect(links.map(link => link.getAttribute("href"))).toEqual([
+    "/projects/project_1/research/joint-session?turn=completed-turn",
+    "/projects/project_1/research/joint-session?turn=failed-turn",
+    "/projects/project_1/research?run=legacy-job",
+  ]);
+  expect(links[0]).toHaveTextContent("分析完成");
+  expect(links[0]).toHaveTextContent("静态结构径向分布函数（RDF）");
+  expect(links[0]).toHaveAttribute("title", "比较两份材料的 RDF");
+  expect(links[0]).toHaveTextContent("2 份数据");
+  expect(links[1]).toHaveTextContent("分析失败");
+  expect(studies).toHaveTextContent("3 次分析");
+  expect(studies).toHaveTextContent("4 个输出文件");
+  expect(studies).not.toHaveTextContent("12 个输出文件");
+  expect(studies).not.toHaveTextContent("路由字段不能代表来源");
+  expect(studies).not.toHaveTextContent("未验证的历史来源");
+  expect(screen.queryByRole("link", { name: "研究此数据" })).toBeNull();
+  expect(history.analyses.map((run: { jobId: string }) => run.jobId)).toEqual(["completed-job", "failed-job", "legacy-job", "foreign", "unverified"]);
+});
+
+it("keeps older related research reachable and resets its disclosure when changing datasets", async () => {
+  const user = userEvent.setup();
+  const history = await mocks.getProjectHistory();
+  history.datasets[0].import.files = [{ name: "first.cif" }];
+  history.datasets.push({ ...history.datasets[0], datasetId: "dataset_2", name: "第二份材料", import: { fileCount: 1, files: [{ name: "second.cif" }], resources: [] } });
+  history.analyses = [
+    { jobId: "other", datasetId: "elsewhere", userQuestion: "其他数据的分析", createdAt: "2026-10-09T08:00:00Z" },
+    ...Array.from({ length: 7 }, (_, index) => ({ jobId: `related-${index}`, sourceDatasetIds: ["dataset_1"], status: "succeeded", userQuestion: `第 ${index + 1} 次研究`, createdAt: `2026-10-0${index + 1}T08:00:00Z` })),
+  ];
+  mocks.searchQuery = "dataset=dataset_1";
+  mocks.getDatasetSourceResources.mockImplementation(async (datasetId: string) => [{ objectId: `object-${datasetId}`, datasetId, objectType: "DataFrame", payload: [{ formula: "Si" }] }]);
+  const view = render(<ProjectDataPage projectId="project_1" />);
+  await user.click(await screen.findByRole("button", { name: "查看来源与属性" }));
+  const studies = screen.getByRole("region", { name: "相关研究" });
+  expect(within(studies).getAllByRole("link")).toHaveLength(5);
+  expect(within(studies).getAllByRole("link")[0]).toHaveTextContent("第 7 次研究");
+  await user.click(within(studies).getByRole("button", { name: "显示全部 7 次分析" }));
+  expect(within(studies).getAllByRole("link")).toHaveLength(7);
+  expect(studies).not.toHaveTextContent("其他数据的分析");
+  mocks.searchQuery = "dataset=dataset_2";
+  view.rerender(<ProjectDataPage projectId="project_1" />);
+  expect(screen.getByRole("region", { name: "源文件" })).toHaveTextContent("second.cif");
+  expect(screen.getByRole("region", { name: "相关研究" })).toHaveTextContent("暂无相关研究");
+  expect(screen.queryByRole("link", { name: /第 7 次研究/ })).toBeNull();
+  mocks.searchQuery = "dataset=dataset_1";
+  view.rerender(<ProjectDataPage projectId="project_1" />);
+  expect(within(screen.getByRole("region", { name: "相关研究" })).getAllByRole("link")).toHaveLength(5);
+  expect(screen.getByRole("button", { name: "显示全部 7 次分析" })).toHaveAttribute("aria-expanded", "false");
+});
+
+it("does not invent source filenames or infer membership from an invalid explicit source list", async () => {
+  const history = await mocks.getProjectHistory();
+  history.analyses = [{ jobId: "invalid-source", datasetId: "dataset_1", sourceDatasetIds: null, userQuestion: "不应推断的来源" }];
+  render(<ProjectDataPage projectId="project_1" />);
+  await userEvent.setup().click(await screen.findByRole("button", { name: "查看来源与属性" }));
+  expect(screen.getByRole("region", { name: "源文件" })).toHaveTextContent("源文件名称未记录");
+  expect(screen.getByRole("region", { name: "相关研究" })).toHaveTextContent("暂无相关研究");
+  expect(screen.queryByRole("link", { name: /不应推断的来源/ })).toBeNull();
+  expect(screen.queryByText("内容类型与可用属性来自已生成的数据语义档案。")).toBeNull();
+});
+
+it("lists all projects without inferring product categories from test naming conventions", async () => {
   const user = userEvent.setup();
   mocks.listProjects.mockResolvedValue([
     { id: "case_1", name: "Case 13 · Q-PHONON-001 · Run 01", description: "声子色散、声子态密度与布里渊区联动（Phase 10H / 10I）" },
@@ -469,12 +813,13 @@ it("groups case, phase and other projects while searching scientific capabilitie
 
   render(<ProjectsPage />);
 
-  expect(await screen.findByRole("heading", { name: "16-case 项目" })).toBeInTheDocument();
-  expect(screen.getByRole("heading", { name: "Phase 项目" })).toBeInTheDocument();
-  expect(screen.getByRole("heading", { name: "其他项目与历史记录" })).toBeInTheDocument();
+  expect(await screen.findByRole("region", { name: "项目列表" })).toBeInTheDocument();
+  expect(screen.queryByRole("heading", { name: "16-case 项目" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("heading", { name: "Phase 项目" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("heading", { name: "其他项目与历史记录" })).not.toBeInTheDocument();
   expect(screen.getByText(/声子色散、声子态密度/)).toBeInTheDocument();
 
-  await user.type(screen.getByRole("searchbox", { name: "搜索项目、Case 或科学能力" }), "Phase 10H");
+  await user.type(screen.getByRole("searchbox", { name: "搜索项目、描述或标签" }), "Phase 10H");
   expect(screen.getByText("Case 13 · Q-PHONON-001 · Run 01")).toBeInTheDocument();
   expect(screen.queryByText("其他 · Legacy Session · Run 01")).not.toBeInTheDocument();
 });
@@ -500,7 +845,7 @@ it("pins a project from its management menu and keeps the action state visible",
   fireEvent.contextMenu(alpha.closest(".managed-object-row")!);
   await user.click(screen.getByRole("menuitem", { name: "列表置顶" }));
   await waitFor(() =>
-    expect(mocks.updateProject).toHaveBeenCalledWith("project_a", { pinned: true }),
+    expect(mocks.updateProject).toHaveBeenCalledWith("project_a", { pinned: true }, expect.any(AbortSignal)),
   );
   expect(
     within(screen.getByText("Alpha project").closest(".managed-object-row")!)
@@ -520,7 +865,7 @@ it("exports an authorized non-executable project provenance manifest from the ac
   fireEvent.contextMenu(row);
   await user.click(screen.getByRole("menuitem", { name: "导出项目清单" }));
 
-  await waitFor(() => expect(mocks.getProjectExportManifest).toHaveBeenCalledWith("project_1"));
+  await waitFor(() => expect(mocks.getProjectExportManifest).toHaveBeenCalledWith("project_1", expect.any(AbortSignal)));
   expect(click).toHaveBeenCalled();
   expect(screen.getByText(/已导出“Perovskite stability study”/)).toBeInTheDocument();
   vi.unstubAllGlobals();
@@ -537,7 +882,7 @@ it("creates a project from the Console and offers the upload continuation", asyn
   await user.type(screen.getByLabelText(/研究说明/), "结构与电子性质研究");
   await user.click(screen.getByRole("button", { name: "创建项目" }));
 
-  await waitFor(() => expect(mocks.createProject).toHaveBeenCalledWith("新项目"));
+  await waitFor(() => expect(mocks.createProject).toHaveBeenCalledWith("新项目", expect.any(AbortSignal)));
   expect(await screen.findByRole("link", { name: "上传数据" })).toHaveAttribute("href", "/projects/project_2/datasets/new");
 });
 
@@ -562,8 +907,63 @@ it("does not encourage duplicate creation when optional project description fail
   await user.click(screen.getByRole("button", { name: "创建项目" }));
 
   expect(await screen.findByRole("dialog", { name: "项目已创建" })).toBeInTheDocument();
-  expect(screen.getByRole("status")).toHaveTextContent("项目已创建，但研究说明暂未保存");
+  expect(await screen.findByRole("alert")).toHaveTextContent("项目已创建，研究说明的保存结果尚未确认");
   expect(mocks.createProject).toHaveBeenCalledTimes(1);
+});
+
+it.each([
+  { name: "Projects", Page: ProjectsPage },
+  { name: "Console", Page: ConsolePage },
+])("recovers the project directory without remounting ($name)", async ({ Page }) => {
+  const user = userEvent.setup();
+  mocks.listProjects.mockRejectedValueOnce(new Error("目录连接失败"));
+  render(<Page />);
+  expect(await screen.findByRole("alert")).toHaveTextContent("暂时无法读取项目列表");
+  await user.click(screen.getByRole("button", { name: "重新加载项目数据" }));
+  expect((await screen.findAllByText("Perovskite stability study")).length).toBeGreaterThan(0);
+  expect(mocks.listProjects).toHaveBeenLastCalledWith({ forceRefresh: true, signal: expect.any(AbortSignal) });
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+});
+
+it("preserves project filters across a failed post-mutation refresh and retries only the read", async () => {
+  const user = userEvent.setup();
+  const projects = [{ id: "project_1", name: "Alpha", role: "owner", status: "archived", tags: ["材料"] }];
+  mocks.listProjects.mockResolvedValue(projects).mockResolvedValueOnce(projects).mockRejectedValueOnce(new Error("列表刷新失败"));
+  render(<ProjectsPage />);
+  await user.click(await screen.findByRole("button", { name: "已归档" }));
+  await user.type(screen.getByRole("searchbox"), "Alpha");
+  await user.selectOptions(screen.getByLabelText("标签"), "材料");
+  await user.click(screen.getByRole("button", { name: "选择" }));
+  await user.click(screen.getByRole("checkbox", { name: "选择 Alpha" }));
+  await user.click(screen.getByRole("button", { name: "列表置顶" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent("暂时无法读取项目列表");
+  expect(screen.getByText("已列表置顶 1 个项目。")).toHaveAttribute("role", "status");
+  await user.click(screen.getByRole("button", { name: "重新加载项目数据" }));
+  await screen.findByText("Alpha");
+  expect(screen.getByRole("searchbox")).toHaveValue("Alpha");
+  expect(screen.getByLabelText("标签")).toHaveValue("材料");
+  expect(screen.getByRole("button", { name: "已归档" })).toHaveAttribute("aria-pressed", "true");
+  expect(mocks.bulkProjectAction).toHaveBeenCalledTimes(1);
+  expect(screen.queryByRole("region", { name: "批量项目操作" })).not.toBeInTheDocument();
+});
+
+it("keeps the selection after a failed batch and announces successful retry", async () => {
+  const user = userEvent.setup();
+  mocks.bulkProjectAction.mockRejectedValueOnce(new Error("批量服务不可用"));
+  render(<ProjectsPage />);
+  await user.click(await screen.findByRole("button", { name: "选择" }));
+  await user.click(screen.getByRole("checkbox", { name: "选择 Perovskite stability study" }));
+  await user.click(screen.getByRole("button", { name: "归档" }));
+  expect(await screen.findByText(/批量更新项目的结果尚未确认/)).toBeInTheDocument();
+  expect(screen.getByRole("checkbox", { name: "选择 Perovskite stability study" })).toBeChecked();
+  expect(mocks.listProjects).toHaveBeenCalledTimes(1);
+  await user.click(screen.getByRole("button", { name: "重新读取项目列表" }));
+  await waitFor(() => expect(screen.queryByText(/批量更新项目的结果尚未确认/)).not.toBeInTheDocument());
+  expect(screen.getByRole("checkbox", { name: "选择 Perovskite stability study" })).toBeChecked();
+  await user.click(screen.getByRole("button", { name: "归档" }));
+  expect(await screen.findByText("已归档 1 个项目。")).toHaveAttribute("role", "status");
+  await screen.findByRole("button", { name: "选择" });
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
 });
 
 it("opens the same project actions from right click and supports explicit batch selection", async () => {
@@ -586,7 +986,7 @@ it("opens the same project actions from right click and supports explicit batch 
   await user.click(screen.getByRole("checkbox", { name: /选择 Case 01/ }));
   expect(screen.getByText("1 个已选择")).toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: "归档" }));
-  await waitFor(() => expect(mocks.bulkProjectAction).toHaveBeenCalledWith(["case_1"], "archive"));
+  await waitFor(() => expect(mocks.bulkProjectAction).toHaveBeenCalledWith(["case_1"], "archive", expect.any(AbortSignal)));
 });
 
 it("supports bounded bulk pinning from the project selection toolbar", async () => {
@@ -601,7 +1001,7 @@ it("supports bounded bulk pinning from the project selection toolbar", async () 
   await user.click(screen.getByRole("checkbox", { name: "选择 Alpha project" }));
   await user.click(screen.getByRole("button", { name: "列表置顶" }));
   await waitFor(() =>
-    expect(mocks.bulkProjectAction).toHaveBeenCalledWith(["project_a"], "pin"),
+    expect(mocks.bulkProjectAction).toHaveBeenCalledWith(["project_a"], "pin", expect.any(AbortSignal)),
   );
 });
 
@@ -671,8 +1071,7 @@ it("previews project dependencies before bulk-moving projects to Trash", async (
   await waitFor(() =>
     expect(mocks.bulkProjectAction).toHaveBeenCalledWith(
       ["project_a", "project_b"],
-      "trash",
-    ),
+      "trash", expect.any(AbortSignal)),
   );
 });
 
@@ -701,14 +1100,150 @@ it("keeps missing normalized scientific resources recoverable in the Viewer cont
   render(<ProjectDataPage projectId="project_1" />);
 
   expect(await screen.findByRole("alert")).toHaveTextContent("数据档案、精确来源与解析记录仍然保留");
-  expect(screen.getByRole("button", { name: "重新检查存储" })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "重新加载数据" })).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "查看来源与属性" })).toBeInTheDocument();
   expect(screen.queryByRole("link", { name: "研究此数据" })).toBeNull();
   expect(screen.queryByText("Failed to fetch")).not.toBeInTheDocument();
 
-  await user.click(screen.getByRole("button", { name: "重新检查存储" }));
+  await user.click(screen.getByRole("button", { name: "重新加载数据" }));
   expect(await screen.findByTestId("quick-preview-scientific-viewer")).toHaveTextContent("DataFrame");
   expect(mocks.getDatasetSourceResources).toHaveBeenCalledTimes(2);
+});
+
+it("explains a failed table read, retains the loaded profile and retries the actual source", async () => {
+  const user = userEvent.setup();
+  const history = await mocks.getProjectHistory();
+  history.datasets[0].profile.semanticRoles = { band_gap: 3 };
+  mocks.getDatasetSourceResources.mockRejectedValueOnce(new Error("private upstream traceback"));
+
+  render(<ProjectDataPage projectId="project_1" />);
+
+  expect(await screen.findByRole("alert")).toHaveTextContent("表格数据尚未加载");
+  expect(screen.getByRole("heading", { name: "materials-table" })).toBeInTheDocument();
+  expect(screen.queryByRole("link", { name: "研究此数据" })).toBeNull();
+  expect(screen.queryByText(/private upstream traceback/)).toBeNull();
+  await user.click(screen.getByText("查看已读取的列描述"));
+  expect(screen.getByRole("table", { name: "materials-table科学属性" })).toHaveTextContent("band_gap");
+  await user.click(screen.getByRole("button", { name: "查看来源与属性" }));
+  const inspector = screen.getByRole("region", { name: "materials-table" });
+  expect(inspector).toHaveTextContent("3");
+  await user.keyboard("{Escape}");
+  await user.click(screen.getByRole("button", { name: "重新加载数据" }));
+
+  expect(await screen.findByTestId("quick-preview-scientific-viewer")).toHaveTextContent("DataFrame");
+  expect(screen.getByRole("link", { name: "研究此数据" })).toHaveAttribute("href", "/projects/project_1/research?dataset=dataset_1");
+  expect(screen.queryByRole("alert")).toBeNull();
+  expect(mocks.getDatasetSourceResources).toHaveBeenCalledTimes(2);
+});
+
+it.each(["search", "tag", "status"] as const)("limits project batch actions to the visible writable selection after changing %s", async (filter) => {
+  const user = userEvent.setup();
+  mocks.listProjects.mockResolvedValue([
+    { id: "project_a", name: "Alpha", role: "owner", status: "active", tags: ["材料"] },
+    { id: "project_b", name: "Beta", role: "owner", status: "active", tags: ["电子"] },
+    { id: "project_c", name: "Gamma", role: "owner", status: "archived", tags: ["材料"] },
+  ]);
+  render(<ProjectsPage />);
+  await user.click(await screen.findByRole("button", { name: "选择" }));
+  await user.click(screen.getByRole("button", { name: "选择当前结果" }));
+  const batch = screen.getByRole("region", { name: "批量项目操作" });
+  expect(batch).toHaveTextContent("2 个已选择");
+  if (filter === "search") await user.type(screen.getByRole("searchbox"), "Alpha");
+  else if (filter === "tag") await user.selectOptions(screen.getByLabelText("标签"), "材料");
+  else await user.click(screen.getByRole("button", { name: "已归档" }));
+  if (filter === "status") {
+    expect(batch).toHaveTextContent("0 个已选择");
+    expect(within(batch).getByRole("button", { name: "移入回收站" })).toBeDisabled();
+    await user.click(screen.getByRole("checkbox", { name: "选择 Gamma" }));
+  }
+  expect(batch).toHaveTextContent("1 个已选择");
+  await user.click(within(batch).getByRole("button", { name: "移入回收站" }));
+  const dialog = await screen.findByRole("dialog", { name: "将 1 个项目移入回收站" });
+  const expectedId = filter === "status" ? "project_c" : "project_a";
+  await waitFor(() => expect(mocks.getProjectDependencyImpact).toHaveBeenCalledWith(expectedId, expect.any(AbortSignal)));
+  expect(mocks.getProjectDependencyImpact).toHaveBeenCalledTimes(1);
+  await user.click(within(dialog).getByRole("button", { name: "确认移入回收站" }));
+  await waitFor(() => expect(mocks.bulkProjectAction).toHaveBeenCalledWith([expectedId], "trash", expect.any(AbortSignal)));
+});
+
+it("searches organization tags even when the name and description do not contain the query", async () => {
+  const user = userEvent.setup();
+  mocks.listProjects.mockResolvedValue([
+    { id: "tagged", name: "Alpha", role: "owner", status: "active", tags: ["待复核"] },
+    { id: "untagged", name: "Beta", role: "owner", status: "active", tags: [] },
+  ]);
+  render(<ProjectsPage />);
+  await user.type(await screen.findByRole("searchbox"), "待复核");
+  expect(screen.getByText("Alpha")).toBeInTheDocument();
+  expect(screen.queryByText("Beta")).toBeNull();
+  expect(screen.getByRole("status")).toHaveTextContent("1 个项目");
+});
+
+it("distinguishes filtered-out projects from empty trash and clears the filters in place", async () => {
+  const user = userEvent.setup();
+  mocks.listProjects.mockResolvedValue([
+    { id: "active", name: "Alpha", role: "owner", status: "active" },
+    { id: "trashed", name: "Beta", role: "owner", status: "trashed" },
+  ]);
+  render(<ProjectsPage />);
+  await user.click(await screen.findByRole("button", { name: "回收站" }));
+  await user.type(screen.getByRole("searchbox"), "unmatched");
+  expect(screen.getByText(/当前搜索与筛选条件下没有项目/)).toBeInTheDocument();
+  expect(screen.queryByText("回收站为空。")).toBeNull();
+  await user.click(screen.getByRole("button", { name: "清除搜索与筛选" }));
+  expect(screen.getByText("Alpha")).toBeInTheDocument();
+  expect(screen.getByRole("searchbox")).toHaveValue("");
+  expect(screen.getByRole("button", { name: "当前" })).toHaveAttribute("aria-pressed", "true");
+});
+
+it("bounds a stalled source read and ignores its late response after recovery", async () => {
+  let resolveStalled!: (items: unknown[]) => void;
+  let stalledSignal!: AbortSignal;
+  mocks.getDatasetSourceResources.mockImplementationOnce((_id: string, signal: AbortSignal) => {
+    stalledSignal = signal;
+    return new Promise((resolve) => { resolveStalled = resolve; });
+  });
+  vi.useFakeTimers();
+  try {
+    await act(async () => { render(<ProjectDataPage projectId="project_1" />); });
+    expect(screen.getByText("正在加载科学数据…")).toBeInTheDocument();
+    await act(async () => { await vi.advanceTimersByTimeAsync(10_000); });
+    expect(screen.getByRole("alert")).toHaveTextContent("读取科学数据超时");
+    expect(stalledSignal.aborted).toBe(true);
+  } finally {
+    vi.useRealTimers();
+  }
+  await userEvent.setup().click(screen.getByRole("button", { name: "重新加载数据" }));
+  expect(await screen.findByTestId("quick-preview-scientific-viewer")).toHaveTextContent("DataFrame");
+  await act(async () => { resolveStalled([{ objectId: "late", objectType: "CrystalStructure" }]); });
+  expect(screen.getByTestId("quick-preview-scientific-viewer")).toHaveTextContent("DataFrame");
+});
+
+it("does not let a previous dataset response replace the current source", async () => {
+  const history = await mocks.getProjectHistory();
+  history.datasets.push({ ...history.datasets[0], datasetId: "dataset_2", name: "Second dataset" });
+  let resolvePrevious!: (items: unknown[]) => void;
+  let previousSignal!: AbortSignal;
+  mocks.getDatasetSourceResources.mockImplementationOnce((_id: string, signal: AbortSignal) => {
+    previousSignal = signal;
+    return new Promise((resolve) => { resolvePrevious = resolve; });
+  }).mockResolvedValueOnce([{ objectId: "second", objectType: "Second table", datasetId: "dataset_2" }]);
+  const { rerender } = render(<ProjectDataPage projectId="project_1" initialDatasetId="dataset_1" />);
+  await screen.findByText("正在加载科学数据…");
+  rerender(<ProjectDataPage projectId="project_1" initialDatasetId="dataset_2" />);
+  expect(await screen.findByTestId("quick-preview-scientific-viewer")).toHaveTextContent("Second table");
+  expect(previousSignal.aborted).toBe(true);
+  await act(async () => { resolvePrevious([{ objectId: "old", objectType: "Previous table", datasetId: "dataset_1" }]); });
+  expect(screen.getByTestId("quick-preview-scientific-viewer")).toHaveTextContent("Second table");
+  expect(screen.getByRole("link", { name: "研究此数据" })).toHaveAttribute("href", "/projects/project_1/research?dataset=dataset_2");
+});
+
+it("does not describe an unclassified 404 as confirmed source deletion", async () => {
+  mocks.getDatasetSourceResources.mockRejectedValueOnce(Object.assign(new Error("Unknown route"), { status: 404 }));
+  render(<ProjectDataPage projectId="project_1" />);
+  expect(await screen.findByRole("alert")).toHaveTextContent("暂时无法读取");
+  expect(screen.queryByText("已确认缺失")).toBeNull();
+  expect(screen.getByRole("button", { name: "重新加载数据" })).toBeInTheDocument();
 });
 
 it("distinguishes confirmed missing source bytes from a transient storage failure", async () => {
@@ -732,7 +1267,7 @@ it("distinguishes confirmed missing source bytes from a transient storage failur
   render(<ProjectDataPage projectId="project_1" />);
 
   expect(await screen.findByRole("alert")).toHaveTextContent(
-    "原始解析 payload 当前不可用",
+    "原始科学数据当前不可用",
   );
   expect(screen.getByRole("status")).toHaveTextContent("已确认缺失");
   expect(screen.getByRole("button", { name: "再次确认来源" })).toBeInTheDocument();
@@ -766,11 +1301,12 @@ it("presents a never-populated Dataset as an import empty state instead of a sto
   expect(await screen.findByText("这个数据集还没有科学对象")).toBeInTheDocument();
   expect(screen.getByText(/可继续接收材料数据/)).toBeInTheDocument();
   expect(screen.queryByText(/解析资源暂时无法读取/)).toBeNull();
-  expect(screen.queryByRole("button", { name: "重新检查存储" })).toBeNull();
+  expect(screen.queryByRole("button", { name: "重新加载数据" })).toBeNull();
   expect(screen.queryByRole("link", { name: "研究此数据" })).toBeNull();
 });
 
-it("explains the Dataset-to-immutable-scientific-version authority bridge without guessing identity", async () => {
+it("shows one directory at a time while preserving exact source and version links", async () => {
+  const user = userEvent.setup();
   mocks.getProjectHistory.mockResolvedValue({
     project: { id: "project_1", name: "研究项目", role: "owner" },
     datasets: [{
@@ -816,28 +1352,29 @@ it("explains the Dataset-to-immutable-scientific-version authority bridge withou
 
   render(<ProjectDataPage projectId="project_1" />);
 
-  const authority = await screen.findByRole("region", {
-    name: "来源 Dataset → 科研对象 → 不可变版本",
-  });
-  expect(authority).toHaveTextContent("高熵合金来源数据");
-  expect(authority).toHaveTextContent("2 个源文件");
-  expect(authority).toHaveTextContent("2 个已绑定");
-  expect(authority).toHaveTextContent(
-    "重命名或归档 Dataset 不会改写不可变科学版本",
-  );
-  expect(authority).toHaveTextContent("本页不会按名称猜测或替换版本");
-  expect(screen.getAllByText("来源范围")).toHaveLength(2);
-  expect(screen.getByText("解析后的科学身份")).toBeInTheDocument();
-  expect(screen.getByText("选择对象后查看其精确不可变版本；它不是 Dataset 的替代入口。")).toBeInTheDocument();
-  const authorityLegend = screen.getByRole("region", {
-    name: "来源数据与科学身份",
-  });
-  expect(authorityLegend).toHaveTextContent("Dataset");
-  expect(authorityLegend).toHaveTextContent("Scientific Object");
-  expect(authorityLegend).toHaveTextContent("管理导入文件、记录与查询");
-  expect(authorityLegend).toHaveTextContent("保存解析后的科学身份");
+  expect(await screen.findByRole("link", { name: /高熵合金来源数据/ })).toBeInTheDocument();
+  expect(screen.queryByRole("link", { name: /合金结构 A/ })).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "数据视图" }));
+  expect(screen.getByRole("link", { name: /合金结构 A/ })).toHaveAttribute("href", "/projects/project_1/data?object=object_1&version=version_1");
+  expect(screen.getByRole("link", { name: /材料表 B/ })).toHaveAttribute("href", "/projects/project_1/data?object=object_2&version=version_2");
+  expect(screen.queryByRole("link", { name: /高熵合金来源数据/ })).not.toBeInTheDocument();
+  expect(screen.queryByText("数据层级与来源说明")).not.toBeInTheDocument();
+  expect(screen.queryByText("解析后的科学身份")).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "上传记录" }));
+  expect(screen.getByRole("link", { name: /高熵合金来源数据/ })).toHaveAttribute("href", "/projects/project_1/data?dataset=dataset_1");
+  await user.click(screen.getByRole("button", { name: "选择多个数据或科研对象" }));
+  await user.click(screen.getByRole("button", { name: "全选数据" }));
+  expect(screen.queryByRole("button", { name: "全选对象" })).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "数据视图" }));
+  expect(screen.queryByRole("region", { name: "批量数据操作" })).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "选择多个数据或科研对象" }));
+  expect(screen.getByRole("region", { name: "批量数据操作" })).toHaveTextContent("0 个已选择");
+  expect(screen.queryByRole("button", { name: "全选数据" })).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "全选对象" }));
+  expect(screen.getByRole("region", { name: "批量数据操作" })).toHaveTextContent("2 个已选择");
+  expect(mocks.bulkDatasetAction).not.toHaveBeenCalled();
+  expect(mocks.bulkUpdateScientificObjects).not.toHaveBeenCalled();
 });
-
 it("lets mobile users collapse the data context without losing its explicit location", async () => {
   const user = userEvent.setup();
   mocks.getProjectHistory.mockResolvedValue({
@@ -852,12 +1389,16 @@ it("lets mobile users collapse the data context without losing its explicit loca
     analyses: [],
   });
   render(<ProjectDataPage projectId="project_1" />);
-  const toggle = await screen.findByRole("button", { name: "收起数据" });
+  const toggle = await screen.findByRole("button", { name: "收起目录" });
   expect(toggle).toHaveAttribute("aria-expanded", "true");
   await user.click(toggle);
-  expect(screen.getByRole("button", { name: "显示数据" })).toHaveAttribute("aria-expanded", "false");
-  expect(screen.getByRole("heading", { name: "研究项目" })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "展开目录" })).toHaveAttribute("aria-expanded", "false");
+  expect(screen.getByRole("heading", { name: "项目数据" })).toBeInTheDocument();
+  expect(screen.queryByRole("heading", { name: "研究项目" })).not.toBeInTheDocument();
   expect(document.getElementById("data-navigator-content")).toHaveAttribute("data-mobile-collapsed", "true");
+  expect(document.getElementById("data-navigator-content")).toContainElement(screen.getByRole("group", { name: "数据集状态" }));
+  await user.click(screen.getByRole("button", { name: "展开目录" }));
+  expect(document.getElementById("data-navigator-content")).toHaveAttribute("data-mobile-collapsed", "false");
 });
 
 it("moves a project to the recoverable trash with a dependency preview", async () => {
@@ -899,7 +1440,7 @@ it("moves a project to the recoverable trash with a dependency preview", async (
   await waitFor(() =>
     expect(mocks.updateProject).toHaveBeenCalledWith("case_1", {
       lifecycle: "TRASHED",
-    }),
+    }, expect.any(AbortSignal)),
   );
 
   await user.click(screen.getByRole("button", { name: "回收站" }));
@@ -922,6 +1463,87 @@ it("restores focus to the originating project row after editing from its menu", 
   expect(screen.getByRole("dialog", { name: "编辑项目信息" })).toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: "关闭" }));
   await waitFor(() => expect(document.activeElement).toBe(trigger));
+});
+
+it.each(["escape", "cancel", "close", "save"] as const)("dismisses a project management deep link after %s without reopening it", async (action) => {
+  const user = userEvent.setup();
+  window.history.replaceState({}, "", "/projects?manage=project_1&view=all#row");
+  try {
+    const { rerender } = render(<ProjectsPage manageProjectId="project_1" />);
+    const dialog = await screen.findByRole("dialog", { name: "编辑项目信息" });
+    if (action === "escape") await user.keyboard("{Escape}");
+    else await user.click(within(dialog).getByRole("button", { name: { cancel: "取消", close: "关闭", save: "保存更改" }[action] }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(mocks.routerReplace).toHaveBeenCalledWith("/projects?view=all#row", { scroll: false });
+    await waitFor(() => expect(screen.getByRole("heading", { name: "项目" })).toHaveFocus());
+    rerender(<ProjectsPage manageProjectId="project_1" />);
+    expect(screen.queryByRole("dialog")).toBeNull();
+    rerender(<ProjectsPage manageProjectId="" />);
+    rerender(<ProjectsPage manageProjectId="project_1" />);
+    expect(await screen.findByRole("dialog", { name: "编辑项目信息" })).toBeInTheDocument();
+  } finally {
+    window.history.replaceState({}, "", "/");
+  }
+});
+
+it.each(["missing", "viewer"] as const)("explains a %s management link without opening a writable editor", async (kind) => {
+  const user = userEvent.setup();
+  if (kind === "viewer") mocks.listProjects.mockResolvedValue([{ id: "project_1", name: "Shared project", role: "viewer", status: "active" }]);
+  const manageId = kind === "missing" ? "missing" : "project_1";
+  window.history.replaceState({}, "", `/projects?manage=${manageId}`);
+  try {
+    render(<ProjectsPage manageProjectId={manageId} />);
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent(kind === "missing" ? "无法打开项目管理" : "当前为只读");
+    expect(screen.queryByRole("dialog")).toBeNull();
+    await user.click(within(alert).getByRole("button", { name: "返回项目列表" }));
+    expect(mocks.routerReplace).toHaveBeenCalledWith("/projects", { scroll: false });
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(mocks.updateProject).not.toHaveBeenCalled();
+  } finally {
+    window.history.replaceState({}, "", "/");
+  }
+});
+
+it("retains an edited project draft until an uncertain save is reconciled by a successful read", async () => {
+  const user = userEvent.setup();
+  mocks.updateProject.mockRejectedValueOnce(new Error("offline"));
+  render(<ProjectsPage />);
+  await user.click(await screen.findByRole("button", { name: "管理 Perovskite stability study" }));
+  await user.click(screen.getByRole("menuitem", { name: "编辑项目信息" }));
+  const name = screen.getByLabelText("项目名称");
+  await user.clear(name); await user.type(name, "保留编辑内容");
+  await user.click(screen.getByRole("button", { name: "保存更改" }));
+  expect(await screen.findByText(/保存项目的结果尚未确认/)).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "保存更改" })).toBeDisabled();
+  mocks.listProjects.mockRejectedValueOnce(new Error("still offline"));
+  await user.click(screen.getByRole("button", { name: "重新读取项目列表" }));
+  expect(await screen.findByText(/当前编辑内容已保留/)).toBeInTheDocument();
+  expect(name).toHaveValue("保留编辑内容");
+  await user.click(screen.getByRole("button", { name: "重新读取项目列表" }));
+  await waitFor(() => expect(screen.getByRole("button", { name: "保存更改" })).toBeEnabled());
+  await waitFor(() => expect(name).toHaveFocus());
+  expect(name).toHaveValue("保留编辑内容"); expect(mocks.updateProject).toHaveBeenCalledOnce();
+  await user.click(screen.getByRole("button", { name: "保存更改" }));
+  await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  expect(screen.getByText("保留编辑内容")).toBeInTheDocument();
+});
+
+it("does not let a canceled save close a newly opened project editor", async () => {
+  const user = userEvent.setup(); let resolve!: (value: unknown) => void;
+  mocks.updateProject.mockImplementationOnce(() => new Promise((done) => { resolve = done; }));
+  render(<ProjectsPage />);
+  const open = async () => { await user.click(await screen.findByRole("button", { name: "管理 Perovskite stability study" })); await user.click(screen.getByRole("menuitem", { name: "编辑项目信息" })); };
+  await open();
+  await user.clear(screen.getByLabelText("项目名称")); await user.type(screen.getByLabelText("项目名称"), "旧编辑");
+  await user.click(screen.getByRole("button", { name: "保存更改" }));
+  await user.click(screen.getByRole("button", { name: "取消" }));
+  await user.click(screen.getByRole("button", { name: "重新读取项目列表" }));
+  await waitFor(() => expect(screen.queryByText(/保存项目的结果尚未确认/)).not.toBeInTheDocument());
+  await open(); await user.clear(screen.getByLabelText("项目名称")); await user.type(screen.getByLabelText("项目名称"), "新的草稿");
+  await act(async () => resolve({ id: "project_1", projectId: "project_1", name: "旧编辑", description: "材料稳定性研究", status: "active", role: "owner" }));
+  expect(screen.getByRole("dialog", { name: "编辑项目信息" })).toBeInTheDocument();
+  expect(screen.getByLabelText("项目名称")).toHaveValue("新的草稿");
 });
 
 it("edits bounded project organization tags without changing scientific scope", async () => {
@@ -949,7 +1571,7 @@ it("edits bounded project organization tags without changing scientific scope", 
       name: "Tagged project",
       description: "结构研究",
       tags: ["结构", "XRD", "待复核"],
-    }),
+    }, expect.any(AbortSignal)),
   );
   expect(
     within(screen.getByText("Tagged project").closest(".managed-object-row")!)
@@ -1037,6 +1659,9 @@ it("exposes the read-only provenance export to shared viewer members", async () 
   mocks.listProjects.mockResolvedValue([
     { id: "shared_viewer", name: "共享只读项目", role: "viewer", status: "active" },
   ]);
+  const exportFixture = await mocks.getProjectExportManifest();
+  mocks.getProjectExportManifest.mockResolvedValue({ ...exportFixture, project: { ...exportFixture.project, id: "shared_viewer" } });
+  mocks.getProjectExportManifest.mockClear();
   render(<ProjectsPage />);
 
   const row = (await screen.findByText("共享只读项目")).closest(".managed-object-row")!;
@@ -1045,7 +1670,7 @@ it("exposes the read-only provenance export to shared viewer members", async () 
   expect(screen.queryByRole("menuitem", { name: "编辑项目信息" })).not.toBeInTheDocument();
   await user.click(screen.getByRole("menuitem", { name: "导出项目清单" }));
 
-  await waitFor(() => expect(mocks.getProjectExportManifest).toHaveBeenCalledWith("shared_viewer"));
+  await waitFor(() => expect(mocks.getProjectExportManifest).toHaveBeenCalledWith("shared_viewer", expect.any(AbortSignal)));
   expect(click).toHaveBeenCalled();
   expect(screen.getByText(/已导出“共享只读项目”/)).toBeInTheDocument();
   vi.unstubAllGlobals();
@@ -1062,7 +1687,7 @@ it("manages datasets from the Data Navigator without permanent per-row buttons",
   render(<ProjectDataPage projectId="project_1" />);
 
   const datasetTitle = await screen.findByText("materials-table");
-  expect(mocks.listScientificObjects).toHaveBeenCalledWith("project_1", expect.anything(), "ACTIVE");
+  expect(mocks.listScientificObjects).toHaveBeenCalledWith("project_1", expect.anything(), "ACTIVE", undefined);
   fireEvent.contextMenu(datasetTitle.closest(".managed-object-row")!);
   expect(screen.getByRole("menuitem", { name: "重命名数据集" })).toBeInTheDocument();
   await user.keyboard("{Escape}");
@@ -1070,9 +1695,9 @@ it("manages datasets from the Data Navigator without permanent per-row buttons",
   await user.click(screen.getByRole("button", { name: "选择多个数据或科研对象" }));
   await user.click(screen.getByRole("checkbox", { name: "选择 materials-table" }));
   await user.click(screen.getByRole("button", { name: "归档" }));
-  await waitFor(() => expect(mocks.bulkDatasetAction).toHaveBeenCalledWith(["dataset_1"], "archive"));
+  await waitFor(() => expect(mocks.bulkDatasetAction).toHaveBeenCalledWith(["dataset_1"], "archive", expect.any(AbortSignal)));
   await user.click(screen.getByRole("button", { name: "已归档" }));
-  await waitFor(() => expect(mocks.listScientificObjects).toHaveBeenLastCalledWith("project_1", expect.anything(), "ARCHIVED"));
+  await waitFor(() => expect(mocks.listScientificObjects).toHaveBeenLastCalledWith("project_1", expect.anything(), "ARCHIVED", undefined));
 });
 
 it("moves a dataset to trash and restores it without exposing new research actions", async () => {
@@ -1103,7 +1728,7 @@ it("moves a dataset to trash and restores it without exposing new research actio
   await waitFor(() =>
     expect(mocks.updateDataset).toHaveBeenCalledWith("dataset_1", {
       lifecycle: "TRASHED",
-    }),
+    }, expect.any(AbortSignal)),
   );
 
   await user.click(screen.getByRole("button", { name: "回收站" }));
@@ -1115,7 +1740,7 @@ it("moves a dataset to trash and restores it without exposing new research actio
   await waitFor(() =>
     expect(mocks.updateDataset).toHaveBeenLastCalledWith("dataset_1", {
       archived: false,
-    }),
+    }, expect.any(AbortSignal)),
   );
 });
 
@@ -1139,7 +1764,7 @@ it("resumes project history with the authoritative ResearchTurn identity", async
     }],
   });
   render(<ProjectOverviewPage projectId="project_1" />);
-  const link = (await screen.findByText("打开 →")).closest("a");
+  const link = await screen.findByRole("link", { name: /比较两个结构/ });
   expect(link).toHaveAttribute("href", "/projects/project_1/research/session_1?run=job_nonstandard_history&turn=turn-123");
 });
 
@@ -1170,6 +1795,73 @@ it("shows the authoritative ResearchTurn terminal status instead of a stale Job 
   expect(screen.queryByText("分析进行中")).not.toBeInTheDocument();
 });
 
+it("keeps only current datasets in overview while retaining historical research sources", async () => {
+  const history = await mocks.getProjectHistory();
+  const source = history.datasets[0];
+  mocks.getProjectHistory.mockResolvedValue({ ...history, datasets: [
+    { ...source, datasetId: "archived", name: "已归档的实验数据", status: "archived" },
+    { ...source, datasetId: "trashed", name: "回收站数据", status: "trashed" },
+    { ...source, name: "当前实验数据", profile: { rowCount: 0 } },
+  ], analyses: [{ jobId: "old-job", datasetId: "archived", status: "succeeded", toolIds: [], userQuestion: "原来的实验结果" }] });
+  render(<ProjectOverviewPage projectId="project_1" />);
+  await screen.findByRole("heading", { name: "项目概览" });
+  const current = screen.getByRole("heading", { name: "当前数据" }).closest("section")!;
+  expect(within(current).getByRole("link", { name: /当前实验数据.*0 行/ })).toHaveAttribute("href", "/projects/project_1/data?dataset=dataset_1");
+  expect(within(current).queryByText("已归档的实验数据")).not.toBeInTheDocument();
+  expect(screen.queryByText("回收站数据")).not.toBeInTheDocument();
+  expect(screen.getByRole("link", { name: /原来的实验结果.*已归档的实验数据/ })).toHaveAttribute("href", "/projects/project_1/research?run=old-job");
+});
+
+it("distinguishes and orders overview runs by their saved question, source and creation time", async () => {
+  const history = await mocks.getProjectHistory();
+  const run = { datasetId: "dataset_1", status: "succeeded", toolIds: ["table.histogram"] };
+  mocks.getProjectHistory.mockResolvedValue({ ...history, analyses: [
+    { ...run, jobId: "older", userQuestion: "比较高温样品", createdAt: "2026-09-01T08:00:00Z" },
+    { ...run, jobId: "newer", userQuestion: "比较低温样品", createdAt: "2026-09-02T08:00:00Z" },
+    { ...run, jobId: "missing-date", createdAt: "not-a-date" },
+  ] });
+  render(<ProjectOverviewPage projectId="project_1" />);
+  const section = (await screen.findByRole("heading", { name: "最近研究" })).closest("section")!;
+  const rows = [...section.querySelectorAll(".overview-row")];
+  expect(rows.map((row) => row.getAttribute("href"))).toEqual(["/projects/project_1/research?run=newer", "/projects/project_1/research?run=older", "/projects/project_1/research?run=missing-date"]);
+  expect(rows[0]).toHaveTextContent("比较低温样品");
+  expect(rows[0]).toHaveTextContent("materials-table");
+  expect(rows[0].querySelector("time")).toHaveAttribute("datetime", "2026-09-02T08:00:00.000Z");
+  expect(rows[2]).toHaveTextContent("材料属性分布");
+  expect(rows[2].querySelector("time")).toBeNull();
+});
+
+it("shows all sources of a joint overview run and does not turn an unverified source into the routing dataset", async () => {
+  const history = await mocks.getProjectHistory();
+  const sources = ["Si", "Cu", "NaCl"].map((name, index) => ({ ...history.datasets[0], datasetId: `material-${index}`, name: `${name} 晶体` }));
+  const run = { datasetId: sources[0].datasetId, status: "succeeded", toolIds: ["structure.rdf"] };
+  mocks.getProjectHistory.mockResolvedValue({ ...history, datasets: sources, analyses: [
+    { ...run, jobId: "joint", userQuestion: "比较三个材料", sourceDatasetIds: sources.map((source) => source.datasetId) },
+    { ...run, jobId: "unverified", userQuestion: "历史研究", sourceDatasetIds: [] },
+  ] });
+  render(<ProjectOverviewPage projectId="project_1" />);
+  const section = (await screen.findByRole("heading", { name: "最近研究" })).closest("section")!;
+  const joint = within(section).getByRole("link", { name: /比较三个材料/ });
+  expect(within(joint).getAllByRole("listitem").map((item) => item.textContent)).toEqual(["Si 晶体", "Cu 晶体", "NaCl 晶体"]);
+  const unverified = within(section).getByRole("link", { name: /历史研究/ });
+  expect(unverified).toHaveTextContent("来源待核实");
+  expect(unverified).not.toHaveTextContent("Si 晶体");
+});
+
+it("discloses long project descriptions and keeps the overview read-only for viewers", async () => {
+  const history = await mocks.getProjectHistory();
+  const description = "比较不同温度下材料的稳定性，保留原始实验条件。".repeat(12);
+  mocks.getProjectHistory.mockResolvedValue({ ...history, project: { ...history.project, description, role: "viewer" }, datasets: [] });
+  render(<ProjectOverviewPage projectId="project_1" />);
+  await screen.findByRole("heading", { name: "项目概览" });
+  expect(screen.queryByRole("heading", { name: "研究项目" })).not.toBeInTheDocument();
+  expect(screen.getByText(description)).not.toBeVisible();
+  await userEvent.setup().click(screen.getByText("项目说明"));
+  expect(screen.getByText(description)).toBeVisible();
+  expect(screen.queryByRole("link", { name: "上传数据 →" })).not.toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "查看研究记录" })).toHaveAttribute("href", "/projects/project_1/research");
+});
+
 it("does not expose dataset mutation controls to a viewer project member", async () => {
   mocks.getProjectHistory.mockResolvedValue({
     project: { id: "project_1", name: "共享研究项目", role: "viewer" },
@@ -1188,15 +1880,29 @@ it("does not expose dataset mutation controls to a viewer project member", async
   expect(screen.queryByRole("link", { name: "上传数据" })).not.toBeInTheDocument();
 });
 
-it("keeps an explicitly addressed archived scientific object resolvable outside default discovery filtering", async () => {
-  mocks.listScientificObjects.mockResolvedValue({
-    items: [{ id: "object_1", project_id: "project_1", kind: "STRUCTURE", object_type: "structure.crystal", display_name: "archived structure", lifecycle_status: "ARCHIVED", current_version_id: "version_1" }],
-    next_cursor: null,
-  });
+it("resolves an explicitly addressed historical version even when absent from the active directory", async () => {
+  mocks.listScientificObjects.mockResolvedValue({ items: [], next_cursor: null });
   render(<ProjectDataPage projectId="project_1" initialObjectId="object_1" initialObjectVersionId="version_1" />);
 
   expect(await screen.findByTestId("scientific-object-viewer")).toBeInTheDocument();
-  expect(mocks.listScientificObjects).toHaveBeenCalledWith("project_1", expect.anything(), undefined);
+  expect(mocks.listScientificObjects).toHaveBeenCalledWith("project_1", expect.anything(), "ACTIVE", undefined);
+  expect(screen.getByTestId("scientific-object-viewer")).toHaveAttribute("data-version", "version_1");
+});
+
+it("retains the explicitly addressed object during directory failure and retry", async () => {
+  const user = userEvent.setup();
+  mocks.listScientificObjects.mockRejectedValueOnce(new Error("directory internal detail"));
+  render(<ProjectDataPage projectId="project_1" initialObjectId="object_1" initialObjectVersionId="version_1" />);
+  const viewer = await screen.findByTestId("scientific-object-viewer");
+  expect(viewer).toHaveAttribute("data-object", "object_1");
+  expect(viewer).toHaveAttribute("data-version", "version_1");
+  expect(viewer).toHaveAttribute("data-can-manage", "true");
+  expect(viewer).toHaveAttribute("data-can-research", "true");
+  expect(screen.queryByTestId("quick-preview-scientific-viewer")).not.toBeInTheDocument();
+  expect(await screen.findByRole("alert")).toHaveTextContent("科研对象目录暂时无法读取");
+  await user.click(screen.getByRole("button", { name: "重新加载科研对象" }));
+  await waitFor(() => expect(screen.queryByRole("alert")).not.toBeInTheDocument());
+  expect(screen.getByTestId("scientific-object-viewer")).toBe(viewer);
 });
 
 it("fails closed when an object route omits the immutable version", async () => {
@@ -1216,12 +1922,12 @@ it("fails closed when an object route omits the immutable version", async () => 
   render(<ProjectDataPage projectId="project_1" initialObjectId="object_1" />);
 
   const state = await screen.findByRole("alert");
-  expect(state).toHaveTextContent("需要指定科研对象版本");
-  expect(state).toHaveTextContent("避免静默替换为最新版本");
-  expect(screen.getByRole("link", { name: "返回项目数据" })).toHaveAttribute(
-    "href",
-    "/projects/project_1/data",
-  );
+  expect(state).toHaveTextContent("这个链接缺少数据版本");
+  expect(screen.queryByTestId("scientific-object-viewer")).not.toBeInTheDocument();
+  await userEvent.setup().click(screen.getByRole("button", { name: "选择数据版本" }));
+  const versionLink = screen.getByRole("link", { name: /Silicon/ });
+  expect(versionLink).toHaveAttribute("href", "/projects/project_1/data?object=object_1&version=version_1");
+  await waitFor(() => expect(versionLink).toHaveFocus());
   expect(screen.queryByTestId("scientific-object-viewer")).not.toBeInTheDocument();
 });
 
@@ -1235,10 +1941,11 @@ it("exposes archive and restore actions for scientific objects through the exist
     .mockResolvedValue({ items: [], next_cursor: null });
   render(<ProjectDataPage projectId="project_1" />);
 
+  await user.click(await screen.findByRole("button", { name: "数据视图" }));
   const title = await screen.findByText("Silicon");
   await user.click(screen.getByRole("button", { name: "管理 Silicon" }));
   await user.click(screen.getByRole("menuitem", { name: "归档科研对象" }));
-  await waitFor(() => expect(mocks.updateScientificObject).toHaveBeenCalledWith("object_1", { archived: true }));
+  await waitFor(() => expect(mocks.updateScientificObject).toHaveBeenCalledWith("object_1", { lifecycle: "ARCHIVED" }, expect.any(AbortSignal)));
   expect(screen.queryByText("Silicon")).not.toBeInTheDocument();
 });
 
@@ -1253,6 +1960,7 @@ it("bulk archives selected scientific objects without mutating their versions", 
   });
   render(<ProjectDataPage projectId="project_1" />);
 
+  await user.click(await screen.findByRole("button", { name: "数据视图" }));
   await screen.findByText("Silicon");
   await user.click(screen.getByRole("button", { name: "选择多个数据或科研对象" }));
   await user.click(screen.getByRole("checkbox", { name: "选择 Silicon" }));
@@ -1264,6 +1972,7 @@ it("bulk archives selected scientific objects without mutating their versions", 
       "project_1",
       ["object_1", "object_2"],
       "ARCHIVED",
+      expect.any(AbortSignal),
     ),
   );
   expect(screen.queryByText("Silicon")).not.toBeInTheDocument();
@@ -1304,6 +2013,7 @@ it("previews dependencies before bulk-moving scientific objects to Trash", async
     });
   render(<ProjectDataPage projectId="project_1" />);
 
+  await user.click(await screen.findByRole("button", { name: "数据视图" }));
   await screen.findByText("Silicon");
   await user.click(screen.getByRole("button", { name: "选择多个数据或科研对象" }));
   await user.click(screen.getByRole("checkbox", { name: "选择 Silicon" }));
@@ -1325,6 +2035,7 @@ it("previews dependencies before bulk-moving scientific objects to Trash", async
       "project_1",
       ["object_1", "object_2"],
       "TRASHED",
+      expect.any(AbortSignal),
     ),
   );
 });
@@ -1380,6 +2091,7 @@ it("previews dependencies before bulk-moving datasets to Trash", async () => {
     expect(mocks.bulkDatasetAction).toHaveBeenCalledWith(
       ["dataset_1", "dataset_2"],
       "trash",
+      expect.any(AbortSignal),
     ),
   );
 });
@@ -1417,10 +2129,44 @@ it("keeps the Dataset Trash preview open when the batch mutation fails", async (
   const dialog = await screen.findByRole("dialog", { name: "将 1 个数据集移入回收站" });
   await user.click(within(dialog).getByRole("button", { name: "确认移入回收站" }));
 
-  expect(await within(dialog).findByRole("alert")).toHaveTextContent(
-    "批量操作服务暂时不可用",
-  );
+  expect(await within(dialog).findByText("批量更新数据集的结果尚未确认，请重新读取数据列表后再操作。")).toBeInTheDocument();
   expect(screen.getByRole("dialog", { name: "将 1 个数据集移入回收站" })).toBeInTheDocument();
+});
+
+it("retains a dataset rename draft through failed reconciliation and uses the exact refreshed dataset", async () => {
+  const user = userEvent.setup();
+  mocks.updateDataset.mockRejectedValueOnce(new Error("response lost"));
+  render(<ProjectDataPage projectId="project_1" />);
+  await user.click(await screen.findByRole("button", { name: "管理 materials-table" }));
+  await user.click(screen.getByRole("menuitem", { name: "重命名数据集" }));
+  const field = screen.getByRole("textbox", { name: "数据集名称" });
+  await user.clear(field); await user.type(field, "保留的重命名草稿");
+  await user.click(screen.getByRole("button", { name: "保存更改" }));
+  const reread = await screen.findByRole("button", { name: "重新读取数据列表" });
+  expect(screen.getByRole("button", { name: "保存更改" })).toBeDisabled();
+  mocks.getProjectHistory.mockRejectedValueOnce(new Error("offline"));
+  await user.click(reread); await screen.findByText("暂时无法读取数据列表，当前内容已保留。请重试。");
+  expect(field).toHaveValue("保留的重命名草稿");
+  await user.click(reread); await waitFor(() => expect(screen.getByRole("button", { name: "保存更改" })).toBeEnabled());
+  expect(field).toHaveValue("保留的重命名草稿");
+  mocks.updateDataset.mockResolvedValueOnce({ id: "dataset_1", datasetId: "dataset_1", projectId: "project_1", name: "保留的重命名草稿", status: "profile_ready" });
+  await user.click(screen.getByRole("button", { name: "保存更改" }));
+  await waitFor(() => expect(screen.queryByRole("dialog", { name: "重命名数据集" })).not.toBeInTheDocument());
+  expect(mocks.updateDataset).toHaveBeenCalledTimes(2);
+});
+
+it("keeps a newly opened dataset editor intact when the previous canceled save resolves", async () => {
+  const user = userEvent.setup(); let resolve!: (value: unknown) => void;
+  mocks.updateDataset.mockImplementationOnce(() => new Promise((done) => { resolve = done; }));
+  render(<ProjectDataPage projectId="project_1" />);
+  const open = async () => { await user.click(await screen.findByRole("button", { name: "管理 materials-table" })); await user.click(screen.getByRole("menuitem", { name: "重命名数据集" })); };
+  await open(); await user.click(screen.getByRole("button", { name: "保存更改" }));
+  await waitFor(() => expect(mocks.updateDataset).toHaveBeenCalledOnce());
+  await user.click(screen.getByRole("button", { name: "取消" })); await open();
+  const field = screen.getByRole("textbox", { name: "数据集名称" }); await user.clear(field); await user.type(field, "新的编辑");
+  await act(async () => resolve({ id: "dataset_1", datasetId: "dataset_1", projectId: "project_1", name: "materials-table", status: "profile_ready" }));
+  expect(screen.getByRole("dialog", { name: "重命名数据集" })).toBeInTheDocument(); expect(field).toHaveValue("新的编辑");
+  expect(screen.getByRole("button", { name: "保存更改" })).toBeDisabled();
 });
 
 it("removes restored scientific objects from the archived filtered view", async () => {
@@ -1431,10 +2177,11 @@ it("removes restored scientific objects from the archived filtered view", async 
   });
   render(<ProjectDataPage projectId="project_1" />);
   await user.click(await screen.findByRole("button", { name: "已归档" }));
+  await user.click(await screen.findByRole("button", { name: "数据视图" }));
   await screen.findByText("Archived silicon");
   await user.click(screen.getByRole("button", { name: "管理 Archived silicon" }));
   await user.click(screen.getByRole("menuitem", { name: "恢复科研对象" }));
-  await waitFor(() => expect(mocks.updateScientificObject).toHaveBeenCalledWith("object_1", { archived: false }));
+  await waitFor(() => expect(mocks.updateScientificObject).toHaveBeenCalledWith("object_1", { lifecycle: "ACTIVE" }, expect.any(AbortSignal)));
   expect(screen.queryByText("Archived silicon")).not.toBeInTheDocument();
 });
 
@@ -1448,11 +2195,12 @@ it("lists scientific objects in the Trash filter and exposes a reversible restor
   }));
   render(<ProjectDataPage projectId="project_1" />);
   await user.click(await screen.findByRole("button", { name: "回收站" }));
+  await user.click(await screen.findByRole("button", { name: "数据视图" }));
   await screen.findByText("Trashed silicon");
-  expect(mocks.listScientificObjects).toHaveBeenLastCalledWith("project_1", expect.anything(), "TRASHED");
+  expect(mocks.listScientificObjects).toHaveBeenLastCalledWith("project_1", expect.anything(), "TRASHED", undefined);
   await user.click(screen.getByRole("button", { name: "管理 Trashed silicon" }));
   await user.click(screen.getByRole("menuitem", { name: "恢复科研对象" }));
-  await waitFor(() => expect(mocks.updateScientificObject).toHaveBeenCalledWith("object_1", { archived: false }));
+  await waitFor(() => expect(mocks.updateScientificObject).toHaveBeenCalledWith("object_1", { lifecycle: "ACTIVE" }, expect.any(AbortSignal)));
 });
 
 it("previews scientific object dependencies before moving it to Trash", async () => {
@@ -1462,15 +2210,95 @@ it("previews scientific object dependencies before moving it to Trash", async ()
     next_cursor: null,
   });
   render(<ProjectDataPage projectId="project_1" />);
+  await user.click(await screen.findByRole("button", { name: "数据视图" }));
   await screen.findByText("Silicon");
   await user.click(screen.getByRole("button", { name: "管理 Silicon" }));
   await user.click(screen.getByRole("menuitem", { name: "移入回收站" }));
   expect(await screen.findByText("依赖影响")).toBeInTheDocument();
-  expect(mocks.getScientificObjectDependencyImpact).toHaveBeenCalledWith("object_1");
+  expect(mocks.getScientificObjectDependencyImpact).toHaveBeenCalledWith("object_1", expect.any(AbortSignal));
   expect(screen.getByText("ScientificResult：1")).toBeInTheDocument();
   expect(mocks.updateScientificObject).not.toHaveBeenCalled();
   await user.click(screen.getByRole("button", { name: "移入回收站" }));
-  await waitFor(() => expect(mocks.updateScientificObject).toHaveBeenCalledWith("object_1", { lifecycle: "TRASHED" }));
+  await waitFor(() => expect(mocks.updateScientificObject).toHaveBeenCalledWith("object_1", { lifecycle: "TRASHED" }, expect.any(AbortSignal)));
+});
+
+it.each(["project", "dataset", "object"] as const)("recovers a failed %s dependency preview before enabling its action", async (kind) => {
+  const user = userEvent.setup();
+  const read = kind === "project" ? mocks.getProjectDependencyImpact : kind === "dataset" ? mocks.getDatasetDependencyImpact : mocks.getScientificObjectDependencyImpact;
+  read.mockRejectedValueOnce(new Error("private dependency failure"));
+  if (kind === "object") mocks.listScientificObjects.mockResolvedValue({
+    items: [{ id: "object_1", project_id: "project_1", kind: "STRUCTURE", object_type: "structure.crystal", display_name: "Silicon", lifecycle_status: "ACTIVE", current_version_id: "version_1" }],
+    next_cursor: null,
+  });
+  render(kind === "project" ? <ProjectsPage /> : <ProjectDataPage projectId="project_1" />);
+  const name = kind === "project" ? "Perovskite stability study" : kind === "dataset" ? "materials-table" : "Silicon";
+  if (kind === "object") await user.click(await screen.findByRole("button", { name: "数据视图" }));
+  await user.click(await screen.findByRole("button", { name: `管理 ${name}` }));
+  await user.click(screen.getByRole("menuitem", { name: "移入回收站" }));
+  const dialog = screen.getByRole("dialog");
+  expect(await within(dialog).findByRole("alert")).toHaveTextContent("暂时无法读取");
+  expect(within(dialog).getByRole("button", { name: "移入回收站" })).toBeDisabled();
+  expect(dialog).not.toHaveTextContent("private dependency failure");
+  await user.click(within(dialog).getByRole("button", { name: "重新检查依赖" }));
+  await waitFor(() => expect(within(dialog).getByRole("button", { name: "移入回收站" })).toBeEnabled());
+  expect(read).toHaveBeenCalledTimes(2);
+  expect(mocks.updateProject).not.toHaveBeenCalled();
+  expect(mocks.updateDataset).not.toHaveBeenCalled();
+  expect(mocks.updateScientificObject).not.toHaveBeenCalled();
+});
+
+it("retains successful project dependency checks while retrying a failed sibling", async () => {
+  const user = userEvent.setup();
+  mocks.listProjects.mockResolvedValue([
+    { id: "a", name: "Alpha", role: "owner", status: "active" },
+    { id: "b", name: "Beta", role: "owner", status: "active" },
+  ]);
+  const saved = await mocks.getProjectDependencyImpact();
+  mocks.getProjectDependencyImpact.mockClear().mockImplementation(async (id: string) => {
+    if (id === "b") throw new Error("source unavailable");
+    return { ...saved, dependencyCount: 7, dependencies: [{ kind: "results", label: "科学结果", count: 7 }] };
+  });
+  render(<ProjectsPage />);
+  await user.click(await screen.findByRole("button", { name: "选择" }));
+  await user.click(screen.getByRole("button", { name: "选择当前结果" }));
+  await user.click(screen.getByRole("button", { name: "移入回收站" }));
+  const dialog = screen.getByRole("dialog");
+  await within(dialog).findByRole("alert");
+  expect(dialog).toHaveTextContent("科学结果：7");
+  expect(within(dialog).getByRole("button", { name: "确认移入回收站" })).toBeDisabled();
+  mocks.getProjectDependencyImpact.mockResolvedValue(saved);
+  await user.click(within(dialog).getByRole("button", { name: "重新检查依赖" }));
+  await waitFor(() => expect(within(dialog).getByRole("button", { name: "确认移入回收站" })).toBeEnabled());
+  expect(dialog).toHaveTextContent("科学结果：7");
+  expect(mocks.getProjectDependencyImpact.mock.calls.map(([id]) => id)).toEqual(["a", "b", "b"]);
+});
+
+it.each(["project", "dataset"] as const)("blocks permanent %s deletion on a failed or server-denied dependency preview, including Enter", async (kind) => {
+  const user = userEvent.setup();
+  const read = kind === "project" ? mocks.getProjectDependencyImpact : mocks.getDatasetDependencyImpact;
+  const saved = await read();
+  read.mockClear().mockRejectedValueOnce(new Error("failed preview")).mockResolvedValue({ ...saved, canDelete: false });
+  if (kind === "project") mocks.listProjects.mockResolvedValue([{ id: "project_1", name: "Protected", role: "owner", status: "trashed" }]);
+  else {
+    const history = await mocks.getProjectHistory();
+    history.datasets[0].status = "trashed";
+    history.datasets[0].name = "Protected";
+  }
+  render(kind === "project" ? <ProjectsPage /> : <ProjectDataPage projectId="project_1" />);
+  await user.click(await screen.findByRole("button", { name: "回收站" }));
+  await user.click(await screen.findByRole("button", { name: "管理 Protected" }));
+  await user.click(screen.getByRole("menuitem", { name: kind === "project" ? "永久删除空项目" : "永久删除空数据集" }));
+  const dialog = screen.getByRole("dialog");
+  await within(dialog).findByRole("alert");
+  await user.type(within(dialog).getByRole("textbox"), "Protected{Enter}");
+  expect(within(dialog).getByRole("button", { name: "永久删除" })).toBeDisabled();
+  await user.click(within(dialog).getByRole("button", { name: "重新检查依赖" }));
+  await waitFor(() => expect(within(dialog).queryByRole("alert")).toBeNull());
+  expect(within(dialog).getByRole("button", { name: "永久删除" })).toBeDisabled();
+  await user.click(within(dialog).getByRole("textbox"));
+  await user.keyboard("{Enter}");
+  expect(mocks.deleteEmptyProject).not.toHaveBeenCalled();
+  expect(mocks.deleteEmptyDataset).not.toHaveBeenCalled();
 });
 
 it("keeps scientific object lifecycle mutation unavailable to read-only members", async () => {
@@ -1484,9 +2312,252 @@ it("keeps scientific object lifecycle mutation unavailable to read-only members"
     next_cursor: null,
   });
   render(<ProjectDataPage projectId="project_1" />);
+  await userEvent.click(await screen.findByRole("button", { name: "数据视图" }));
   await screen.findByText("Shared silicon");
   await userEvent.click(screen.getByRole("button", { name: "管理 Shared silicon" }));
   expect(screen.getByRole("menuitem", { name: "查看研究记录" })).toBeInTheDocument();
   expect(screen.queryByRole("menuitem", { name: "归档科研对象" })).not.toBeInTheDocument();
   expect(mocks.updateScientificObject).not.toHaveBeenCalled();
+});
+
+it.each([{ name: "Console", Page: ConsolePage }, { name: "Projects", Page: ProjectsPage }])("bounds a stalled $name directory and rejects its late result", async ({ Page }) => {
+  let resolveOld!: (items: unknown) => void;
+  mocks.listProjects.mockReturnValueOnce(new Promise((resolve) => { resolveOld = resolve; }));
+  vi.useFakeTimers();
+  try {
+    render(<Page />);
+    await act(async () => { await vi.advanceTimersByTimeAsync(10_000); });
+    expect(screen.getByRole("alert")).toHaveTextContent("项目列表读取超时");
+    expect(mocks.listProjects.mock.calls[0][0].signal.aborted).toBe(true);
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "重新加载项目数据" })); });
+    expect(screen.getAllByText("Perovskite stability study").length).toBeGreaterThan(0);
+    await act(async () => { resolveOld([{ id: "wrong", name: "迟到的旧项目" }]); });
+    expect(screen.queryByText("迟到的旧项目")).not.toBeInTheDocument();
+  } finally { vi.useRealTimers(); }
+});
+
+it("bounds quick-preview source reads, preserves the project link and ignores late sources", async () => {
+  const user = userEvent.setup();
+  let resolveOld!: (items: unknown) => void;
+  mocks.getDatasetSourceResources.mockReturnValueOnce(new Promise((resolve) => { resolveOld = resolve; }));
+  render(<ConsolePage />); const trigger = await screen.findByRole("button", { name: "快速查看" });
+  vi.useFakeTimers();
+  try {
+    await act(async () => { fireEvent.click(trigger); });
+    expect(screen.getByRole("button", { name: "关闭快速查看" })).toHaveFocus();
+    await act(async () => { await vi.advanceTimersByTimeAsync(10_000); });
+    expect(screen.getByRole("alert")).toHaveTextContent("暂时无法加载数据");
+    expect(screen.getByRole("link", { name: "打开项目数据" })).toHaveAttribute("href", "/projects/project_1/data?dataset=dataset_1");
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "重新加载数据" })); });
+    expect(screen.getByTestId("quick-preview-scientific-viewer")).toHaveTextContent("DataFrame");
+    await act(async () => resolveOld([{ objectId: "late", datasetId: "dataset_1", objectType: "LateSource", payload: [] }]));
+    expect(screen.getByTestId("quick-preview-scientific-viewer")).not.toHaveTextContent("LateSource");
+  } finally { vi.useRealTimers(); }
+  await user.keyboard("{Escape}"); await waitFor(() => expect(trigger).toHaveFocus());
+});
+
+it("rejects quick-preview history from a different project before reading sources", async () => {
+  const user = userEvent.setup();
+  mocks.getProjectHistory.mockResolvedValue({ project: { id: "foreign" }, datasets: [{ datasetId: "foreign-dataset" }], analyses: [] });
+  render(<ConsolePage />); await user.click(await screen.findByRole("button", { name: "快速查看" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent("暂时无法加载数据");
+  expect(mocks.getDatasetSourceResources).not.toHaveBeenCalled();
+  expect(screen.queryByTestId("quick-preview-scientific-viewer")).not.toBeInTheDocument();
+});
+
+it("rejects quick-preview resources from a different dataset", async () => {
+  const user = userEvent.setup();
+  mocks.getDatasetSourceResources.mockResolvedValueOnce([{ objectId: "foreign", datasetId: "wrong-dataset", objectType: "DataFrame", payload: [] }]);
+  render(<ConsolePage />); await user.click(await screen.findByRole("button", { name: "快速查看" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent("暂时无法加载数据");
+  expect(screen.queryByTestId("quick-preview-scientific-viewer")).not.toBeInTheDocument();
+});
+
+it("keeps the preview dataset and validated sample in its data-page handoff", async () => {
+  const user = userEvent.setup();
+  const selection = validateWorkspaceSelectionContext({
+    schemaVersion: "1.0", sourceScopeHash: "a".repeat(64),
+    primary: { selectionSchemaVersion: "1.0", kind: "DATASET_SAMPLE", sourceScopeHash: "a".repeat(64), projectId: "project_1", datasetId: "dataset_1", datasetVersion: "v2", objectId: "object_1", sampleRef: "mat-2" },
+    secondary: [], propagation: "EXACT_COMPATIBLE_ONLY", compatibility: "EXACT", cleared: false,
+  });
+  mocks.sourceSelection = selection;
+  render(<ConsolePage />); await user.click(await screen.findByRole("button", { name: "快速查看" }));
+  await user.click(await screen.findByRole("button", { name: "选择第一条科学数据" }));
+  const href = new URL(screen.getByRole("link", { name: "查看所选数据" }).getAttribute("href")!, "http://localhost");
+  expect(href.searchParams.get("dataset")).toBe("dataset_1");
+  expect(resolveDataPageSelection(href.searchParams.get("selection")!, "project_1", "dataset_1")).toEqual(selection);
+  await user.click(screen.getByRole("button", { name: "取消选择" }));
+  expect(screen.getByRole("link", { name: "打开项目数据" })).toHaveAttribute("href", "/projects/project_1/data?dataset=dataset_1");
+  mocks.sourceSelection = { ...selection, primary: { ...selection.primary, projectId: "foreign" } };
+  await user.click(screen.getByRole("button", { name: "选择第一条科学数据" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent("当前选择无法带到数据页");
+  expect(screen.queryByRole("link", { name: "查看所选数据" })).not.toBeInTheDocument();
+});
+
+it("restores a raw-data selection into its matching resource rather than the first file", async () => {
+  const selection = validateWorkspaceSelectionContext({ schemaVersion: "1.0", sourceScopeHash: "b".repeat(64), primary: {
+    selectionSchemaVersion: "1.0", kind: "DATASET_SAMPLE", sourceScopeHash: "b".repeat(64), projectId: "project_1", datasetId: "dataset_1", datasetVersion: "v1", objectId: "second", sampleRef: "sample-2",
+  }, secondary: [], propagation: "EXACT_COMPATIBLE_ONLY", compatibility: "EXACT", cleared: false });
+  mocks.searchQuery = new URLSearchParams({ dataset: "dataset_1", selection: encodeWorkspaceSelectionUrl(selection) }).toString();
+  mocks.getDatasetSourceResources.mockResolvedValueOnce([
+    { objectId: "first", datasetId: "dataset_1", versionId: "v1", objectHash: "a".repeat(64), objectType: "DataFrame", payload: [] },
+    { objectId: "second", datasetId: "dataset_1", versionId: "v1", objectHash: "b".repeat(64), objectType: "DataFrame", payload: [] },
+  ]);
+  render(<ProjectDataPage projectId="project_1" />);
+  await waitFor(() => expect(screen.getByTestId("quick-preview-scientific-viewer")).toHaveAttribute("data-object", "second"));
+  expect(screen.getByTestId("quick-preview-scientific-viewer")).toHaveAttribute("data-sample", "sample-2");
+  const research = new URL(screen.getByRole("link", { name: "研究此数据" }).getAttribute("href")!, "http://localhost");
+  expect(research.searchParams.get("sample")).toBe("sample-2");
+  expect(research.searchParams.get("sourceSelection")).toBe(encodeWorkspaceSelectionUrl(selection));
+});
+
+const routeResources = () => [
+  { objectId: "first", datasetId: "dataset_1", versionId: "v1", objectHash: "a".repeat(64), objectType: "PhononBand", payload: {} },
+  { objectId: "second", datasetId: "dataset_1", versionId: "v1", objectHash: "b".repeat(64), objectType: "PhononDos", payload: {} },
+];
+
+it("restores the exact resource from the URL and follows history without rereading its dataset", async () => {
+  mocks.getDatasetSourceResources.mockResolvedValue(routeResources());
+  mocks.searchQuery = "dataset=dataset_1&resource=second";
+  const view = render(<ProjectDataPage projectId="project_1" />);
+  await waitFor(() => expect(screen.getByTestId("quick-preview-scientific-viewer")).toHaveAttribute("data-object", "second"));
+  expect(screen.getByRole("button", { name: "声子态密度" })).toHaveAttribute("aria-pressed", "true");
+  mocks.searchQuery = "dataset=dataset_1&resource=first";
+  view.rerender(<ProjectDataPage projectId="project_1" />);
+  await waitFor(() => expect(screen.getByTestId("quick-preview-scientific-viewer")).toHaveAttribute("data-object", "first"));
+  mocks.searchQuery = "dataset=dataset_1&resource=second";
+  view.rerender(<ProjectDataPage projectId="project_1" />);
+  await waitFor(() => expect(screen.getByTestId("quick-preview-scientific-viewer")).toHaveAttribute("data-object", "second"));
+  expect(mocks.getDatasetSourceResources).toHaveBeenCalledTimes(1);
+});
+
+it("records explicit resource switching while clearing the previous selection and retaining unrelated URL state", async () => {
+  const selection = validateWorkspaceSelectionContext({ schemaVersion: "1.0", sourceScopeHash: "a".repeat(64), primary: {
+    selectionSchemaVersion: "1.0", kind: "DATASET_SAMPLE", sourceScopeHash: "a".repeat(64), projectId: "project_1", datasetId: "dataset_1", datasetVersion: "v1", objectId: "first", sampleRef: "row-1",
+  }, secondary: [], propagation: "EXACT_COMPATIBLE_ONLY", compatibility: "EXACT", cleared: false });
+  mocks.searchQuery = new URLSearchParams({dataset:"dataset_1",resource:"first",selection:encodeWorkspaceSelectionUrl(selection),tableQuery:"old",tableSort:"desc",tableRow:"row-1",keep:"value"}).toString();
+  window.history.replaceState({ __NA: true, __PRIVATE_NEXTJS_INTERNALS_TREE: {}, retained: "yes" }, "", `/projects/project_1/data?${mocks.searchQuery}#plot`);
+  try {
+    mocks.getDatasetSourceResources.mockResolvedValue(routeResources());
+    const view=render(<ProjectDataPage projectId="project_1" />);
+    await screen.findByTestId("quick-preview-scientific-viewer");
+    await userEvent.setup().click(screen.getByRole("button", { name:"声子态密度" }));
+    const current=new URL(window.location.href);
+    expect(current.searchParams.get("resource")).toBe("second");
+    expect(current.searchParams.get("dataset")).toBe("dataset_1");
+    for(const name of ["selection","tableQuery","tableSort","tableRow"])expect(current.searchParams.has(name)).toBe(false);
+    expect(current.searchParams.get("keep")).toBe("value");expect(current.hash).toBe("#plot");
+    expect(window.history.state).toEqual({retained:"yes",dataResourceView:true});
+    mocks.searchQuery=current.search.slice(1);view.rerender(<ProjectDataPage projectId="project_1" />);
+    await waitFor(() => expect(screen.getByTestId("quick-preview-scientific-viewer")).toHaveAttribute("data-object","second"));
+    expect(screen.getByTestId("quick-preview-scientific-viewer")).not.toHaveAttribute("data-sample");
+    expect(screen.getByRole("link",{name:"研究此数据"}).getAttribute("href")).not.toContain("sample=");
+  } finally {window.history.replaceState({},"","/");}
+});
+
+it.each(["missing", ""])("never substitutes the first resource for a missing explicit target: %s", async resource => {
+  mocks.getDatasetSourceResources.mockResolvedValue(routeResources());
+  mocks.searchQuery=`dataset=dataset_1&resource=${resource}`;
+  const view=render(<ProjectDataPage projectId="project_1" />);
+  expect(await screen.findByRole("alert")).toHaveTextContent("暂时无法找到这项数据内容");
+  expect(screen.queryByTestId("quick-preview-scientific-viewer")).not.toBeInTheDocument();
+  expect(screen.queryByRole("link",{name:"研究此数据"})).not.toBeInTheDocument();
+  if (!resource) { view.unmount(); return; }
+  mocks.getDatasetSourceResources.mockResolvedValueOnce([...routeResources(),{...routeResources()[0],objectId:resource}]);
+  await userEvent.setup().click(screen.getByRole("button",{name:"重新读取数据内容"}));
+  await waitFor(()=>expect(screen.getByTestId("quick-preview-scientific-viewer")).toHaveAttribute("data-object",resource));
+  await waitFor(() => expect(within(screen.getByRole("navigation", { name: "数据内容" })).getAllByRole("button").find(button => button.getAttribute("aria-pressed") === "true")).toHaveFocus());
+  expect(mocks.getDatasetSourceResources).toHaveBeenCalledTimes(2);
+  view.unmount();
+});
+
+it("does not show a scientific selection from a different explicitly requested resource", async () => {
+  const selection=validateWorkspaceSelectionContext({schemaVersion:"1.0",sourceScopeHash:"a".repeat(64),primary:{selectionSchemaVersion:"1.0",kind:"DATASET_SAMPLE",sourceScopeHash:"a".repeat(64),projectId:"project_1",datasetId:"dataset_1",datasetVersion:"v1",objectId:"first",sampleRef:"sample-1"},secondary:[],propagation:"EXACT_COMPATIBLE_ONLY",compatibility:"EXACT",cleared:false});
+  mocks.searchQuery=new URLSearchParams({dataset:"dataset_1",resource:"second",selection:encodeWorkspaceSelectionUrl(selection)}).toString();
+  mocks.getDatasetSourceResources.mockResolvedValue(routeResources());
+  render(<ProjectDataPage projectId="project_1" />);
+  expect(await screen.findByRole("alert")).toHaveTextContent("链接中的数据内容与选择不一致");
+  expect(screen.queryByTestId("quick-preview-scientific-viewer")).not.toBeInTheDocument();
+  expect(screen.queryByRole("link",{name:"研究此数据"})).not.toBeInTheDocument();
+});
+
+it.each(["foreign dataset", "duplicate identity"])("rejects ambiguous resource reads: %s",async reason=>{
+  const resources=routeResources();
+  if(reason==="foreign dataset")resources[1].datasetId="foreign";
+  else resources[1].objectId="first";
+  mocks.searchQuery="dataset=dataset_1&resource=first";mocks.getDatasetSourceResources.mockResolvedValue(resources);
+  render(<ProjectDataPage projectId="project_1" />);
+  expect(await screen.findByRole("alert")).toHaveTextContent("当前科学资源暂时无法读取");
+  expect(screen.queryByTestId("quick-preview-scientific-viewer")).not.toBeInTheDocument();
+  expect(screen.queryByRole("link",{name:"研究此数据"})).not.toBeInTheDocument();
+});
+
+it("keeps the requested resource when a stalled read is retried and ignores its late completion",async()=>{
+  let resolveOld!:(items:unknown[])=>void;
+  mocks.searchQuery="dataset=dataset_1&resource=second";
+  mocks.getDatasetSourceResources.mockImplementationOnce(()=>new Promise(resolve=>{resolveOld=resolve;})).mockResolvedValueOnce(routeResources());
+  vi.useFakeTimers();
+  try{
+    await act(async()=>{render(<ProjectDataPage projectId="project_1" />);});
+    await act(async()=>{await vi.advanceTimersByTimeAsync(10_000);});
+    expect(screen.getByRole("alert")).toHaveTextContent("读取科学数据超时");
+    await act(async()=>{fireEvent.click(screen.getByRole("button",{name:"重新加载数据"}));});
+    expect(screen.getByTestId("quick-preview-scientific-viewer")).toHaveAttribute("data-object","second");
+    await act(async()=>resolveOld([routeResources()[0]]));
+    expect(screen.getByTestId("quick-preview-scientific-viewer")).toHaveAttribute("data-object","second");
+  }finally{vi.useRealTimers();}
+});
+
+it("keeps the raw volumetric resource identity through field selection and URL restoration", async () => {
+  const hash = "b".repeat(64), resourceId = "dataset_1:volume";
+  const selection = validateWorkspaceSelectionContext({ schemaVersion: "1.0", sourceScopeHash: hash, primary: {
+    selectionSchemaVersion: "1.0", kind: "VOLUMETRIC_FIELD", sourceScopeHash: hash, projectId: "project_1", datasetId: "dataset_1", datasetVersion: hash,
+    artifactId: `source:${resourceId}:volumetric-dataset`, artifactChecksum: hash, fieldId: "channel:0",
+  }, secondary: [], propagation: "EXACT_COMPATIBLE_ONLY", compatibility: "EXACT", cleared: false });
+  const token = encodeWorkspaceSelectionUrl(selection);
+  mocks.sourceSelection = selection;
+  mocks.searchQuery = "dataset=dataset_1";
+  const resource = { objectId: resourceId, datasetId: "dataset_1", objectHash: hash, objectType: "VolumetricData", payload: {} };
+  mocks.getDatasetSourceResources.mockResolvedValue([resource]);
+  const view = render(<ProjectDataPage projectId="project_1" />);
+  await userEvent.setup().click(await screen.findByRole("button", {name: "选择第一条科学数据"}));
+  expect(new URL(window.location.href).searchParams.get("resource")).toBe(resourceId);
+  mocks.getDatasetSourceResources.mockResolvedValue([{...resource, objectId: "same-content"}, resource]);
+  mocks.searchQuery = new URLSearchParams({dataset: "dataset_1", selection: token}).toString();
+  view.unmount();
+  render(<ProjectDataPage projectId="project_1" />);
+  await waitFor(() => expect(screen.getByTestId("quick-preview-scientific-viewer")).toHaveAttribute("data-object", resourceId));
+  const research = new URL(screen.getByRole("link", {name: "研究此数据"}).getAttribute("href")!, "http://localhost");
+  expect(research.searchParams.get("sourceSelection")).toBe(token);
+});
+
+it("restores an electronic companion by exact artifact identity even when source hashes are duplicated", async () => {
+  const hash = "b".repeat(64);
+  const selection = validateWorkspaceSelectionContext({ schemaVersion: "1.0", sourceScopeHash: hash, primary: {
+    selectionSchemaVersion: "1.0", kind: "ELECTRONIC_DOS_POINT", sourceScopeHash: hash, projectId: "project_1", datasetId: "dataset_1", datasetVersion: "v1", jobId: "source-view", artifactId: "source:second-dos", artifactChecksum: hash, electronicResourceId: "payload-resource", energyPointId: "point-2", dosChannelId: "total", spinChannelId: "none",
+  }, secondary: [], propagation: "EXACT_COMPATIBLE_ONLY", compatibility: "EXACT", cleared: false });
+  mocks.searchQuery = new URLSearchParams({ dataset: "dataset_1", selection: encodeWorkspaceSelectionUrl(selection) }).toString();
+  const resource = { objectId: "second-dos", datasetId: "dataset_1", versionId: "v1", objectHash: hash, objectType: "ElectronicDos", payload: {} };
+  mocks.getDatasetSourceResources.mockResolvedValueOnce([{ ...resource, objectId: "first-dos" }, resource]);
+  render(<ProjectDataPage projectId="project_1" />);
+  await waitFor(() => expect(screen.getByTestId("quick-preview-scientific-viewer")).toHaveAttribute("data-object", "second-dos"));
+  const research = new URL(screen.getByRole("link", { name: "研究此数据" }).getAttribute("href")!, "http://localhost");
+  expect(research.searchParams.get("sourceSelection")).toBe(encodeWorkspaceSelectionUrl(selection));
+});
+
+it.each([false, true])("carries the selected periodic atom from an upload record into Research with duplicate content: %s", async (duplicate) => {
+  const hash = "b".repeat(64);
+  const selection = validateWorkspaceSelectionContext({ schemaVersion: "1.0", sourceScopeHash: hash, primary: {
+    selectionSchemaVersion: "1.0", kind: "PERIODIC_SITE", sourceScopeHash: hash, projectId: "project_1", datasetId: "dataset_1", datasetVersion: hash, objectId: "structure", structureId: hash, siteId: "Li-0:1.0.0",
+  }, secondary: [], propagation: "EXACT_COMPATIBLE_ONLY", compatibility: "EXACT", cleared: false });
+  const token = encodeWorkspaceSelectionUrl(selection);
+  mocks.searchQuery = new URLSearchParams({ dataset: "dataset_1", selection: token }).toString();
+  const resource = { objectId: "structure", datasetId: "dataset_1", objectHash: hash, objectType: "Structure", payload: {} };
+  mocks.getDatasetSourceResources.mockResolvedValueOnce(duplicate ? [{ ...resource, objectId: "other_structure" }, resource] : [resource]);
+  render(<ProjectDataPage projectId="project_1" />);
+  await waitFor(() => expect(screen.getByTestId("quick-preview-scientific-viewer")).toHaveAttribute("data-object", "structure"));
+  const link = await screen.findByRole("link", { name: "研究此数据" });
+  const research = new URL(link.getAttribute("href")!, "http://localhost");
+  expect(research.searchParams.get("sourceSelection")).toBe(token);
+  expect(research.searchParams.has("sample")).toBe(false);
 });

@@ -26,6 +26,18 @@ const NORMALIZATIONS = new Set(["source_native","normalized_to_unit_integral","n
 const INTEGRALS = new Set(["electron_count","elementary_charge","magnetic_moment","cell_average","zero_by_definition","not_physically_interpreted","unknown"]);
 const RELATIONSHIP_KINDS = new Set(["total_equals_up_plus_down","spin_difference_equals_up_minus_down","vector_magnitude","complex_norm_density"]);
 
+/** Distinct fields may store the same numbers under different artifact names.
+ * Keep one verified payload without treating a conflicting duplicate as an alias. */
+function equivalentPayload(left: ValidatedVolumetricPayload, right: ValidatedVolumetricPayload): boolean {
+  const keys = ["encoding", "dtype", "valueCount", "uncompressedBytes", "compressedBytes", "logicalSha256", "storageSha256"] as const;
+  if (keys.some(key => left[key] !== right[key]) || left.gridShape.some((value, index) => value !== right.gridShape[index])) return false;
+  if (Boolean(left.inlineValues) !== Boolean(right.inlineValues)) return false;
+  if (left.inlineValues && right.inlineValues && (left.inlineValues.length !== right.inlineValues.length || left.inlineValues.some((value, index) => value !== right.inlineValues![index]))) return false;
+  // Chunk descriptors are bounded metadata; compare every field rather than
+  // dropping storage identities or silently substituting different chunks.
+  return JSON.stringify(left.chunks) === JSON.stringify(right.chunks);
+}
+
 export function validateVolumetricArtifacts(datasetValue: unknown, manifestValue: unknown): VolumetricValidationResult {
   const errors: string[] = [];
   if (!record(datasetValue) || !exactKeys(datasetValue, DATASET_KEYS) || datasetValue.schema_version !== "phase10j.volumetric_dataset.v1") {
@@ -51,9 +63,14 @@ export function validateVolumetricArtifacts(datasetValue: unknown, manifestValue
   const fieldValues = Array.isArray(datasetValue.fields) ? datasetValue.fields : [];
   if (!grid || payloadValues.length < 1 || payloadValues.length !== fieldValues.length || payloadValues.length > 8) errors.push("VOLUME_DATASET_CAP_EXCEEDED");
   const payloads = payloadValues.map((value) => validatePayload(value, errors)).filter((value): value is ValidatedVolumetricPayload => value !== null);
-  const payloadById = new Map(payloads.map((payload) => [payload.payloadId, payload]));
+  const payloadById = new Map<string, ValidatedVolumetricPayload>();
+  for (const payload of payloads) {
+    const previous = payloadById.get(payload.payloadId);
+    if (previous && !equivalentPayload(previous, payload)) errors.push("VOLUME_PAYLOAD_IDENTITY_CONFLICT");
+    else if (!previous) payloadById.set(payload.payloadId, payload);
+  }
   const fields = fieldValues.map((value) => validateField(value, errors)).filter((value): value is ValidatedVolumetricField => value !== null);
-  if (new Set(payloads.map((value) => value.payloadId)).size !== payloads.length || new Set(fields.map((value) => value.fieldId)).size !== fields.length) errors.push("VOLUME_CANONICAL_ORDER_INVALID");
+  if (new Set(fields.map((value) => value.fieldId)).size !== fields.length) errors.push("VOLUME_CANONICAL_ORDER_INVALID");
   if (grid) fields.forEach((field) => {
     const payload = payloadById.get(field.payloadId);
     if (!payload || payload.gridShape.some((value, axis) => value !== grid.shape[axis])) {

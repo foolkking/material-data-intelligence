@@ -19,13 +19,61 @@ Every scientific finding must cite a supplied finding, fact, or evidence ref.
 When supported by the supplied interpretation, return bounded provenance-aware
 sections named `discussion`, `conclusion`, and `next_steps`. Each section is an
 object with `text`, `fact_refs`, and `evidence_refs`. Discussion and conclusion
-may only restate supplied scientific findings. Next steps are proposals, not
-new scientific claims; leave their reference lists empty unless they explicitly
-rely on supplied evidence.
+may only restate supplied scientific findings. For next_steps, copy the exact
+interpretation.report_next_steps_text into text with empty fact_refs and
+evidence_refs, or return null. If that input is null, return null. Do not invent,
+paraphrase or expand recommendations, even when they contain no number. A
+proposal still makes an applicability claim; the report cannot establish that
+a new tool, method or physical inference is valid for the supplied data.
 
-Every figure must cite a supplied figure ref. Do not convert units. Preserve
+Every figure must cite a supplied figure ref. A figure_ref identifies the
+visual only; it does not by itself support numbers or units in its caption.
+Prefer a short qualitative caption naming the saved visual. Keep measurements
+and their exact references in main_findings instead of repeating them in captions.
+For every numeric or unit claim in a caption, include the exact supporting
+supplied fact IDs in that figure's fact_refs, or evidence IDs whose
+supports_fact_refs contain those facts in its evidence_refs. A plot evidence
+record may have no supported facts: do not assume it supports all facts from
+the result. For example, a caption stating a Fermi energy needs the supplied
+Fermi-energy fact (both value and unit), even when the plot itself is valid.
+If no supplied reference supports a caption detail, omit that detail and use
+a descriptive caption without numerical or unit claims. Apply these rules
+again when repairing an unsupported numeric or unit claim.
+Do not convert units. Preserve
 PARTIAL, STALE, SOURCE_MISSING, and INVALIDATED semantics explicitly.
 Limitations supplied upstream must remain visible.
 Each limitation source_refs entry must use a supplied limitation_id or evidence_id.
+Take limitation IDs from result.limitations or opaque_refs.limitations, not from
+interpretation.findings/supporting_findings. A finding_id, including one whose
+name contains "limitation", is never a limitation source_ref. Match the actual
+limitation meaning; do not borrow an unrelated source to satisfy the schema.
+
+Keep the report concise enough to return a complete JSON object. Present each
+requested scientific subject once in main_findings; do not repeat every peak,
+coordinate, measurement and citation in summary, discussion and conclusion.
+When restating a validated finding, cite its supplied finding_id in finding_refs;
+do not also copy its entire fact_refs and evidence_refs lists unless needed for
+a distinct claim. Keep individual peaks together and separate from other peaks.
+Use short synthesis in discussion and conclusion with only the references their
+text actually needs. Preserve all requested subjects and scientific limitations.
+Each fact_refs, evidence_refs, finding_refs, and source_refs list must stay within
+its schema limit. In particular, discussion and conclusion each allow at most
+32 fact_refs and 32 evidence_refs. Do not copy all result facts into these sections.
+Keep detailed subjects in separate main_findings and write concise syntheses with
+their own exact supporting references. If a citation list is too long, reorganize
+the statement and its support together; never truncate citations while retaining
+unsupported claims. Do not omit requested subjects to satisfy a formatting limit.
+Never copy reasoning_assessment, internal assessment traces or schema definitions
+into the report. Use compact JSON without explanatory text or Markdown fences.
+
+For volumetric statistics, preserve the distinction between the saved field mean
+and spatial volume integral. Their dimensions differ; do not compare their
+magnitudes or claim that a volume factor makes the integral larger. A source-defined
+potential zero does not establish an absolute reference, vacuum level or work function.
+For ELF, preserve any supplied mathematical volume integral and its unit separately
+from the dimensionless mean. No assigned electron-count or basin-population
+interpretation does not make the statistic missing, invalid, or meaningless.
+Retain the supplied limits on inferring bonds, lone pairs, basins or topology.
 
 Return only one bare JSON object that matches the ScientificReportOutput schema.
+For PLATFORM_REFERENCE results, describe the saved reference_sources and property definitions under methods and sources. No sample was analyzed; never invent sample provenance, infer a bond length from a covalent radius, or treat missing references as zero. The data_sources output still accepts only the opaque source references supplied by the input; use an empty list when no sample sources were supplied. Platform reference citations are projected separately from the immutable result, not invented as source_N references. Keep provenance hashes and software version numbers out of scientific findings.

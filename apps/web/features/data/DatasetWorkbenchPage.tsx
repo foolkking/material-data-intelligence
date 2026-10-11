@@ -29,7 +29,8 @@ export function DatasetWorkbenchPage({ projectId, datasetId }: { projectId: stri
   const profile = dataset?.profile;
   const analysisCount = dataset?.analysisCount || 0;
   const resultSummary = dataset?.resultSummary;
-  const datasetAnalyses = (history?.analyses || []).filter((item) => item.datasetId === datasetId);
+  const datasetAnalyses = (history?.analyses || []).filter((item) =>
+    item.sourceDatasetIds ? item.sourceDatasetIds.includes(datasetId) : item.datasetId === datasetId);
   const projectHref = `/projects/${encodeURIComponent(projectId)}`;
   const datasetUploadHref = `${projectHref}/datasets/new`;
 

@@ -63,6 +63,7 @@ from mdi_api.transport.routers.secured_runtime import (
     get_phase2_job_tool_calls_secured,
     stream_phase2_job_events_secured,
     get_dataset_object_store_secured,
+    get_dataset_research_sources_secured,
     get_dataset_profile_secured,
     get_dataset_secured,
     update_dataset_secured,
@@ -109,6 +110,8 @@ from mdi_api.transport.routers.secured_planner import (
     planner_validate_secured,
 )
 from mdi_api.transport.routers.health import health, runtime_health, task_health_projection
+from mdi_api.transport.routers.user_models import get_user_models, save_user_connection, discover_user_models, save_user_model_selection
+from mdi_api.transport.routers.platform_models import list_offerings, save_offering, save_plan_grant
 from mdi_api.transport.routers.observability import capture_client_exception
 from mdi_api.transport.routers.planner_providers import (
     configure_planner_provider,
@@ -170,6 +173,7 @@ from mdi_api.transport.routers.agent2 import (
     bulk_update_scientific_objects,
     promote_dataset_table,
     stream_research_turn_events,
+    stream_research_answer,
 )
 from mdi_api.transport.routers.scientific_reports import (
     bulk_update_scientific_report_lifecycle,
@@ -295,6 +299,7 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/api/projects/{project_id}/scientific-reports", list_scientific_reports, ("GET",), ("agent2", "reports")),
     RouteSpec("/api/projects/{project_id}/scientific-reports/bulk", bulk_update_scientific_report_lifecycle, ("POST",), ("agent2", "reports")),
     RouteSpec("/api/research/turns/{turn_id}/events", stream_research_turn_events, ("GET",), ("agent2", "research")),
+    RouteSpec("/api/research/turns/{turn_id}/answer-stream", stream_research_answer, ("GET",), ("agent2", "research")),
     RouteSpec("/api/projects/{project_id}/scientific-objects", list_scientific_objects, ("GET",), ("agent2", "scientific-objects")),
     RouteSpec("/api/projects/{project_id}/scientific-objects", admit_scientific_object, ("POST",), ("agent2", "scientific-objects")),
     RouteSpec("/api/projects/{project_id}/scientific-objects/bulk", bulk_update_scientific_objects, ("POST",), ("agent2", "scientific-objects")),
@@ -334,6 +339,7 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/datasets/upload-capabilities", get_upload_capabilities, ("GET",), ("datasets",)),
     RouteSpec("/datasets/upload", upload_dataset_secured, ("POST",), ("datasets",)),
     RouteSpec("/datasets/{dataset_id}/object-store", get_dataset_object_store_secured, ("GET",), ("datasets",)),
+    RouteSpec("/datasets/{dataset_id}/research-sources", get_dataset_research_sources_secured, ("GET",), ("datasets",)),
     RouteSpec("/datasets/{dataset_id}", get_dataset_secured, ("GET",), ("datasets",)),
     RouteSpec("/datasets/{dataset_id}", update_dataset_secured, ("PATCH",), ("datasets",)),
     RouteSpec("/datasets/{dataset_id}", delete_empty_dataset_secured, ("DELETE",), ("datasets",)),
@@ -364,6 +370,13 @@ ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("/planner/intents/{intent_id}/clarification", clarify_planner_intent_secured, ("POST",), ("planner",)),
     RouteSpec("/planner/jobs", create_planner_job_secured, ("POST",), ("planner",)),
     RouteSpec("/planner/providers", list_planner_providers, ("GET",), ("planner",)),
+    RouteSpec("/account/models", get_user_models, ("GET",), ("account",)),
+    RouteSpec("/admin/model-offerings", list_offerings, ("GET",), ("admin",)),
+    RouteSpec("/admin/model-offerings/{offering_id}", save_offering, ("PUT",), ("admin",)),
+    RouteSpec("/admin/accounts/{user_id}/model-plans/{plan}", save_plan_grant, ("PUT",), ("admin",)),
+    RouteSpec("/account/models/connection", save_user_connection, ("PUT",), ("account",)),
+    RouteSpec("/account/models/discover", discover_user_models, ("POST",), ("account",)),
+    RouteSpec("/account/models/selection", save_user_model_selection, ("PUT",), ("account",)),
     RouteSpec("/planner/providers/configure", configure_planner_provider, ("POST",), ("planner",)),
     RouteSpec("/planner/providers/{provider}/models", update_planner_provider_models, ("PATCH",), ("planner",)),
     RouteSpec("/planner/providers/status", planner_provider_status, ("GET",), ("planner",)),
@@ -482,7 +495,10 @@ def create_app() -> Any:
                 # scientific completion.
                 logger.exception("research_startup_recovery_failed")
 
-        yield
+        from mdi_api.research_agent.recovery import research_stage_watchdog
+
+        async with research_stage_watchdog(settings):
+            yield
 
     app = FastAPI(
         title=settings.app_name,
@@ -490,6 +506,14 @@ def create_app() -> Any:
         description="Controlled API boundary for material data intelligence workflows.",
         lifespan=lifespan,
     )
+    from fastapi.exceptions import RequestValidationError
+    from fastapi.exception_handlers import request_validation_exception_handler
+
+    @app.exception_handler(RequestValidationError)
+    async def redact_model_connection_validation(request: Request, exc: RequestValidationError):
+        if request.url.path.endswith("/account/models/connection"):
+            return JSONResponse(status_code=422, content={"detail": "模型连接字段无效，请检查服务地址、协议和密钥长度。"})
+        return await request_validation_exception_handler(request, exc)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=list(settings.cors_origins),

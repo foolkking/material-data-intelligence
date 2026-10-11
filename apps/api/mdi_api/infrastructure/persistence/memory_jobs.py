@@ -59,7 +59,7 @@ class InMemoryJobRepository(_InMemoryRecordRepository):
             now = datetime.now(timezone.utc)
             expiry = _dt(record.get("leaseExpiresAt"))
             status = str(record.get("status") or "created")
-            if status in {"completed", "partial_success", "cancelled", "cancel_requested"}:
+            if status in {"completed", "partial_success", "failed", "cancelled", "cancel_requested"}:
                 return None
             if status == "running" and expiry is not None and expiry > now:
                 return None
@@ -146,6 +146,33 @@ class InMemoryJobRepository(_InMemoryRecordRepository):
                 record["executionOwner"] = None
             if record["status"] == "cancelled":
                 record["cancelAcknowledgedAt"] = now
+            self.records[job_id] = record
+            return _json_copy(record)
+
+    def expire_abandoned_execution(
+        self, job_id: str, *, stale_after_seconds: int, cancel_requested: bool = False
+    ) -> dict[str, Any] | None:
+        if stale_after_seconds < 1:
+            raise ValueError("stale_after_seconds must be positive")
+        with self._lease_lock:
+            record = self._get(job_id)
+            now = datetime.now(timezone.utc)
+            expiry = _dt(record.get("leaseExpiresAt"))
+            updated = _dt(record.get("updatedAt"))
+            if (
+                record["status"] not in {"created", "queued", "running", "cancel_requested"}
+                or updated is None or updated > now - timedelta(seconds=stale_after_seconds)
+                or (expiry is not None and expiry > now)
+            ):
+                return None
+            cancelled = cancel_requested or record["status"] == "cancel_requested"
+            record.update(
+                status="cancelled" if cancelled else "failed", executionOwner=None,
+                leaseExpiresAt=None, terminalAt=now.isoformat(), updatedAt=now.isoformat(),
+            )
+            if cancelled:
+                record["cancelRequestedAt"] = record.get("cancelRequestedAt") or now.isoformat()
+                record["cancelAcknowledgedAt"] = now.isoformat()
             self.records[job_id] = record
             return _json_copy(record)
 

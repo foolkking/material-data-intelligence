@@ -10,9 +10,10 @@ describe("volumetric annotated PNG export", () => {
     vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(context as unknown as CanvasRenderingContext2D);
     vi.spyOn(HTMLCanvasElement.prototype, "toBlob").mockImplementation((callback) => callback(new Blob(["png"], { type: "image/png" })));
     const source = document.createElement("canvas");
+    source.width=200;source.height=100;
     const result = await createAnnotatedVolumetricPng({ source, outputWidth: 1000, imageHeight: 700, metadataLines: ["field=density\nunit=e/A3", "field_hash=abc"], smoothImage: false });
     expect(result.type).toBe("image/png");
-    expect(context.drawImage).toHaveBeenCalledOnce();
+    expect(context.drawImage).toHaveBeenCalledWith(source,0,100,1000,500);
     expect(context.fillText).toHaveBeenNthCalledWith(1, "field=density unit=e/A3", 16, 714, 968);
   });
 

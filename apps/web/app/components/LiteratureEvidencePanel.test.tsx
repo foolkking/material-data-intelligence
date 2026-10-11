@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, expect, it, vi } from "vitest";
 
 import { LiteratureEvidencePanel } from "../../features/research/LiteratureEvidencePanel";
@@ -9,7 +9,8 @@ const mocks = vi.hoisted(() => ({
   select: vi.fn(),
 }));
 
-vi.mock("../lib/scientific-knowledge-api", () => ({
+vi.mock("../lib/scientific-knowledge-api", async (original) => ({
+  ...await original<typeof import("../lib/scientific-knowledge-api")>(),
   listTurnLiteratureEvidence: mocks.list,
   searchScientificLiterature: mocks.search,
   selectLiteratureEvidence: mocks.select,
@@ -25,11 +26,39 @@ beforeEach(() => {
 it("keeps external search explicit and distinguishes literature from computed results", async () => {
   render(<LiteratureEvidencePanel projectId="project-1" turnId="turn-1" />);
   expect(
-    screen.getByText("不同于“根据你的数据计算”"),
+    screen.getByText("参考文献"),
   ).toBeInTheDocument();
   expect(mocks.search).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByText("参考文献"));
   fireEvent.click(screen.getByText("搜索科学文献"));
   expect(screen.getByLabelText("要检索的科学问题")).toBeInTheDocument();
+});
+
+it("shows a failed read as unknown and restores the explicit empty state only after recovery", async () => {
+  mocks.list.mockRejectedValueOnce(new Error("offline")).mockResolvedValue({ turnId: "turn-1", literatureEvidence: [] });
+  render(<LiteratureEvidencePanel projectId="project-1" turnId="turn-1" />);
+  fireEvent.click(screen.getByText("参考文献"));
+  const retry = await screen.findByRole("button", { name: "重新读取已用文献" });
+  expect(screen.queryByText("本次研究尚未引用文献。")).toBeNull();
+  fireEvent.click(retry);
+  expect(await screen.findByText("本次研究尚未引用文献。")).toBeInTheDocument();
+  expect(mocks.search).not.toHaveBeenCalled();
+});
+
+it("clears the old panel scope and ignores late search results after navigation", async () => {
+  mocks.list.mockImplementation(async (turnId: string) => ({ turnId, literatureEvidence: [] }));
+  let finish!: (value: unknown) => void;
+  mocks.search.mockReturnValueOnce(new Promise((resolve) => { finish = resolve; }));
+  const view = render(<LiteratureEvidencePanel projectId="project-1" turnId="turn-1" />);
+  fireEvent.click(screen.getByText("参考文献")); fireEvent.click(screen.getByText("搜索科学文献"));
+  fireEvent.change(screen.getByLabelText("要检索的科学问题"), { target: { value: "previous query" } });
+  fireEvent.click(screen.getByRole("button", { name: "搜索文献" }));
+  view.rerender(<LiteratureEvidencePanel projectId="project-1" turnId="turn-2" />);
+  fireEvent.click(screen.getByText("参考文献")); fireEvent.click(screen.getByText("搜索科学文献"));
+  expect(screen.getByLabelText("要检索的科学问题")).toHaveValue("");
+  await act(async () => { finish({ candidates: [{ candidate_id: "foreign" }] }); });
+  expect(screen.queryByText(/previous query/)).toBeNull();
+  expect(mocks.search.mock.calls[0][3].signal.aborted).toBe(true);
 });
 
 it("shows evidence scope and blocks ordinary use of a retracted candidate", async () => {
@@ -55,6 +84,7 @@ it("shows evidence scope and blocks ordinary use of a retracted candidate", asyn
     ],
   });
   render(<LiteratureEvidencePanel projectId="project-1" turnId="turn-1" />);
+  fireEvent.click(screen.getByText("参考文献"));
   fireEvent.click(screen.getByText("搜索科学文献"));
   fireEvent.change(screen.getByLabelText("要检索的科学问题"), {
     target: { value: "diffusion evidence" },
@@ -64,7 +94,7 @@ it("shows evidence scope and blocks ordinary use of a retracted candidate", asyn
     expect(screen.getByText("Retracted diffusion result")).toBeInTheDocument(),
   );
   expect(
-    screen.getByRole("button", { name: "撤稿来源不可作为普通支持" }),
+    screen.getByRole("button", { name: "撤稿或撤回来源不可作为普通支持" }),
   ).toBeDisabled();
 });
 
@@ -94,6 +124,7 @@ it("shows the exact cited source for evidence already used in research", async (
     await screen.findByText("Reference diffusion measurement"),
   ).toBeInTheDocument();
   expect(screen.getByText(/doi:10.5555\/example/)).toBeInTheDocument();
+  fireEvent.click(screen.getByText(/参考文献/));
   expect(screen.getByRole("link", { name: "打开来源" })).toHaveAttribute(
     "href",
     "https://doi.org/10.5555/example",

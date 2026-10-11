@@ -1,0 +1,36 @@
+.picker { min-width: 0; display: grid; gap: var(--ds-space-4); color: var(--product-ink); font-size: 14px; }
+:global(.product-task-dialog):has(.picker) { display: flex; flex-direction: column; overflow: hidden; }
+:global(.product-task-dialog):has(.picker) > :global(.product-task-dialog-body) { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+:global(.product-task-dialog):has(.picker) > :is(header, footer) { flex-shrink: 0; }
+:global(.product-task-dialog):has(.picker) > footer button { min-height: var(--ds-control-touch); }
+.picker p { margin: 0; line-height: 1.5; }
+.filters { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--ds-space-3); }
+.filters label { display: grid; min-width: 0; gap: var(--ds-space-2); font-weight: 500; }
+.filters :is(input, select) { min-width: 0; width: 100%; min-height: var(--ds-control-touch); border: 1px solid var(--product-border); border-radius: var(--ds-radius-md); padding: var(--ds-space-2); background: var(--product-surface); color: var(--product-ink); font: inherit; font-size: 16px; }
+.picker :is(input, select, button):focus-visible { outline: 2px solid var(--product-accent); outline-offset: 2px; }
+.selected h3 { margin: 0 0 var(--ds-space-2); font-size: 14px; }
+.selected ul, .options { list-style: none; margin: 0; padding: 0; }
+.selected ul { max-height: 180px; overflow: auto; overscroll-behavior: contain; }
+.selected li { display: flex; align-items: center; gap: var(--ds-space-2); min-width: 0; padding-block: var(--ds-space-1); }
+.selected li > span, .options label > span { min-width: 0; flex: 1; display: grid; gap: var(--ds-space-1); overflow-wrap: anywhere; }
+.selected strong, .options strong { font-weight: 500; }
+.selected li > span > span, .options label > span > span { color: var(--product-secondary); font-size: 14px; }
+.selected button { flex-shrink: 0; width: var(--ds-control-touch); min-height: var(--ds-control-touch); border: 0; background: transparent; color: var(--product-secondary); border-radius: var(--ds-radius-md); font-size: 20px; cursor: pointer; }
+.selected button:hover, .options label:hover { background: var(--product-subtle); }
+.options { border-top: 1px solid var(--product-border); }
+.options li { border-bottom: 1px solid var(--product-border); }
+.options label { display: flex; align-items: center; min-width: 0; min-height: var(--ds-control-touch); gap: var(--ds-space-3); padding: var(--ds-space-3) var(--ds-space-2); cursor: pointer; }
+.picker .options label > span { font-weight: 400; }
+.picker .options label strong { color: var(--product-ink); font-size: 14px; font-weight: 500; }
+.picker .options label > span > span { color: var(--product-secondary); font-weight: 400; }
+.options input { width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--product-accent); }
+.error { display: grid; gap: var(--ds-space-2); }
+.contextList { list-style: none; margin: 0; padding: 0; }
+.contextList li { display: grid; min-width: 0; padding-block: var(--ds-space-2); border-bottom: 1px solid var(--product-border); }
+.contextList span { color: var(--product-secondary); font-size: 14px; overflow-wrap: anywhere; }
+.composerTools { min-width: 0; display: flex; align-items: center; gap: var(--ds-space-1); }
+.trigger { flex-shrink: 0; display: inline-flex; gap: var(--ds-space-1); align-items: center; min-height: var(--ds-control-touch); border: 0; border-radius: var(--ds-radius-md); padding: 0 var(--ds-space-2); color: var(--product-secondary); background: transparent; font: inherit; font-size: 14px; cursor: pointer; }
+.trigger:hover { background: var(--product-subtle); color: var(--product-ink); }
+.trigger:focus-visible { outline: 2px solid var(--product-accent); outline-offset: -2px; }
+.composerTools :global(.research-settings-trigger) { flex: 1; }
+@media (max-width: 520px) { .filters { grid-template-columns: minmax(0, 1fr); } .selected ul { max-height: 132px; } }

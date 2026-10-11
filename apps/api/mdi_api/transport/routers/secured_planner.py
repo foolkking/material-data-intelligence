@@ -39,6 +39,17 @@ from mdi_api.transport.routers.planner import (
 )
 
 
+def _account_model_provider(request: Any, current_user: CurrentUser):
+    if request.provider != "personal" and not (request.provider or "").startswith("platform:"):
+        return None
+    from mdi_api.account_model_provider import AccountModelProvider
+    from mdi_llm import LLMProviderError
+    try:
+        return AccountModelProvider(current_user.id, provider=request.provider, model=request.model or "", thinking_mode=request.thinkingMode)
+    except (ValueError, LLMProviderError):
+        raise HTTPException(422, "所选模型不可用，请检查账户模型设置或平台授权。") from None
+
+
 def _require_job(job_id: str, current_user: CurrentUser) -> dict[str, Any]:
     job = get_planner_job(job_id)
     project_id = str(job.get("projectId") or job.get("project_id") or "")
@@ -67,7 +78,12 @@ def create_planner_job_secured(request: PlannerJobsRequest, current_user: Curren
         # unlinked historical Job. The final binding is written only after the
         # Planner has persisted the Job successfully.
         validate_research_session_project(request.researchSessionId, request.projectId, current_user)
-    result = planner_jobs_route(request)
+    bound_provider = _account_model_provider(request, current_user)
+    if bound_provider is not None:
+        from mdi_api.transport.routers.planner import planner_jobs
+        result = planner_jobs(request, provider=bound_provider)
+    else:
+        result = planner_jobs_route(request)
     job_id = result.get("job_id") if isinstance(result, dict) else getattr(result, "job_id", None)
     if request.researchSessionId and job_id:
         from mdi_api.transport.routers.research import bind_research_session_run
@@ -222,6 +238,10 @@ def planner_preview_secured(request: PlannerPreviewRequest, current_user: Curren
     except HTTPException:
         if not os.getenv("PYTEST_CURRENT_TEST"):
             raise
+    bound_provider = _account_model_provider(request, current_user)
+    if bound_provider is not None:
+        from mdi_api.transport.routers.planner import planner_preview
+        return planner_preview(request, provider=bound_provider)
     return planner_preview_route(request)
 
 
@@ -240,6 +260,10 @@ def create_planner_intent_secured(request: PlannerIntentCreateRequest, current_u
         except HTTPException:
             if not os.getenv("PYTEST_CURRENT_TEST"):
                 raise
+    bound_provider = _account_model_provider(request, current_user)
+    if bound_provider is not None:
+        from mdi_api.transport.routers.planner import create_planner_intent
+        return create_planner_intent(request, provider=bound_provider)
     return create_planner_intent_route(request)
 
 

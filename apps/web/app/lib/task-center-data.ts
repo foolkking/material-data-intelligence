@@ -2,6 +2,7 @@ import {
   listWorkspaceTaskFeed,
   type WorkspaceAnalysisJobSummary,
 } from "./workspace-api";
+import { taskStatusLabel } from "./task-display";
 
 export type ProductTaskRow = WorkspaceAnalysisJobSummary & {
   projectName: string;
@@ -29,15 +30,17 @@ export type ProductTaskFeedPageOptions = Readonly<{
 export function productTaskSearchText(
   task: Pick<
     ProductTaskRow,
-    "projectName" | "researchQuestion" | "jobId" | "jobStatus" | "workspaceProjectionStatus"
+    "projectName" | "researchQuestion" | "jobId" | "jobStatus" | "workspaceProjectionStatus" | "sourceDatasets"
   >,
 ): string {
   return [
     task.projectName,
     task.researchQuestion,
+    ...(task.sourceDatasets || []).map((source) => source.name),
     task.jobId,
     task.jobStatus,
     task.workspaceProjectionStatus,
+    taskStatusLabel(task.jobStatus),
   ]
     .filter(Boolean)
     .join(" ")
@@ -168,6 +171,9 @@ export function getProductTaskFeed(
   // A manual refresh may bypass warm data, but it must still join an
   // authoritative request that is already in flight.
   if (taskFeedInFlight?.controller.signal.aborted) {
+    if (taskFeedRequest?.promise === taskFeedInFlight.promise) {
+      taskFeedRequest = undefined;
+    }
     taskFeedInFlight = undefined;
   }
   if (taskFeedInFlight) {

@@ -23,7 +23,7 @@ from mdi_api.research_agent.orchestration.processor import (
     ProcessTurnResult,
 )
 from mdi_api.research_agent.registry_validation import build_default_agent2_registries
-from mdi_api.research_agent.schemas import CreateResearchTurnRequest, ScientificSelectionContext
+from mdi_api.research_agent.schemas import CreateResearchTurnRequest, ResearchTurnStatus, ScientificSelectionContext
 from mdi_api.research_agent.service import ResearchTurnService
 from mdi_api.routers.auth import CurrentUser
 from mdi_api.scientific_objects.registry import build_default_object_type_registry
@@ -397,6 +397,142 @@ def test_answer_persists_one_final_message_and_never_executes():
         assert stored["decision_json"]["action"] == "ANSWER" and stored["repair_attempted"] is False
 
 
+def test_public_answer_stream_precedes_validated_message_and_repair_resets_it(monkeypatch):
+    import json
+    import itertools
+
+    engine, owner, factory, _objects, turns = foundation()
+    turn = receive(turns, owner, "解释 RDF，不运行计算。")
+    clock = itertools.count(1)
+    monkeypatch.setattr("mdi_api.research_agent.orchestration.answer_stream.monotonic", lambda: next(clock))
+    observed = []
+
+    class StreamingClient(FakeStructuredClient):
+        async def generate_structured(self, **kwargs):
+            parsed = self.responses[len(self.calls)]
+            raw = json.dumps(parsed, ensure_ascii=True)
+            feed = kwargs["request_context"]["on_answer_delta"]
+            for offset in range(0, len(raw), 19):
+                feed(raw[offset:offset + 19])
+                with factory.session() as session:
+                    row = session.agent2.research_turns.get(turn.turn_id)
+                    events = session.agent2.research_turn_events.list_for_turn(turn.turn_id)
+                    if any(event["event_type"] == "ASSISTANT_RESPONSE_DELTA" for event in events):
+                        observed.append((row["status"], row.get("assistant_final_message_id")))
+            return await super().generate_structured(**kwargs)
+
+    fake = StreamingClient([
+        decision("ANSWER", assistant_message="**尚待验证**的回答，包含 Unicode 🧪 和原始单位 Å⁻³。", reusable_result_ref_keys=["missing"]),
+        decision("ANSWER", assistant_message="**RDF** 描述原子对距离的统计分布。科学数值须来自已保存结果。"),
+    ])
+    result = asyncio.run(processor(factory, fake).process(turn.turn_id))
+    assert result.status == "ANSWERED" and result.provider_calls == 2
+    assert observed and all(status == "ORCHESTRATING" and message is None for status, message in observed)
+    with factory.session() as session:
+        events = session.agent2.research_turn_events.list_for_turn(turn.turn_id)
+        final = session.agent2.research_turns.get(turn.turn_id)
+        message = session.agent2.research_turns.get_message(final["assistant_final_message_id"])
+    deltas = [event for event in events if event["event_type"] == "ASSISTANT_RESPONSE_DELTA"]
+    resets = [event for event in events if event["event_type"] == "ASSISTANT_RESPONSE_RESET"]
+    assert len(resets) == 1 and len({event["payload_json"]["response_id"] for event in deltas}) == 2
+    last_id = deltas[-1]["payload_json"]["response_id"]
+    assert "".join(event["payload_json"]["text"] for event in deltas if event["payload_json"]["response_id"] == last_id) == message["content_summary"]
+    assert counts(engine) == {"plans": 0, "jobs": 0, "tools": 0}
+    assert asyncio.run(processor(factory, fake).process(turn.turn_id)).outcome == "NOOP"
+    assert len(fake.calls) == 2
+
+
+def test_long_answer_keeps_streaming_near_the_end_with_bounded_events(monkeypatch):
+    import itertools
+    import json
+
+    engine, owner, factory, _objects, turns = foundation()
+    turn = receive(turns, owner, "解释已有结果，不运行计算。")
+    clock = itertools.count(1, 0.2)
+    monkeypatch.setattr("mdi_api.research_agent.orchestration.answer_stream.monotonic", lambda: next(clock))
+    source = ("这是一段解释已保存结果的公开正文。\n" * 500)[:7900]
+    previews = []
+
+    class LongStreaming(FakeStructuredClient):
+        async def generate_structured(self, **kwargs):
+            raw = json.dumps(self.responses[len(self.calls)], ensure_ascii=False)
+            feed = kwargs["request_context"]["on_answer_delta"]
+            for offset in range(0, len(raw), 17):
+                feed(raw[offset:offset + 17])
+            with factory.session() as session:
+                row = session.agent2.research_turns.get(turn.turn_id)
+                assert row["status"] == "ORCHESTRATING"
+                assert row.get("assistant_final_message_id") is None
+                events = session.agent2.research_turn_events.list_for_turn(turn.turn_id)
+            previews.extend(event["payload_json"]["text"] for event in events if event["event_type"] == "ASSISTANT_RESPONSE_DELTA")
+            return await super().generate_structured(**kwargs)
+
+    result = asyncio.run(processor(factory, LongStreaming([decision("ANSWER", assistant_message=source)])).process(turn.turn_id))
+    assert result.status == "ANSWERED"
+    assert 1 < len(previews) <= 128
+    assert len(source) - 64 <= len("".join(previews)) < len(source)
+    with factory.session() as session:
+        events = session.agent2.research_turn_events.list_for_turn(turn.turn_id)
+    deltas = [event["payload_json"]["text"] for event in events if event["event_type"] == "ASSISTANT_RESPONSE_DELTA"]
+    assert len(deltas) <= 129 and "".join(deltas) == source
+    assert counts(engine) == {"plans": 0, "jobs": 0, "tools": 0}
+
+
+def test_stream_cancel_fences_late_chunks_and_never_publishes_a_final(monkeypatch):
+    import itertools
+
+    _engine, owner, factory, _objects, turns = foundation()
+    turn = receive(turns, owner, "解释数据。")
+    clock = itertools.count(1)
+    monkeypatch.setattr("mdi_api.research_agent.orchestration.answer_stream.monotonic", lambda: next(clock))
+
+    class CancelStreaming(FakeStructuredClient):
+        async def generate_structured(self, **kwargs):
+            feed = kwargs["request_context"]["on_answer_delta"]
+            feed('{"action":"ANSWER","assistant_message":"这是一条仍在生成的回答，尚未完成。')
+            turns.cancel_turn(turn.turn_id, owner)
+            feed('取消后的内容不应再发布。更多取消后的内容。')
+            raise AssertionError("late callback should stop the provider")
+
+    result = asyncio.run(processor(factory, CancelStreaming([])).process(turn.turn_id))
+    assert result == ProcessTurnResult("NOOP", "CANCELED", 1)
+    with factory.session() as session:
+        row = session.agent2.research_turns.get(turn.turn_id)
+        events = session.agent2.research_turn_events.list_for_turn(turn.turn_id)
+    assert row.get("assistant_final_message_id") is None
+    assert "取消后的内容" not in str(events)
+
+
+def test_streamed_credentials_and_nonanswer_fields_are_never_published(monkeypatch):
+    import itertools
+    import json
+    from mdi_api.research_agent.orchestration.answer_stream import public_answer_text
+
+    _engine, owner, factory, _objects, turns = foundation()
+    turn = receive(turns, owner, "介绍工具。")
+    clock = itertools.count(1)
+    monkeypatch.setattr("mdi_api.research_agent.orchestration.answer_stream.monotonic", lambda: next(clock))
+    secret = "private-test-credential-123456789"
+    source = "结果说明：" + secret + "。" + "这只是公开正文。" * 12
+
+    class SecretStreaming(FakeStructuredClient):
+        async def generate_structured(self, **kwargs):
+            feed = kwargs["request_context"]["on_answer_delta"]
+            raw = json.dumps({"internal": "hidden reasoning", "action": "ANSWER", "assistant_message": source}, ensure_ascii=False)
+            for offset in range(0, len(raw), 7):
+                feed(raw[offset:offset + 7], secret_values=(secret,))
+            return await super().generate_structured(**kwargs)
+
+    final = public_answer_text(source, (secret,))
+    result = asyncio.run(processor(factory, SecretStreaming([decision("ANSWER", assistant_message=final)])).process(turn.turn_id))
+    assert result.status == "ANSWERED"
+    with factory.session() as session:
+        events = session.agent2.research_turn_events.list_for_turn(turn.turn_id)
+    public = [event["payload_json"]["text"] for event in events if event["event_type"] == "ASSISTANT_RESPONSE_DELTA"]
+    assert public and "".join(public) == final
+    assert secret not in str(public) and "private-test-credential" not in str(public) and "hidden reasoning" not in str(public)
+
+
 def test_analyze_reaches_ready_to_plan_with_requirement_and_zero_execution():
     engine, owner, factory, objects, turns = foundation()
     ref = structure(objects)
@@ -487,6 +623,14 @@ def test_prompt_routes_supported_scientific_views_to_analyze_not_open_object():
     assert "supported volumetric slices or volume views" in prompt
     assert "`OPEN_OBJECT` is only for navigation or read-only opening/preview" in prompt
     assert "not `OPEN_OBJECT`" in prompt
+
+
+def test_prompt_distinguishes_prediction_evaluation_from_generic_scatter():
+    prompt = load_research_orchestrator_prompt()
+    assert "require `ml.evaluate_regression`" in prompt
+    assert "`ml.evaluate_classification`" in prompt
+    assert "`ml.evaluate_uncertainty`" in prompt
+    assert "respect explicit exclusions and CLARIFY ambiguous roles" in prompt
 
 
 def test_volumetric_inspection_decision_reaches_ready_to_plan():
@@ -730,6 +874,93 @@ def test_existing_result_interpretation_reuses_current_or_stale_without_recomput
     )
 
 
+@pytest.mark.parametrize("stale", [False, True])
+def test_explicit_reinterpretation_skips_intent_model_and_dispatches_once(stale):
+    engine, owner, factory, objects, turns = foundation()
+    previous, snapshot_id = add_previous_result(factory, stale=stale)
+    refs = [structure(objects, name) for name in ("A", "B")]
+    request = CreateResearchTurnRequest(
+        message="重新解释", requested_action="INTERPRET_RESULT",
+        reply_to_turn_id=previous, admission_key="explicit-reinterpretation",
+        ui_context={"explicit_result_ids": [snapshot_id], "active_object_refs": refs},
+    )
+    turn = turns.receive_turn(project_id="project", session_id="session", current_user=owner, request=request)
+    replay = turns.receive_turn(project_id="project", session_id="session", current_user=owner, request=request)
+    assert replay.turn_id == turn.turn_id and replay.idempotent_replay
+    fake = FakeStructuredClient([])
+    queued = []
+
+    class Queue:
+        def enqueue_turn(self, turn_id):
+            assert not transaction_active()
+            queued.append(turn_id)
+
+    worker = AgentTurnProcessor(repository_factory=factory, registries=build_default_agent2_registries(), llm_client=fake, interpretation_queue=Queue())
+    assert asyncio.run(worker.process(turn.turn_id)) == ProcessTurnResult("APPLIED", "ORCHESTRATING", 0)
+    assert asyncio.run(worker.process(turn.turn_id)).outcome == "NOOP"
+    assert fake.calls == [] and queued == [turn.turn_id]
+    assert counts(engine) == {"plans": 0, "jobs": 0, "tools": 0}
+    with factory.session() as session:
+        stored = session.agent2.research_turn_decisions.get_for_turn(turn.turn_id)
+        assert stored["action"] == "INTERPRET_RESULT"
+        assert stored["provider"] == "explicit_user_action" and stored["model"] == "none"
+        assert stored["decision_json"]["reusable_result_ref_keys"] == ["result_1"]
+        events = session.agent2.research_turn_events.list_for_turn(turn.turn_id)
+        received = next(row["payload_json"] for row in events if row["event_type"] == "TURN_RECEIVED")
+        assert received["requested_action"] == "INTERPRET_RESULT"
+        resolved = next(row["payload_json"] for row in events if row["event_type"] == "CONTEXT_RESOLVED")
+        assert "context_manifest" not in resolved  # No claimed model input before the interpreter.
+        assert resolved["requested_action"] == "INTERPRET_RESULT"
+        assert not session.agent2.scientific_result_snapshots.list_for_turn(turn.turn_id)
+        snapshot = session.agent2.research_context_snapshots.get_for_turn(turn.turn_id)
+        assert str(snapshot["referenced_result_refs_json"][0]["result_id"]) == str(snapshot_id)
+
+
+@pytest.mark.parametrize("case", ["missing", "foreign_project", "foreign_session", "invalidated"])
+def test_explicit_reinterpretation_rejects_unavailable_result_without_model_or_job(case):
+    from sqlalchemy import update
+    from mdi_api.agent2_errors import ContextAssemblyFailed
+    from mdi_api.db import research_turns, scientific_result_snapshots
+
+    engine, owner, factory, _objects, turns = foundation()
+    previous, snapshot_id = add_previous_result(factory)
+    with factory.unit_of_work() as unit:
+        if case == "foreign_project":
+            unit.connection.execute(update(scientific_result_snapshots).where(scientific_result_snapshots.c.id == snapshot_id).values(project_id="other"))
+        elif case == "foreign_session":
+            unit.connection.execute(insert(sessions), {"id": "other-session", "project_id": "project", "mode": "project", "status": "active", "created_by": owner.id})
+            unit.connection.execute(update(research_turns).where(research_turns.c.id == previous).values(research_session_id="other-session"))
+        elif case == "invalidated":
+            unit.connection.execute(update(scientific_result_snapshots).where(scientific_result_snapshots.c.id == snapshot_id).values(relevance_status="INVALIDATED"))
+    turn = turns.receive_turn(project_id="project", session_id="session", current_user=owner, request=CreateResearchTurnRequest(
+        message="重新解释", requested_action="INTERPRET_RESULT",
+        ui_context={"explicit_result_ids": [uuid4() if case == "missing" else snapshot_id]},
+    ))
+    fake = FakeStructuredClient([])
+    with pytest.raises(ContextAssemblyFailed):
+        asyncio.run(processor(factory, fake).process(turn.turn_id))
+    assert fake.calls == [] and counts(engine) == {"plans": 0, "jobs": 0, "tools": 0}
+    view = turns.get_turn(turn.turn_id, owner)
+    assert view["status"] == "FAILED"
+    assert view["messages"][0]["content"] == "重新解释"
+    with factory.session() as session:
+        stored = session.agent2.research_turns.get(turn.turn_id)
+        assert stored["error_code"] == "CONTEXT_ASSEMBLY_FAILED" and stored["error_summary"]
+        assert session.agent2.research_turn_events.list_for_turn(turn.turn_id)[-1]["event_type"] == "TURN_FAILED"
+
+
+def test_cancelled_explicit_reinterpretation_is_not_dispatched():
+    engine, owner, factory, _objects, turns = foundation()
+    _, snapshot_id = add_previous_result(factory)
+    turn = turns.receive_turn(project_id="project", session_id="session", current_user=owner, request=CreateResearchTurnRequest(
+        message="重新解释", requested_action="INTERPRET_RESULT", ui_context={"explicit_result_ids": [snapshot_id]},
+    ))
+    turns.cancel_turn(turn.turn_id, owner)
+    fake = FakeStructuredClient([])
+    assert asyncio.run(processor(factory, fake).process(turn.turn_id)) == ProcessTurnResult("NOOP", "CANCELED", 0)
+    assert fake.calls == [] and counts(engine) == {"plans": 0, "jobs": 0, "tools": 0}
+
+
 def test_continue_analysis_preserves_cutoff_and_continuation_relation():
     engine, owner, factory, objects, turns = foundation()
     previous, _snapshot = add_previous_result(factory)
@@ -844,6 +1075,81 @@ def test_query_data_returns_bounded_selected_object_projection_without_execution
     assert "must not be serialized" not in content
 
 
+@pytest.mark.parametrize("action", ["ANALYZE", "CONTINUE_ANALYSIS"])
+@pytest.mark.parametrize("field,value", [
+    ("research_objective", None), ("research_objective", ""),
+    ("scientific_requirements", []),
+])
+def test_provider_analysis_schema_rejects_incomplete_action_fields(action, field, value):
+    from jsonschema import Draft202012Validator
+    from mdi_api.research_agent.orchestration.schemas import ResearchTurnDecision
+
+    schema = Draft202012Validator(ResearchTurnDecision.model_json_schema())
+    valid = decision(action, research_objective="Compute RDF", selected_scope_ref_keys=["obj_1"], scientific_requirements=[{
+        "requirement_id": "structure.compute_rdf", "criticality": "REQUIRED",
+        "subject_ref_keys": ["obj_1"], "constraints": {},
+    }])
+    assert schema.is_valid(valid)
+    assert not schema.is_valid({**valid, field: value})
+    without_objective = {key: val for key, val in valid.items() if key != "research_objective"}
+    assert not schema.is_valid(without_objective)
+    valid["scientific_requirements"][0]["criticality"] = "OPTIONAL"
+    assert not schema.is_valid(valid)
+    assert schema.is_valid(decision("ANSWER", assistant_message="RDF describes pair distances."))
+    assert schema.is_valid(decision("CLARIFY", clarification={"question": "Which structure?", "candidate_keys": ["obj_1", "obj_2"]}))
+
+
+@pytest.mark.parametrize("action", ["ANALYZE", "CONTINUE_ANALYSIS"])
+def test_material_requirement_without_scope_fails_at_context_validation(action):
+    from mdi_api.agent2_errors import InvalidResearchTurnDecision
+    from mdi_api.research_agent.orchestration.schemas import ResearchTurnDecision
+    from jsonschema import Draft202012Validator
+
+    engine, owner, factory, _objects, turns = foundation()
+    try:
+        turn = receive(turns, owner, "分析我的真实样品的 RDF。")
+        request = decision(action, research_objective="Compute sample RDF", scientific_requirements=[{
+            "requirement_id": "structure.compute_rdf", "criticality": "REQUIRED", "subject_ref_keys": [], "constraints": {},
+        }])
+        # Empty scope is valid for reference/parameter work; material authority
+        # is enforced against the current registry, not a static JSON schema.
+        assert Draft202012Validator(ResearchTurnDecision.model_json_schema()).is_valid(request)
+        fake = FakeStructuredClient([request, request])
+        with pytest.raises(InvalidResearchTurnDecision, match="structure.compute_rdf"):
+            asyncio.run(processor(factory, fake).process(turn.turn_id))
+        assert len(fake.calls) == 2
+        assert turns.get_turn(turn.turn_id, owner)["status"] == "FAILED"
+        assert counts(engine) == {"plans": 0, "jobs": 0, "tools": 0}
+    finally:
+        engine.dispose()
+
+
+def test_missing_analysis_objective_gets_one_repair_with_matching_provider_schema():
+    from jsonschema import Draft202012Validator
+
+    engine, owner, factory, objects, turns = foundation()
+    ref = structure(objects)
+    turn = receive(turns, owner, "Compute RDF", refs=[ref])
+    invalid = decision("ANALYZE", selected_scope_ref_keys=["obj_1"], scientific_requirements=[{
+        "requirement_id": "structure.compute_rdf", "criticality": "REQUIRED",
+        "subject_ref_keys": ["obj_1"], "constraints": {},
+    }])
+    valid = {**invalid, "research_objective": "Compute RDF"}
+    fake = FakeStructuredClient([invalid, valid])
+    result = asyncio.run(processor(factory, fake).process(turn.turn_id))
+    assert result.status == "READY_TO_PLAN" and result.provider_calls == 2
+    assert fake.calls[1]["request_context"]["repair"]["validation_error"] == "ANALYZE requires research_objective"
+    for call in fake.calls:
+        schema = Draft202012Validator(call["output_schema"])
+        assert not schema.is_valid(invalid)
+        assert schema.is_valid(valid)
+    with factory.session() as session:
+        saved = session.agent2.research_turn_decisions.get_for_turn(turn.turn_id)
+    assert saved["decision_json"]["research_objective"] == "Compute RDF"
+    assert saved["repair_attempted"] is True
+    assert counts(engine) == {"plans": 0, "jobs": 0, "tools": 0}
+
+
 def test_invalid_reference_repairs_once_then_persists_only_validated_decision():
     _engine, owner, factory, objects, turns = foundation()
     ref = structure(objects)
@@ -925,6 +1231,7 @@ def test_worker_boundary_failure_terminalizes_received_turn_without_orphaning():
         turn.turn_id,
         "WORKER_BOUNDARY_FAILURE",
         "ImportError: worker dependency unavailable",
+        expected_statuses=frozenset({ResearchTurnStatus.RECEIVED}),
     )
 
     assert updated is not None
@@ -1008,9 +1315,136 @@ def test_fresh_processor_persists_semantic_selection_in_context_snapshot():
         display_label="结构位点 · site:Si:0",
     )
     turn = receive(turns, owner, "我刚才选中了什么？", refs=[ref], selected=[ref], scientific_selections=[selection])
-    result = asyncio.run(processor(factory, FakeStructuredClient([decision("ANSWER", assistant_message="已读取选择。")])).process(turn.turn_id))
+    fake = FakeStructuredClient([decision("ANSWER", assistant_message="已读取选择。")])
+    result = asyncio.run(processor(factory, fake).process(turn.turn_id))
     assert result.outcome == "APPLIED"
     with factory.session() as session:
         snapshot = session.agent2.research_context_snapshots.get_for_turn(turn.turn_id)
     assert snapshot is not None
     assert snapshot["scientific_selections_json"][0]["semantic_locator"]["site_id"] == "site:Si:0"
+    assert fake.calls[0]["input_payload"]["research_context"]["scientific_selections"][0]["semantic_locator"] == {"site_id": "site:Si:0"}
+
+
+def test_long_chinese_conversation_fits_the_actual_orchestrator_request():
+    import json
+
+    engine, owner, factory, objects, turns = foundation()
+    refs = [structure(objects, name) for name in ("Si", "Cu", "NaCl")]
+    answer = ("记录材料名称、版本、原始数值及单位，并保留已保存科学结果的来源。\n" * 110)[:3900]
+    fake = FakeStructuredClient([decision("ANSWER", assistant_message=answer)])
+    agent = processor(factory, fake)
+    for index in range(5):
+        turn = receive(turns, owner, f"请继续解释材料结果的记录方法，第 {index + 1} 个问题。", explicit=refs)
+        assert asyncio.run(agent.process(turn.turn_id)).status == "ANSWERED"
+
+    sent = fake.calls[-1]["input_payload"]
+    with factory.session() as session:
+        events = session.agent2.research_turn_events.list_for_turn(turn.turn_id)
+        snapshot = session.agent2.research_context_snapshots.get_for_turn(turn.turn_id)
+    manifest = next(event["payload_json"]["context_manifest"] for event in events if event["event_type"] == "CONTEXT_RESOLVED")
+    encoded = json.dumps(sent, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
+    assert len(encoded) // 4 <= manifest["input_budget"]
+    assert manifest["serialized_input"] == sent
+    assert manifest["estimated_input_tokens"] == len(encoded) // 4
+    assert len(sent["research_context"]["objects"]) == 3
+    assert {item["version_id"] for item in snapshot["active_scope_refs_json"]} == {str(ref.version_id) for ref in refs}
+    recent = sent["research_context"]["recent_conversation"]
+    assert 0 < len(recent) < 9
+    assert any(item["role"] == "ASSISTANT" and item["content"] == answer.strip() for item in recent)
+    assert "第 5 个问题" in sent["user_message"]
+    assert counts(engine) == {"plans": 0, "jobs": 0, "tools": 0}
+
+
+def test_trajectory_selection_reaches_actual_provider_input_and_durable_manifest():
+    _engine, owner, factory, objects, turns = foundation()
+    ref = trajectory(objects)
+    locator = {
+        "frame_id": "frame:199", "frame_index": 199, "time": 398, "time_unit": "femtosecond",
+        "atom_id": "atom:0:0.0.0", "atom_index": 0, "species": "Li",
+        "coordinate_mode": "cartesian", "position_unit": "angstrom",
+        "source_x": 9.308486082, "source_y": 3.968153027, "source_z": 14.972857668,
+        "image_offset_a": 0, "image_offset_b": 0, "image_offset_c": 0,
+    }
+    selection = ScientificSelectionContext(
+        object_ref=ref, viewer_id="trajectory.atomic", selection_type="TRAJECTORY_ATOM",
+        semantic_locator=locator, display_label="第 200 帧 Li 原子",
+        evidence_locator={"artifact_id": "server-artifact-identity"},
+    )
+    turn = receive(turns, owner, "说明选中的原子和坐标单位", scientific_selections=[selection])
+    fake = FakeStructuredClient([decision("ANSWER", assistant_message="选择标注了 Li 和 angstrom。")])
+    assert asyncio.run(processor(factory, fake).process(turn.turn_id)).outcome == "APPLIED"
+    sent = fake.calls[0]["input_payload"]
+    projected = sent["research_context"]["scientific_selections"][0]
+    assert projected["ref_key"] == sent["research_context"]["objects"][0]["ref_key"] == "obj_1"
+    assert projected["semantic_locator"] == locator
+    assert projected["support_eligible"] is False
+    assert projected["context_role"] == "SUBJECT"
+    assert projected["verification_status"] == "VIEWER_REPORTED"
+    assert "server-artifact-identity" not in str(sent)
+    assert "object_ref" not in projected
+    with factory.session() as session:
+        snapshot = session.agent2.research_context_snapshots.get_for_turn(turn.turn_id)
+        events = session.agent2.research_turn_events.list_for_turn(turn.turn_id)
+    manifest = next(row["payload_json"]["context_manifest"] for row in events if row["event_type"] == "CONTEXT_RESOLVED")
+    assert manifest["input_state"] == "ACTUAL"
+    assert manifest["serialized_input"] == sent
+    assert snapshot["scientific_selections_json"][0]["object_ref"]["version_id"] == str(ref.version_id)
+
+
+@pytest.mark.parametrize("provider_code, turn_code, calls", [
+    ("PROVIDER_RATE_LIMITED", "ORCHESTRATOR_PROVIDER_RATE_LIMITED", 1),
+    ("PROVIDER_AUTH_FAILED", "ORCHESTRATOR_PROVIDER_AUTH_FAILED", 1),
+    ("PROVIDER_REQUEST_REJECTED", "ORCHESTRATOR_PROVIDER_REQUEST_REJECTED", 1),
+    ("PROVIDER_TIMEOUT", "ORCHESTRATOR_TIMEOUT", 1),
+    ("DEEPSEEK_TIMEOUT", "ORCHESTRATOR_TIMEOUT", 1),
+    ("LLM_TIMEOUT", "ORCHESTRATOR_TIMEOUT", 1),
+    ("OPENAI_TIMEOUT", "ORCHESTRATOR_TIMEOUT", 1),
+    ("PROVIDER_OUTPUT_TRUNCATED", "ORCHESTRATOR_OUTPUT_TRUNCATED", 1),
+    ("PROVIDER_INVALID_RESPONSE", "ORCHESTRATOR_INVALID_OUTPUT", 2),
+])
+def test_provider_failure_classification_survives_durable_turn_and_replay(provider_code, turn_code, calls):
+    from mdi_llm.providers import LLMProviderError
+    _engine, owner, factory, objects, turns = foundation()
+    turn = receive(turns, owner, "说明所选数据", refs=[structure(objects)])
+
+    class FailedClient:
+        calls = 0
+
+        async def generate_structured(self, **kwargs):
+            self.calls += 1
+            raise LLMProviderError("Reviewed safe provider failure", code=provider_code)
+
+    client = FailedClient()
+    handler = processor(factory, client)
+    with pytest.raises(Exception):
+        asyncio.run(handler.process(turn.turn_id))
+    with factory.session() as session:
+        stored = session.agent2.research_turns.get(turn.turn_id)
+        events = session.agent2.research_turn_events.list_for_turn(turn.turn_id)
+    assert stored["status"] == "FAILED"
+    assert stored["error_code"] == turn_code
+    assert stored["job_id"] is None
+    assert sum(row["event_type"] == "TURN_FAILED" for row in events) == 1
+    assert client.calls == calls
+    assert asyncio.run(handler.process(turn.turn_id)).outcome == "NOOP"
+    assert client.calls == calls
+
+
+def test_invalid_provider_json_has_one_repair_and_can_recover():
+    from mdi_llm.providers import LLMProviderError
+    _engine, owner, factory, objects, turns = foundation()
+    turn = receive(turns, owner, "说明数据", refs=[structure(objects)])
+
+    class RepairClient(FakeStructuredClient):
+        failed = False
+
+        async def generate_structured(self, **kwargs):
+            if not self.failed:
+                self.failed = True
+                raise LLMProviderError("Invalid JSON", code="PROVIDER_INVALID_RESPONSE")
+            assert kwargs["request_context"]["repair_attempted"] is True
+            return await super().generate_structured(**kwargs)
+
+    result = asyncio.run(processor(factory, RepairClient([decision("ANSWER", assistant_message="数据说明")])).process(turn.turn_id))
+    assert result.status == "ANSWERED"
+    assert result.provider_calls == 2

@@ -1,10 +1,12 @@
 import { periodicSiteKey, translateCartesian } from "./viewerScenePeriodicGeometry";
+import { savedSiteNeighbors } from "./viewerSiteNeighbors";
 import type { ImageOffset, PeriodicSiteRef, RenderAtom, RenderBond, RenderVector3, ValidatedRenderScene } from "./viewerSceneRendererTypes";
 
 export const PERIODIC_DERIVED_CAPS = Object.freeze({ maxAxisRepeat: 3, maxTotalCells: 27, maxDisplayedSites: 2048, maxDisplayedBonds: 8192, maxNeighborImages: 26, maxArtifactBytes: 16_384 });
 export type SupercellRepeat = ImageOffset;
+export type NeighborDisplay = number | Readonly<{ mode: "neighbors" | "image"; center: PeriodicSiteRef }>;
 export type SupercellEstimate = Readonly<{ expansion: SupercellRepeat; totalCells: number; displayedAtoms: number; displayedBonds: number; mode: "interactive" | "degraded" | "refused"; warnings: readonly string[]; error: string | null }>;
-export type SupercellDerivation = { readonly ok: true; readonly scene: ValidatedRenderScene; readonly offsets: readonly ImageOffset[] } | { readonly ok: false; readonly error: "PERIODIC_REPEAT_INVALID" | "PERIODIC_DERIVED_SITE_LIMIT_EXCEEDED" | "PERIODIC_DERIVED_BOND_LIMIT_EXCEEDED"; readonly requestedSites: number; readonly requestedBonds: number };
+export type SupercellDerivation = { readonly ok: true; readonly scene: ValidatedRenderScene; readonly offsets: readonly ImageOffset[] } | { readonly ok: false; readonly error: "PERIODIC_REPEAT_INVALID" | "PERIODIC_DERIVED_SITE_LIMIT_EXCEEDED" | "PERIODIC_DERIVED_BOND_LIMIT_EXCEEDED" | "PERIODIC_NEIGHBOR_IMAGE_LIMIT_EXCEEDED"; readonly requestedSites: number; readonly requestedBonds: number };
 
 export function estimatePeriodicSupercell(scene: ValidatedRenderScene, repeat: unknown): SupercellEstimate {
   if (!validRepeat(repeat)) return Object.freeze({ expansion: Object.freeze([1,1,1]) as SupercellRepeat, totalCells: 0, displayedAtoms: 0, displayedBonds: 0, mode: "refused", warnings: Object.freeze([]), error: "VIEWER_SUPERCELL_INVALID_EXPANSION" });
@@ -18,49 +20,70 @@ export function estimatePeriodicSupercell(scene: ValidatedRenderScene, repeat: u
   return Object.freeze({ expansion: Object.freeze([...repeat]) as SupercellRepeat, totalCells, displayedAtoms, displayedBonds, mode: error ? "refused" : degraded ? "degraded" : "interactive", warnings: Object.freeze(degraded ? ["VIEWER_SUPERCELL_DEGRADED_MODE"] : []), error });
 }
 
-export function derivePeriodicSupercell(scene: ValidatedRenderScene, repeat: SupercellRepeat, neighborSiteIndex: number | null = null): SupercellDerivation {
+export function derivePeriodicSupercell(scene: ValidatedRenderScene, repeat: SupercellRepeat, neighborSelection: NeighborDisplay | null = null): SupercellDerivation {
   if (!validRepeat(repeat)) return Object.freeze({ ok: false, error: "PERIODIC_REPEAT_INVALID", requestedSites: 0, requestedBonds: 0 });
   const offsets = supercellOffsets(repeat);
-  const neighborOffsets = neighborSiteIndex === null ? [] : centeredNeighborOffsets().filter((offset) => !offset.every((value) => value === 0));
-  const requestedSites = scene.atoms.length * offsets.length + (scene.atoms.some((atom) => atom.siteIndex === neighborSiteIndex) ? neighborOffsets.length : 0);
-  const offsetKeys = new Set(offsets.map((offset)=>offset.join(",")));
-  const requestedBonds = scene.bonds.reduce((count,bond)=>count+offsets.filter((cell)=>offsetKeys.has(addOffset(cell,bond.toRef.imageOffset).join(","))).length,0);
-  if (requestedSites > PERIODIC_DERIVED_CAPS.maxDisplayedSites) return Object.freeze({ ok: false, error: "PERIODIC_DERIVED_SITE_LIMIT_EXCEEDED", requestedSites, requestedBonds });
+  const atomBySite = new Map(scene.atoms.map((atom) => [atom.siteIndex, atom] as const));
+  const refs = new Map<string, { atom: RenderAtom; offset: ImageOffset }>();
+  const addSite = (ref: PeriodicSiteRef) => {
+    const atom = atomBySite.get(ref.siteIndex);
+    if (atom) refs.set(periodicSiteKey(ref), { atom, offset: ref.imageOffset });
+  };
+  for (const offset of offsets) for (const atom of scene.atoms) addSite({ siteIndex: atom.siteIndex, imageOffset: offset });
+  // A numeric selection retains the existing same-site periodic-copy view.
+  // Image restoration adds exactly the selected image; a neighborhood adds
+  // only its adjacent endpoints, with the same +/-3 policy as selection URLs.
+  const center = typeof neighborSelection === "object" && neighborSelection ? neighborSelection.center : null;
+  const neighbors = center && typeof neighborSelection === "object" && neighborSelection?.mode === "neighbors" ? savedSiteNeighbors(scene.bonds, center) : [];
+  if (center && [center, ...neighbors.map(neighbor => neighbor.target)].some(ref => ref.imageOffset.some(value => !Number.isSafeInteger(value) || Math.abs(value) > 3))) {
+    return Object.freeze({ ok: false, error: "PERIODIC_NEIGHBOR_IMAGE_LIMIT_EXCEEDED", requestedSites: refs.size, requestedBonds: 0 });
+  }
+  if (typeof neighborSelection === "number") {
+    for (const offset of centeredNeighborOffsets()) addSite({ siteIndex: neighborSelection, imageOffset: offset });
+  } else if (center) {
+    addSite(center);
+    for (const neighbor of neighbors) addSite(neighbor.target);
+  }
+  const requestedSites = refs.size;
+  if (requestedSites > PERIODIC_DERIVED_CAPS.maxDisplayedSites) return Object.freeze({ ok: false, error: "PERIODIC_DERIVED_SITE_LIMIT_EXCEEDED", requestedSites, requestedBonds: 0 });
+
+  const requests = new Map<string, { bond: RenderBond; fromRef: PeriodicSiteRef; toRef: PeriodicSiteRef }>();
+  const addBond = (bond: RenderBond, fromRef: PeriodicSiteRef, toRef: PeriodicSiteRef) => {
+    const fromKey = periodicSiteKey(fromRef), toKey = periodicSiteKey(toRef);
+    if (!refs.has(fromKey) || !refs.has(toKey) || fromKey === toKey) return;
+    const key = [fromKey, toKey].sort().join("|");
+    if (!requests.has(key)) requests.set(key, { bond, fromRef, toRef });
+  };
+  for (const offset of offsets) for (const bond of scene.bonds) {
+    addBond(bond,
+      { siteIndex: bond.fromSiteIndex, imageOffset: addOffset(offset, bond.fromRef.imageOffset) },
+      { siteIndex: bond.toSiteIndex, imageOffset: addOffset(offset, bond.toRef.imageOffset) });
+  }
+  // Connections are undirected. This also covers a selected endpoint that is
+  // the canonical 'to' site and periodic self-neighbors in both directions.
+  if (center) for (const { bond, target } of neighbors) addBond(bond, center, target);
+  const requestedBonds = requests.size;
   if (requestedBonds > PERIODIC_DERIVED_CAPS.maxDisplayedBonds) return Object.freeze({ ok: false, error: "PERIODIC_DERIVED_BOND_LIMIT_EXCEEDED", requestedSites, requestedBonds });
 
-  const atomBySite = new Map(scene.atoms.map((atom) => [atom.siteIndex, atom] as const));
-  const refs = offsets.flatMap((offset) => scene.atoms.map((atom) => ({ atom, offset })))
-    .concat(neighborOffsets.flatMap((offset) => {
-      const atom = neighborSiteIndex === null ? undefined : atomBySite.get(neighborSiteIndex);
-      return atom ? [{ atom, offset }] : [];
-    }))
-    .sort((left, right) => compareOffset(left.offset, right.offset) || left.atom.siteIndex - right.atom.siteIndex);
-  const seen = new Set<string>();
   const atoms: RenderAtom[] = [];
   const positions = new Map<string, RenderVector3>();
-  for (const { atom, offset } of refs) {
+  const orderedRefs = [...refs.values()].sort((left, right) => compareOffset(left.offset, right.offset) || left.atom.siteIndex - right.atom.siteIndex);
+  for (const { atom, offset } of orderedRefs) {
     const ref = Object.freeze({ siteIndex: atom.siteIndex, imageOffset: Object.freeze([...offset]) as ImageOffset });
     const key = periodicSiteKey(ref);
-    if (seen.has(key)) continue;
-    seen.add(key);
     const position = translateCartesian(atom.canonicalPosition, ref.imageOffset, scene.lattice.matrix);
     positions.set(key, position);
     atoms.push(Object.freeze({ ...atom, id: `site-${key}`, ref, position }));
   }
 
-  const bondKeys=new Set<string>();
-  const bonds: RenderBond[] = offsets.flatMap((offset) => scene.bonds.flatMap((bond) => {
-    const fromRef = Object.freeze({ siteIndex: bond.fromSiteIndex, imageOffset: Object.freeze([...offset]) as ImageOffset });
-    const toImage=addOffset(offset,bond.toRef.imageOffset);
-    const toRef = Object.freeze({ siteIndex: bond.toSiteIndex, imageOffset: toImage });
+  const bonds: RenderBond[] = [...requests.values()].flatMap(({ bond, fromRef, toRef }) => {
     const start = positions.get(periodicSiteKey(fromRef));
     const end = positions.get(periodicSiteKey(toRef));
     if (!start || !end || Math.hypot(start[0]-end[0],start[1]-end[1],start[2]-end[2]) <= 1e-9) return [];
     const id=`bond-${periodicSiteKey(fromRef)}-${periodicSiteKey(toRef)}`;
-    if(bondKeys.has(id))return[]; bondKeys.add(id);
     const displacementCartesian:RenderVector3=Object.freeze([end[0]-start[0],end[1]-start[1],end[2]-start[2]]);
-    return [Object.freeze({ ...bond, id, fromRef, toRef, start, end, displacementCartesian })];
-  }));
+    return [Object.freeze({ ...bond, id, fromSiteIndex: fromRef.siteIndex, toSiteIndex: toRef.siteIndex, fromRef, toRef, start, end, displacementCartesian })];
+  });
   const displayMatrix = Object.freeze(scene.lattice.matrix.map((row, axis) => Object.freeze(row.map((value) => value * repeat[axis])))) as ValidatedRenderScene["displayLattice"]["matrix"];
   return Object.freeze({
     ok: true,

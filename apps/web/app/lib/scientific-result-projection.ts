@@ -14,6 +14,7 @@ export type ProjectedScientificArtifact = Artifact & {
 
 const TYPE_LABELS: Record<string, string> = {
   table_json: "数据表",
+  metrics_json: "计算指标",
   plotly_json: "科学图表",
   structure_json: "晶体结构",
   trajectory_json: "原子轨迹",
@@ -28,7 +29,7 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const TECHNICAL_TYPES = new Set(["recipe_json", "summary_md", "manifest_json", "metadata_json"]);
-const TABLE_TYPES = new Set(["table_json", "table_csv", "peak_table_json", "regression_table_json"]);
+const TABLE_TYPES = new Set(["table_json", "table_csv", "peak_table_json", "regression_table_json", "metrics_json"]);
 const SEMANTIC_NAMES: Record<string, string> = {
   experimental_xrd_comparison_plot: "实验与理论 XRD 对比图",
   experimental_xrd_comparison: "实验与理论 XRD 峰位比较",
@@ -36,7 +37,7 @@ const SEMANTIC_NAMES: Record<string, string> = {
   xrd_pattern: "XRD 峰位数据",
   structure_composition: "结构组成概览",
   "structure.summary": "晶体结构摘要",
-  correlation_heatmap: "形成能与带隙的相关关系",
+  correlation_heatmap: "材料属性相关性热图",
   correlation_matrix: "属性相关关系",
   formation_energy_band_gap: "形成能与带隙关系",
   formation_energy_density: "形成能与密度关系",
@@ -100,6 +101,7 @@ function isTechnicalArtifact(artifact: Artifact): boolean {
 }
 
 function displayPriority(artifact: Artifact): number {
+  if (isPolyhedronArtifact(artifact)) return 1;
   const type = normalizedType(artifact);
   const name = String(artifact.name || "").toLowerCase();
   if (/(?:experimental_xrd_comparison_plot|composition_space_plot)/.test(name)) return 0;
@@ -108,6 +110,10 @@ function displayPriority(artifact: Artifact): number {
   if (isFigureType(type)) return 2;
   if (TABLE_TYPES.has(type) || type.endsWith("_table_json")) return 3;
   return 4;
+}
+
+function isPolyhedronArtifact(artifact: Artifact): boolean {
+  return normalizedType(artifact) === "table_json" && artifact.metadata?.toolId === "structure.local_environment_polyhedra";
 }
 
 function dedupeCompositeArtifacts(artifacts: Artifact[]): Artifact[] {
@@ -127,7 +133,23 @@ function semanticTitle(type: string, artifact: Artifact): string {
   const explicit = typeof artifact.metadata?.resultTitle === "string" ? artifact.metadata.resultTitle : null;
   if (explicit) return explicit;
   const toolId = typeof artifact.metadata?.toolId === "string" ? artifact.metadata.toolId.toLowerCase() : "";
+  if (toolId === "reference.periodic_table") return type === "plotly_json" ? "元素周期表" : "元素参考值";
+  if (toolId === "reference.compare_elements") return type === "plotly_json" ? "元素性质比较" : "元素参考值";
+  if (toolId === "reference.convert_units") return "单位换算数值";
+  if (toolId === "generation.function_curve") return type === "plotly_json" ? "函数曲线" : "函数采样数值";
+  if (toolId === "composition.from_formula") return type === "plotly_json" ? "原子组成" : "化学式组成数值";
+  if (toolId === "viz.inline_xy") return type === "plotly_json" ? "输入数据图" : "原始输入数值";
+  if (toolId === "generation.ideal_crystal") return type === "structure_json" ? "理想晶格示意" : "理想晶格参数";
   if (toolId === "structure.structure_3d") return "晶体结构三维视图";
+  if (isPolyhedronArtifact(artifact)) return "配位多面体";
+  if (toolId === "ml.density_scatter" && type === "plotly_json") return "真实值与预测值";
+  if (toolId === "ml.error_distribution") {
+    if (type === "plotly_json") return "残差分布";
+    if (type === "metrics_json") return "回归评估指标（残差分析）";
+    if (TABLE_TYPES.has(type)) return "高误差样本（残差分析）";
+  }
+  if (toolId === "ml.outlier_table" && TABLE_TYPES.has(type)) return "高误差样本";
+  if (type === "metrics_json") return toolId === "ml.basic_metrics" ? "回归评估指标" : "计算指标";
   const name = String(artifact.name || "").replace(/\.(json|csv|md|gz)$/i, "");
   if (SEMANTIC_NAMES[name]) return SEMANTIC_NAMES[name];
   const content = artifact.content && typeof artifact.content === "object" && !Array.isArray(artifact.content)
@@ -136,7 +158,7 @@ function semanticTitle(type: string, artifact: Artifact): string {
   const artifactType = typeof content?.artifactType === "string" ? content.artifactType : "";
   if (artifactType === "structure.composition_from_structure") return "结构组成概览";
   if (artifactType === "structure.summary") return "晶体结构摘要";
-  if (name && !/^(artifact|output|result)[_-]?\d*$/i.test(name)) return name;
+  if (name && !/^(artifact|output|result|figure|table)[_-]?\d*$/i.test(name)) return name;
   return TYPE_LABELS[type] || "科学结果";
 }
 
@@ -145,6 +167,12 @@ export function projectScientificArtifacts(artifacts: Artifact[]): ProjectedScie
     .map((artifact, index) => ({ artifact, index }))
     .filter(({ artifact }) => {
       const type = normalizedType(artifact);
+      // JSON and CSV from the same exact call are two encodings of one table.
+      // Keep the downloadable CSV in provenance, not as a second view choice.
+      const call = artifact.toolCallId;
+      if (type === "table_csv" && call && artifacts.some((other) =>
+        other.toolCallId === call && other.jobId === artifact.jobId
+        && normalizedType(other) === "table_json")) return false;
       return !isTechnicalArtifact(artifact)
         && (isFigureType(type) || TABLE_TYPES.has(type) || type.endsWith("_table_json"));
     })
@@ -153,8 +181,8 @@ export function projectScientificArtifacts(artifacts: Artifact[]): ProjectedScie
   let primaryAssigned = false;
   return candidates.map((artifact) => {
     const type = normalizedType(artifact);
-    const table = TABLE_TYPES.has(type) || type.endsWith("_table_json");
-    const figure = isFigureType(type);
+    const table = !isPolyhedronArtifact(artifact) && (TABLE_TYPES.has(type) || type.endsWith("_table_json"));
+    const figure = isFigureType(type) || isPolyhedronArtifact(artifact);
     const role: ScientificResultRole = table
       ? (primaryAssigned ? "SUPPORTING_TABLE" : "PRIMARY_TABLE")
       : figure

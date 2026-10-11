@@ -12,6 +12,7 @@ from mdi_schemas import (
     DisplayTarget,
     ImplementationSource,
     MaterialObjectType,
+    PlatformReferenceSource,
     RegisteredTool,
     ToolCategory,
     ToolDomain,
@@ -350,6 +351,8 @@ def _resource_limits_for(entry: dict[str, Any]) -> dict[str, int]:
 
 
 def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
+    if entry.get("execution_scope") == "project":
+        return ToolInputSchema(inputOptions=[])
     tool_id = entry["tool_id"]
     if tool_id in {"trajectory.rdf", "trajectory.msd"}:
         return ToolInputSchema(periodicity="any", inputOptions=[ToolInputOption(name="validated_trajectory", requiredObjectTypes=[MaterialObjectType.Trajectory], description="Use exactly one immutable phase10g trajectory resource." )])
@@ -640,6 +643,12 @@ def _input_schema_for(entry: dict[str, Any]) -> ToolInputSchema:
 
 
 def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
+    from .project_parameters import PARAMETER_TOOLS, parameter_tool_schema
+    if entry["tool_id"] in PARAMETER_TOOLS:
+        return parameter_tool_schema(entry["tool_id"])
+    if entry["tool_id"] in {"reference.periodic_table", "reference.compare_elements"}:
+        from .element_reference import element_reference_params_schema
+        return element_reference_params_schema(comparison=entry["tool_id"] == "reference.compare_elements")
     tool_id = entry["tool_id"]
     if tool_id == "electronic.band_structure":
         return {"type": "object", "additionalProperties": False, "properties": {
@@ -979,7 +988,7 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
                 "topN": {"type": "integer", "minimum": 1},
                 "keepTop": {"type": "integer", "minimum": 1},
                 "logY": {"type": "boolean"},
-                "showValues": {"anyOf": [{"type": "string"}, {"type": "boolean"}]},
+                "showValues": {"anyOf": [{"enum": ["percent", "count"]}, {"type": "boolean"}]},
                 "title": {"type": "string"},
             },
         }
@@ -1194,7 +1203,7 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
             "properties": {
                 "targetColumn": {"type": "string"},
                 "predictionColumn": {"type": "string"},
-                "nBins": {"type": "integer", "minimum": 1},
+                "nBins": {"type": "integer", "minimum": 1, "maximum": 4096},
                 "topK": {"type": "integer", "minimum": 1},
                 "title": {"type": "string"},
             },
@@ -1240,7 +1249,7 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
                 "xColumn": {"type": "string"},
                 "yColumn": {"type": "string"},
                 "colorColumn": {"type": "string"},
-                "hoverColumns": {"type": "array", "items": {"type": "string"}},
+                "hoverColumns": {"type": "array", "items": {"type": "string"}, "maxItems": 8, "uniqueItems": True},
                 "title": {"type": "string"},
             },
         }
@@ -1250,7 +1259,7 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
             "additionalProperties": False,
             "properties": {
                 "column": {"type": "string"},
-                "bins": {"type": "integer", "minimum": 1},
+                "bins": {"type": "integer", "minimum": 1, "maximum": 4096},
                 "groupBy": {"type": "string"},
                 "title": {"type": "string"},
             },
@@ -1260,7 +1269,7 @@ def _params_schema_for(entry: dict[str, Any]) -> dict[str, Any]:
             "type": "object",
             "additionalProperties": False,
             "properties": {
-                "numericColumns": {"type": "array", "items": {"type": "string"}},
+                "numericColumns": {"type": "array", "items": {"type": "string"}, "minItems": 2, "maxItems": 30, "uniqueItems": True},
                 "method": {"enum": ["pearson", "spearman"]},
                 "minNonNullCount": {"type": "integer", "minimum": 1},
                 "title": {"type": "string"},
@@ -1293,8 +1302,11 @@ def _viewer_scene_v1_params_schema() -> dict[str, Any]:
     return {
         "type": "object",
         "additionalProperties": False,
+        "allOf": [{"if": {"properties": {"bond_method": {"const": "covalent_radii"}}, "required": ["bond_method"]},
+                   "then": {"not": {"required": ["bond_cutoff_angstrom"]}}}],
         "properties": {
             "include_bonds": {"type": "boolean"},
+            "bond_method": {"enum": ["distance_cutoff", "covalent_radii"]},
             "bond_cutoff_angstrom": {"type": "number", "minimum": 0.1, "maximum": 10.0},
             "max_sites": {"type": "integer", "minimum": 1, "maximum": 256},
             "max_bonds": {"type": "integer", "minimum": 0, "maximum": 2048},
@@ -1339,7 +1351,7 @@ def _source_for(entry: dict[str, Any], manifest_path: Path) -> dict[str, Any]:
         "manifest": manifest_path.name,
         "package": entry.get("source_package"),
     }
-    for key in ("source_function", "source_class", "source_alternatives", "notes"):
+    for key in ("source_function", "source_class", "source_alternatives", "notes", "execution_scope", "reference_sources"):
         if key in entry:
             source[key] = entry[key]
     return {key: value for key, value in source.items() if value is not None}
@@ -1396,6 +1408,20 @@ def validate_manifest(raw_manifest: dict[str, Any], source: str | Path = "<memor
         if tool_id in seen:
             raise ManifestValidationError(f"{where}: duplicate tool_id {tool_id}")
         seen.add(tool_id)
+        scope = entry.get("execution_scope", "material")
+        if scope not in ("material", "project"):
+            raise ManifestValidationError(f"{where}: invalid execution_scope")
+        if "reference_sources" in entry:
+            references = entry["reference_sources"]
+            if scope != "project" or not isinstance(references, list) or len(references) > 8:
+                raise ManifestValidationError(f"{where}: reference_sources requires a bounded project reference list")
+            try:
+                parsed = [PlatformReferenceSource.model_validate(item) for item in references]
+            except ValueError as exc:
+                raise ManifestValidationError(f"{where}: invalid platform reference identity") from exc
+            identities = [item.referenceId for item in parsed]
+            if identities != sorted(set(identities)):
+                raise ManifestValidationError(f"{where}: platform references must be unique and sorted")
         if entry["stage"] not in ALLOWED_STAGES:
             raise ManifestValidationError(f"{where}: invalid stage {entry['stage']}")
         if entry["implementation_source"] not in _enum_values(ImplementationSource):

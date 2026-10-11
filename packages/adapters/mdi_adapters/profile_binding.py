@@ -32,6 +32,8 @@ def canonical_profile_resource_ref(
         str(getattr(item, "objectId", "")) for item in profile_resources
     }
     exact_version_ref = _looks_like_uuid(runtime_ref)
+    if exact_version_ref and isinstance(identity, Mapping) and identity.get("profileObjectId") in profile_object_ids:
+        return str(identity["profileObjectId"])
     if exact_version_ref and isinstance(source_index, Mapping):
         canonical_aliases = [
             str(candidate_ref)

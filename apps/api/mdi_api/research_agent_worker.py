@@ -20,11 +20,18 @@ def _persist_worker_boundary_failure(turn_id: str, error: BaseException) -> None
     try:
         from mdi_api.bootstrap.repository_factory import create_repository_factory
         from mdi_api.research_agent.service import ResearchTurnService
+        from mdi_api.research_agent.schemas import ResearchTurnStatus
 
         ResearchTurnService(create_repository_factory()).fail_if_active(
             UUID(str(turn_id)),
             "WORKER_BOUNDARY_FAILURE",
-            f"{type(error).__name__}: {error}",
+            "Research orchestration worker could not complete this stage",
+            expected_statuses=frozenset({
+                ResearchTurnStatus.RECEIVED,
+                ResearchTurnStatus.RESOLVING_CONTEXT,
+                ResearchTurnStatus.ORCHESTRATING,
+                ResearchTurnStatus.READY_TO_PLAN,
+            }),
         )
     except Exception:
         # Preserve the original worker exception/RQ failure.  A persistence

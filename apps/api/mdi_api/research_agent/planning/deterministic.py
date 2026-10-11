@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from mdi_api.agent2_errors import CapabilityPlanInvalid
 from mdi_api.research_agent.capabilities.schemas import (
     CapabilityBindingKind,
     CapabilityInputBinding,
@@ -120,7 +121,8 @@ def build_deterministic_capability_plan(*, decision: ResearchTurnDecision, resol
     ordered_candidates = sorted(resolution.candidates, key=lambda item: (item.planning_priority, item.capability_id, item.capability_version))
     keys = {f"{item.capability_id}@{item.capability_version}": f"cap_{index}" for index, item in enumerate(ordered_candidates, 1)}
     steps = []
-    for index, candidate in enumerate(selected, 1):
+    emitted_steps: dict[str, list[CapabilityPlanStep]] = {}
+    for candidate in selected:
         manifest = registry.require(candidate.capability_id, candidate.capability_version)
         input_bindings = {}
         for slot in manifest.input_slots:
@@ -135,17 +137,40 @@ def build_deterministic_capability_plan(*, decision: ResearchTurnDecision, resol
             elif slot.name in candidate.missing_input_slots:
                 producer = next((item for item in selected if any(f"{item.capability_id}@{item.capability_version}" == p for p in candidate.possible_producers.get(slot.name, []))), None)
                 if producer:
-                    input_bindings[slot.name] = [CapabilityInputBinding(kind=CapabilityBindingKind.PLANNED_OUTPUT, producer_step_id=f"step_{selected.index(producer) + 1}", producer_output_slot=next(out.name for out in registry.require(producer.capability_id, producer.capability_version).output_slots if (out.scientific_object_type in slot.accepted_object_types) or (out.result_type in slot.accepted_object_types)))]
+                    producer_ref = f"{producer.capability_id}@{producer.capability_version}"
+                    output_slot = next(out.name for out in registry.require(producer.capability_id, producer.capability_version).output_slots if (out.scientific_object_type in slot.accepted_object_types) or (out.result_type in slot.accepted_object_types))
+                    input_bindings[slot.name] = [CapabilityInputBinding(kind=CapabilityBindingKind.PLANNED_OUTPUT, producer_step_id=item.step_id, producer_output_slot=output_slot)
+                        for item in emitted_steps.get(producer_ref, [])]
         params = {}
         for requirement in decision.scientific_requirements:
             if requirement.requirement_id not in candidate.satisfies_requirement_ids:
                 continue
             mapping = manifest.tool_bindings[0].parameter_mapping if manifest.tool_bindings else {}
             for key, value in requirement.constraints.items():
-                params[str(mapping.get(key) or key)] = value
-        steps.append(CapabilityPlanStep(
-            step_id=f"step_{index}", capability_ref_key=keys[f"{candidate.capability_id}@{candidate.capability_version}"],
-            satisfies_requirement_ids=list(candidate.satisfies_requirement_ids), input_bindings=input_bindings, parameters=params,
-            expected_outputs=[PlannedCapabilityOutput(slot_name=out.name, result_type=out.result_type, scientific_object_type=out.scientific_object_type) for out in manifest.output_slots],
-        ))
+                parameter = str(mapping.get(key) or key)
+                if parameter in params and params[parameter] != value:
+                    raise CapabilityPlanInvalid(
+                        "conflicting scientific constraints require separate analyses; "
+                        "per-material parameter binding is not yet supported",
+                        code="CAPABILITY_PLAN_PARAMETER_AUTHORITY_INVALID",
+                    )
+                params[parameter] = value
+        variants = [input_bindings]
+        for slot in manifest.input_slots:
+            bindings = input_bindings.get(slot.name, [])
+            if slot.max_count is not None and len(bindings) > slot.max_count:
+                if len(manifest.input_slots) != 1 or slot.min_count != 1 or slot.max_count != 1:
+                    raise CapabilityPlanInvalid("multiple source inputs require explicit pairing by the bounded planner")
+                variants = [{slot.name: [binding]} for binding in bindings]
+        reference = f"{candidate.capability_id}@{candidate.capability_version}"
+        for bindings in variants:
+            if len(steps) >= 8:
+                raise CapabilityPlanInvalid("the complete source scope exceeds the capability plan step limit")
+            step = CapabilityPlanStep(
+                step_id=f"step_{len(steps) + 1}", capability_ref_key=keys[reference],
+                satisfies_requirement_ids=list(candidate.satisfies_requirement_ids), input_bindings=bindings, parameters=params,
+                expected_outputs=[PlannedCapabilityOutput(slot_name=out.name, result_type=out.result_type, scientific_object_type=out.scientific_object_type) for out in manifest.output_slots],
+            )
+            steps.append(step)
+            emitted_steps.setdefault(reference, []).append(step)
     return CapabilityPlan(contract_version="1.0", objective=decision.research_objective or resolution.objective, steps=steps, omitted_optional_requirement_ids=resolution.optional_requirement_ids_not_covered, planner_summary=None)

@@ -4,7 +4,11 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID, uuid4
 
+from mdi_api.agent2_errors import CapabilityNotRegistered
 from mdi_api.research_agent.capabilities.schemas import CapabilityPlan, CapabilityResolution
+from mdi_api.research_agent.execution.diagnostics import (
+    current_attempt_events, execution_step_status, execution_warnings,
+)
 from mdi_api.research_agent.execution.fingerprint import execution_source_fingerprint
 from mdi_api.research_agent.execution.progress import GenericScientificProgressProjector
 from mdi_api.research_agent.execution.schemas import (
@@ -13,10 +17,10 @@ from mdi_api.research_agent.execution.schemas import (
     ExecutionStepStatus,
     ExecutionStepSummary,
     ExecutionWarning,
+    ProgressWarning,
     ResearchExecutionSummary,
 )
 from mdi_api.research_agent.schemas import (
-    TERMINAL_TURN_STATUSES,
     ResearchTurnEventType,
     ResearchTurnStatus,
 )
@@ -81,7 +85,7 @@ class ResearchExecutionSupervisor:
         *,
         projector: GenericScientificProgressProjector | None = None,
         registries: Any | None = None,
-        projector_version: str = "agent2_execution_1.0",
+        projector_version: str = "agent2_execution_1.1",
     ) -> None:
         if registries is None:
             from mdi_api.research_agent.registry_validation import DEFAULT_AGENT2_REGISTRIES
@@ -93,12 +97,19 @@ class ResearchExecutionSupervisor:
         self.projector_version = projector_version
         self.classifier = ExecutionOutcomeClassifier()
 
-    def sync_for_job(self, job_id: str) -> Any | None:
+    def sync_for_job(self, job_id: str, *, recover_terminal_only: bool = False) -> Any | None:
         with self.repository_factory.unit_of_work() as unit:
             turn = unit.agent2.research_turns.get_for_job(job_id, for_update=True)
             if turn is None:
                 return None
             job = unit.repositories.jobs.get(job_id)
+            if str(job["projectId"]) != str(turn["project_id"]):
+                raise ValueError("execution Job does not belong to the Research project")
+            if recover_terminal_only and (
+                str(turn["status"]) not in {"QUEUED", "RUNNING", "CANCELING"}
+                or job["status"] not in {"completed", "partial_success", "failed", "cancelled"}
+            ):
+                return None
             tool_calls = unit.repositories.tool_calls.list_for_job(job_id)
             current_attempt = int(job.get("executionAttempt") or 0)
             if current_attempt:
@@ -115,13 +126,19 @@ class ResearchExecutionSupervisor:
                     for item in artifacts
                     if str(item.get("toolCallId") or "") in current_call_ids
                 ]
-            events = unit.repositories.job_events.list_for_job(job_id)
+            events = current_attempt_events(job, unit.repositories.job_events.list_for_job(job_id))
             plan_record = (
                 unit.repositories.analysis_plans.get_plan(str(turn["analysis_plan_id"]))
                 if turn.get("analysis_plan_id")
                 else {"analysisPlan": {}}
             )
-            capability_context, projector = self._capability_context(unit, turn)
+            try:
+                capability_context, projector = self._capability_context(unit, turn)
+            except CapabilityNotRegistered:
+                historical = self._saved_terminal_progress(unit, turn, plan_record, job, tool_calls, artifacts)
+                if historical is None:
+                    raise
+                return historical
             projected_artifacts = _declared_output_artifacts(plan_record, tool_calls, artifacts)
             outcome = self.classifier.classify(
                 analysis_plan=plan_record,
@@ -159,7 +176,19 @@ class ResearchExecutionSupervisor:
             # window the same successful execution must be projected again,
             # not treated as a conflicting RESULT_PENDING transition.
             existing_summary = unit.agent2.research_execution_summaries.get_for_turn(turn["id"])
-            if existing_summary is not None and current_status in TERMINAL_TURN_STATUSES:
+            if existing_summary is not None and current_status not in {
+                ResearchTurnStatus.QUEUED, ResearchTurnStatus.RUNNING, ResearchTurnStatus.CANCELING,
+            }:
+                # Historical summaries remain immutable. Enrich only this read
+                # projection; do not replace their evidence or fingerprints.
+                projection_summary = dict(existing_summary)
+                projection_summary["summary_json"] = {
+                    **existing_summary["summary_json"],
+                    "warnings": _merge_warnings(
+                        existing_summary["summary_json"].get("warnings") or [],
+                        execution_warnings(job, events),
+                    ),
+                }
                 return projector.project(
                     turn=turn,
                     capability_plan=capability_context,
@@ -167,7 +196,7 @@ class ResearchExecutionSupervisor:
                     job=job,
                     tool_calls=tool_calls,
                     artifacts=projected_artifacts,
-                    summary=existing_summary,
+                    summary=projection_summary,
                 )
 
             if outcome in {ExecutionOutcome.SUCCESS, ExecutionOutcome.PARTIAL} and turn.get("assistant_final_message_id") is not None:
@@ -229,7 +258,11 @@ class ResearchExecutionSupervisor:
                     ResearchTurnStatus.RUNNING,
                     ResearchTurnStatus.CANCELING,
                 }:
-                    turn = self._transition(unit, turn, target, event, {"status": target.value, "outcome": outcome.value})
+                    failure = execution_warnings(job, events)
+                    turn = self._transition(
+                        unit, turn, target, event, {"status": target.value, "outcome": outcome.value},
+                        failure=failure[0] if failure else None,
+                    )
 
             return projector.project(
                 turn=turn,
@@ -240,6 +273,35 @@ class ResearchExecutionSupervisor:
                 artifacts=projected_artifacts,
                 summary=stored,
             )
+
+    def _saved_terminal_progress(self, unit: Any, turn: dict[str, Any], plan: dict[str, Any], job: dict[str, Any], calls: list[dict[str, Any]], artifacts: list[dict[str, Any]]) -> Any | None:
+        # A retired capability cannot authorize new work. A completed execution
+        # remains readable from its exact saved plan, summary, calls and outputs.
+        if str(turn["status"]) not in {"COMPLETED", "PARTIAL", "FAILED", "CANCELED"} or str(job["status"]) not in {"completed", "partial_success", "failed", "cancelled", "canceled"}:
+            return None
+        summary = unit.agent2.research_execution_summaries.get_for_turn(turn["id"])
+        if summary is None or str(summary["job_id"]) != str(job["id"]) or str(summary["research_turn_id"]) != str(turn["id"]):
+            return None
+        payload = summary.get("summary_json") or {}
+        if (str(payload.get("analysis_plan_id")) != str(turn.get("analysis_plan_id"))
+                or str(payload.get("job_id")) != str(job["id"])
+                or str(payload.get("research_turn_id")) != str(turn["id"])
+                or str(plan.get("projectId")) != str(turn["project_id"])):
+            return None
+        metadata = {
+            step["step_id"]: {"display_name": step["display_name"]}
+            for step in payload.get("steps", [])
+            if isinstance(step, dict) and isinstance(step.get("step_id"), str) and isinstance(step.get("display_name"), str)
+        }
+        view = GenericScientificProgressProjector().project(
+            turn=turn, capability_plan={"step_metadata": metadata}, analysis_plan=plan,
+            job=job, tool_calls=calls, artifacts=_declared_output_artifacts(plan, calls, artifacts), summary=summary,
+        )
+        view.warnings.append(ProgressWarning(
+            code="HISTORICAL_CAPABILITY_VERSION_UNAVAILABLE",
+            message="原分析方法版本已不可用；这里展示已保存的执行记录和输出。",
+        ))
+        return view
 
     def request_cancel(self, turn_id: UUID) -> dict[str, Any]:
         job_id = ""
@@ -419,12 +481,16 @@ class ResearchExecutionSupervisor:
         target: ResearchTurnStatus,
         event: ResearchTurnEventType,
         payload: dict[str, Any],
+        *,
+        failure: ExecutionWarning | None = None,
     ) -> dict[str, Any]:
         updated = unit.agent2.research_turns.compare_and_set_status(
             turn["id"],
             expected_status=str(turn["status"]),
             expected_version=int(turn["row_version"]),
             target_status=target.value,
+            error_code=failure.code if failure else None,
+            error_summary=failure.message if failure else None,
             completed_at=(
                 datetime.now(timezone.utc)
                 if target in {ResearchTurnStatus.FAILED, ResearchTurnStatus.CANCELED}
@@ -480,15 +546,7 @@ class ResearchExecutionSupervisor:
             step_id = str(_v(item, "stepId", "step_id"))
             call = calls_by_step.get(step_id)
             raw = str(_v(call, "status", default="planned")) if call else "planned"
-            status = {
-                "planned": ExecutionStepStatus.PENDING,
-                "running": ExecutionStepStatus.RUNNING,
-                "succeeded": ExecutionStepStatus.SUCCEEDED,
-                "completed": ExecutionStepStatus.SUCCEEDED,
-                "failed": ExecutionStepStatus.FAILED,
-                "skipped": ExecutionStepStatus.SKIPPED,
-                "canceled": ExecutionStepStatus.CANCELED,
-            }.get(raw, ExecutionStepStatus.PENDING)
+            status = execution_step_status(raw, str(job.get("status") or ""))
             refs = [
                 ExecutionArtifactRef(
                     artifact_id=str(_v(artifact, "id", "artifactId")),
@@ -524,7 +582,7 @@ class ResearchExecutionSupervisor:
         failed = [item.step_id for item in steps if item.status == ExecutionStepStatus.FAILED]
         skipped = [item.step_id for item in steps if item.status == ExecutionStepStatus.SKIPPED]
         refs = [ref for item in steps for ref in item.output_artifact_refs]
-        warnings: list[ExecutionWarning] = []
+        warnings = execution_warnings(job, events)
         if ResearchTurnStatus(str(turn["status"])) == ResearchTurnStatus.CANCELING and outcome in {
             ExecutionOutcome.SUCCESS,
             ExecutionOutcome.PARTIAL,
@@ -565,6 +623,10 @@ class ResearchExecutionSupervisor:
             source_fingerprint=fingerprint,
             projector_version=self.projector_version,
         )
+
+
+def _merge_warnings(existing: list[dict[str, Any]], added: list[ExecutionWarning]) -> list[dict[str, Any]]:
+    return list({item["code"]: item for item in [*existing, *(warning.model_dump(mode="json") for warning in added)]}.values())
 
 
 def _declared_output_artifacts(

@@ -19,3 +19,16 @@ export function periodicBoundaryScene() {
   }];
   return payload;
 }
+
+/** Saved-generator presentation fixture; the periodic geometry stays explicit. */
+export function idealCrystalScene() {
+  const payload = periodicBoundaryScene();
+  const inputHash = "a".repeat(64);
+  payload.source = { ...payload.source, tool_id: "generation.ideal_crystal", resource_type: "ideal_model", resource_id: `parameters:${inputHash}` };
+  payload.provenance = { ...payload.provenance, tool_id: "generation.ideal_crystal", input_origin: "IDEAL_MODEL", sample_analysis: false, parameter_hash: inputHash };
+  payload.metadata = { ...payload.metadata, formula: "Cu", species: ["Cu"], species_count: 1, model_kind: "ideal_crystal", input_origin: "IDEAL_MODEL",
+    connectivity: { kind: "distance_neighbors", method: "ideal_first_shell", chemical_bond_claim: false } };
+  payload.scene.style = { ...payload.scene.style, style_preset: "default" };
+  payload.scene.sites.forEach((site: Record<string, unknown>, index: number) => { site.element = "Cu"; site.label = `Cu${index + 1}`; site.style = { color: "#888888", radius: 1 }; });
+  return payload;
+}

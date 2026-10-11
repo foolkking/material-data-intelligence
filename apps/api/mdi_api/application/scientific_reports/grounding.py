@@ -1,44 +1,26 @@
 from __future__ import annotations
 
+from mdi_api.application.scientific_reasoning.derived_claims import derived_product_errors
+
 import re
 import math
+from decimal import Decimal
 from typing import Any
 
 from mdi_api.domain.scientific_reports.contracts import ScientificReportOutput
-
-_NUMBER = re.compile(r"(?<![A-Za-z0-9_.])[-+]?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?%?")
-# Keep temperature ``K`` case-sensitive.  Electronic reports commonly use
-# ``k-point``/``k 点`` labels; treating the lowercase ``k`` as Kelvin makes
-# an otherwise grounded report fail closed for the wrong reason.
-_UNIT = re.compile(
-    r"(?<![A-Za-z0-9])(?:(?i:"
-    r"(?:Å|angstrom)(?:\^\{?2\}?|²)/(?:ps|picosecond)|"
-    r"(?:Å|angstrom)(?:\^\{?2\}?|²)|"
-    r"(?:Å|angstrom)(?:\^\{?-?3\}?|⁻³|-3)?|"
-    r"picosecond|nm|pm|eV|meV|fs|ps|%|THz|terahertz|cm-?1|1/s|m\^?2/s"
-    r")|K)(?![A-Za-z0-9])"
+from mdi_api.application.interpretation.grounding import _support_fact_ids, _numeric_claim_matches_fact, exclude_reciprocal_path_labels
+from mdi_api.application.scientific_reasoning.follow_ups import report_next_steps_text
+from mdi_api.application.scientific_reasoning.units import (
+    UNIT_PATTERN as _UNIT,
+    canonical_unit as _canonical_unit,
+    supported_fact_units,
+    exclude_saved_column_labels,
+    reference_version_claims,
+    parameter_claimed_units,
+    exclude_saved_parameter_expressions,
 )
 
-
-def _canonical_unit(value: object) -> str:
-    normalized = (
-        str(value)
-        .strip()
-        .lower()
-        .replace("angstrom", "å")
-        .replace("⁻³", "^-3")
-        .replace("²", "^2")
-        .replace("{", "")
-        .replace("}", "")
-        .replace(" ", "")
-    )
-    normalized = re.sub(r"^(å)-3$", r"\1^-3", normalized)
-    normalized = normalized.replace("cm-1", "cm1")
-    return {
-        "terahertz": "thz",
-        "ps": "picosecond",
-        "å^2/ps": "å^2/picosecond",
-    }.get(normalized, normalized)
+_NUMBER = re.compile(r"(?<![A-Za-z0-9_.])[-+]?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?%?")
 
 
 def _numeric_tokens(text: str) -> set[str]:
@@ -49,6 +31,7 @@ def _numeric_tokens(text: str) -> set[str]:
     with ScientificResult facts.
     """
     text = _UNIT.sub(" ", text or "")
+    text = re.sub(r"(?i)(?<![A-Za-z0-9])R\s*\^\s*2(?![A-Za-z0-9])", "R-squared", text)
     tokens: set[str] = set()
     for match in _NUMBER.finditer(text):
         start, end = match.span()
@@ -86,6 +69,8 @@ class ReportGroundingValidator:
         data_sources = {f"source_{index}" for index, _ in enumerate(b.get("source_object_refs", []), start=1)}
         interpretation_findings = self._interpretation_finding_ids(interpretation)
         errors: list[str] = []
+        if report.next_steps is not None and report.next_steps.text != report_next_steps_text(interpretation, b):
+            errors.append("next_steps must copy the source-bound interpretation suggestions exactly or be null")
         narrative_sections = [section for section in (report.discussion, report.conclusion, report.next_steps) if section is not None]
         source_text = " ".join([
             report.summary,
@@ -117,6 +102,7 @@ class ReportGroundingValidator:
                 label,
                 evidence_refs=section.evidence_refs,
                 evidence=evidence,
+                result_items=items,
             ))
         for finding in report.main_findings:
             if not (finding.finding_refs or finding.fact_refs or finding.evidence_refs):
@@ -167,6 +153,12 @@ class ReportGroundingValidator:
                 errors.append(f"unknown figure reference: {figure.figure_ref}")
             errors.extend(self._unknown("figure.fact_refs", figure.fact_refs, facts))
             errors.extend(self._unknown("figure.evidence_refs", figure.evidence_refs, evidence))
+            saved_figure = figures.get(figure.figure_ref, {})
+            product_ids = _support_fact_ids(
+                fact_refs=saved_figure.get("fact_refs") or [],
+                evidence_refs=saved_figure.get("evidence_refs") or [],
+                result_item_refs=[], facts=facts, evidence_items=evidence, result_items=items,
+            )
             errors.extend(self._numeric_errors(
                 figure.caption,
                 figure.fact_refs,
@@ -174,6 +166,9 @@ class ReportGroundingValidator:
                 "figure",
                 evidence_refs=figure.evidence_refs,
                 evidence=evidence,
+                result_items=items,
+                figure_type=str(figures.get(figure.figure_ref, {}).get("figure_type", "")),
+                product_support=[facts[ref] for ref in sorted(product_ids)],
             ))
         for item in report.supporting_results:
             if item.result_item_ref not in items:
@@ -209,48 +204,46 @@ class ReportGroundingValidator:
         evidence: dict[str, Any] | None = None,
         result_item_refs: list[str] | None = None,
         result_items: dict[str, Any] | None = None,
+        figure_type: str = "",
+        product_support: list[dict[str, Any]] | None = None,
     ) -> list[str]:
-        numbers = _numeric_tokens(text)
-        supported_ids = {ref for ref in fact_refs if ref in facts}
-        for ref in evidence_refs or []:
-            item = (evidence or {}).get(ref)
-            if item:
-                supported_ids.update(
-                    str(fact_ref)
-                    for fact_ref in item.get("supports_fact_refs") or []
-                    if str(fact_ref) in facts
-                )
-        for ref in result_item_refs or []:
-            item = (result_items or {}).get(ref)
-            if item:
-                supported_ids.update(
-                    str(fact_ref)
-                    for fact_ref in item.get("fact_refs") or []
-                    if str(fact_ref) in facts
-                )
+        supported_ids = _support_fact_ids(
+            fact_refs=fact_refs, evidence_refs=evidence_refs or [], result_item_refs=result_item_refs or [],
+            facts=facts, evidence_items=evidence or {}, result_items=result_items or {},
+        )
         referenced = [facts[ref] for ref in sorted(supported_ids)]
+        claim_text = exclude_saved_parameter_expressions(exclude_saved_column_labels(text, referenced), referenced)
+        version_errors = []
+        if any(fact.get("predicate") == "reference.version" for fact in facts.values()):
+            claim_text, unsupported_versions = reference_version_claims(claim_text, referenced)
+            version_errors = [f"{label} contains an unsupported reference version ({version})"
+                              for version in unsupported_versions]
+        numbers = _numeric_tokens(claim_text)
         supported = [
             float(fact.get("value"))
             for fact in referenced
             if isinstance(fact.get("value"), (int, float)) and not isinstance(fact.get("value"), bool)
         ]
-        errors = []
+        # The exact figure's saved graph can establish qualitative product
+        # availability, but never supplies unrequested numeric/unit citations.
+        errors = [*version_errors, *derived_product_errors(text, [*referenced, *(product_support or [])], label)]
         for token in numbers:
             try:
                 value = float(token)
             except ValueError:
-                errors.append(f"{label} contains an unsupported numeric claim")
+                errors.append(f"{label} contains an unsupported numeric claim ({token})")
                 continue
-            decimals = len(token.split(".", 1)[1]) if "." in token else 0
-            if not any(
-                math.isclose(value, candidate, rel_tol=1e-9, abs_tol=1e-9)
-                or round(candidate, decimals) == round(value, decimals)
-                for candidate in supported
-            ):
-                errors.append(f"{label} contains an unsupported numeric claim")
+            # Reports retain their coarser display rounding (2.84 -> 2.8),
+            # but never erase small nonzero quantities with an absolute floor.
+            if not any(_numeric_claim_matches_fact(token, candidate, relative_limit=Decimal("0.05")) for candidate in supported):
+                errors.append(f"{label} contains an unsupported numeric claim ({token})")
                 break
-        units = {_canonical_unit(unit) for unit in _UNIT.findall(text or "")}
-        supported_units = {_canonical_unit(fact.get("unit")) for fact in referenced if fact.get("unit")}
+        # The exact persisted figure's type establishes only label semantics;
+        # it grants no additional numeric or unit evidence to its caption.
+        unit_context = [*referenced, {"predicate": figure_type}] if figure_type else referenced
+        unit_claim_text = exclude_reciprocal_path_labels(claim_text or "", unit_context)
+        units = {_canonical_unit(unit) for unit in _UNIT.findall(unit_claim_text)} | parameter_claimed_units(unit_claim_text, referenced)
+        supported_units = supported_fact_units(referenced)
         unsupported_units = sorted(units - supported_units)
         if unsupported_units:
             errors.append(f"{label} contains an unsupported unit: {', '.join(unsupported_units)}")

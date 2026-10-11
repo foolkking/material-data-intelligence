@@ -46,7 +46,23 @@ class ClarificationRequest(BaseModel):
 
 
 class ResearchTurnDecision(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    # The provider sees this schema before the context-aware validator runs.
+    # Analysis must not advertise null/empty fields as executable decisions.
+    model_config = ConfigDict(extra="forbid", json_schema_extra={
+        "allOf": [{
+            "if": {"properties": {"action": {"enum": ["ANALYZE", "CONTINUE_ANALYSIS"]}}, "required": ["action"]},
+            "then": {
+                "required": ["research_objective", "selected_scope_ref_keys", "scientific_requirements"],
+                "properties": {
+                    "research_objective": {"type": "string", "minLength": 1},
+                    "scientific_requirements": {
+                        "minItems": 1,
+                        "contains": {"properties": {"criticality": {"const": "REQUIRED"}}, "required": ["criticality"]},
+                    },
+                },
+            },
+        }],
+    })
 
     contract_version: Literal["1.0"]
     action: ResearchAction
@@ -73,6 +89,7 @@ class OrchestratorRequirementOption(BaseModel):
     display_name: str
     description: str
     constraint_schema: dict[str, Any]
+    requires_material: bool = True
 
 
 class ResearchOrchestratorInput(BaseModel):

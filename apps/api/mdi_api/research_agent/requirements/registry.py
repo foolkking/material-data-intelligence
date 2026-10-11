@@ -41,9 +41,23 @@ class InMemoryScientificRequirementRegistry:
 def build_default_requirement_registry() -> InMemoryScientificRequirementRegistry:
     registry = InMemoryScientificRequirementRegistry()
     object_constraints = {"type": "object", "additionalProperties": False}
+    local_environment_constraints = {
+        "type": "object",
+        "properties": {
+            "site_indices": {
+                "type": "array", "maxItems": 5000, "uniqueItems": True,
+                "items": {"type": "integer", "minimum": 0, "maximum": 4999},
+            },
+        },
+        "additionalProperties": False,
+    }
     rdf_constraints = {
         "type": "object",
-        "properties": {"cutoff_angstrom": {"type": "number", "exclusiveMinimum": 0}},
+        "properties": {
+            "cutoff_angstrom": {"type": "number", "exclusiveMinimum": 0, "minimum": 0.5, "maximum": 30},
+            "r_max_angstrom": {"type": "number", "minimum": 0.5, "maximum": 30},
+            "bin_width_angstrom": {"type": "number", "minimum": 0.01, "maximum": 1.0},
+        },
         "additionalProperties": False,
     }
     trajectory_window_properties = {
@@ -162,7 +176,7 @@ def build_default_requirement_registry() -> InMemoryScientificRequirementRegistr
         (
             "ml.evaluate_regression",
             "Evaluate regression",
-            "Evaluate a materials regression result.",
+            "Evaluate existing target/prediction columns: MAE, RMSE, R-squared, parity/residual views and high-error sample identities. No model training.",
             "machine_learning",
             ["materials.dataset", "materials.table"],
             object_constraints,
@@ -206,6 +220,8 @@ def build_default_requirement_registry() -> InMemoryScientificRequirementRegistr
         ("structure.inspect_coordination_hist", "Inspect coordination histogram", "Summarize validated distance-cutoff coordination distributions for a crystal structure.", "structure", ["structure.crystal"], object_constraints),
         ("structure.inspect_coordination_crystalnn", "Inspect CrystalNN coordination", "Inspect validated CrystalNN local coordination results.", "structure", ["structure.crystal"], object_constraints),
         ("structure.inspect_coordination_voronoi", "Inspect Voronoi coordination", "Inspect validated VoronoiNN local coordination results.", "structure", ["structure.crystal"], object_constraints),
+        ("structure.inspect_local_environment_crystalnn", "Inspect CrystalNN polyhedra", "Build local-environment geometry and polyhedra from exact persisted CrystalNN neighbors. Preserve explicitly requested site indices.", "structure", ["structure.crystal"], local_environment_constraints),
+        ("structure.inspect_local_environment_voronoi", "Inspect VoronoiNN polyhedra", "Build local-environment geometry and polyhedra from exact persisted VoronoiNN neighbors. Preserve explicitly requested site indices.", "structure", ["structure.crystal"], local_environment_constraints),
         ("trajectory.compute_rdf", "Compute trajectory RDF", "Compute a bounded radial distribution function from an authorized atomic trajectory.", "trajectory", ["trajectory.atomic"], trajectory_rdf_constraints),
         ("electronic.inspect_band", "Inspect electronic band", "Inspect supplied electronic band-structure data without running a new electronic calculation.", "electronic", ["electronic.band_structure"], object_constraints),
         ("electronic.inspect_dos", "Inspect electronic DOS", "Inspect supplied electronic density-of-states data without running a new electronic calculation.", "electronic", ["electronic.dos"], object_constraints),
@@ -238,4 +254,17 @@ def build_default_requirement_registry() -> InMemoryScientificRequirementRegistr
             accepted_object_types=accepted,
             constraint_schema=constraints,
         ))
+    from mdi_tool_registry.element_reference import element_reference_params_schema
+    from mdi_tool_registry.project_parameters import PARAMETER_TOOLS, parameter_tool_schema
+    for requirement_id, (title, description) in PARAMETER_TOOLS.items():
+        registry.register(RequirementManifest(requirement_id=requirement_id, display_name=title, description=description,
+            scientific_domain=requirement_id.split(".", 1)[0], accepted_object_types=[], requires_material=False,
+            constraint_schema=parameter_tool_schema(requirement_id)))
+    for requirement_id, title, description, comparison in (
+        ("reference.periodic_table", "绘制元素周期表", "Draw a complete or filtered periodic table; highlight chosen elements and show atomic numbers or versioned Cordero covalent radii. No sample is required.", False),
+        ("reference.compare_elements", "比较元素参考性质", "Compare 2–20 named elements by atomic number or Cordero covalent radius in angstrom. These are platform reference values, not sample measurements.", True),
+    ):
+        registry.register(RequirementManifest(requirement_id=requirement_id, display_name=title, description=description,
+            scientific_domain="reference", accepted_object_types=[], requires_material=False,
+            constraint_schema=element_reference_params_schema(comparison=comparison)))
     return registry

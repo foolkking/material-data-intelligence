@@ -14,10 +14,16 @@
   "dependencies": {
     "@tanstack/react-query": "^5.80.0",
     "fflate": "0.8.3",
+    "katex": "0.16.47",
     "next": "^15.0.0",
     "plotly.js": "^3.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-markdown": "10.1.0",
+    "rehype-katex": "7.0.1",
+    "remark-gfm": "4.0.1",
+    "remark-math": "6.0.0",
+    "remend": "1.4.0",
     "three": "0.185.1",
     "zustand": "^5.0.0"
   },
@@ -25,13 +31,18 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/mdast": "4.0.4",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/three": "0.185.1",
     "@vitejs/plugin-react": "^4.3.4",
     "jsdom": "^25.0.1",
+    "micromark-extension-math": "3.1.0",
+    "micromark-util-types": "2.0.3",
+    "remark-parse": "11.0.0",
     "typescript": "^5.8.0",
+    "unified": "11.0.5",
     "vitest": "^2.1.9"
   }
 }

@@ -1,9 +1,10 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   getAuthUser: vi.fn(),
+  invalidateProductAuth: vi.fn(),
   listSavedProductSearches: vi.fn(),
   createSavedProductSearch: vi.fn(),
   updateSavedProductSearch: vi.fn(),
@@ -14,6 +15,7 @@ const mocks = vi.hoisted(() => ({
   push: vi.fn(),
   replace: vi.fn(),
   prefetch: vi.fn(),
+  pathname: "/projects/project_1/research",
   getProjectHistory: vi.fn(),
   listResearchSessions: vi.fn(),
   searchParams: { get: vi.fn(() => null) },
@@ -45,12 +47,13 @@ vi.mock("next/link", () => ({
   ),
 }));
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/projects/project_1/research",
+  usePathname: () => mocks.pathname,
   useRouter: () => ({ push: mocks.push, replace: mocks.replace, prefetch: mocks.prefetch }),
   useSearchParams: () => mocks.searchParams,
 }));
 vi.mock("../lib/product-api", () => ({
   getAuthUser: mocks.getAuthUser,
+  invalidateProductAuth: mocks.invalidateProductAuth,
   listSavedProductSearches: mocks.listSavedProductSearches,
   createSavedProductSearch: mocks.createSavedProductSearch,
   updateSavedProductSearch: mocks.updateSavedProductSearch,
@@ -72,7 +75,7 @@ vi.mock("../lib/task-center-data", () => ({
   }),
 }));
 vi.mock("../../features/account/ModelSettingsPage", () => ({
-  ModelSettingsDialog: ({ open, canManage }: { open: boolean; canManage?: boolean }) => open ? <div role="dialog" aria-label="模型服务测试替身" data-can-manage={String(Boolean(canManage))} /> : null,
+  ModelSettingsDialog: ({ open, canManage, onClose, fallbackFocus }: { open: boolean; canManage?: boolean; onClose: () => void; fallbackFocus?: HTMLElement | null }) => open ? <div role="dialog" aria-label="模型服务测试替身" data-can-manage={String(Boolean(canManage))} data-has-focus-fallback={String(Boolean(fallbackFocus))}><button onClick={onClose}>关闭模型设置</button></div> : null,
 }));
 
 import {
@@ -82,9 +85,11 @@ import {
   sessionExpiredLoginHref,
 } from "./ProductShell";
 import { ProductNavigationProvider } from "./ProductNavigation";
+afterEach(() => vi.useRealTimers());
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mocks.pathname = "/projects/project_1/research";
   mocks.getAuthUser.mockResolvedValue({ id: "user_1", displayName: "验收研究员", email: "acceptance.researcher@local.invalid", roles: ["owner"], platformRole: "USER" });
   mocks.listSavedProductSearches.mockResolvedValue([]);
   mocks.createSavedProductSearch.mockResolvedValue({
@@ -171,6 +176,7 @@ it("preserves the exact return URL and browser draft when the session expires", 
 
   window.dispatchEvent(new CustomEvent("mdi:session-expired"));
 
+  expect(mocks.invalidateProductAuth).toHaveBeenCalledTimes(1);
   expect(mocks.replace).toHaveBeenCalledWith(
     "/?login=1&reason=session-expired&returnTo=%2Fprojects%2Fproject_1%2Fresearch%3Fsession%3Dsession_1%26turn%3Dturn_1%23evidence-result_1",
   );
@@ -208,6 +214,53 @@ it("prewarms authoritative project data without leaving the App Router shell", a
 
   fireEvent.mouseEnter(screen.getByRole("link", { name: "报告" }));
   expect(mocks.prefetch).toHaveBeenCalledWith("/projects/project_1/reports");
+});
+
+it("marks the active global surface for exact and nested routes", async () => {
+  mocks.pathname = "/tasks/history";
+  render(<ProductShell><div>任务内容</div></ProductShell>);
+
+  const tasks = await screen.findByRole("link", { name: "任务" });
+  expect(tasks).toHaveAttribute("aria-current", "page");
+  expect(screen.getByRole("link", { name: "控制台" })).not.toHaveAttribute("aria-current");
+  expect(screen.getByRole("link", { name: "通知" })).not.toHaveAttribute("aria-current");
+  expect(screen.getByRole("link", { name: "回收站" })).not.toHaveAttribute("aria-current");
+});
+
+it("keeps the Projects section selected while a project workspace owns local navigation", async () => {
+  render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
+
+  await screen.findByText("研究内容");
+  expect(screen.getByRole("link", { name: "项目" })).toHaveAttribute("aria-current", "page");
+  expect(screen.getByRole("link", { name: "研究" })).toHaveAttribute("aria-current", "page");
+  expect(screen.getByRole("link", { name: "控制台" })).not.toHaveAttribute("aria-current");
+  expect(screen.getByRole("link", { name: "任务" })).not.toHaveAttribute("aria-current");
+  expect(screen.getByRole("link", { name: "通知" })).not.toHaveAttribute("aria-current");
+  expect(screen.getByRole("link", { name: "回收站" })).not.toHaveAttribute("aria-current");
+});
+
+it("keeps global navigation and project navigation as separate product levels", async () => {
+  render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
+
+  const globalNavigation = await screen.findByRole("navigation", { name: "全局导航" });
+  const projectNavigation = screen.getByRole("navigation", { name: "材料研究项目导航" });
+
+  expect(globalNavigation).toContainElement(screen.getByRole("link", { name: "控制台" }));
+  expect(globalNavigation).toContainElement(screen.getByRole("link", { name: "任务" }));
+  expect(projectNavigation).toContainElement(screen.getByRole("link", { name: "研究" }));
+  expect(projectNavigation).toContainElement(screen.getByRole("link", { name: "数据" }));
+  expect(screen.queryByText("项目空间")).not.toBeInTheDocument();
+  expect(screen.getAllByText("材料研究项目").length).toBeGreaterThan(0);
+});
+
+it("keeps the frame landmarks available on non-project surfaces", async () => {
+  mocks.pathname = "/tasks";
+  render(<ProductShell><div>任务内容</div></ProductShell>);
+
+  expect(await screen.findByRole("complementary", { name: "材料智能平台工作区" })).toBeInTheDocument();
+  expect(screen.getByRole("navigation", { name: "全局导航" })).toBeInTheDocument();
+  expect(screen.queryByRole("navigation", { name: "材料研究项目导航" })).not.toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "任务" })).toHaveAttribute("aria-current", "page");
 });
 
 it("coalesces repeated hover and focus prefetches into one authoritative read", async () => {
@@ -313,8 +366,8 @@ it("opens project search from an internal route and restores focus after outside
   await user.click(searchTrigger);
   const searchInput = await screen.findByLabelText("项目、数据、研究或报告");
   await waitFor(() => expect(searchInput).toHaveFocus());
-  const dialog = screen.getByRole("dialog", { name: "查找科学工作" });
-  expect(within(dialog).getByText(/不会在空白条件下加载全部历史记录/)).toBeInTheDocument();
+  const dialog = screen.getByRole("dialog", { name: "搜索" });
+  expect(within(dialog).getByText(/输入关键词，或选择类型开始查找/)).toBeInTheDocument();
   expect(within(dialog).queryByRole("link", { name: "打开" })).not.toBeInTheDocument();
   expect(mocks.searchProduct).not.toHaveBeenCalled();
   fireEvent.mouseDown(dialog.parentElement!);
@@ -349,9 +402,12 @@ it("opens model settings from the compact account menu", async () => {
   await user.click(screen.getByRole("menuitem", { name: "模型设置" }));
   expect(screen.queryByRole("menu", { name: "账户菜单" })).not.toBeInTheDocument();
   expect(screen.getByRole("dialog", { name: "模型服务测试替身" })).toHaveAttribute("data-can-manage", "false");
+  expect(screen.getByRole("dialog", { name: "模型服务测试替身" })).toHaveAttribute("data-has-focus-fallback", "true");
+  await user.click(screen.getByRole("button", { name: "关闭模型设置" }));
+  expect(screen.queryByRole("dialog", { name: "模型服务测试替身" })).not.toBeInTheDocument();
 });
 
-it("passes platform administration authority to model settings", async () => {
+it("keeps administrators on the same personal account surface", async () => {
   const user = userEvent.setup();
   mocks.getAuthUser.mockResolvedValue({
     id: "admin_1",
@@ -363,9 +419,9 @@ it("passes platform administration authority to model settings", async () => {
   render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
 
   await user.click(await screen.findByRole("button", { name: /打开账户菜单/ }));
-  expect(screen.getByRole("menuitem", { name: "平台管理" })).toHaveAttribute("href", "/admin");
+  expect(screen.queryByRole("menuitem", { name: "平台管理" })).not.toBeInTheDocument();
   await user.click(screen.getByRole("menuitem", { name: "模型设置" }));
-  expect(screen.getByRole("dialog", { name: "模型服务测试替身" })).toHaveAttribute("data-can-manage", "true");
+  expect(screen.getByRole("dialog", { name: "模型服务测试替身" })).toHaveAttribute("data-can-manage", "false");
 });
 
 it("keeps platform management hidden from ordinary users", async () => {
@@ -376,7 +432,7 @@ it("keeps platform management hidden from ordinary users", async () => {
   expect(screen.queryByRole("menuitem", { name: "平台管理" })).not.toBeInTheDocument();
 });
 
-it("keeps the current project identity visible in the mobile navigation contract", async () => {
+it("keeps one project identity link in the shared header at every viewport", async () => {
   mocks.getProjectHistory.mockResolvedValue({
     project: { id: "project_1", name: "高温扩散研究", role: "owner" },
     datasets: [],
@@ -387,6 +443,7 @@ it("keeps the current project identity visible in the mobile navigation contract
   const projectIdentity = await screen.findByRole("link", { name: "高温扩散研究" });
   expect(projectIdentity).toHaveAttribute("href", "/projects/project_1");
   expect(projectIdentity).toHaveAttribute("title", "高温扩散研究");
+  expect(screen.getAllByText("高温扩散研究")).toHaveLength(1);
 });
 
 it("does not allow saving an unbounded blank search", async () => {
@@ -394,7 +451,7 @@ it("does not allow saving an unbounded blank search", async () => {
   render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
 
   await user.click(await screen.findByRole("button", { name: "搜索科学工作" }));
-  expect(screen.getByRole("button", { name: "保存当前检索" })).toBeDisabled();
+  expect(screen.getByRole("button", { name: "保存当前搜索" })).toBeDisabled();
   expect(mocks.searchProduct).not.toHaveBeenCalled();
 });
 
@@ -416,10 +473,21 @@ it("searches across authorized scientific work after the query changes", async (
     ),
   );
   expect(await screen.findByText("分析所选结构的带隙与来源")).toBeInTheDocument();
-  expect(screen.getByText("科学结果 · 结果 result_1 · 1.0")).toBeInTheDocument();
-  expect(screen.getByText(/科学结果与结果中的已验证发现/)).toBeInTheDocument();
+  expect(screen.getByText(/分析结果 · 结果 result_1 · 1\.0/)).toBeInTheDocument();
+  expect(screen.queryByText(/科学结果与结果中的已验证发现/)).not.toBeInTheDocument();
   expect(document.querySelector(".product-search-status")).toHaveTextContent("当前");
-  expect(screen.getByRole("link", { name: "打开" })).toHaveClass("product-primary-action");
+  expect(screen.getByRole("link", { name: "打开" })).toHaveClass("product-secondary-action");
+});
+
+it("closes model query navigation without retaining stale Next markers or dropping scientific context", async () => {
+  const user = userEvent.setup();
+  window.history.replaceState({ __NA: true, __PRIVATE_NEXTJS_INTERNALS_TREE: {}, sourceScope: "version_1" }, "", "/projects/project_1/research?version=version_1&settings=models#result_1");
+  render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
+  await user.click(await screen.findByRole("button", { name: /打开账户菜单/ }));
+  await user.click(screen.getByRole("menuitem", { name: "模型设置" }));
+  await user.click(screen.getByRole("button", { name: "关闭模型设置" }));
+  expect(window.location.pathname + window.location.search + window.location.hash).toBe("/projects/project_1/research?version=version_1#result_1");
+  expect(window.history.state).toEqual({ sourceScope: "version_1" });
 });
 
 it("keeps Open as navigation and offers an explicit removable research candidate", async () => {
@@ -535,6 +603,7 @@ it("continues an authorized search without duplicates or a hard refresh", async 
   await waitFor(() =>
     expect(mocks.searchProduct).toHaveBeenLastCalledWith("band", {
       cursor: "cursor-page-2",
+      signal: expect.any(AbortSignal),
     }),
   );
   expect(screen.getAllByText("带隙结果二")).toHaveLength(1);
@@ -598,11 +667,13 @@ it("applies, saves and deletes user-owned searches without persisting results", 
   render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
 
   await user.click(await screen.findByRole("button", { name: "搜索科学工作" }));
+  await user.click(screen.getByText("常用搜索", { selector: "summary" }));
+  await user.click(screen.getByText("更多筛选", { selector: "summary" }));
   const savedSelect = await screen.findByLabelText("已保存");
   await user.selectOptions(savedSelect, "saved_existing");
   await waitFor(() =>
     expect(mocks.executeSavedProductSearch).toHaveBeenCalledWith(
-      "saved_existing",
+      "saved_existing", 40, expect.any(AbortSignal),
     ),
   );
   expect(screen.getByLabelText("范围")).toHaveValue("project_1");
@@ -616,12 +687,12 @@ it("applies, saves and deletes user-owned searches without persisting results", 
         type: "scientific_object",
         project: "project_1",
         status: "archived",
-      },
+      }, expect.any(AbortSignal),
     ),
   );
 
-  await user.click(screen.getByRole("button", { name: "保存当前检索" }));
-  const nameInput = screen.getByLabelText("检索名称");
+  await user.click(screen.getByRole("button", { name: "保存当前搜索" }));
+  const nameInput = screen.getByLabelText("搜索名称");
   await user.clear(nameInput);
   await user.type(nameInput, "硅历史");
   await user.click(screen.getByRole("button", { name: "保存" }));
@@ -632,15 +703,16 @@ it("applies, saves and deletes user-owned searches without persisting results", 
       type: "scientific_object",
       project: "project_1",
       status: "archived",
-    }),
+    }, expect.any(AbortSignal)),
   );
   expect(mocks.createSavedProductSearch.mock.calls[0]?.[0]).not.toHaveProperty(
     "items",
   );
 
   await user.click(screen.getByRole("button", { name: "删除" }));
+  await user.click(screen.getByRole("button", { name: "确认删除" }));
   await waitFor(() =>
-    expect(mocks.deleteSavedProductSearch).toHaveBeenCalledWith("saved_new"),
+    expect(mocks.deleteSavedProductSearch).toHaveBeenCalledWith("saved_new", expect.any(AbortSignal)),
   );
 });
 
@@ -716,7 +788,7 @@ it("retries a failed search in place without clearing the current criteria", asy
   await user.click(await screen.findByRole("button", { name: "搜索科学工作" }));
   const input = screen.getByLabelText("项目、数据、研究或报告");
   await user.type(input, "silicon");
-  expect(await screen.findByRole("alert")).toHaveTextContent("当前条件已保留");
+  expect(await screen.findByRole("alert")).toHaveTextContent("当前条件和已读取的结果已保留");
   expect(input).toHaveValue("silicon");
 
   await user.click(screen.getByRole("button", { name: "重试搜索" }));
@@ -740,10 +812,115 @@ it("retries loading saved searches without closing the global search", async () 
   render(<ProductShell projectId="project_1"><div>研究内容</div></ProductShell>);
 
   await user.click(await screen.findByRole("button", { name: "搜索科学工作" }));
-  expect(await screen.findByText("已保存检索暂时无法读取。")).toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: "重试读取已保存检索" }));
+  expect(await screen.findByText("常用搜索暂时无法读取，请重试。")).toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "重新读取常用搜索" }));
 
   expect(await screen.findByRole("option", { name: "恢复后的检索" })).toBeInTheDocument();
-  expect(screen.getByRole("dialog", { name: "查找科学工作" })).toBeInTheDocument();
+  expect(screen.getByRole("dialog", { name: "搜索" })).toBeInTheDocument();
   expect(mocks.listSavedProductSearches).toHaveBeenCalledTimes(2);
+});
+
+it("ends a stalled search after ten seconds, retries and ignores the late first response", async () => {
+  const user = userEvent.setup();
+  let finish!: (value: unknown) => void;
+  mocks.searchProduct.mockImplementationOnce(() => new Promise((resolve) => { finish = resolve; }));
+  render(<ProductShell><div>页面</div></ProductShell>);
+  await user.click(await screen.findByRole("button", { name: "搜索科学工作" }));
+  vi.useFakeTimers();
+  fireEvent.change(screen.getByLabelText("项目、数据、研究或报告"), { target: { value: "材料" } });
+  await act(async () => { await vi.advanceTimersByTimeAsync(10_180); });
+  expect(screen.getByRole("alert")).toHaveTextContent("搜索暂时无法读取");
+  expect(mocks.searchProduct.mock.calls[0][1].signal.aborted).toBe(true);
+  fireEvent.click(screen.getByRole("button", { name: "重试搜索" }));
+  await act(async () => { await vi.advanceTimersByTimeAsync(180); });
+  expect(screen.getByText("结构研究")).toBeInTheDocument();
+  await act(async () => finish({ count: 0, items: [], query: "材料" }));
+  expect(screen.getByText("结构研究")).toBeInTheDocument();
+  expect(screen.getByLabelText("项目、数据、研究或报告")).toHaveValue("材料");
+});
+
+it("retains earlier search pages through a stalled next page and rejects a repeated cursor", async () => {
+  const user = userEvent.setup();
+  const first = { query: "材料", count: 2, nextCursor: "next", items: [{ kind: "project", id: "project_1", projectId: "project_1", title: "第一页", subtitle: "", href: "/projects/project_1", status: "active" }] };
+  let finish!: (value: unknown) => void;
+  mocks.searchProduct.mockResolvedValueOnce(first).mockImplementationOnce(() => new Promise(resolve => { finish = resolve; })).mockResolvedValueOnce(first).mockResolvedValueOnce({ ...first, nextCursor: null, items: [{ ...first.items[0], id: "project_2", projectId: "project_2", href: "/projects/project_2", title: "第二页" }] });
+  render(<ProductShell><div>页面</div></ProductShell>);
+  await user.click(await screen.findByRole("button", { name: "搜索科学工作" }));
+  await user.type(screen.getByLabelText("项目、数据、研究或报告"), "材料");
+  await screen.findByText("第一页");
+  vi.useFakeTimers();
+  fireEvent.click(screen.getByRole("button", { name: "加载更多" }));
+  await act(async () => { await vi.advanceTimersByTimeAsync(10_000); });
+  expect(screen.getByText("第一页")).toBeInTheDocument();
+  expect(mocks.searchProduct.mock.calls[1][1].signal.aborted).toBe(true);
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "重试加载更多" })));
+  expect(screen.getByRole("alert")).toHaveTextContent("更多结果暂时无法读取");
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "重试加载更多" })));
+  expect(screen.getByText("第二页")).toBeInTheDocument();
+  await act(async () => finish({ ...first, nextCursor: null, items: [] }));
+  expect(screen.getByText("第一页")).toBeInTheDocument();
+  expect(screen.getByText("第二页")).toBeInTheDocument();
+});
+
+it("guards saved-search submission, retains its draft after timeout and requires a successful reread", async () => {
+  const user = userEvent.setup();
+  let finish!: (value: unknown) => void;
+  mocks.createSavedProductSearch.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+  render(<ProductShell><div>页面</div></ProductShell>);
+  await user.click(await screen.findByRole("button", { name: "搜索科学工作" }));
+  await user.type(screen.getByLabelText("项目、数据、研究或报告"), "材料");
+  await user.click(screen.getByText("常用搜索", { selector: "summary" }));
+  await user.click(screen.getByRole("button", { name: "保存当前搜索" }));
+  vi.useFakeTimers();
+  const form = screen.getByRole("button", { name: "保存" }).closest("form")!;
+  fireEvent.submit(form); fireEvent.submit(form);
+  expect(mocks.createSavedProductSearch).toHaveBeenCalledTimes(1);
+  await act(async () => { await vi.advanceTimersByTimeAsync(10_000); });
+  expect(screen.getByRole("alert")).toHaveTextContent("尚未确认保存搜索的结果");
+  expect(screen.getByLabelText("搜索名称")).toHaveValue("材料");
+  expect(screen.getByRole("button", { name: "保存" })).toBeDisabled();
+  mocks.listSavedProductSearches.mockRejectedValueOnce(new Error("read unavailable"));
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "重新读取常用搜索" })));
+  expect(screen.getByRole("button", { name: "保存" })).toBeDisabled();
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "重新读取常用搜索" })));
+  expect(screen.getByRole("button", { name: "保存" })).toBeEnabled();
+  await act(async () => finish({ id: "late", name: "迟到的搜索", query: "材料", status: "all" }));
+  expect(screen.queryByRole("option", { name: "迟到的搜索" })).toBeNull();
+  expect(screen.getByLabelText("搜索名称")).toHaveValue("材料");
+});
+
+it("recovers search controls after navigation closes an unfinished saved-search write", async () => {
+  const user = userEvent.setup();
+  mocks.createSavedProductSearch.mockImplementationOnce(() => new Promise(() => {}));
+  const { rerender } = render(<ProductShell><div>页面</div></ProductShell>);
+  await user.click(await screen.findByRole("button", { name: "搜索科学工作" }));
+  await user.type(screen.getByLabelText("项目、数据、研究或报告"), "材料");
+  await user.click(screen.getByText("常用搜索", { selector: "summary" }));
+  await user.click(screen.getByRole("button", { name: "保存当前搜索" }));
+  await user.click(screen.getByRole("button", { name: "保存" }));
+  mocks.pathname = "/tasks";
+  rerender(<ProductShell><div>另一个页面</div></ProductShell>);
+  expect(screen.queryByRole("dialog")).toBeNull();
+  expect(mocks.createSavedProductSearch.mock.calls[0][1].aborted).toBe(true);
+  await user.click(screen.getByRole("button", { name: "搜索科学工作" }));
+  expect(screen.getByLabelText("项目、数据、研究或报告")).toBeEnabled();
+  await waitFor(() => expect(mocks.listSavedProductSearches).toHaveBeenCalledTimes(2));
+  expect(screen.queryByText("正在保存更改…")).toBeNull();
+});
+
+it("retries an unfiltered saved search and still responds to the next typed query", async () => {
+  const user = userEvent.setup();
+  const savedSearch = { id: "all", name: "全部工作", query: "", status: "all" };
+  mocks.listSavedProductSearches.mockResolvedValue([savedSearch]);
+  mocks.executeSavedProductSearch.mockRejectedValueOnce(new Error("read failed")).mockResolvedValueOnce({ savedSearch, query: "", count: 0, items: [] });
+  render(<ProductShell><div>页面</div></ProductShell>);
+  await user.click(await screen.findByRole("button", { name: "搜索科学工作" }));
+  await user.click(screen.getByText("常用搜索", { selector: "summary" }));
+  await user.selectOptions(screen.getByLabelText("已保存"), "all");
+  await user.click(await screen.findByRole("button", { name: "重试搜索" }));
+  await screen.findByText("没有匹配内容，试试其他关键词或清除筛选。");
+  expect(mocks.executeSavedProductSearch).toHaveBeenCalledTimes(2);
+  await user.type(screen.getByLabelText("项目、数据、研究或报告"), "新的条件");
+  await screen.findByText("结构研究");
+  expect(mocks.searchProduct).toHaveBeenLastCalledWith("新的条件", expect.objectContaining({ signal: expect.any(AbortSignal) }));
 });

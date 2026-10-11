@@ -784,7 +784,7 @@ describe("Phase 9C PlannerWorkbench", () => {
     expect(isTerminalPlannerJobStatus("cancelled")).toBe(false);
   });
 
-  it("renders bounded volumetric metadata without binary values or executable content", () => {
+  it("renders bounded volumetric metadata without binary values or executable content", async () => {
     const dataset = {
       schema_version: "phase10j.volumetric_dataset.v1",
       grid: { shape: [2, 3, 4], sample_location: "node", endpoint_policy: "excluded", boundary_conditions: ["periodic", "periodic", "periodic"] },
@@ -797,9 +797,10 @@ describe("Phase 9C PlannerWorkbench", () => {
       { id: "manifest", artifactId: "manifest", type: "volumetric_manifest_json", name: "volumetric_manifest.json", content: manifest }
     ];
     const { container } = render(<VolumetricMetadataPreviewPanel artifacts={artifacts as never} />);
-    expect(screen.getByTestId("volumetric-grid-shape").textContent).toContain("2 x 3 x 4");
-    expect(screen.getByText("electron_density")).not.toBeNull();
-    expect(screen.getByTestId("volumetric-renderer-included").textContent).toContain("false");
+    await userEvent.click(screen.getByRole("tab", { name: "元数据" }));
+    expect(screen.getByText("2 x 3 x 4")).toBeInTheDocument();
+    expect(screen.getByTestId("volumetric-metadata-json-preview")).toHaveTextContent("electron_density");
+    expect(screen.getByText("包含渲染器").nextElementSibling).toHaveTextContent("false");
     expect(container.querySelector("canvas")).toBeNull();
     expect(container.querySelector("script")).toBeNull();
     expect(container.querySelector("iframe")).toBeNull();

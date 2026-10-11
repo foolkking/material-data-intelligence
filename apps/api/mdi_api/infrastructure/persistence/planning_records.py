@@ -5,19 +5,21 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 from mdi_schemas import (
-    AnalysisPlan,
-    AnalysisPlanV02,
+    AnalysisPlanV03,
+    AnalysisPlanV04,
     ArtifactLineageRecord,
     DependencyBinding,
     DependencyExecutionRecord,
     ResolvedArtifactInputRef,
-    compute_analysis_plan_02_hash,
+    parse_analysis_plan,
+    parse_dependency_plan,
     dependency_semantic_hash,
     deterministic_dependency_id,
 )
 
 from mdi_api.application.research.planning.integrity import compute_plan_hash
 from mdi_api.infrastructure.persistence.base import _enum_value, _iso, _json_copy, _parse_iso, _utc_now
+from mdi_schemas.multi_source_planning import parse_artifact_lineage
 
 def _normalize_plan_bindings(
     plan_record: Mapping[str, Any],
@@ -27,10 +29,10 @@ def _normalize_plan_bindings(
     bindings: list[DependencyBinding | Mapping[str, Any]],
 ) -> list[dict[str, Any]]:
     payload = plan_record.get("analysisPlan") or plan_record.get("analysisPlanJson") or {}
-    plan = AnalysisPlanV02.model_validate(payload)
+    plan = parse_dependency_plan(payload)
     if str(plan_record.get("planId") or plan_record.get("id")) != plan_id:
         raise ValueError("Planned dependency binding plan identity is invalid")
-    if compute_analysis_plan_02_hash(plan) != plan_hash or str(plan_record.get("planHash")) != plan_hash:
+    if compute_plan_hash(plan) != plan_hash or str(plan_record.get("planHash")) != plan_hash:
         raise ValueError("Planned dependency binding plan hash is invalid")
     if plan.graphHash != graph_hash:
         raise ValueError("Planned dependency binding graph hash is invalid")
@@ -38,7 +40,7 @@ def _normalize_plan_bindings(
     expected = sorted((item.model_dump(mode="json") for item in plan.dependencyBindings), key=lambda item: item["bindingId"])
     actual = sorted((item.model_dump(mode="json") for item in parsed), key=lambda item: item["bindingId"])
     if actual != expected:
-        raise ValueError("Planned dependency bindings must exactly match AnalysisPlan 0.2")
+        raise ValueError("Planned dependency bindings must exactly match the persisted AnalysisPlan")
     records: list[dict[str, Any]] = []
     for binding in actual:
         semantic = {
@@ -251,7 +253,7 @@ def _dependency_execution_from_row(row: Mapping[str, Any]) -> dict[str, Any]:
 def _normalize_artifact_lineage_record(record: ArtifactLineageRecord | Mapping[str, Any]) -> dict[str, Any]:
     source = record.model_dump(mode="json") if isinstance(record, ArtifactLineageRecord) else _json_copy(record)
     payload = source.get("artifactLineageRecord") or source.get("recordJson") or source.get("record_json") or source
-    parsed = ArtifactLineageRecord.model_validate(payload)
+    parsed = parse_artifact_lineage(payload)
     semantic_hash = dependency_semantic_hash(
         parsed.model_dump(mode="json"), identity_fields=("lineageId", "lineageHash", "createdAt")
     )
@@ -308,11 +310,17 @@ def _normalize_analysis_plan_record(record: Mapping[str, Any]) -> dict[str, Any]
     )
     if plan_json is None:
         raise ValueError("AnalysisPlan record is missing analysis_plan_json")
-    parsed_plan: AnalysisPlan | AnalysisPlanV02
-    if str(plan_json.get("schemaVersion") or "") == "0.2":
-        parsed_plan = AnalysisPlanV02.model_validate(plan_json)
-    else:
-        parsed_plan = AnalysisPlan.model_validate(plan_json)
+    parsed_plan = parse_analysis_plan(plan_json)
+    if isinstance(parsed_plan, AnalysisPlanV04):
+        if str(source.get("projectId") or source.get("project_id") or "") != parsed_plan.projectId:
+            raise ValueError("Project Plan ownership differs from its persisted project.")
+        if any(source.get(field) is not None for field in ("datasetId", "dataset_id", "profileId", "profile_id")):
+            raise ValueError("Project Plans cannot acquire a dataset or profile routing context.")
+    if isinstance(parsed_plan, AnalysisPlanV03):
+        for field, alternate in (("datasetId", "dataset_id"), ("profileId", "profile_id")):
+            supplied = source.get(field) or source.get(alternate)
+            if supplied is not None and str(supplied) != getattr(parsed_plan, field):
+                raise ValueError("AnalysisPlan record routing context differs from its exact plan binding")
     plan_payload = parsed_plan.model_dump(mode="json")
     _reject_credential_keys(plan_payload)
     computed_hash = compute_plan_hash(parsed_plan)

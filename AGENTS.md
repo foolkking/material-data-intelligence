@@ -27,7 +27,9 @@ current task.
 - Do not create phase, qualification, attempt, closure, evidence-bundle, or result-ledger files for normal development.
 - Do not place PostgreSQL, Redis, MinIO, SQLite runtime state, logs, caches, PID files, screenshots, or temporary exports in the repository.
 - Local persistent data belongs under `MDI_LOCAL_ROOT` (normally the sibling directory `mdi-b0-5a1.local`).
-- Use OS/runtime temporary directories for disposable work.
+- Use `C:\Users\86182\Desktop\wkkk` as this machine's temporary root for disposable work, including test scratch data, screenshots, temporary exports and isolated build workspaces. Put each task/run in its own child directory; never recursively clear the temporary root itself.
+- Set `MDI_TEMP_ROOT`, `TEMP`, `TMP` and `TMPDIR` to that path before project commands. `scripts\dev.ps1` loads the configured path from the external `local.env`; commands that bypass it must set these process variables explicitly. Pytest uses the dedicated `MDI_TEMP_ROOT\pytest` child and keeps numbered-run isolation.
+- This temporary-path setting does not relocate persistent data, logs, service state or existing files. Keep project services and the user's browser running across work rounds.
 - Do not create a new top-level directory unless current product source or an executable contract genuinely requires it.
 - Update `PROJECT_STATE.md` only when current product state, architecture, scope, or operating instructions materially change.
 

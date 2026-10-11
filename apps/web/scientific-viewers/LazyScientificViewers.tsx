@@ -1,48 +1,24 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import { createDeferredScientificViewer } from "./DeferredScientificViewer";
 
-function ViewerLoading({ label }: Readonly<{ label: string }>) {
-  return (
-    <div className="scientific-viewer-deferred-loading" role="status" aria-live="polite">
-      <span aria-hidden="true" />
-      <div>
-        <strong>{label}</strong>
-        <small>正在读取已持久化科学数据，不会重新执行分析。</small>
-      </div>
-    </div>
-  );
-}
-
-export const LazyScientificResultViewer = dynamic(
-  () =>
-    import("./ScientificViewerAdapter").then(
-      (module) => module.ScientificResultViewer,
-    ),
-  {
-    ssr: false,
-    loading: () => <ViewerLoading label="正在打开科学结果" />,
-  },
+export const LazyScientificResultViewer = createDeferredScientificViewer(
+  () => import("./ScientificViewerAdapter").then((module) => ({ default: module.ScientificResultViewer })),
+  { label: "正在打开科学结果…", sourceKey: (props) => JSON.stringify([
+    props.projectId, props.datasetId, props.jobId,
+    props.selected.artifactId || props.selected.id, props.selected.type, props.selected.version,
+    props.selected.sha256 || props.selected.contentHash,
+  ]) },
 );
 
-export const LazyScientificSourceViewer = dynamic(
-  () =>
-    import("./ScientificViewerAdapter").then(
-      (module) => module.ScientificSourceViewer,
-    ),
-  {
-    ssr: false,
-    loading: () => <ViewerLoading label="正在打开科学数据" />,
-  },
+export const LazyScientificSourceViewer = createDeferredScientificViewer(
+  () => import("./ScientificViewerAdapter").then((module) => ({ default: module.ScientificSourceViewer })),
+  { label: "正在打开科学数据…", sourceKey: (props) => JSON.stringify([
+    props.projectId, props.resource.datasetId, props.resource.objectId, props.resource.versionId, props.resource.objectHash,
+  ]) },
 );
 
-export const LazyScientificObjectViewer = dynamic(
-  () =>
-    import("./scientific-viewer/ScientificObjectViewer").then(
-      (module) => module.ScientificObjectViewer,
-    ),
-  {
-    ssr: false,
-    loading: () => <ViewerLoading label="正在解析精确对象版本" />,
-  },
+export const LazyScientificObjectViewer = createDeferredScientificViewer(
+  () => import("./scientific-viewer/ScientificObjectViewer").then((module) => ({ default: module.ScientificObjectViewer })),
+  { label: "正在打开对象版本…", sourceKey: (props) => JSON.stringify([props.projectId, props.objectId, props.versionId]) },
 );

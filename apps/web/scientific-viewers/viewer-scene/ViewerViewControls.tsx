@@ -42,7 +42,7 @@ export function ViewerViewControls({ clip, bounds, display, preset, latticeLengt
       <section aria-label="相机预设">
         <strong>相机</strong>
         <div className="viewer-camera-presets">{(["default","top","front","side","isometric"] as const).map((value)=><button type="button" key={value} className={`compact ${preset===value ? "active" : "secondary"}`} data-testid={`viewer-camera-${value}`} aria-pressed={preset===value} onClick={()=>onPreset(value)}>{({default:"默认",top:"顶部",front:"前方",side:"侧面",isometric:"等轴"} as const)[value]}</button>)}</div>
-        <output role="status" aria-live="polite" data-testid="viewer-camera-status">当前相机视角：{preset}。</output>
+        <output role="status" aria-live="polite" data-testid="viewer-camera-status">当前视角：{({default:"默认",top:"顶部",front:"前方",side:"侧面",isometric:"等轴"} as const)[preset]}。</output>
         <button type="button" className="compact secondary" data-testid="viewer-view-state-download" onClick={onDownload}>下载视图状态</button>
       </section>
     </div>

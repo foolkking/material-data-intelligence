@@ -179,6 +179,8 @@ def resolve_eligibility(
 
         if metadata.availability is not PlannerAvailability.available:
             reasons.append(_diagnostic("TOOL_NOT_AVAILABLE", "availability", "The tool is not available in the current product/runtime.", tool.toolId))
+        if metadata.executionScope == "PROJECT":
+            reasons.append(_diagnostic("PROJECT_TOOL_REQUIRES_RESEARCH", "executionScope", "Project-scoped tools require an explicit project Research plan.", tool.toolId))
         if not matched_intents:
             reasons.append(_diagnostic("SCIENTIFIC_INTENT_UNSUPPORTED", "scientificIntents", "The tool does not support a requested scientific intent.", tool.toolId))
         if intent.requiredCapabilityNeeds and not matched_needs:

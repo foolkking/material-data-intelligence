@@ -25,6 +25,7 @@ import urllib.request
 
 from mdi_schemas import DataProfile, RegisteredTool
 
+from .http_transport import InvalidProviderResponse, read_provider_response
 from .redaction import redact_sensitive_text
 
 
@@ -47,6 +48,7 @@ DEEPSEEK_ALLOWED_PURPOSES = frozenset(
 DEEPSEEK_MAX_OUTPUT_TOKENS = 8192
 DEEPSEEK_MAX_TIMEOUT_SECONDS = 120.0
 DEEPSEEK_MAX_PROMPT_BYTES = 524_288
+PROVIDER_TIMEOUT_CODES = frozenset({"PROVIDER_TIMEOUT", "DEEPSEEK_TIMEOUT", "LLM_TIMEOUT", "OPENAI_TIMEOUT"})
 DEEPSEEK_MAX_TRANSIENT_RETRIES = 1
 DEEPSEEK_RETRY_BACKOFF_SECONDS = 0.25
 DEEPSEEK_RETRY_JITTER_MAX_SECONDS = 0.10
@@ -627,6 +629,7 @@ class DeepSeekProvider:
         user_config: PlannerUserConfig | None = None,
         purpose: str,
         retry_observer: Any = None,
+        on_content: Any = None,
     ) -> PlannerRawResponse:
         resolved = _resolve_deepseek_config(user_config, fake=self._transport is not None, purpose=purpose)
         safe_messages = [
@@ -669,7 +672,8 @@ class DeepSeekProvider:
                         messages=safe_messages,
                         max_tokens=resolved["max_tokens"],
                         timeout_seconds=resolved["timeout_seconds"],
-                        urlopen=self._urlopen or urllib.request.urlopen,
+                        urlopen=self._urlopen,
+                        on_content=on_content,
                     )
             except LLMProviderError as exc:
                 deepseek_error = _as_deepseek_error(exc)
@@ -682,7 +686,8 @@ class DeepSeekProvider:
                     outcome=deepseek_error.code,
                 )
                 if (
-                    attempt < DEEPSEEK_MAX_TRANSIENT_RETRIES
+                    on_content is None
+                    and attempt < DEEPSEEK_MAX_TRANSIENT_RETRIES
                     and _deepseek_error_is_retryable(deepseek_error)
                 ):
                     retry_delay = _deepseek_retry_delay(
@@ -994,8 +999,10 @@ def _post_chat_completion(
 
         req = urllib.request.Request(url, data=body, headers=headers, method="POST")
         try:
-            with urllib.request.urlopen(req, timeout=timeout_seconds) as resp:
-                return json.loads(resp.read().decode("utf-8"))
+            raw = read_provider_response(req, timeout=timeout_seconds, byte_limit=2_000_000)
+            if len(raw) > 2_000_000:
+                raise ValueError("response too large")
+            return json.loads(raw.decode("utf-8"))
         except (TimeoutError, socket.timeout):
             raise LLMProviderError("OpenAI-compatible LLM request timed out.", code="LLM_TIMEOUT") from None
         except urllib.error.HTTPError as exc:
@@ -1018,7 +1025,8 @@ def _post_deepseek_completion(
     messages: list[dict[str, str]],
     max_tokens: int,
     timeout_seconds: float,
-    urlopen: Any = urllib.request.urlopen,
+    urlopen: Any = None,
+    on_content: Any = None,
 ) -> dict[str, Any]:
     """Send one bounded strict-JSON request to the resolved server endpoint."""
     url = f"{base_url.rstrip('/')}/chat/completions"
@@ -1030,6 +1038,7 @@ def _post_deepseek_completion(
             "max_tokens": max_tokens,
             "response_format": {"type": "json_object"},
             "thinking": {"type": "disabled"},
+            **({"stream": True} if on_content is not None else {}),
         },
         ensure_ascii=False,
         separators=(",", ":"),
@@ -1042,17 +1051,26 @@ def _post_deepseek_completion(
         method="POST",
     )
     try:
-        with urlopen(request, timeout=timeout_seconds) as response:
-            payload = response.read(1_048_577)
+        from .streaming import CompletionStreamDecoder
+        decoder = CompletionStreamDecoder("openai_chat_json", on_content) if on_content is not None else None
+        if urlopen is None:
+            payload = read_provider_response(request, timeout=timeout_seconds, byte_limit=1_048_576, on_chunk=decoder.feed if decoder else None)
+        else:
+            with urlopen(request, timeout=timeout_seconds) as response:
+                payload = response.read(1_048_577)
     except (TimeoutError, socket.timeout):
         raise LLMProviderError("DeepSeek request timed out.", code="DEEPSEEK_TIMEOUT") from None
     except urllib.error.HTTPError as exc:
         raise _http_error(exc) from None
     except urllib.error.URLError:
         raise LLMProviderError("DeepSeek request failed before a response was received.", code="DEEPSEEK_PROVIDER_FAILED") from None
+    except InvalidProviderResponse:
+        raise LLMProviderError("DeepSeek response was incomplete or invalid.", code="DEEPSEEK_RESPONSE_INVALID") from None
     if len(payload) > 1_048_576:
         raise LLMProviderError("DeepSeek response exceeded the bounded byte limit.", code="DEEPSEEK_RESPONSE_INVALID")
     try:
+        if decoder is not None:
+            return decoder.finish(payload)
         parsed = json.loads(
             payload.decode("utf-8"),
             object_pairs_hook=_reject_duplicate_object_keys,

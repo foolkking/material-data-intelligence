@@ -4,6 +4,7 @@ from collections.abc import Iterable
 from typing import Any
 
 from mdi_schemas import (
+    CAPABILITY_PLANNING_MAX_REGISTRY_TOOLS,
     CapabilityNeed,
     DesiredOutput,
     PlannerAvailability,
@@ -18,6 +19,7 @@ from mdi_schemas import (
 )
 
 from .adapter_invocability import AdapterInvocabilityPort, resolve_adapter_invocability
+from .project_parameters import PARAMETER_TOOLS
 
 
 PLANNER_METADATA_VERSION = "1.0"
@@ -31,6 +33,10 @@ PLANNER_HIDDEN_TOOL_IDS = frozenset(
 
 
 def _intents(tool_id: str) -> list[ScientificIntent]:
+    if tool_id in PARAMETER_TOOLS:
+        return [ScientificIntent.visualization, ScientificIntent.comparison]
+    if tool_id in {"reference.periodic_table", "reference.compare_elements"}:
+        return [ScientificIntent.visualization, ScientificIntent.comparison]
     if tool_id == "structure.composition_from_structure":
         return [ScientificIntent.composition_analysis, ScientificIntent.structure_analysis]
     if tool_id == "dataset.materials_explorer":
@@ -114,6 +120,10 @@ def _intents(tool_id: str) -> list[ScientificIntent]:
 
 
 def _needs(tool_id: str) -> list[CapabilityNeed]:
+    if tool_id in PARAMETER_TOOLS:
+        return []
+    if tool_id in {"reference.periodic_table", "reference.compare_elements"}:
+        return []
     if tool_id == "dataset.composition_space" or tool_id.startswith("composition.cluster_"):
         return [CapabilityNeed.tabular_data, CapabilityNeed.composition_data]
     if tool_id == "dataset.materials_explorer":
@@ -255,6 +265,8 @@ def _bindings(tool_id: str) -> list[PlannerParameterBinding]:
 
 
 def _input_type_options(tool: Any) -> list[list[str]]:
+    if tool.source.get("execution_scope") == "project":
+        return []
     raw_options = [
         sorted({item.value for item in option.requiredObjectTypes})
         for option in tool.inputSchema.inputOptions
@@ -281,6 +293,7 @@ def _required_roles(tool_id: str) -> list[str]:
 
 
 def build_tool_planner_metadata(tool: Any) -> ToolPlannerMetadata:
+    project_scoped = tool.source.get("execution_scope") == "project"
     input_options = _input_type_options(tool)
     object_types = sorted({item for option in input_options for item in option})
     availability = (
@@ -290,7 +303,7 @@ def build_tool_planner_metadata(tool: Any) -> ToolPlannerMetadata:
     )
     if tool.stage != "mvp":
         availability = PlannerAvailability.future
-    cardinalities = [len(option) for option in input_options] or [1]
+    cardinalities = [len(option) for option in input_options] or [0 if project_scoped else 1]
     return ToolPlannerMetadata(
         toolId=tool.toolId,
         toolName=tool.name,
@@ -299,8 +312,9 @@ def build_tool_planner_metadata(tool: Any) -> ToolPlannerMetadata:
         scientificIntents=_intents(tool.toolId),
         capabilityNeeds=_supported_needs(tool.toolId),
         desiredOutputs=_desired_outputs(tool),
-        acceptedObjectTypes=object_types or ["RawUnsupported"],
-        inputObjectTypeOptions=input_options or [["RawUnsupported"]],
+        executionScope="PROJECT" if project_scoped else "MATERIAL",
+        acceptedObjectTypes=object_types,
+        inputObjectTypeOptions=input_options,
         requiredProfileCapabilities=[need.value for need in _needs(tool.toolId)],
         requiredTargetRoles=_required_roles(tool.toolId),
         minInputs=min(cardinalities),
@@ -323,6 +337,8 @@ def validate_tool_planner_metadata(
 ) -> None:
     if metadata.toolId != tool.toolId or metadata.toolVersion != tool.version:
         raise ValueError("Planner metadata tool identity does not match the Registry tool.")
+    if metadata.executionScope != ("PROJECT" if tool.source.get("execution_scope") == "project" else "MATERIAL"):
+        raise ValueError("Planner execution scope does not match the Registry tool.")
     actual_options = _input_type_options(tool)
     actual_types = {item for option in actual_options for item in option}
     if not set(metadata.acceptedObjectTypes).issubset(actual_types or {"RawUnsupported"}):
@@ -347,7 +363,7 @@ def build_registry_snapshot(
     *,
     adapter_invocability: AdapterInvocabilityPort | None = None,
 ) -> tuple[PlannerRegistrySnapshot, dict[str, ToolPlannerMetadata]]:
-    if len(registry.tools) > 64:
+    if len(registry.tools) > CAPABILITY_PLANNING_MAX_REGISTRY_TOOLS:
         raise ValueError("Registry exceeds the capability-planning candidate cap.")
     metadata_by_id: dict[str, ToolPlannerMetadata] = {}
     entries: list[RegistrySnapshotEntry] = []
@@ -384,6 +400,7 @@ def planner_visible_tools(
     return [
         tool for tool in sorted(registry.tools, key=lambda item: item.toolId)
         if metadata[tool.toolId].availability is PlannerAvailability.available
+        and metadata[tool.toolId].executionScope == "MATERIAL"
     ]
 
 

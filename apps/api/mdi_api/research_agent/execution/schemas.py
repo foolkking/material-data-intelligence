@@ -137,3 +137,4 @@ class ResearchProgressView(BaseModel):
     warnings: list[ProgressWarning] = Field(default_factory=list)
     execution_outcome: ExecutionOutcome | None = None
     result_projection_pending: bool = False
+    execution_dispatch_pending: bool = False

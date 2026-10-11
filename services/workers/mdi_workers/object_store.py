@@ -9,7 +9,8 @@ import pandas as pd
 
 from mdi_api.artifact_storage import ArtifactStorage
 from mdi_api.unit_of_work import RepositoryFactory
-from mdi_schemas import DataProfile, MaterialObjectType
+from mdi_schemas import AnalysisPlanV03, DataProfile, MaterialObjectType
+from mdi_schemas.multi_source_planning import SCIENTIFIC_OBJECT_EXECUTION_TYPES
 
 from .source_resources import register_runtime_source_resource
 
@@ -171,6 +172,8 @@ class DurableObjectStoreResolver:
         follows ``ScientificObject.current_version_id`` and never aliases a
         missing historical version to a newer payload.
         """
+        if plan_payload.get("schemaVersion") == "0.3":
+            return self._hydrate_multi_source_plan(job, AnalysisPlanV03.model_validate(plan_payload))
         version_refs = _agent2_version_refs(plan_payload)
         if not version_refs:
             return object_store
@@ -193,6 +196,7 @@ class DurableObjectStoreResolver:
                     raise ValueError("ScientificObjectVersion identity is inconsistent.")
                 if str(version.get("availability_status")) not in {"AVAILABLE", "PARTIALLY_AVAILABLE"}:
                     raise ValueError("Exact ScientificObjectVersion is unavailable.")
+                _validate_version_dataset(version, project_id=project_id, dataset_id=dataset_id)
                 records.append((version_id, executable_type, dict(logical), dict(version)))
 
         hydrated = dict(object_store)
@@ -241,10 +245,100 @@ class DurableObjectStoreResolver:
             )
         return hydrated
 
+    def _hydrate_multi_source_plan(self, job: Mapping[str, Any], plan: AnalysisPlanV03) -> Mapping[str, Any]:
+        if self.repository_factory is None:
+            raise ValueError("Multi-source execution requires RepositoryFactory.")
+        project_id = str(job.get("projectId") or job.get("project_id") or "")
+        if not project_id or str(job.get("datasetId") or job.get("dataset_id") or "") != plan.datasetId:
+            raise ValueError("Multi-source Job routing scope differs from the persisted Plan.")
+        repos = self._repositories_from_factory()
+        allowed_datasets = {str(item.get("datasetId") or item.get("id")) for item in repos.datasets.list_for_project(project_id)}
+        profiles: list[DataProfile] = []
+        for context in plan.sourceContexts:
+            if context.datasetId not in allowed_datasets:
+                raise ValueError("Multi-source dataset is not authorized in this Project.")
+            matches = [item for item in repos.data_profiles.list_for_dataset(context.datasetId)
+                       if str(item.get("profileId") or item.get("id")) == context.profileId]
+            if len(matches) != 1:
+                raise ValueError("Exact source DataProfile is unavailable.")
+            profile = DataProfile.model_validate(matches[0])
+            if profile.datasetId != context.datasetId or profile.profileId != context.profileId:
+                raise ValueError("Source DataProfile identity differs from the Plan.")
+            profiles.append(profile)
+        resource_ids: dict[str, str] = {}
+        resource_hashes: dict[str, str] = {}
+        profiles_by_dataset = {profile.datasetId: profile for profile in profiles}
+        # Verify all declared provenance, including sources carried by reused
+        # artifacts, before materializing any payload or invoking an adapter.
+        with self.repository_factory.session() as session:
+            for source in plan.sourceVersions:
+                version = session.agent2.scientific_objects.get_version(source.versionId)
+                logical = session.agent2.scientific_objects.get_object(version["scientific_object_id"])
+                if str(logical["id"]) != str(source.objectId) or str(logical["project_id"]) != project_id:
+                    raise ValueError("Declared source object/version identity is unauthorized.")
+                if str(version.get("availability_status")) not in {"AVAILABLE", "PARTIALLY_AVAILABLE"}:
+                    raise ValueError("Declared ScientificObjectVersion is unavailable.")
+                if (version.get("object_type") != logical.get("object_type")
+                    or SCIENTIFIC_OBJECT_EXECUTION_TYPES.get(str(version.get("object_type"))) != source.objectType.value):
+                    raise ValueError("Declared source execution type differs from its scientific version.")
+                _validate_version_dataset(version, project_id=project_id, dataset_id=source.datasetId, required=True)
+                resource_id = str((version.get("canonical_metadata_json") or {}).get("source_resource_id") or "")
+                resource_ids[str(source.versionId)] = resource_id
+                if resource_id:
+                    matches = [item for item in profiles_by_dataset[source.datasetId].resourceSemantics
+                               if item.objectId == resource_id]
+                    if len(matches) != 1:
+                        raise ValueError("Exact source Profile resource is unavailable or ambiguous.")
+                    resource = matches[0]
+                    if resource.objectType != source.objectType:
+                        raise ValueError("Source Profile resource type differs from the declared version.")
+                    # Admission retains the parser's semantic identity while
+                    # serializing a separately checksummed execution payload.
+                    # Both identities must be checked against their own authority.
+                    semantic_hash = str(version.get("semantic_hash") or "")
+                    if not semantic_hash or semantic_hash != resource.objectHash:
+                        raise ValueError("ScientificObjectVersion semantic hash differs from the exact Profile resource.")
+                    resource_hashes[str(source.versionId)] = semantic_hash
+        hydrated: dict[str, Any] = {}
+        for profile in profiles:
+            register_runtime_source_resource(
+                hydrated, object_id=f"profile:{profile.profileId}", object_type="DataProfile",
+                object_hash=profile.semanticHash or profile.profileId,
+                dataset_id=profile.datasetId, value=profile,
+            )
+        required_payloads = {version_id for version_id, _kind in _agent2_version_refs(plan.model_dump(mode="json"))}
+        for source in plan.sourceVersions:
+            version_id = str(source.versionId)
+            if version_id not in required_payloads:
+                continue
+            exact = self.hydrate_agent2_sources({}, job={**job, "datasetId": source.datasetId}, plan_payload={
+                "steps": [{"inputRefs": [{"refType": "normalized_object", "ref": version_id, "objectType": source.objectType.value}]}],
+            })
+            identity = exact["__mdi_source_resources__"][version_id]
+            register_runtime_source_resource(
+                hydrated, object_id=version_id, object_type=source.objectType.value,
+                object_hash=identity["objectHash"], dataset_id=source.datasetId, value=exact[version_id],
+            )
+            # Canonical resource IDs may repeat in different datasets. Keep
+            # them as explicit metadata, never shared global runtime aliases.
+            if resource_ids[version_id]:
+                hydrated["__mdi_source_resources__"][version_id]["profileObjectId"] = resource_ids[version_id]
+                hydrated["__mdi_source_resources__"][version_id]["profileObjectHash"] = resource_hashes[version_id]
+        return hydrated
+
     def _repositories_from_factory(self) -> Any | None:
         if self.repository_factory is None:
             return None
         return self.repository_factory.create_repositories()
+
+
+def _validate_version_dataset(version: Mapping[str, Any], *, project_id: str, dataset_id: str, required: bool = False) -> None:
+    sources = version.get("source_resource_refs_json") or []
+    if any(item.get("project_id") not in {None, project_id} for item in sources):
+        raise ValueError("ScientificObjectVersion source belongs to another Project.")
+    datasets = {str(item["dataset_id"]) for item in sources if item.get("dataset_id")}
+    if (datasets and datasets != {dataset_id}) or (required and not datasets):
+        raise ValueError("ScientificObjectVersion source dataset differs from its declared execution scope.")
 
 
 def _normalized_exports(dataset: Mapping[str, Any]) -> list[Mapping[str, Any]]:

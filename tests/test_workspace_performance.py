@@ -201,6 +201,7 @@ def test_task_feed_projects_the_exact_turn_question_as_bounded_display_metadata(
     )
 
     assert result["items"][0]["researchTurnId"] == str(turn_id)
+    assert result["items"][0]["researchSessionId"] == "session_question"
     assert result["items"][0]["researchQuestion"] == (
         "Compare CrystalNN and VoronoiNN for the selected structure."
     )

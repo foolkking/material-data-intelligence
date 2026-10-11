@@ -4,6 +4,102 @@ import { describe, expect, it, vi } from "vitest";
 import { ResearchExecutionActivity } from "./ResearchExecutionActivity";
 
 describe("ResearchExecutionActivity", () => {
+  it("removes an empty success notice only after the answer is visible and keeps completed steps on demand", () => {
+    const progress = { contract_version: "1.0" as const, turn_id: "complete", status: "COMPLETED" as const,
+      steps: [], active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [],
+      execution_outcome: "SUCCESS" as const, result_projection_pending: false };
+    const view = render(<ResearchExecutionActivity progress={progress} />);
+    expect(screen.getByText("科学解释已准备")).toBeVisible();
+    view.rerender(<ResearchExecutionActivity progress={progress} completedAnswerVisible />);
+    expect(screen.queryByRole("region", { name: "分析进度" })).toBeNull();
+
+    view.rerender(<ResearchExecutionActivity completedAnswerVisible progress={{ ...progress,
+      steps: [{ step_id: "rdf", display_name: "计算 RDF", status: "SUCCEEDED", output_available: true }],
+      completed_step_count: 1, total_step_count: 1,
+    }} />);
+    const disclosure = screen.getByText("分析过程");
+    expect(disclosure.closest("details")).not.toHaveAttribute("open");
+    expect(screen.getByText("计算 RDF已完成")).not.toBeVisible();
+    fireEvent.click(disclosure);
+    expect(screen.getByText("计算 RDF已完成")).toBeVisible();
+  });
+
+  it.each([
+    ["PARTIAL", "部分科学解释已准备"],
+    ["FAILED", "分析未能完成"],
+    ["CANCELED", "分析已取消"],
+  ] as const)("retains %s feedback beside an existing answer", (status, label) => {
+    render(<ResearchExecutionActivity completedAnswerVisible progress={{
+      contract_version: "1.0", turn_id: "incomplete", status, steps: [], active_step_ids: [],
+      completed_step_count: 0, total_step_count: 0, incremental_outputs: [], warnings: [],
+      execution_outcome: null, result_projection_pending: false,
+    }} />);
+    expect(screen.getByText(label)).toBeVisible();
+    expect(screen.queryByText("分析过程")).toBeNull();
+  });
+
+  it("keeps a completed result's warning visible beside its answer", () => {
+    render(<ResearchExecutionActivity completedAnswerVisible progress={{
+      contract_version: "1.0", turn_id: "warned", status: "COMPLETED", steps: [], active_step_ids: [],
+      completed_step_count: 0, total_step_count: 0, incremental_outputs: [],
+      warnings: [{ code: "HISTORICAL_DETAIL_UNAVAILABLE", message: "部分历史执行信息当前不可用。" }],
+      execution_outcome: "SUCCESS", result_projection_pending: false,
+    }} />);
+    expect(screen.getByText("部分历史执行信息当前不可用。")).toBeVisible();
+  });
+
+  it("shows a missing historical plan as readable feedback while preserving interpretation recovery", () => {
+    const reinterpret = vi.fn();
+    render(<ResearchExecutionActivity onReinterpret={reinterpret} progress={{
+      contract_version: "1.0", turn_id: "historical", status: "FAILED", steps: [],
+      active_step_ids: [], completed_step_count: 0, total_step_count: 0, incremental_outputs: [],
+      execution_outcome: "SUCCESS", preserved_result_available: true, result_projection_pending: false,
+      warnings: [
+        { code: "HISTORICAL_ANALYSIS_PLAN_PAYLOAD_UNAVAILABLE", message: "历史分析的执行计划详情不可用；这里只显示已保存的研究状态。" },
+        { code: "INTERPRETATION_GROUNDING_FAILED", message: "自动解读未通过证据校验。" },
+      ],
+    }} />);
+    expect(screen.getByText("解读未能完成")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("历史分析的执行计划详情不可用");
+    expect(screen.queryByText("HISTORICAL_ANALYSIS_PLAN_PAYLOAD_UNAVAILABLE")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "重新解读" }));
+    expect(reinterpret).toHaveBeenCalledOnce();
+  });
+  it("names unexecuted, canceled and failed steps without suggesting they are pending", () => {
+    render(<ResearchExecutionActivity progress={{
+      contract_version: "1.0", turn_id: "preflight", status: "FAILED",
+      steps: [
+        { step_id: "1", display_name: "计算 RDF", status: "SKIPPED", output_available: false },
+        { step_id: "2", display_name: "生成图表", status: "CANCELED", output_available: false },
+        { step_id: "3", display_name: "分析峰位", status: "FAILED", output_available: false, warning: "该步骤未能完成" },
+      ],
+      active_step_ids: [], completed_step_count: 0, total_step_count: 3, incremental_outputs: [],
+      warnings: [{ code: "ROOT_RESOURCE_HASH_MISMATCH", message: "来源数据与保存的解析版本未通过一致性校验。请重新选择材料和版本后重试。" }],
+      execution_outcome: "FAILED", result_projection_pending: false,
+    }} />);
+    expect(screen.getByText("计算 RDF · 未执行")).toBeInTheDocument();
+    expect(screen.getByText("生成图表 · 已取消")).toBeInTheDocument();
+    expect(screen.getByText("分析峰位 · 未完成")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("请重新选择材料和版本后重试");
+    expect(screen.queryByText(/正在计算|已有输出/)).toBeNull();
+  });
+  it("does not label a historically rejected interpretation as ready", () => {
+    const onReinterpret = vi.fn();
+    render(<ResearchExecutionActivity onReinterpret={onReinterpret} progress={{ contract_version: "1.0", turn_id: "old", status: "COMPLETED", steps: [], active_step_ids: [], completed_step_count: 5, total_step_count: 5, incremental_outputs: [], warnings: [{ code: "INTERPRETATION_GROUNDING_REJECTED", message: "原解读未通过当前事实校验，分析结果仍可查看。" }], execution_outcome: "SUCCESS", result_projection_pending: false }} />);
+    expect(screen.queryByText("科学解释已准备")).toBeNull();
+    expect(screen.getByText("解读未能完成")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "重新解读" }));
+    expect(onReinterpret).toHaveBeenCalledOnce();
+  });
+  it("allows canceling interpretation and waits for its confirmed outcome", () => {
+    const onCancel = vi.fn();
+    const progress = { contract_version: "1.0" as const, turn_id: "interpreting", status: "INTERPRETING" as const, steps: [], active_step_ids: [], completed_step_count: 1, total_step_count: 1, incremental_outputs: [], warnings: [], execution_outcome: "SUCCESS" as const, result_projection_pending: false };
+    const { rerender } = render(<ResearchExecutionActivity progress={progress} onCancel={onCancel} />);
+    fireEvent.click(screen.getByRole("button", { name: "取消当前分析" }));
+    expect(onCancel).toHaveBeenCalledOnce();
+    rerender(<ResearchExecutionActivity progress={progress} onCancel={onCancel} cancelUnconfirmed />);
+    expect(screen.getByRole("button", { name: "等待取消确认" })).toBeDisabled();
+  });
   it("renders capability-level progress without runtime implementation identifiers", () => {
     render(<ResearchExecutionActivity progress={{
       contract_version: "1.0", turn_id: "turn-1", status: "RUNNING", plan_title: "XRD",

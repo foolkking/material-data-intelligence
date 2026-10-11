@@ -7,45 +7,67 @@ from typing import Any
 
 from mdi_api.domain.interpretation.contracts import GroundingValidationResult, ScientificInterpretationOutput, numeric_tokens
 from mdi_api.application.scientific_reasoning.assessment import ClaimSupportAssessor
+from mdi_api.application.scientific_reasoning.derived_claims import derived_product_errors
+from mdi_api.application.scientific_reasoning.follow_ups import (
+    follow_up_errors,
+    project_follow_up_suggestions,
+)
+from mdi_api.application.scientific_reasoning.units import (
+    UNIT_PATTERN as _UNIT,
+    canonical_unit as _unit_key,
+    supported_fact_units as _supported_fact_units,
+    exclude_saved_column_labels,
+    parameter_claimed_units,
+)
 from mdi_api.domain.scientific_reasoning.contracts import (
     ProposedScientificClaim,
     ReasoningEvidence,
 )
 
 
-# Keep temperature ``K`` case-sensitive: a lowercase ``k`` in labels such as
-# ``k-point`` is not a Kelvin unit and must not trigger unit grounding.
-_UNIT = re.compile(
-    r"(?<![A-Za-z0-9])(?:(?i:"
-    r"(?:Å|angstrom)(?:\^\{?2\}?|²)/(?:ps|picosecond)|"
-    r"(?:Å|angstrom)(?:\^\{?2\}?|²)|"
-    r"(?:Å|angstrom)(?:\^\{?-?3\}?|⁻³|-3)?|"
-    r"picosecond|nm|pm|eV|meV|fs|ps|%|THz|cm-?1|1/s|m\^?2/s"
-    r")|K)(?![A-Za-z0-9])"
+HISTORICAL_GROUNDING_NOTICE = "原解读未通过当前事实校验，已停止展示。分析结果仍可查看；可重新解读或编辑问题后重试。"
+
+
+# A reciprocal-space path label is not a temperature expression. Restrict
+# this disambiguation to band/DOS facts and alphabetic point-label chains;
+# standalone K and numeric temperature ranges still require Kelvin facts.
+_RECIPROCAL_PATH = re.compile(
+    r"(?<![\w])(?:[A-ZΓΔΛΣΧΩ])(?:\s*[-–—→]\s*[A-ZΓΔΛΣΧΩ])+(?![\w])"
+)
+_RECIPROCAL_POINT = re.compile(
+    r"(?<![A-Za-z0-9_])K[ \t]*(?:[-‑–—][ \t]*)?"
+    r"(?:点|(?i:points?)(?![A-Za-z0-9_]))"
 )
 
 
-def _unit_key(value: str) -> str:
-    normalized = (
-        value.strip()
-        .lower()
-        .replace("angstrom", "å")
-        .replace("⁻³", "^-3")
-        .replace("²", "^2")
-        .replace("{", "")
-        .replace("}", "")
-        .replace(" ", "")
+def exclude_reciprocal_path_labels(statement: str, referenced: list[dict[str, Any]]) -> str:
+    """Exclude explicit reciprocal labels, retaining standalone/numeric Kelvin."""
+    predicates = [str(fact.get("predicate", "")) for fact in referenced]
+    if any(predicate.startswith(("phonon.", "electronic.")) for predicate in predicates):
+        statement = _RECIPROCAL_PATH.sub(" ", statement)
+    # Explicit K-point terminology may also request missing metadata without
+    # citing any measured facts. This changes only unit tokenization; no numeric
+    # evidence is added. A preceding quantity remains ambiguous (300 K point)
+    # and must still have explicit Kelvin support.
+    return _RECIPROCAL_POINT.sub(
+        lambda match: match.group(0)
+        if re.search(r"\d\s*$", statement[:match.start()])
+        else " ",
+        statement,
     )
-    normalized = re.sub(r"^(å)-3$", r"\1^-3", normalized)
-    normalized = normalized.replace("cm-1", "cm1")
-    # This is spelling normalization only.  No scientific conversion is
-    # performed: the persisted canonical phonon unit ``terahertz`` and its
-    # standard symbol ``THz`` represent the same unit.
-    return {
-        "terahertz": "thz",
-        "ps": "picosecond",
-        "å^2/ps": "å^2/picosecond",
-    }.get(normalized, normalized)
+
+
+def exclude_diffraction_axis_labels(statement: str, referenced: list[dict[str, Any]]) -> str:
+    """The 2 in the XRD angle label 2θ is notation, not a measured quantity."""
+    if any(str(fact.get("predicate", "")).startswith(("xrd.", "diffraction.xrd.")) for fact in referenced):
+        return re.sub(r"(?i)(?<![A-Za-z0-9_.+\-])2\s*(?:θ|theta)(?![A-Za-z0-9])", "衍射角", statement)
+    return statement
+
+
+def _claim_units(statement: str, referenced: list[dict[str, Any]]) -> set[str]:
+    statement = exclude_saved_column_labels(statement, referenced)
+    statement = exclude_reciprocal_path_labels(statement, referenced)
+    return {_unit_key(item) for item in _UNIT.findall(statement)} | parameter_claimed_units(statement, referenced)
 
 
 def _number_key(token: str) -> str:
@@ -64,7 +86,7 @@ _NUMERIC_LITERAL = re.compile(
 )
 
 
-def _numeric_claim_matches_fact(token: str, fact_value: int | float) -> bool:
+def _numeric_claim_matches_fact(token: str, fact_value: int | float, *, relative_limit: Decimal = Decimal("0.01")) -> bool:
     """Accept only bounded lexical display rounding of an authoritative fact.
 
     Scientific prose commonly shortens persisted values for readability.  The
@@ -87,7 +109,7 @@ def _numeric_claim_matches_fact(token: str, fact_value: int | float) -> bool:
         exponent = int(exponent_text or "0")
         resolution = Decimal(10) ** (exponent - fraction_digits)
         difference = abs(claimed - authoritative)
-        relative_cap = max(abs(authoritative) * Decimal("0.01"), Decimal("1e-12"))
+        relative_cap = abs(authoritative) * relative_limit
         tolerance = min(abs(resolution) / Decimal(2), relative_cap)
         return difference <= tolerance
     except (InvalidOperation, ValueError, OverflowError):
@@ -273,6 +295,7 @@ class QuantitativeClaimValidator:
         errors: list[str] = []
         for finding in [*interpretation.primary_findings, *interpretation.supporting_findings]:
             referenced = _finding_fact_support(finding, bundle, facts)
+            errors.extend(derived_product_errors(finding.statement, referenced, finding.finding_id))
             supported_values = [
                 fact.get("value")
                 for fact in referenced
@@ -296,7 +319,7 @@ class QuantitativeClaimValidator:
                         _number_key(token)
                         for token in _claim_numeric_tokens(value)
                     )
-            claim_tokens = _claim_numeric_tokens(finding.statement)
+            claim_tokens = _claim_numeric_tokens(exclude_diffraction_axis_labels(finding.statement, referenced))
             unsupported_tokens = [
                 token
                 for token in claim_tokens
@@ -312,10 +335,13 @@ class QuantitativeClaimValidator:
                     f"{finding.finding_id}: quantitative claim is not supported "
                     f"by referenced facts ({unsupported})"
                 )
-            units = {_unit_key(item) for item in _UNIT.findall(finding.statement)}
-            supported_units = {_unit_key(str(fact.get("unit"))) for fact in referenced if fact.get("unit")}
-            if units and not units.issubset(supported_units):
-                errors.append(f"{finding.finding_id}: unit is absent from referenced facts")
+            units = _claim_units(finding.statement, referenced)
+            unsupported_units = units - _supported_fact_units(referenced)
+            if unsupported_units:
+                errors.append(
+                    f"{finding.finding_id}: unit is absent from referenced facts "
+                    f"({', '.join(sorted(unsupported_units))})"
+                )
         finding_numbers = {
             _number_key(token)
             for token in _claim_numeric_tokens(
@@ -462,7 +488,7 @@ def build_grounding_repair_context(
         supported_numbers = {_number_key(str(value)) for value in supported_values}
         unsupported = [
             token
-            for token in _claim_numeric_tokens(finding.statement)
+            for token in _claim_numeric_tokens(exclude_diffraction_axis_labels(finding.statement, referenced))
             if _number_key(token) not in supported_numbers
             and not any(
                 _numeric_claim_matches_fact(token, value)
@@ -479,7 +505,22 @@ def build_grounding_repair_context(
                 for item in bundle.get("result_items") or []
             )
         )
-        if unsupported or viewer_without_facts:
+        supported_units = _supported_fact_units(referenced)
+        unsupported_units = _claim_units(finding.statement, referenced) - supported_units
+        if unsupported or unsupported_units or viewer_without_facts:
+            peak_label = re.match(r"^\s*(?:峰\s*|(?i:peak\s+))(\d+)\s*[:：]", finding.statement)
+            peak_label_guidance = ""
+            if (
+                peak_label
+                and peak_label.group(1) in unsupported
+                and any(str(fact.get("predicate", "")).startswith("xrd.peak.") for fact in referenced)
+            ):
+                peak_label_guidance = (
+                    f"The added display label {peak_label.group(0).strip()!r} is not a supplied peak identity or rank. "
+                    "Remove that label and identify the peak by its cited two-theta angle. "
+                    "Do not rewrite the ordinal in words or Chinese numerals. Preserve the supported "
+                    "angle, intensity, spacing, Miller indices and their references. "
+                )
             fact_lines = [
                 f"{fact.get('fact_id')}={fact.get('value')}"
                 + (f" {fact.get('unit')}" if fact.get("unit") else "")
@@ -492,6 +533,11 @@ def build_grounding_repair_context(
                 f"result_item_refs={list(finding.result_item_refs)}; "
                 f"supported_facts={fact_lines or ['none']}; "
                 f"unsupported_numeric_tokens={unsupported or ['none']}. "
+                f"supported_units={sorted(supported_units)}; "
+                f"unsupported_units={sorted(unsupported_units)}. "
+                f"{peak_label_guidance}"
+                "Keep the exact supplied units (equivalent spellings are allowed); "
+                "do not convert units or turn relative intensity into a percentage. "
                 "Rewrite using only the listed facts/refs; for a structure "
                 "viewer Result with no facts, keep the finding qualitative "
                 "and limited to scene/display availability."
@@ -500,14 +546,52 @@ def build_grounding_repair_context(
     return list(dict.fromkeys(context))[:16]
 
 
+def _material_source_errors(interpretation: ScientificInterpretationOutput, bundle: dict[str, Any]) -> list[str]:
+    if len({str(ref.get("version_id")) for ref in bundle.get("source_object_refs", [])}) <= 1:
+        return []
+    facts, _, _ = _fact_values(bundle)
+    facts_by_label: dict[str, set[str]] = {}
+    for item in bundle.get("result_items", []):
+        for ref in item.get("scientific_object_refs", []):
+            label = str(ref.get("display_name") or "").strip()
+            if label:
+                facts_by_label.setdefault(label, set()).update(item.get("fact_refs", []))
+    # File identities named in prose are metadata, not numeric measurements.
+    # Require saved source correspondence; question/array order is no evidence.
+    file_pattern = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.-]*\.(?:cif|xyz|csv|vasp|json|cube|xdatcar)\b", re.IGNORECASE)
+    errors = []
+    for finding in [*interpretation.primary_findings, *interpretation.supporting_findings]:
+        labels = set(file_pattern.findall(finding.statement))
+        for label in labels - set(facts_by_label):
+            errors.append(f"{finding.finding_id}: source correspondence is unavailable for {label}")
+        matches = sorted((match.start(), match.end(), label)
+            for label in facts_by_label
+            for match in re.finditer(re.escape(label), finding.statement))
+        supported = {str(fact.get("fact_id")) for fact in _finding_fact_support(finding, bundle, facts)}
+        for index, (_start, end, label) in enumerate(matches):
+            exact_facts = supported & facts_by_label[label]
+            if not exact_facts:
+                errors.append(f"{finding.finding_id}: cited facts belong to another source than {label}")
+                continue
+            segment = finding.statement[end:matches[index + 1][0] if index + 1 < len(matches) else len(finding.statement)]
+            scoped = finding.model_copy(update={"statement": segment, "fact_refs": sorted(exact_facts), "evidence_refs": [], "result_item_refs": []})
+            scoped_output = interpretation.model_copy(update={"answer_lead": segment, "primary_findings": [scoped], "supporting_findings": []})
+            mismatch = QuantitativeClaimValidator().validate(scoped_output, bundle)
+            if not mismatch.valid:
+                errors.append(f"{finding.finding_id}: quantitative values do not match source {label}: {'; '.join(mismatch.errors)}")
+    return errors
+
+
 def validate_interpretation(interpretation: ScientificInterpretationOutput, result_bundle: Any) -> GroundingValidationResult:
     errors: list[str] = []
+    errors.extend(follow_up_errors(interpretation.follow_up_suggestions, result_bundle))
     refs = EvidenceReferenceValidator().validate(interpretation, result_bundle)
     errors.extend(refs.errors)
     quantities = QuantitativeClaimValidator().validate(interpretation, result_bundle)
     errors.extend(quantities.errors)
     errors.extend(_viewer_scene_without_facts_errors(interpretation, result_bundle))
     bundle = result_bundle.model_dump(mode="json") if hasattr(result_bundle, "model_dump") else dict(result_bundle)
+    errors.extend(_material_source_errors(interpretation, bundle))
     execution = str(bundle.get("execution_status", ""))
     all_text = " ".join([interpretation.answer_lead, *(item.statement for item in [*interpretation.primary_findings, *interpretation.supporting_findings])]).lower()
     if execution == "PARTIAL" and any(term in all_text for term in ("complete analysis", "all steps succeeded", "全部分析均成功", "完整分析已完成")):
@@ -805,6 +889,8 @@ def project_grounded_answer_lead(
 def project_grounded_communication(
     interpretation: ScientificInterpretationOutput,
     result_bundle: Any,
+    *,
+    project_suggestions: bool = True,
 ) -> ScientificInterpretationOutput:
     """Keep free-form communication inside the persisted Result boundary.
 
@@ -820,6 +906,10 @@ def project_grounded_communication(
         if hasattr(result_bundle, "model_dump")
         else dict(result_bundle)
     )
+    if project_suggestions:
+        suggestions = project_follow_up_suggestions(interpretation.follow_up_suggestions, bundle)
+        if suggestions != interpretation.follow_up_suggestions:
+            interpretation = interpretation.model_copy(update={"follow_up_suggestions": suggestions})
     primary_findings = [
         item.model_copy(
             update={
@@ -827,7 +917,8 @@ def project_grounded_communication(
                     _without_reference_echo(
                         item.statement,
                         [*item.fact_refs, *item.evidence_refs, *item.result_item_refs],
-                    )
+                    ),
+                    figure_types=[str(figure.get("figure_type") or "") for figure in bundle.get("figures", [])],
                 )
             }
         )
@@ -840,12 +931,39 @@ def project_grounded_communication(
                     _without_reference_echo(
                         item.statement,
                         [*item.fact_refs, *item.evidence_refs, *item.result_item_refs],
-                    )
+                    ),
+                    figure_types=[str(figure.get("figure_type") or "") for figure in bundle.get("figures", [])],
                 )
             }
         )
         for item in interpretation.supporting_findings
     ]
+    # Selection-specific facts were bound to the exact executed source by the
+    # projector. Prioritize findings citing them without rewriting statements
+    # or promoting general context into an answer about the selected point.
+    selected_priorities = {
+        "structure.selected_base_cartesian_x": 0,
+        "structure.selected_base_cartesian_y": 0,
+        "structure.selected_base_cartesian_z": 0,
+        "structure.selected_base_fractional_x": 0,
+        "structure.selected_base_fractional_y": 0,
+        "structure.selected_base_fractional_z": 0,
+        "structure.selected_site_index": 1,
+        "structure.selected_element": 1,
+        "trajectory.selected_atom_source_x": 0,
+        "trajectory.selected_atom_source_y": 0,
+        "trajectory.selected_atom_source_z": 0,
+        "trajectory.selected_frame_time": 1,
+        "trajectory.selected_frame_number": 1,
+        "trajectory.selected_atom_number": 2,
+        "trajectory.selected_atom_species": 2,
+    }
+    priorities = {
+        str(fact.get("fact_id")): selected_priorities[str(fact.get("predicate"))]
+        for fact in bundle.get("facts", [])
+        if isinstance(fact, dict) and fact.get("predicate") in selected_priorities
+    }
+    primary_findings.sort(key=lambda item: min((priorities.get(ref, 3) for ref in item.fact_refs), default=3))
     findings = [*primary_findings, *supporting_findings]
     if not findings:
         return interpretation
@@ -934,7 +1052,7 @@ _METHOD_VERSION = re.compile(
 )
 
 
-def _sanitize_grounded_statement(statement: str) -> str:
+def _sanitize_grounded_statement(statement: str, *, figure_types: list[str] | None = None) -> str:
     """Remove opaque execution metadata from scientific presentation prose.
 
     Provider text may echo source-version UUIDs or internal method identifiers.
@@ -949,6 +1067,11 @@ def _sanitize_grounded_statement(statement: str) -> str:
     rendered = _OPAQUE_REFERENCE.sub("", rendered)
     rendered = _METHOD_IDENTIFIER.sub("the recorded method", rendered)
     rendered = _METHOD_VERSION.sub("the recorded method version", rendered)
+    for figure_type in figure_types or []:
+        if figure_type:
+            # Remove only the exact saved type echoed as a redundant label.
+            # Scientific qualifiers in the same parentheses remain verbatim.
+            rendered = re.sub(rf"\s*[（(]\s*figure_type\s*[:：=]\s*{re.escape(figure_type)}\s*[）)]", "", rendered)
     return " ".join(rendered.split()).strip()
 
 

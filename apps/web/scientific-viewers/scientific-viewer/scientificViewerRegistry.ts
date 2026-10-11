@@ -31,7 +31,7 @@ const VIEWERS: readonly ScientificViewerDescriptor[] = Object.freeze([
   descriptor("electronic.band_structure", "band-structure", ["zoom", "inspect_k_path", "inspect_energy"], ["BAND_POINT", "BAND_SEGMENT"], 16 * MIB),
   descriptor("electronic.dos", "density-of-states", ["zoom", "inspect_series", "inspect_energy"], ["DOS_SERIES", "ENERGY_INTERVAL"], 16 * MIB),
   descriptor("phonon.band_structure", "phonon-band", ["zoom", "inspect_q_path"], ["PHONON_Q_POINT", "PHONON_BRANCH"], 16 * MIB),
-  descriptor("phonon.dos", "phonon-dos", ["zoom", "inspect_series"], ["PHONON_BRANCH", "ENERGY_INTERVAL"], 16 * MIB),
+  descriptor("phonon.dos", "phonon-dos", ["zoom", "inspect_series"], ["PHONON_DOS_POINT", "PHONON_BRANCH", "ENERGY_INTERVAL"], 16 * MIB),
   descriptor("reciprocal.brillouin_zone", "brillouin-zone", ["rotate", "zoom", "inspect_path"], ["RECIPROCAL_POINT", "PATH_SEGMENT"], 8 * MIB),
   descriptor("volumetric.field", "volumetric", ["isosurface", "slice", "inspect_field"], ["VOLUMETRIC_REGION"], 16 * MIB),
   descriptor("volumetric.charge_density", "volumetric", ["isosurface", "slice", "inspect_field"], ["VOLUMETRIC_REGION"], 16 * MIB),

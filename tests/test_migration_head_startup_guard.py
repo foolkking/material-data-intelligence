@@ -56,7 +56,7 @@ def test_same_stack_runtime_rejects_stale_database_before_admission(
         match=(
             "DATABASE_MIGRATION_HEAD_MISMATCH"
             r"\(current=0030_account_invitations, "
-            r"expected=0035_job_execution_leases\)"
+            r"expected=0038_user_model_connections\)"
         ),
     ):
         validate_database_migration_head(

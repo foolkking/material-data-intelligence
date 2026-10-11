@@ -1,12 +1,24 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from typing import Any, Callable
 from uuid import NAMESPACE_URL, UUID, uuid5
 
 from mdi_api.agent2_errors import ScientificResultProjectionFailed
+from mdi_api.application.scientific_results.figure_titles import scientific_figure_title, scientific_table_title
 from mdi_api.application.scientific_results.projectors.base import ScientificResultProjection, ScientificResultProjectionContext
 from mdi_api.application.scientific_results.projectors.artifact_payloads import validate_production_payload
+from mdi_api.application.scientific_results.projectors.trajectory import trajectory_view_facts
+from mdi_api.application.scientific_results.projectors.phonon import phonon_band_facts
+from mdi_api.application.scientific_results.projectors.electronic import electronic_selection_facts
+from mdi_api.application.scientific_results.projectors.volumetric import volumetric_selection_facts, volumetric_field_limitations
+from mdi_api.application.scientific_results.projectors.structure import structure_selection_facts
+from mdi_api.application.scientific_results.projectors.table_analysis import valid_table_output, table_facts, table_warnings
+from mdi_api.application.scientific_results.projectors.coordination import (
+    COORDINATION_PROJECTORS, N2_SCHEMA, coordination_facts, coordination_warnings,
+    valid_coordination_payload, validate_local_environment_dependency,
+)
 from mdi_api.domain.scientific_results.contracts import (
     EvidenceItem,
     FactSourceLocator,
@@ -79,6 +91,8 @@ class ProjectorContract:
     facts: tuple[FactDeclaration, ...] = ()
     fact_builder: Callable[[dict[str, Any], dict[str, Any]], list[ScientificFact]] | None = None
     limitations: tuple[tuple[str, str], ...] = ()
+    version: str = "1.1"
+    primary_as_table: bool = True
 
 
 def _fact(
@@ -104,6 +118,39 @@ def _fact(
         unit=unit,
         source=FactSourceLocator(artifact_id=artifact_id, artifact_locator=declaration.pointer),
     )
+
+
+def _xrd_peak_facts(artifact: dict[str, Any], payload: dict[str, Any]) -> list[ScientificFact]:
+    """Expose at most five strongest retained peaks, with original JSON locators."""
+    peaks = payload.get("pattern", {}).get("peaks", [])
+    def finite(value: Any) -> bool:
+        return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+    candidates = [(index, peak) for index, peak in enumerate(peaks)
+                  if isinstance(peak, dict) and all(finite(peak.get(key)) for key in
+                      ("intensity", "two_theta_deg", "d_spacing_angstrom"))]
+    candidates.sort(key=lambda item: (-item[1]["intensity"], item[0]))
+    facts = []
+    for index, peak in candidates[:5]:
+        base = f"/pattern/peaks/{index}"
+        declarations = [
+            FactDeclaration("xrd.peak.two_theta", f"{base}/two_theta_deg", "degree"),
+            FactDeclaration("xrd.peak.intensity", f"{base}/intensity"),
+            FactDeclaration("xrd.peak.d_spacing", f"{base}/d_spacing_angstrom", "angstrom"),
+            FactDeclaration("xrd.peak.structure", f"{base}/structureId"),
+        ]
+        # Keep each saved Miller-family component distinct; never invent absent indices.
+        hkls = peak.get("hkls", [])
+        for family_index, family in enumerate(hkls[:4] if isinstance(hkls, list) else []):
+            hkl = family.get("hkl") if isinstance(family, dict) else None
+            if not isinstance(hkl, list) or len(hkl) not in (3, 4) or not all(type(v) is int for v in hkl):
+                continue
+            for axis in range(len(hkl)):
+                declarations.append(FactDeclaration(f"xrd.peak.hkl_{family_index}.component_{axis}", f"{base}/hkls/{family_index}/hkl/{axis}"))
+        for declaration in declarations:
+            fact = _fact(artifact, payload, declaration)
+            if fact:
+                facts.append(fact.model_copy(update={"subject_ref": f"{_artifact_id(artifact)}:retained-peak-{index}"}))
+    return facts
 
 
 def _ml_facts(artifact: dict[str, Any], payload: dict[str, Any]) -> list[ScientificFact]:
@@ -136,6 +183,13 @@ def _ml_facts(artifact: dict[str, Any], payload: dict[str, Any]) -> list[Scienti
 
     for index, evaluation in enumerate(payload.get("evaluations") or []):
         unit = evaluation.get("unit")
+        metrics = evaluation.get("metrics") or {}
+        status = metrics.get("r2Status")
+        if ((status == "undefined_constant_target" and metrics.get("r2") is None)
+                or (status == "defined" and type(metrics.get("r2")) in (int, float) and math.isfinite(metrics["r2"]))):
+            status_fact = _fact(artifact, payload, FactDeclaration("ml.r2_status", f"/evaluations/{index}/metrics/r2Status"))
+            if status_fact is not None:
+                result.append(status_fact)
         for key, predicate in (
             ("sampleCount", "ml.sample_count"),
             ("mae", "ml.mae"),
@@ -335,7 +389,7 @@ def _volumetric_facts(artifact: dict[str, Any], payload: dict[str, Any]) -> list
     artifact_id = _artifact_id(artifact)
 
     def add(value: Any, *, predicate: str, pointer: str, unit: str | None = None) -> None:
-        if value is None or isinstance(value, (dict, list, bool)):
+        if value is None or isinstance(value, (dict, list)) or (isinstance(value, bool) and predicate != "volumetric.unit_conversion_applied"):
             return
         result.append(
             ScientificFact(
@@ -348,12 +402,49 @@ def _volumetric_facts(artifact: dict[str, Any], payload: dict[str, Any]) -> list
             )
         )
 
+    if _schema(payload) == "phase10j.volumetric_dataset.v1":
+        grid = payload["grid"]
+        for key in ("length_unit", "coordinate_space", "sample_location", "endpoint_policy"):
+            add(grid.get(key), predicate=f"volumetric.{key}", pointer=f"/grid/{key}")
+        for index, axis in enumerate("abc"):
+            add(grid["shape"][index], predicate=f"volumetric.grid_size_{axis}", pointer=f"/grid/shape/{index}")
+            add(grid["boundary_conditions"][index], predicate=f"volumetric.boundary_{axis}", pointer=f"/grid/boundary_conditions/{index}")
+        return result
+
     add(payload.get("field_name"), predicate="volumetric.field_name", pointer="/field_name")
     add(payload.get("quantity"), predicate="volumetric.quantity", pointer="/quantity")
     add(payload.get("value_kind"), predicate="volumetric.value_kind", pointer="/value_kind")
     unit = (payload.get("unit") or {}).get("canonical_unit")
     add(unit, predicate="volumetric.canonical_unit", pointer="/unit/canonical_unit")
+    semantics = payload.get("integral_semantics")
+    add(semantics, predicate="volumetric.integral_semantics", pointer="/integral_semantics")
+    add(payload.get("normalization_semantics"), predicate="volumetric.normalization_semantics", pointer="/normalization_semantics")
+    # Integral normalization and unit conversion are separate saved contracts.
+    # Equal unit labels do not prove that source values were left unchanged.
+    for key, predicate in (
+        ("source_unit", "volumetric.source_unit"),
+        ("conversion_applied", "volumetric.unit_conversion_applied"),
+        ("conversion_factor", "volumetric.unit_conversion_factor"),
+    ):
+        add((payload.get("unit") or {}).get(key), predicate=predicate, pointer=f"/unit/{key}")
+    add((payload.get("statistics") or {}).get("authority"), predicate="volumetric.statistics_authority", pointer="/statistics/authority")
+    # Report only the stored integral with an explicitly compatible physical
+    # meaning. A potential/ELF integral is not an electron count or a mean.
+    integral_unit = {
+        ("electron_count", "electron/angstrom^3"): "electron",
+        ("elementary_charge", "elementary_charge/angstrom^3"): "elementary_charge",
+        ("magnetic_moment", "bohr_magneton/angstrom^3"): "bohr_magneton",
+    }.get((semantics, unit))
+    potential_unit = unit if payload.get("quantity") in {"local_potential", "electrostatic_potential"} and unit in {
+        "electronvolt", "volt", "hartree", "hartree/elementary_charge",
+    } else None
+    if potential_unit:
+        for key, predicate in (("kind", "volumetric.potential_reference"), ("shift_amount", "volumetric.potential_shift")):
+            add((payload.get("potential_reference") or {}).get(key), predicate=predicate,
+                pointer=f"/potential_reference/{key}", unit=unit if key == "shift_amount" else None)
     for index, component in enumerate((payload.get("statistics") or {}).get("stored_components") or []):
+        add(component.get("mean"), predicate="volumetric.mean",
+            pointer=f"/statistics/stored_components/{index}/mean", unit=unit)
         add(
             component.get("minimum"),
             predicate="volumetric.minimum",
@@ -366,6 +457,17 @@ def _volumetric_facts(artifact: dict[str, Any], payload: dict[str, Any]) -> list
             pointer=f"/statistics/stored_components/{index}/maximum",
             unit=unit,
         )
+        if integral_unit is not None:
+            add(component.get("integral"), predicate="volumetric.integral",
+                pointer=f"/statistics/stored_components/{index}/integral", unit=integral_unit)
+        elif potential_unit:
+            # The stored statistic is sum(value * voxel_volume), even when
+            # the source declares cell_average semantics. Never label it a mean.
+            add(component.get("integral"), predicate="volumetric.volume_integral",
+                pointer=f"/statistics/stored_components/{index}/integral", unit=f"{potential_unit}*angstrom^3")
+        elif payload.get("quantity") == "electron_localization_function" and unit == "dimensionless" and semantics == "not_physically_interpreted":
+            add(component.get("integral"), predicate="volumetric.volume_integral",
+                pointer=f"/statistics/stored_components/{index}/integral", unit="angstrom^3")
     return result
 
 
@@ -439,26 +541,39 @@ def _ml_classification_facts(artifact: dict[str, Any], payload: dict[str, Any]) 
 def _trajectory_msd_facts(
     artifact: dict[str, Any], payload: dict[str, Any]
 ) -> list[ScientificFact]:
-    """Expose only the exact lag boundaries needed by downstream science.
-
-    The full MSD series remains committed Artifact data.  These two bounded
-    scalar facts let later durable decisions select an explicit fit interval
-    without loading raw Artifact bytes or inventing a physical-time window.
-    """
+    """Expose saved endpoints and origin coverage, never fit or summarize a curve."""
 
     lag_times = payload.get("lagTimesPs")
     if not isinstance(lag_times, list) or not lag_times:
         return []
+    def numeric_series(value: Any) -> bool:
+        return isinstance(value, list) and len(value) == len(lag_times) and all(
+            isinstance(item, (int, float)) and not isinstance(item, bool) and math.isfinite(item)
+            for item in value
+        )
+    direction = payload.get("directionalMsdAngstrom2", {})
+    series = [lag_times, payload.get("totalMsdAngstrom2")]
+    series.extend(direction[axis] for axis in "xyz" if isinstance(direction, dict) and axis in direction)
+    if "originCounts" in payload:
+        series.append(payload["originCounts"])
+    if not all(numeric_series(values) for values in series):
+        raise ScientificResultProjectionFailed("MSD arrays must retain finite, aligned saved coordinates")
     last_index = len(lag_times) - 1
     facts: list[ScientificFact] = []
-    for predicate, pointer in (
-        ("trajectory.msd_first_lag_time", "/lagTimesPs/0"),
-        ("trajectory.msd_last_lag_time", f"/lagTimesPs/{last_index}"),
-    ):
+    declarations = []
+    for boundary, index in (("first", 0), ("last", last_index)):
+        declarations.extend([
+            FactDeclaration(f"trajectory.msd_{boundary}_lag_time", f"/lagTimesPs/{index}", "picosecond"),
+            FactDeclaration(f"trajectory.msd_{boundary}_total", f"/totalMsdAngstrom2/{index}", "angstrom^2"),
+            FactDeclaration(f"trajectory.msd_{boundary}_origin_count", f"/originCounts/{index}", "count"),
+        ])
+        for axis in "xyz":
+            declarations.append(FactDeclaration(f"trajectory.msd_{boundary}_{axis}", f"/directionalMsdAngstrom2/{axis}/{index}", "angstrom^2"))
+    for declaration in declarations:
         fact = _fact(
             artifact,
             payload,
-            FactDeclaration(predicate, pointer, "picosecond"),
+            declaration,
         )
         if fact is not None:
             facts.append(fact)
@@ -552,8 +667,12 @@ def _project(context: ScientificResultProjectionContext, contract: ProjectorCont
         if isinstance(payload, dict) and schema in accepted:
             try:
                 validate_production_payload(str(schema), payload)
+                if schema == N2_SCHEMA and not valid_coordination_payload(payload):
+                    raise ValueError("Invalid saved local-environment geometry")
             except ValueError:
                 continue
+            if schema == N2_SCHEMA:
+                validate_local_environment_dependency(context, artifact, payload)
             recognized.append((artifact, payload, str(schema)))
             continue
         call = calls_by_id.get(
@@ -563,6 +682,11 @@ def _project(context: ScientificResultProjectionContext, contract: ProjectorCont
             (call or {}).get("toolId") or (call or {}).get("tool_id") or ""
         )
         if isinstance(payload, dict) and tool_id in accepted_tool_ids:
+            if contract.projector_id == "agent2.data.table_analysis":
+                if str((call or {}).get("state") or (call or {}).get("status") or "").lower() != "completed":
+                    continue
+                if not valid_table_output(tool_id, str(artifact.get("type") or ""), payload):
+                    continue
             recognized.append((artifact, payload, f"tool:{tool_id}"))
 
     primary = [
@@ -595,6 +719,8 @@ def _project(context: ScientificResultProjectionContext, contract: ProjectorCont
             item[2].removeprefix("tool:")
             for item in recognized
             if item[2].startswith("tool:")
+            and not (contract.projector_id == "agent2.data.table_analysis"
+                     and item[2] == "tool:viz.correlation" and item[0].get("type") != "table_json")
         }
         missing_tools = [
             tool_id
@@ -611,10 +737,25 @@ def _project(context: ScientificResultProjectionContext, contract: ProjectorCont
             )
 
     facts: list[ScientificFact] = []
+    if contract.projector_id == "agent2.data.table_analysis":
+        # Put coefficient/name groups before repetitive descriptive statistics.
+        primary.sort(key=lambda item: item[2] != "tool:viz.correlation")
     for artifact, payload, _schema_name in primary:
         facts.extend(filter(None, (_fact(artifact, payload, declaration) for declaration in contract.facts)))
         if contract.fact_builder is not None:
             facts.extend(contract.fact_builder(artifact, payload))
+        if contract.projector_id in COORDINATION_PROJECTORS:
+            facts.extend(coordination_facts(context, artifact, payload))
+        if contract.projector_id == "agent2.structure.viewer_scene":
+            facts.extend(structure_selection_facts(context, artifact, payload))
+        if contract.projector_id == "agent2.trajectory.viewer_scene" and _schema_name == TRAJECTORY_SCHEMA_VERSION:
+            facts.extend(trajectory_view_facts(context, artifact, payload))
+        if contract.projector_id == "agent2.phonon.band" and _schema_name == "phase10h.phonon_band.v1":
+            facts.extend(phonon_band_facts(context, artifact, payload))
+        if contract.projector_id == "agent2.volumetric.data" and _schema_name == "phase10j.volumetric_dataset.v1":
+            facts.extend(volumetric_selection_facts(context, artifact, payload))
+        if contract.projector_id in {"agent2.electronic.band_structure", "agent2.electronic.dos"}:
+            facts.extend(electronic_selection_facts(context, artifact, payload))
 
     artifact_ids = [_artifact_id(item[0]) for item in recognized]
     evidence = [
@@ -627,12 +768,17 @@ def _project(context: ScientificResultProjectionContext, contract: ProjectorCont
         )
         for artifact, _payload, schema_name in recognized
     ]
-    item_id = _semantic_id("result-item", context.research_turn_id, contract.projector_id)
+    scope_parts = [context.projection_scope_key] if context.projection_scope_key else []
+    item_id = _semantic_id("result-item", context.research_turn_id, contract.projector_id, *scope_parts)
+    title = contract.title
+    if context.projection_scope_key:
+        source_names = [ref.display_name or f"{ref.object_type} · {str(ref.version_id)[:8]}" for ref in context.source_object_refs]
+        title = f"{contract.title} · {', '.join(source_names)}"[:512]
     item = ScientificResultItem(
         id=item_id,
         result_type=contract.result_type,
         role=ScientificResultRole.PRIMARY,
-        title=contract.title,
+        title=title,
         artifact_ids=artifact_ids,
         scientific_object_refs=list(context.source_object_refs),
         fact_refs=[fact.fact_id for fact in facts],
@@ -642,14 +788,29 @@ def _project(context: ScientificResultProjectionContext, contract: ProjectorCont
         source.supports_fact_refs = [fact.fact_id for fact in facts if fact.source.artifact_id == source.artifact_id]
         source.supports_result_item_refs = [item_id]
 
+    def figure_facts(artifact: dict[str, Any]) -> list[str]:
+        if contract.projector_id != "agent2.data.table_analysis":
+            return []
+        ids = {_artifact_id(artifact)}
+        if contract.projector_id == "agent2.data.table_analysis":
+            call_id = artifact.get("toolCallId") or artifact.get("tool_call_id")
+            if call_id:
+                ids.update(_artifact_id(item) for item, _, _ in recognized
+                           if (item.get("toolCallId") or item.get("tool_call_id")) == call_id)
+        return [fact.fact_id for fact in facts if fact.source.artifact_id in ids]
+
     figures = [
         ScientificFigure(
             figure_id=_semantic_id("figure", _artifact_id(artifact), schema_name),
             figure_type=contract.result_type,
             role=ScientificResultRole.PRIMARY,
-            title=contract.title,
+            title=scientific_figure_title(
+                title, [_artifact_id(artifact)], artifacts=context.artifacts,
+                calls=context.tool_calls, job_id=str(context.execution_summary.get("job_id") or ""),
+                project_id=context.project_id,
+            ),
             artifact_ids=[_artifact_id(artifact)],
-            fact_refs=[],
+            fact_refs=figure_facts(artifact),
             evidence_refs=[_semantic_id("evidence", _artifact_id(artifact), schema_name)],
         )
         for artifact, _payload, schema_name in recognized
@@ -667,15 +828,19 @@ def _project(context: ScientificResultProjectionContext, contract: ProjectorCont
             table_id=_semantic_id("table", _artifact_id(artifact), schema_name),
             table_type=contract.result_type,
             role=ScientificResultRole.PRIMARY,
-            title=contract.title,
+            title=scientific_table_title(
+                title, [_artifact_id(artifact)], artifacts=context.artifacts,
+                calls=context.tool_calls, job_id=str(context.execution_summary.get("job_id") or ""),
+                project_id=context.project_id,
+            ),
             artifact_ids=[_artifact_id(artifact)],
             fact_refs=[fact.fact_id for fact in facts if fact.source.artifact_id == _artifact_id(artifact)],
             evidence_refs=[_semantic_id("evidence", _artifact_id(artifact), schema_name)],
         )
         for artifact, _payload, schema_name in recognized
-        if (
+        if contract.projector_id != "agent2.structure.viewer_scene" and (
             schema_name in contract.table_schemas
-            or schema_name in contract.primary_schemas
+            or (contract.primary_as_table and schema_name in contract.primary_schemas)
             or (
                 schema_name.startswith("tool:")
                 and str(artifact.get("type") or "")
@@ -703,7 +868,7 @@ def _project(context: ScientificResultProjectionContext, contract: ProjectorCont
                 capability_id=str(step.get("capability_id") or contract.projector_id.removeprefix("agent2.")),
                 capability_version=str(step.get("capability_version") or "1.0"),
                 tool_id=str(call.get("toolId") or call.get("tool_id") or "") or None,
-                parameters=dict(call.get("paramsJson") or call.get("params_json") or {}),
+                parameters=dict(call.get("paramsJson") or call.get("params_json") or call.get("params") or {}),
                 source_object_refs=list(context.source_object_refs),
             )
         )
@@ -718,6 +883,9 @@ def _project(context: ScientificResultProjectionContext, contract: ProjectorCont
         for code, message in contract.limitations
     ]
     for artifact, payload, _schema_name in primary:
+        if contract.projector_id == "agent2.volumetric.data":
+            existing_codes = {item.code for item in limitations}
+            limitations.extend(item for item in volumetric_field_limitations(_artifact_id(artifact), payload) if item.code not in existing_codes)
         for index, message in enumerate(payload.get("limitations") or []):
             limitations.append(
                 ScientificLimitation(
@@ -729,6 +897,12 @@ def _project(context: ScientificResultProjectionContext, contract: ProjectorCont
             )
 
     warnings: list[ScientificWarning] = []
+    if contract.projector_id == "agent2.data.table_analysis":
+        for artifact, payload, _ in primary:
+            warnings.extend(table_warnings(_artifact_id(artifact), payload))
+    if contract.projector_id in COORDINATION_PROJECTORS:
+        for artifact, payload, _ in primary:
+            warnings.extend(coordination_warnings(context, artifact, payload))
     outcome = str(context.execution_summary.get("execution_outcome") or context.execution_summary.get("outcome") or "SUCCESS")
     if outcome == "PARTIAL":
         warnings.append(
@@ -761,7 +935,8 @@ def _project(context: ScientificResultProjectionContext, contract: ProjectorCont
         provenance=ProvenanceRecord(
             research_turn_id=UUID(str(context.research_turn_id)),
             job_id=str(context.execution_summary.get("job_id") or ""),
-            analysis_plan_id=str(context.execution_summary.get("analysis_plan_id") or ""),
+            analysis_plan_id=context.analysis_plan_id or str(context.execution_summary.get("analysis_plan_id") or "") or None,
+            capability_plan_id=context.capability_plan_id,
             execution_summary_id=str(context.execution_summary.get("id") or "") or None,
             source_object_version_ids=[ref.version_id for ref in context.source_object_refs],
             tool_call_ids=sorted(str(call.get("id")) for call in context.tool_calls),
@@ -770,7 +945,7 @@ def _project(context: ScientificResultProjectionContext, contract: ProjectorCont
         ),
         projection_version="agent2.result/1.0",
     )
-    return ScientificResultProjection(bundle=bundle, projector_id=contract.projector_id, projector_version="1.1")
+    return ScientificResultProjection(bundle=bundle, projector_id=contract.projector_id, projector_version=contract.version)
 
 
 class CanonicalScientificResultProjector:
@@ -779,6 +954,7 @@ class CanonicalScientificResultProjector:
     def __init__(self, contract: ProjectorContract) -> None:
         self.contract = contract
         self.projector_id = contract.projector_id
+        self.version = contract.version
 
     def project(self, context: ScientificResultProjectionContext) -> ScientificResultProjection:
         return _project(context, self.contract)
@@ -803,7 +979,15 @@ def _contracts() -> tuple[ProjectorContract, ...]:
         ProjectorContract(
             "agent2.diffraction.theoretical_xrd", "理论 XRD 图谱", "diffraction.xrd.theoretical",
             ("phase10e4.xrd_pattern.v1",), ("phase10e4.static_chart.v1",), (),
-            facts=(count("/pattern/peak_count", "xrd.peak_count"), FactDeclaration("xrd.wavelength", "/radiation/wavelength_angstrom", "angstrom")),
+            facts=(count("/pattern/peak_count", "xrd.peak_count"), FactDeclaration("xrd.wavelength", "/radiation/wavelength_angstrom", "angstrom"),
+                   FactDeclaration("xrd.two_theta_min", "/two_theta_range/0", "degree"),
+                   FactDeclaration("xrd.two_theta_max", "/two_theta_range/1", "degree"),
+                   FactDeclaration("xrd.intensity_scale", "/pattern/intensity_scale"),
+                   count("/limits/peak_count_before_limit", "xrd.peak_count_before_limit")),
+            fact_builder=_xrd_peak_facts, version="1.2",
+            limitations=(("XRD_THEORETICAL_ONLY", "理论 XRD 来自所提供的周期晶体结构，不是实验测量；不能据此证明物相纯度或把单个位点视为独立衍射来源。"),
+                         ("XRD_MODEL_SCOPE", "当前模型不包含峰形展宽或 Rietveld 精修；relative_100 表示每份结构的最高计算峰强度归一到 100，不能用来比较不同结构的绝对强度。"),
+                         ("XRD_RETAINED_PEAK_SCOPE", "主要峰事实仅展示已保存峰中强度最高的至多五个峰，每峰至多四组已保存晶面族；峰数量受扫描范围、强度阈值和保留上限约束。")),
         ),
         ProjectorContract(
             "agent2.diffraction.experimental_theoretical_comparison", "实验与理论 XRD 比较", "diffraction.xrd.comparison",
@@ -833,7 +1017,7 @@ def _contracts() -> tuple[ProjectorContract, ...]:
                 "ml.error_distribution",
                 "ml.outlier_table",
             ),
-            fact_builder=_ml_facts,
+            fact_builder=_ml_facts, version="1.2",
         ),
         ProjectorContract(
             "agent2.ml.uncertainty_evaluation", "材料预测不确定性", "ml.uncertainty.evaluation",
@@ -851,11 +1035,7 @@ def _contracts() -> tuple[ProjectorContract, ...]:
                 "structure.preview_metadata",
                 "structure.spacegroup_summary",
             ),
-            required_tool_ids=(
-                "structure.lattice_summary",
-                "structure.preview_metadata",
-                "structure.spacegroup_summary",
-            ),
+            version="1.1",
             fact_builder=_structure_summary_facts,
             limitations=(
                 (
@@ -866,15 +1046,14 @@ def _contracts() -> tuple[ProjectorContract, ...]:
         ),
         ProjectorContract(
             "agent2.structure.viewer_scene", "结构查看器场景", "structure.viewer_scene",
-            ("phase10f18.viewer_scene.v2", "phase10d1.viewer_scene.v1"), (), (),
+            ("phase10f18.viewer_scene.v2", "phase10d1.viewer_scene.v1"),
+            ("phase10f18.viewer_scene.v2", "phase10d1.viewer_scene.v1"), (),
+            version="1.3", primary_as_table=False,
             accepted_tool_ids=(
                 "structure.structure_3d",
                 "structure.viewer_3d",
             ),
-            required_tool_ids=(
-                "structure.structure_3d",
-                "structure.viewer_3d",
-            ),
+
         ),
         ProjectorContract(
             "agent2.trajectory.viewer_scene", "轨迹查看器产品", "trajectory.viewer",
@@ -884,6 +1063,8 @@ def _contracts() -> tuple[ProjectorContract, ...]:
                 TRAJECTORY_PARSE_REPORT_SCHEMA_VERSION,
                 TRAJECTORY_MANIFEST_SCHEMA_VERSION,
             ), (), (),
+            version="1.3",
+            primary_as_table=False,
             limitations=(
                 ("TRAJECTORY_VIEWER_INERT", "The trajectory viewer product preserves validated trajectory data and launch metadata; it does not compute MSD, diffusion, RDF, or infer dynamic bonds."),
             ),
@@ -891,8 +1072,11 @@ def _contracts() -> tuple[ProjectorContract, ...]:
         ProjectorContract(
             "agent2.trajectory.msd", "轨迹均方位移", "trajectory.msd",
             ("phase10n4.trajectory_msd.v1",), ("phase10n4.trajectory_plot.v1",), (),
+            version="1.2",
             facts=(
                 count("/coverage/frames", "trajectory.frame_count"),
+                count("/coverage/atoms", "trajectory.msd_atom_count"),
+                FactDeclaration("trajectory.msd_species", "/species"),
                 count("/trajectory/frameCount", "trajectory.source_frame_count"),
                 count("/analysisWindow/selectedFrameCount", "trajectory.analysis_frame_count"),
                 count("/analysisWindow/userFacingRange/firstFrameInclusive", "trajectory.analysis_first_frame"),
@@ -902,11 +1086,12 @@ def _contracts() -> tuple[ProjectorContract, ...]:
                 count("/coverage/validLags", "trajectory.msd_lag_count"),
             ),
             fact_builder=_trajectory_msd_facts,
-            limitations=(("MSD_SERIES_NOT_SCALAR_FACTS", "MSD series values remain referenced structured data; only exact lag-time boundaries are projected for downstream parameter authority."),),
+            limitations=(("MSD_SERIES_NOT_SCALAR_FACTS", "MSD curves remain saved structured data. Scalar facts expose only saved endpoint values and origin counts; they do not establish linearity, isotropy, or a diffusive regime."),),
         ),
         ProjectorContract(
             "agent2.trajectory.diffusion", "轨迹扩散性质", "trajectory.diffusion",
             ("phase10n4.trajectory_diffusion.v1",), ("phase10n4.trajectory_plot.v1",), (),
+            version="1.2",
             facts=(
                 FactDeclaration("trajectory.diffusion_coefficient", "/diffusionEstimate/value", "angstrom^2/picosecond"),
                 count("/trajectory/frameCount", "trajectory.source_frame_count"),
@@ -920,11 +1105,21 @@ def _contracts() -> tuple[ProjectorContract, ...]:
                 FactDeclaration("trajectory.diffusion_fit_r2", "/fit/rSquared"),
                 FactDeclaration("trajectory.diffusion_fit_rmse", "/fit/rmseAngstrom2", "angstrom^2"),
                 FactDeclaration("trajectory.diffusion_regime", "/regimeDiagnostic/status"),
+                FactDeclaration("trajectory.diffusion_minimum_duration", "/resolvedParameters/minimum_fit_duration_ps", "picosecond"),
+                count("/resolvedParameters/minimum_fit_points", "trajectory.diffusion_minimum_points"),
+                FactDeclaration("trajectory.diffusion_origin_coverage", "/regimeDiagnostic/originCoverage"),
+                FactDeclaration("trajectory.diffusion_minimum_origin_coverage", "/resolvedParameters/minimum_origin_coverage"),
+                FactDeclaration("trajectory.diffusion_minimum_r2", "/resolvedParameters/minimum_r_squared"),
+                FactDeclaration("trajectory.diffusion_alpha", "/regimeDiagnostic/alpha"),
+                FactDeclaration("trajectory.diffusion_alpha_min", "/resolvedParameters/alpha_min"),
+                FactDeclaration("trajectory.diffusion_alpha_max", "/resolvedParameters/alpha_max"),
             ),
+            limitations=(("DIFFUSION_REQUIRES_ACCEPTED_WINDOW", "Fit statistics alone do not establish diffusion. A diffusion coefficient is available only when the saved diagnostic accepts the selected window; a rejected window must not be reported as a measured diffusion coefficient."),),
         ),
         ProjectorContract(
             "agent2.phonon.band", "声子能带", "phonon.band",
-            ("phase10h.phonon_summary.v1",), ("phase10h1.phonon_band_plot.v1",), ("phase10h1.phonon_band_table.v1",),
+            ("phase10h.phonon_summary.v1", "phase10h.phonon_band.v1"), ("phase10h1.phonon_band_plot.v1",), ("phase10h1.phonon_band_table.v1",),
+            version="1.3", primary_as_table=False,
             facts=(
                 count("/branch_count", "phonon.branch_count"), count("/qpoint_count", "phonon.qpoint_count"),
                 FactDeclaration("phonon.frequency_min", "/frequency_min", "terahertz"),
@@ -1011,15 +1206,32 @@ def _contracts() -> tuple[ProjectorContract, ...]:
                 ),
             ),
         ),
+        *(
+            ProjectorContract(
+                f"agent2.structure.local_environment_{method}", f"{label} 配位多面体", "structure.local_environment.polyhedra",
+                (source_schema, N2_SCHEMA), (N2_SCHEMA,), (),
+                required_primary_schemas=(source_schema, N2_SCHEMA), primary_as_table=False,
+                limitations=(("LOCAL_ENVIRONMENT_GEOMETRY_ONLY", "配位多面体使用已保存的算法近邻；几何分类和连接不代表确定的化学键、氧化态或结构稳定性。"),),
+                version="1.0",
+            )
+            for method, label, source_schema in (
+                ("crystalnn", "CrystalNN", "phase10n1.crystalnn_coordination.v1"),
+                ("voronoi", "VoronoiNN", "phase10n1.voronoinn_coordination.v1"),
+            )
+        ),
         ProjectorContract(
             "agent2.structure.coordination_crystalnn", "CrystalNN 局域配位", "structure.coordination.crystalnn",
             ("phase10n1.crystalnn_coordination.v1",), (), (),
             facts=(FactDeclaration("structure.coordination_successful_sites", "/coverage/successfulSites", "count"),),
+            version="1.2",
+            limitations=(("COORDINATION_GEOMETRY_ONLY", "配位数与近邻取决于所用算法及参数，不能据此认定化学键或结构稳定性。"),),
         ),
         ProjectorContract(
             "agent2.structure.coordination_voronoinn", "VoronoiNN 局域配位", "structure.coordination.voronoi",
             ("phase10n1.voronoinn_coordination.v1",), (), (),
             facts=(FactDeclaration("structure.coordination_successful_sites", "/coverage/successfulSites", "count"),),
+            version="1.2",
+            limitations=(("COORDINATION_GEOMETRY_ONLY", "配位数与近邻取决于所用算法及参数，不能据此认定化学键或结构稳定性。"),),
         ),
         ProjectorContract(
             "agent2.trajectory.rdf", "轨迹径向分布函数", "trajectory.rdf",
@@ -1042,13 +1254,13 @@ def _contracts() -> tuple[ProjectorContract, ...]:
         ),
         ProjectorContract(
             "agent2.electronic.band_structure", "电子能带", "electronic.band_structure",
-            ("phase10n5.electronic_band_structure.v1",), ("phase10n5.electronic_band_plot.v1",), (),
+            ("phase10n5.electronic_band_structure.v1",), ("phase10n5.electronic_band_plot.v1",), (), version="1.2",
             facts=(FactDeclaration("electronic.band_gap", "/gap/valueEv", "eV"), FactDeclaration("electronic.kpoint_count", "/coverage/kpointCount", "count")),
             limitations=(("ELECTRONIC_DATA_SUPPLIED", "Band values are supplied electronic data; no DFT/GW calculation or interpolation is executed."),),
         ),
         ProjectorContract(
             "agent2.electronic.dos", "电子态密度", "electronic.dos",
-            ("phase10n5.electronic_dos.v1",), ("phase10n5.electronic_dos_plot.v1",), (),
+            ("phase10n5.electronic_dos.v1",), ("phase10n5.electronic_dos_plot.v1",), (), version="1.2",
             facts=(FactDeclaration("electronic.energy_point_count", "/coverage/energyPointCount", "count"),),
             limitations=(("ELECTRONIC_DATA_SUPPLIED", "DOS values are supplied electronic data; no new electronic calculation is executed."),),
         ),
@@ -1114,6 +1326,8 @@ def _contracts() -> tuple[ProjectorContract, ...]:
             (),
             (),
             (),
+            fact_builder=table_facts,
+            version="1.6",
             accepted_tool_ids=(
                 "table.distribution_summary",
                 "table.numeric_summary",
@@ -1137,9 +1351,11 @@ def _contracts() -> tuple[ProjectorContract, ...]:
         ),
         ProjectorContract(
             "agent2.volumetric.data", "体数据字段", "volumetric.field",
-            ("phase10j.volumetric_field.v1",), (), (),
+            ("phase10j.volumetric_field.v1", "phase10j.volumetric_dataset.v1"), (), (),
             fact_builder=_volumetric_facts,
-            limitations=(("VOLUMETRIC_METADATA_ONLY", "The result preserves validated volumetric metadata and does not claim renderer or arbitrary slice computation authority."),),
+            version="1.9",
+            primary_as_table=False,
+            limitations=(("VOLUMETRIC_SAVED_FIELD_ONLY", "Conclusions are limited to the saved volumetric field and statistics; rendered surfaces and slices do not independently establish physical properties."),),
         ),
     )
 

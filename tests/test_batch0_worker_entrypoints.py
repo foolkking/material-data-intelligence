@@ -69,7 +69,10 @@ def test_frozen_worker_queue_and_handler_contracts_resolve() -> None:
             ("turn_id",),
             ("job_id",),
             ("generation_id",),
+            ("generation_id", "expected_attempt"),
         }
+        if "expected_attempt" in inspect.signature(handler).parameters:
+            assert inspect.signature(handler).parameters["expected_attempt"].default is None
 
 
 def test_application_entrypoints_do_not_import_worker_transport_or_concrete_composition() -> None:
@@ -341,11 +344,12 @@ class _ReportGenerationRepository:
     def get(self, _identifier: UUID) -> dict:
         return self.generation
 
-    def claim(self, _identifier: UUID) -> dict | None:
+    def claim(self, _identifier: UUID, **_kwargs) -> dict | None:
         return self.claimed
 
-    def set_status(self, identifier: UUID, status: str, **kwargs) -> None:
+    def compare_status(self, identifier: UUID, status: str, **kwargs) -> dict:
         self.status_calls.append((identifier, status, kwargs))
+        return {**self.generation, "status": status}
 
 
 class _ReportUnit:
@@ -383,6 +387,8 @@ class _ReportGenerator:
         turn_id: UUID,
         *,
         created_by: str = "user_local",
+        generation_id: UUID | None = None,
+        expected_attempt: int | None = None,
     ) -> dict[str, str]:
         self.calls.append((turn_id, created_by))
         if self.error is not None:
@@ -392,7 +398,8 @@ class _ReportGenerator:
 
 def _report_generation() -> dict:
     return {
-        "status": "QUEUED",
+        "status": "COMPOSING",
+        "attempt_count": 1,
         "research_turn_id": uuid4(),
         "requested_by": "user-1",
     }
@@ -421,7 +428,7 @@ def test_report_entrypoint_preserves_claim_generate_ready_lifecycle() -> None:
     assert generator.calls == [
         (generation["research_turn_id"], generation["requested_by"])
     ]
-    assert generations.status_calls == [(generation_id, "READY", {})]
+    assert generations.status_calls == [(generation_id, "READY", {"expected_status": "COMPOSING", "expected_attempt": 1})]
 
 
 @pytest.mark.parametrize(

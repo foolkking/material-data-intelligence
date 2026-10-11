@@ -4,6 +4,27 @@ import { describe, expect, it } from "vitest";
 import { validateVolumetricArtifacts } from "./volumetricValidation";
 
 describe("Phase 10J-2 volumetric compatibility gate", () => {
+  it("accepts identical payloads under separate filenames while retaining both fields", () => {
+    const dataset = structuredClone(fixture.raw_dataset);
+    dataset.payloads.push({...dataset.payloads[0], artifact_name: "same-values.f64"});
+    dataset.fields.push({...dataset.fields[0], field_id: "field:z", field_name: "second channel"});
+    dataset.fields.sort((a, b) => a.field_id.localeCompare(b.field_id));
+    const result = validateVolumetricArtifacts(dataset, fixture.manifest);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.bundle.fields).toHaveLength(2);
+    dataset.payloads[1].storage_sha256 = "b".repeat(64);
+    expect(validateVolumetricArtifacts(dataset, fixture.manifest)).toMatchObject({ok: false, errors: expect.arrayContaining(["VOLUME_PAYLOAD_IDENTITY_CONFLICT"])});
+  });
+
+  it("rejects conflicting inline numbers sharing a claimed payload identity", () => {
+    const original = structuredClone(fixture.raw_dataset);
+    const payload = {...original.payloads[0], encoding: "inline_json", artifact_name: null, inline_values: Array<number>(64).fill(2)};
+    const dataset = {...original, payloads: [payload, {...payload, inline_values: [1, ...Array<number>(63).fill(2)]}]};
+    dataset.fields.push({...dataset.fields[0], field_id: "field:z", field_name: "second channel"});
+    dataset.fields.sort((a, b) => a.field_id.localeCompare(b.field_id));
+    expect(validateVolumetricArtifacts(dataset, fixture.manifest)).toMatchObject({ok: false, errors: expect.arrayContaining(["VOLUME_PAYLOAD_IDENTITY_CONFLICT"])});
+  });
+
   it("maps the canonical Phase 10J dataset and manifest immutably", () => {
     const result=validateVolumetricArtifacts(fixture.raw_dataset,fixture.manifest);
     expect(result.ok).toBe(true);

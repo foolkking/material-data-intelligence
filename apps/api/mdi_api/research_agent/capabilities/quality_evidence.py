@@ -298,9 +298,12 @@ def _evidence(
         "UNKNOWN",
     ],
     links: list[ScientificEvidenceLink],
+    *,
+    capability_version: str = "1.0",
 ) -> CapabilityQualityEvidence:
     return CapabilityQualityEvidence(
         capability_id=capability_id,
+        capability_version=capability_version,
         qualification_level=level,
         qualified_contract_fingerprint=contract_fingerprint,
         applicability_domains=applicability,
@@ -322,9 +325,10 @@ def _evidence(
 # These fingerprints are intentionally frozen to the qualified scientific
 # contracts.  The quality validator reports STALE_QUALIFICATION when a
 # Capability's scientific contract changes without corresponding evidence
-# review.  They bind evidence to scientific semantics while excluding Tool,
-# Viewer and projector implementation bindings, which have their own registry
-# validation and provenance.
+# review. They include the version and Tool/Viewer/projector bindings, while
+# excluding the qualification record itself. Structure contracts 1.1 retain
+# their reviewed source semantics with one authoritative Tool each; their
+# exact bindings are covered by the structure summary/view planning test.
 _QUALIFIED_CONTRACT_FINGERPRINTS = {
     "data.composition_analysis": "17de88fff16f32573f57933070be4521a23f51645d1e485436b0357cd0ff89e7",
     "data.composition_space": "d45f072b0b92bad31107b21d8ff59d678126132398db8b612a566331f6677853",
@@ -346,8 +350,8 @@ _QUALIFIED_CONTRACT_FINGERPRINTS = {
     "structure.coordination_voronoinn": "d770462bd141183bee69e949d35890070c95dc6936e13746623edccddc898b7f",
     "structure.rdf": "e668b60e6091810da7971ac0a344fbf3ab460455a476f09e4e251d45cebd94b3",
     "structure.brillouin_zone": "22b82f9f47d5acc5e692699fda0c1ab870171f93655c6a847f1d570e166fff0d",
-    "structure.summary": "5f9078398f9a9033f1292df62e8f6b35ef72e0ecbe9868856468a0ab338e3739",
-    "structure.viewer_scene": "1b5b35e74b990ad417bf8746b3aa3f502611adc05a69e360528a3d3f39f7e8c4",
+    "structure.summary": "81ee41daac01a2ff8fe6577173fe0fb81039f155e82f2d5abbd45a3077082315",
+    "structure.viewer_scene": "4f64893d7a9cc149dadffc3d0aa462884d60e1d5db7ffb2ca31dacd0ed66943c",
     "trajectory.diffusion": "e23a262dc9ec5095d7c12e50a5077653774dbc893101b1016a10ae38706ac367",
     "trajectory.msd": "a8bbab194f7e669e3890a19df01b49467a070591a1df57d3efa14d20e11dfbbc",
     "trajectory.rdf": "4a3a573ce47813348b54c1f9d690492c01891665b8f5100a7015b705b30d5903",
@@ -1147,6 +1151,7 @@ def _records() -> list[CapabilityQualityEvidence]:
                     ["lattice and symmetry facts retain exact Artifact locators and never derive from viewer output"],
                 ),
             ],
+            capability_version="1.1",
         ),
         _evidence(
             "structure.viewer_scene",
@@ -1178,6 +1183,7 @@ def _records() -> list[CapabilityQualityEvidence]:
                     ["invalid parameters and non-finite structure values fail before publication"],
                 ),
             ],
+            capability_version="1.1",
         ),
         _evidence(
             "trajectory.viewer_scene",
@@ -1468,8 +1474,113 @@ def _contract_coverage_records() -> list[CapabilityQualityEvidence]:
     ]
 
 
+def _reference_records() -> list[CapabilityQualityEvidence]:
+    links = [
+        _link("elements.identity.v1", ScientificEvidenceKind.REFERENCE, ReferenceAuthority.PUBLISHED_REFERENCE,
+              "tests/test_project_reference.py::test_complete_reference_preserves_all_118_identities_and_exact_reference_bytes",
+              "Versioned ASE/pymatgen element identities in tool_registry/reference_data/elements.v1.json.",
+              "Complete 118-element identity and immutable data hash verification",
+              ["All 118 symbols and atomic numbers are preserved; no sample dataset is fabricated."], version="elements/1.0.0"),
+        _link("elements.covalent-radius.v1", ScientificEvidenceKind.REFERENCE, ReferenceAuthority.PUBLISHED_REFERENCE,
+              "tests/test_project_reference.py::test_cordero_reference_values_units_missing_and_pa_are_not_placeholder_data",
+              "Cordero et al., Dalton Transactions (2008), 2832–2838, DOI 10.1039/B801115J; ASE 3.29.0 data table.",
+              "Known H/C/Si/Cu/Pa radii and explicit Bk–Og missing coverage",
+              ["Radius values use angstrom and their named definition; unsupported values remain missing."],
+              version="elements/1.0.0", units=["angstrom"], numeric=True,
+              tolerance=_tolerance("angstrom", "Exact equality to the published table's retained decimal values.", absolute=0)),
+        _link("elements.scope-negative.v1", ScientificEvidenceKind.DOMAIN_NEGATIVE, ReferenceAuthority.SYNTHETIC_EXACT,
+              "tests/test_project_reference.py::test_worker_rejects_project_reference_or_sample_scope_mismatch_before_call",
+              "Controlled invalid project, dataset, reference hash and injected material scopes.",
+              "Fail-closed worker admission", ["Mismatched source authority never invokes a scientific adapter."], case_count=4),
+        _link("elements.persistence.v1", ScientificEvidenceKind.INTEGRATION, ReferenceAuthority.CURATED_KNOWN_RESULT,
+              "tests/test_project_reference.py::test_empty_project_executes_durably_without_loading_dataset_and_replays_once",
+              "Memory and SQLite execution through the ordinary queue worker and real reference adapters.",
+              "Durable no-material execution and idempotent replay",
+              ["Reference artifacts and exact version lineage persist without loading or creating sample data."], case_count=2),
+        _link("elements.result.v1", ScientificEvidenceKind.RESULT_PROJECTION, ReferenceAuthority.CURATED_KNOWN_RESULT,
+              "tests/test_project_reference.py::test_reference_projection_keeps_exact_facts_reference_identity_and_missing_values",
+              "Committed element reference comparison with C/Si/Cu values and missing Og radius.",
+              "Exact fact locators and bounded interpretation projection",
+              ["Only retained reference values are facts; source definitions and missing coverage remain explicit."]),
+    ]
+    fingerprints = {"reference.periodic_table": "c98eaa9438577eadb7b6ccaba0a97b33a9f6f03b2cd3b6dee26f344dda348320",
+                    "reference.compare_elements": "b06a5408a77b25c3d5e23953896c4a2e3dbd1a411426ba0a08e26c34f3e06dba"}
+    return [CapabilityQualityEvidence(capability_id=key, qualification_level=ScientificQualificationLevel.REFERENCE_VALIDATED,
+                qualified_contract_fingerprint=fingerprint, applicability_domains=["versioned element identity and Cordero covalent radius reference queries"],
+                known_limitations=["Reference values do not establish sample properties or chemical bond order.",
+                                   "Covalent radii are available only for H–Cm in this reference; Bk–Og remain missing."],
+                reproducibility="DETERMINISTIC", evidence=links) for key, fingerprint in fingerprints.items()]
+
+
+def _parameter_records() -> list[CapabilityQualityEvidence]:
+    from mdi_tool_registry.project_parameters import PARAMETER_TOOLS
+    fingerprints = {
+        "reference.convert_units": "4765ba28d19677757cbcf1413717f49dfcd0c7f342a5af5b324dffe76e1593dc",
+        "generation.function_curve": "4630d5e278cc49bc72412bf4c2c2804e51d9339e709eb79d6c53004e343470a0",
+        "composition.from_formula": "38368847ee4343af9638c943f80642a54e660b33b0d48f1e4b6ab33a8f50d2a4",
+        "viz.inline_xy": "d12008a1c57fc6a142b6005d5a708947c89f5113e41fcdf245c97a623d30f5c5",
+        "generation.ideal_crystal": "2b04e03a063b6dc97ecb93d727dd1414bd0999bde7b0f838605e80f6ebf91563",
+    }
+    links = [
+        _link("parameters.exact.v1", ScientificEvidenceKind.REFERENCE, ReferenceAuthority.ANALYTICAL,
+            "tests/test_project_parameters.py::test_independent_known_parameter_results",
+            "SI definitions, hand-calculated polynomial and stoichiometric values, explicit input rows and analytic crystal geometry.",
+            "Independent expected values", ["Results preserve units, formula counts, input values and ideal geometry."],
+            numeric=True, tolerance=_tolerance("declared result unit", "Floating point comparisons use a relative bound; retained input values remain exact.", relative=1e-12)),
+        _link("parameters.negative.v1", ScientificEvidenceKind.DOMAIN_NEGATIVE, ReferenceAuthority.SYNTHETIC_EXACT,
+            "tests/test_project_parameters.py::test_parameter_domains_reject_invalid_or_executable_inputs",
+            "Invalid dimensions, absolute temperatures, function domains, expressions and malformed source tables.",
+            "Reject rather than invent or truncate", ["Invalid inputs never produce scientific artifacts."]),
+        _link("parameters.projection.v1", ScientificEvidenceKind.RESULT_PROJECTION, ReferenceAuthority.CURATED_KNOWN_RESULT,
+            "tests/test_project_parameters.py::test_parameter_result_rejects_changed_outputs_or_source",
+            "Committed parameter artifacts with independently modified values, source text and geometry.",
+            "Fail-closed Result binding", ["Only exact committed outputs are published; sample authority is never fabricated."]),
+        _link("parameters.integration.v1", ScientificEvidenceKind.INTEGRATION, ReferenceAuthority.CURATED_KNOWN_RESULT,
+            "tests/test_project_parameters.py::test_parameter_research_executes_without_a_dataset",
+            "Ordinary Research admission, plan, asynchronous worker, Result, interpretation and report contracts.",
+            "End-to-end controlled execution", ["No Dataset is created or implicitly bound and parameter identity survives durable recovery."]),
+    ]
+    return [CapabilityQualityEvidence(capability_id=key, qualification_level=ScientificQualificationLevel.REFERENCE_VALIDATED,
+        qualified_contract_fingerprint=fingerprints[key], applicability_domains=[description],
+        known_limitations=["Only registered bounded parameter forms are supported; output is not a measured or relaxed sample."],
+        reproducibility="DETERMINISTIC", evidence=links) for key, (_title, description) in PARAMETER_TOOLS.items()]
+
+
+def _local_environment_records() -> list[CapabilityQualityEvidence]:
+    fingerprints = {
+        "structure.local_environment_crystalnn": "80d32c9163eff418aaed26fcc9a70aec7e8c165c1cd67c5ed3bbce81b427fe3e",
+        "structure.local_environment_voronoi": "8b353dd2b55658d851052a15e460a3b7b1a18cb159e26d0ad02eac40a05ba447",
+    }
+    links = [
+        _link("local-environment.reference.v1", ScientificEvidenceKind.REFERENCE, ReferenceAuthority.SYNTHETIC_EXACT,
+            "tests/test_local_environment_polyhedra.py::test_exact_n1_artifact_produces_reference_class_and_persisted_faces",
+            "Analytic tetrahedral and octahedral coordinates with exact saved neighbor relations.",
+            "Saved-neighbor geometry matching", ["Both neighbor methods retain exact vertices, face identities and reference classifications."],
+            case_count=4),
+        _link("local-environment.negative.v1", ScientificEvidenceKind.DOMAIN_NEGATIVE, ReferenceAuthority.SYNTHETIC_EXACT,
+            "tests/test_local_environment_polyhedra.py::test_missing_exact_persisted_binding_is_rejected_before_geometry",
+            "A coordination input without an exact committed artifact binding.",
+            "Dependency identity validation", ["Missing source identity fails before geometry is generated."]),
+        _link("local-environment.projection.v1", ScientificEvidenceKind.RESULT_PROJECTION, ReferenceAuthority.CURATED_KNOWN_RESULT,
+            "tests/test_coordination_result_projection.py::test_local_environment_projects_saved_site_geometry_and_exact_dependency",
+            "Registered adapter outputs and their unchanged source artifacts.",
+            "Exact scientific fact projection", ["Facts resolve to saved values and geometry keeps its exact neighbor source."]),
+        _link("local-environment.planning.v1", ScientificEvidenceKind.INTEGRATION, ReferenceAuthority.CURATED_KNOWN_RESULT,
+            "tests/test_agent2_capabilities.py::test_local_environment_requirement_binds_exact_neighbor_dependency",
+            "Research requirements through capability resolution and executable dependency binding.",
+            "Two-step controlled plan", ["Requested method, structure version and site subset survive planning."]),
+    ]
+    return [CapabilityQualityEvidence(
+        capability_id=key, qualification_level=ScientificQualificationLevel.DOMAIN_VALIDATED,
+        qualified_contract_fingerprint=fingerprint,
+        applicability_domains=["Ordered periodic structures and bounded exact saved coordination neighbors."],
+        known_limitations=["Neighbor assignment retains its source method; geometric classification does not establish chemical bonding or stability."],
+        reproducibility="DETERMINISTIC", evidence=links,
+    ) for key, fingerprint in fingerprints.items()]
+
+
 QUALITY_EVIDENCE_BY_CAPABILITY: dict[str, CapabilityQualityEvidence] = {
-    item.capability_id: item for item in [*_records(), *_contract_coverage_records()]
+    item.capability_id: item for item in [*_records(), *_contract_coverage_records(), *_reference_records(), *_parameter_records(), *_local_environment_records()]
 }
 
 

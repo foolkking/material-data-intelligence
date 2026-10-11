@@ -1,7 +1,8 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { ScientificPresentationBlocks } from "./ScientificPresentationBlocks";
+import { compileScientificPresentation } from "../lib/scientific-presentation";
 
 const mocks = vi.hoisted(() => ({
   getPlannerInterpretationEvidence: vi.fn(),
@@ -42,6 +43,167 @@ const presentation = {
 };
 
 describe("ScientificPresentationBlocks evidence inspector", () => {
+  it("keeps exact coordination values available in a collapsed group beside the geometry", async () => {
+    const facts = [
+      { fact_id: "neighbors", predicate: "structure.coordination.neighbor_count", subject_ref: "site:0", value: 4, source: { artifact_id: "n1", tool_call_id: "call-n1" } },
+      { fact_id: "volume", predicate: "structure.local_environment.volume", subject_ref: "site:0", value: 6.670958625, unit: "angstrom^3", source: { artifact_id: "n2", tool_call_id: "call-n2" } },
+    ];
+    const content = compileScientificPresentation({ resultId: "polyhedron", facts: facts.map(fact => ({
+      factId: fact.fact_id, predicate: fact.predicate, subjectRef: fact.subject_ref, value: fact.value, unit: fact.unit,
+      source: { artifactId: fact.source.artifact_id },
+    })) });
+    render(<ScientificPresentationBlocks presentation={content} layout="research" resultFacts={facts} />);
+    const summary = screen.getByText("配位数值 · 2 项");
+    expect(summary.closest("details")).not.toHaveAttribute("open");
+    expect(screen.getByTitle("精确值：6.670958625")).not.toBeVisible();
+    await userEvent.click(summary);
+    expect(screen.getByTitle("精确值：6.670958625")).toBeVisible();
+    expect(screen.getByTitle("精确值：6.670958625")).toHaveAttribute("data-exact-value", "6.670958625");
+  });
+
+  it("keeps parameter metrics compact and discloses their exact source with the result", async () => {
+    const content = compileScientificPresentation({ resultId: "parameters", facts: [
+      { factId: "output", predicate: "calculation.output_value", subjectRef: "value-0", value: 50, unit: "angstrom", source: { artifactId: "units-table" } },
+    ] });
+    render(<ScientificPresentationBlocks presentation={content} layout="research" inputProvenance={{
+      execution_scope: "PROJECT", input_origin: "USER_PARAMETERS", parameter_inputs: [{
+        tool_id: "reference.convert_units", tool_call_id: "units", input_origin: "USER_PARAMETERS", content_hash: "a".repeat(64),
+        resolved_parameters: { values: [5], from_unit: "nm", to_unit: "angstrom" },
+      }],
+    }} />);
+    expect(screen.getByText("计算数值 · 1 项").closest("details")).not.toHaveAttribute("open");
+    await userEvent.click(screen.getByText("计算数值 · 1 项"));
+    expect(screen.getByText("换算结果")).toBeVisible();
+    expect(screen.getByText("50")).toHaveAttribute("data-exact-value", "50");
+    expect(within(screen.getByText("50").parentElement!).getByText("Å")).toBeVisible();
+    await userEvent.click(screen.getByText("输入参数与原始数据"));
+    expect(screen.getByText("单位换算 · 输入参数")).toBeVisible();
+    expect(screen.getByText("nm")).toBeVisible();
+  });
+
+  it("shows the saved constant-target R² status as readable text while retaining its exact source", () => {
+    const facts = [{ factId: "r2-status", predicate: "ml.r2_status", subjectRef: "evaluation", value: "undefined_constant_target", source: { artifactId: "metrics" } }];
+    const original = JSON.stringify(facts);
+    const content = compileScientificPresentation({ resultId: "result", facts });
+    render(<ScientificPresentationBlocks presentation={content} layout="research" />);
+    expect(screen.getByText("R² 适用性")).toBeVisible();
+    expect(screen.getByText("未定义（目标值为常量）")).toHaveAttribute("data-exact-value", "undefined_constant_target");
+    expect(content.blocks.find(block => block.type === "metric")?.source.factId).toBe("r2-status");
+    expect(JSON.stringify(facts)).toBe(original);
+  });
+
+  it("places the exact saved research plot before findings and keeps source-only outputs reachable", async () => {
+    const content = { schemaVersion: "1.0" as const, exactSourceRefs: [], blocks: [
+      { id: "finding", type: "finding" as const, title: "发现", text: "已保存的发现", confidence: "DIRECT" as const, evidenceIds: [], source: { resultId: "r1" } },
+      { id: "plot", type: "figure" as const, title: "结果图谱", artifactId: "plot", source: { resultId: "r1", jobId: "j1", artifactId: "plot" } },
+      { id: "missing", type: "table" as const, title: "来源数据", artifactId: "missing", source: { resultId: "r1", jobId: "j1", artifactId: "missing" } },
+    ] };
+    const view = render(<ScientificPresentationBlocks layout="research" projectId="p1" presentation={content}
+      artifactCatalog={[{ artifactId: "plot", jobId: "j1", type: "plotly_json" }]} />);
+    expect(await screen.findByTestId("inline-scientific-result-viewer")).toHaveTextContent("j1 · plot");
+    const visual = screen.getByRole("region", { name: "图表与数据" });
+    expect(visual.compareDocumentPosition(screen.getByRole("heading", { name: "关键发现" })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.getByText("来源数据").parentElement?.querySelector("a")).toHaveAttribute("href", "/api/planner/jobs/j1/artifacts/missing/content");
+    view.rerender(<ScientificPresentationBlocks projectId="p1" presentation={content}
+      artifactCatalog={[{ artifactId: "plot", jobId: "j1", type: "plotly_json" }]} />);
+    expect(screen.queryByTestId("inline-scientific-result-viewer")).toBeNull();
+    expect(screen.getByRole("button", { name: "在页内查看" })).toBeVisible();
+  });
+
+  it("omits only a verbatim repeated research summary and keeps qualified findings", () => {
+    const content = {
+      schemaVersion: "1.0" as const, exactSourceRefs: [], blocks: [
+        { id: "lead", type: "narrative" as const, text: "第一条发现。 第二条发现。", source: { resultId: "result-1" } },
+        { id: "a", type: "finding" as const, title: "发现", text: "第一条发现。", confidence: "DIRECT" as const, evidenceIds: [], source: { resultId: "result-1" } },
+        { id: "b", type: "finding" as const, title: "发现", text: "第二条发现。", confidence: "QUALIFIED" as const, evidenceIds: [], source: { resultId: "result-1" } },
+      ],
+    };
+    const view = render(<ScientificPresentationBlocks presentation={content} layout="research" />);
+    expect(screen.queryByText("第一条发现。 第二条发现。")).toBeNull();
+    expect(screen.getByText("第一条发现。")).toBeVisible();
+    expect(screen.getByText("第二条发现。")).toBeVisible();
+    expect(screen.getByText("限定结论")).toBeVisible();
+    expect(screen.queryByText("直接证据")).toBeNull();
+    view.rerender(<ScientificPresentationBlocks layout="research" presentation={{ ...content, blocks: [
+      { ...content.blocks[0], text: "概述中的独有信息。" }, ...content.blocks.slice(1),
+    ] }} />);
+    expect(screen.getByText("概述中的独有信息。")).toBeVisible();
+    view.rerender(<ScientificPresentationBlocks layout="research" presentation={{ ...content, blocks: [
+      { ...content.blocks[0], source: { resultId: "another-result" } }, ...content.blocks.slice(1),
+    ] }} />);
+    expect(screen.getByText("第一条发现。 第二条发现。")).toBeVisible();
+    view.rerender(<ScientificPresentationBlocks presentation={content} />);
+    expect(screen.getByText("第一条发现。 第二条发现。")).toBeVisible();
+    expect(screen.getByText("直接证据")).toBeVisible();
+  });
+
+  it("opens each finding's exact facts without counting a shared artifact as another fact", async () => {
+    const user = userEvent.setup();
+    const content = compileScientificPresentation({
+      resultId: "result-peaks",
+      facts: [
+        { factId: "angle-first", predicate: "xrd.peak.two_theta", subjectRef: "peak-1", value: 20.498535, unit: "degree" },
+        { factId: "angle-second", predicate: "xrd.peak.two_theta", subjectRef: "peak-2", value: 21.874628, unit: "degree" },
+      ],
+      persistedInterpretation: {
+        contract_version: "1.0", title: "XRD", answer_lead: "主要衍射峰", limitations: [],
+        primary_result_refs: [], supporting_result_refs: [], follow_up_suggestions: [], supporting_findings: [],
+        primary_findings: ["first", "second"].map(name => ({
+          finding_id: name, statement: `${name} peak`, importance: "HIGH", confidence: "HIGH",
+          fact_refs: [`angle-${name}`], evidence_refs: ["shared-table"], result_item_refs: [],
+        })),
+      },
+    });
+    const view = render(<ScientificPresentationBlocks presentation={content} executionProcess={<p>Saved tool execution</p>} />);
+    expect(screen.queryByText(/项证据/)).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "查看证据链" })).not.toBeInTheDocument();
+    const first = screen.getByText("first peak").closest("article")!;
+    const second = screen.getByText("second peak").closest("article")!;
+    await user.click(within(first).getByText("查看引用事实 · 1 项"));
+    expect(first.querySelector("details")).toHaveAttribute("open");
+    expect(second.querySelector("details")).not.toHaveAttribute("open");
+    expect(within(first).getByText("20.498535 degree")).toHaveAttribute("data-exact-value", "20.498535");
+    expect(within(first).queryByText("21.874628 degree")).not.toBeInTheDocument();
+    await user.click(within(second).getByText("查看引用事实 · 1 项"));
+    expect(within(second).getByText("21.874628 degree")).toBeVisible();
+    expect(screen.getAllByText("工具调用过程")).toHaveLength(1);
+    const replacement = { ...content, blocks: content.blocks.map(block => ({ ...block, source: { ...block.source, resultId: "replacement" } })) };
+    view.rerender(<ScientificPresentationBlocks presentation={replacement} />);
+    expect(screen.getByText("first peak").closest("article")?.querySelector("details")).not.toHaveAttribute("open");
+  });
+
+  it("does not substitute facts from another result or choose an ambiguous duplicate", async () => {
+    const user = userEvent.setup();
+    render(<ScientificPresentationBlocks presentation={{ schemaVersion: "1.0", exactSourceRefs: [], blocks: [
+      { id: "finding", type: "finding", title: "发现", text: "需核对的结论", confidence: "DIRECT", source: { resultId: "current" }, factIds: ["absent", "ambiguous"], evidenceIds: [] },
+      { id: "foreign", type: "metric", title: "foreign metric", value: "999", source: { resultId: "other", factId: "absent" } },
+      { id: "duplicate-1", type: "metric", title: "duplicate", value: "111", source: { resultId: "current", factId: "ambiguous" } },
+      { id: "duplicate-2", type: "metric", title: "duplicate", value: "222", source: { resultId: "current", factId: "ambiguous" } },
+    ] }} />);
+    await user.click(screen.getByText("查看引用事实 · 2 项"));
+    const finding = screen.getByText("需核对的结论").closest("article")!;
+    expect(within(finding).getByRole("status")).toHaveTextContent("2 项引用事实暂未提供可展示的数值");
+    expect(finding.querySelectorAll("dd")).toHaveLength(0);
+  });
+
+  it("keeps facts beyond the first twelve reachable with exact values and resets disclosure for a new result", async () => {
+    const user = userEvent.setup();
+    const facts = Array.from({ length: 16 }, (_, index) => ({
+      factId: `fact-${index}`, predicate: index === 15 ? "volumetric.maximum" : `volumetric.test_${index}`,
+      subjectRef: "field", value: index === 15 ? 0.00092615445 : index, unit: "dimensionless",
+    }));
+    const make = (resultId: string) => compileScientificPresentation({ resultId, facts });
+    const view = render(<ScientificPresentationBlocks presentation={make("first")} />);
+    const summary = screen.getByText("更多指标 · 4 项");
+    expect(summary.closest("details")).not.toHaveAttribute("open");
+    expect(screen.getByText("源数值最大值").closest("details")).toBe(summary.closest("details"));
+    await user.click(summary);
+    expect(summary.closest("details")).toHaveAttribute("open");
+    expect(screen.getByText("0.0009261545")).toHaveAttribute("data-exact-value", "0.00092615445");
+    view.rerender(<ScientificPresentationBlocks presentation={make("second")} />);
+    expect(screen.getByText("更多指标 · 4 项").closest("details")).not.toHaveAttribute("open");
+  });
+
   it("shows scientist-facing version context without exposing raw identities by default", () => {
     render(<ScientificPresentationBlocks presentation={presentation} projectId="project-1" />);
     expect(screen.getByText("来源版本 2")).toBeInTheDocument();
@@ -79,6 +241,56 @@ describe("ScientificPresentationBlocks evidence inspector", () => {
       }],
     }} />);
     expect(screen.getByText("当前声子态密度 Artifact 不包含特征向量，因此不提供模式动画依据。")).toBeInTheDocument();
+  });
+
+  it("shows repeated result qualifications once while retaining distinct caveats and saved blocks", () => {
+    const blocks = [
+      { id: "one", type: "limitation" as const, text: "仅根据输入参数计算。", source: { artifactId: "table" } },
+      { id: "two", type: "limitation" as const, text: " 仅根据输入参数计算。 ", source: { artifactId: "recipe" } },
+      { id: "three", type: "warning" as const, text: "仅根据输入参数计算。", source: {} },
+      { id: "four", type: "warning" as const, text: "未验证样品性质。", source: {} },
+    ];
+    const before = JSON.stringify(blocks);
+    render(<ScientificPresentationBlocks presentation={{ schemaVersion: "1.0", exactSourceRefs: [], blocks }} />);
+    expect(screen.getAllByText("仅根据输入参数计算。")).toHaveLength(1);
+    expect(screen.getByText("未验证样品性质。")).toBeInTheDocument();
+    expect(JSON.stringify(blocks)).toBe(before);
+  });
+
+  it("keeps an exact repeated finding with its qualification and preserves its facts and confidence", async () => {
+    const qualification = "这是理想模型，不代表样品测量结果。";
+    const distinct = "这是理想模型，但不能据此确认稳定相。";
+    const source = { resultId: "ideal", interpretationId: "interpretation" };
+    const content = { schemaVersion: "1.0" as const, exactSourceRefs: [], blocks: [
+      { id: "lead", type: "narrative" as const, text: qualification, source },
+      { id: "duplicate", type: "finding" as const, title: "发现", text: qualification, confidence: "QUALIFIED" as const, factIds: ["model"], evidenceIds: [], source },
+      { id: "distinct", type: "finding" as const, title: "发现", text: distinct, confidence: "DIRECT" as const, factIds: [], evidenceIds: [], source },
+      { id: "model", type: "metric" as const, title: "模型类型", value: "ideal_crystal", source: { ...source, factId: "model" } },
+      { id: "limit", type: "limitation" as const, text: qualification, source },
+    ] };
+    const before = JSON.stringify(content);
+    const view = render(<ScientificPresentationBlocks presentation={content} layout="research" />);
+    expect(screen.getAllByText(qualification)).toHaveLength(1);
+    expect(screen.getByText(distinct).closest("article")).not.toBeNull();
+    const limit = screen.getByText(qualification).closest("li")!;
+    expect(within(limit).getByText("限定结论")).toBeVisible();
+    await userEvent.click(within(limit).getByText("查看引用事实 · 1 项"));
+    expect(within(limit).getByText("ideal_crystal")).toHaveAttribute("data-exact-value", "ideal_crystal");
+    expect(JSON.stringify(content)).toBe(before);
+    view.rerender(<ScientificPresentationBlocks presentation={content} />);
+    expect(screen.getAllByText(qualification)).toHaveLength(3);
+    expect(screen.getByText("查看引用事实 · 1 项").closest("article")).not.toBeNull();
+  });
+
+  it.each(["resultId", "interpretationId", "objectId", "versionId", "unknown"])("keeps repeated findings separate for different or unknown %s ownership", (key) => {
+    const source = { resultId: "result", interpretationId: "interpretation", objectId: "object", versionId: "version" };
+    const findingSource = key === "unknown" ? {} : { ...source, [key]: "another" };
+    render(<ScientificPresentationBlocks layout="research" presentation={{ schemaVersion: "1.0", exactSourceRefs: [], blocks: [
+      { id: "finding", type: "finding", title: "发现", text: "仅为理想模型。", confidence: "DIRECT", factIds: [], evidenceIds: [], source: findingSource },
+      { id: "limitation", type: "limitation", text: "仅为理想模型。", source },
+    ] }} />);
+    expect(screen.getAllByText("仅为理想模型。")).toHaveLength(2);
+    expect(screen.getByRole("heading", { name: "关键发现" })).toBeVisible();
   });
 
   it("assigns unique accessible ids and relationships to repeated presentation instances", async () => {
@@ -162,7 +374,7 @@ describe("ScientificPresentationBlocks evidence inspector", () => {
     await waitFor(() => expect(mocks.getPlannerInterpretationEvidence).toHaveBeenCalledWith("interpretation-1"));
   });
 
-  it("lets a finding open its exact linked evidence chain directly", async () => {
+  it.each([false, true])("lets a finding open its exact linked evidence chain when moved to limitations: %s", async (inLimitations) => {
     mocks.getPlannerInterpretationEvidence.mockResolvedValue({
       interpretationId: "interpretation-finding",
       bundleId: "bundle-finding",
@@ -191,10 +403,14 @@ describe("ScientificPresentationBlocks evidence inspector", () => {
     const user = userEvent.setup();
     render(<ScientificPresentationBlocks
       projectId="project-finding"
+      layout={inLimitations ? "research" : "document"}
       presentation={{
         schemaVersion: "1.0",
         exactSourceRefs: [{ objectId: "object-finding", versionId: "version-1" }],
         blocks: [
+          ...(inLimitations ? [{ id: "same-limitation", type: "limitation" as const, text: "site-14 has four nearest neighbours.", source: {
+            resultId: "result-finding", interpretationId: "interpretation-finding", objectId: "object-finding", versionId: "version-1",
+          } }] : []),
           {
             id: "finding-1",
             type: "finding",
@@ -273,11 +489,11 @@ describe("ScientificPresentationBlocks evidence inspector", () => {
     await user.click(screen.getByRole("button", { name: "在页内查看" }));
     expect(screen.getByRole("region", { name: "图形：配位数直方图" })).toBeInTheDocument();
     expect(screen.getByTestId("inline-scientific-result-viewer")).toHaveTextContent("job-1 · artifact-plot");
-    expect(screen.getByRole("link", { name: "打开原始 Artifact" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "查看源文件" })).toHaveAttribute(
       "href",
       "/api/planner/jobs/job-1/artifacts/artifact-plot/content",
     );
-    expect(screen.getByRole("link", { name: "下载原始 Artifact" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "下载" })).toHaveAttribute(
       "download",
       "figure-1.figure.json",
     );

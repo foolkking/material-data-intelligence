@@ -65,6 +65,7 @@ export type WorkspaceSelectionKind =
   | "ELECTRONIC_DOS_PROJECTION"
   | "ELECTRONIC_DOS_POINT"
   | "PHONON_Q_POINT"
+  | "PHONON_DOS_POINT"
   | "PHONON_BRANCH"
   | "RECIPROCAL_POINT"
   | "VOLUMETRIC_FIELD"
@@ -165,6 +166,7 @@ export type WorkspaceSelectionRef = {
   projectionId: string | null;
   energyPointId: string | null;
   phononArtifactId: string | null;
+  frequencyPointId: string | null;
   qPointId: string | null;
   branchId: string | null;
   reciprocalArtifactId: string | null;
@@ -286,6 +288,7 @@ export type ScientificWorkspace = {
 export type WorkspaceSourceSummary = {
   jobStatus: string | null;
   researchTurnId?: string | null;
+  researchSessionId?: string | null;
   analysisPlanSchemaVersion: string | null;
   dependencyOutcome: string | null;
   artifactCount: number;
@@ -324,9 +327,11 @@ export type WorkspaceAnalysisJobSummary = {
   jobId: string;
   projectId: string;
   datasetId: string | null;
+  sourceDatasets?: Array<{ datasetId: string; name: string }>;
   jobStatus: string | null;
   workspaceProjectionStatus: WorkspaceStatus;
   researchTurnId?: string | null;
+  researchSessionId?: string | null;
   researchQuestion?: string | null;
   analysisPlanSchemaVersion: string | null;
   dependencyOutcome: string | null;

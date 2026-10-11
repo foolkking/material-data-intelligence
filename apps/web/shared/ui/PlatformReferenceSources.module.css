@@ -1,0 +1,14 @@
+.root { color: var(--product-secondary); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.root summary { color: var(--product-ink); cursor: pointer; padding: 12px 0; min-height: 44px; box-sizing: border-box; }
+.root summary:focus-visible { outline: 2px solid var(--product-accent); outline-offset: 2px; }
+.root ul { padding-inline-start: 20px; margin: 8px 0; }
+.root li + li { margin-top: 8px; }
+.root p { margin: 8px 0; }
+.root a { color: var(--product-accent); text-underline-offset: 3px; }
+.parameters { margin: var(--ds-space-2) 0; min-width: 0; }
+.parameters > div { display: grid; grid-template-columns: minmax(100px, 1fr) minmax(0, 2fr); gap: var(--ds-space-3); padding-block: var(--ds-space-2); border-bottom: 1px solid var(--product-border); }
+.parameters dt { color: var(--product-secondary); }
+.parameters dd { min-width: 0; margin: 0; color: var(--product-ink); font-variant-numeric: tabular-nums; }
+.parameters pre { max-height: 240px; overflow: auto; margin: 0; padding: var(--ds-space-2); color: var(--product-ink); background: var(--product-subtle); }
+.parameters pre:focus-visible { outline: 2px solid var(--product-accent); outline-offset: 2px; }
+@media (max-width: 480px) { .parameters > div { grid-template-columns: minmax(0, 1fr); gap: var(--ds-space-1); } }

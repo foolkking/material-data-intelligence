@@ -712,7 +712,7 @@ def test_openai_provider_retries_without_response_format_on_400(monkeypatch: pyt
                 }
             ).encode("utf-8")
 
-    def fake_urlopen(req, timeout):
+    def fake_urlopen(req, timeout, byte_limit):
         body = json.loads(req.data.decode("utf-8"))
         calls.append(body)
         if len(calls) == 1:
@@ -723,9 +723,9 @@ def test_openai_provider_retries_without_response_format_on_400(monkeypatch: pyt
                 hdrs={},
                 fp=None,
             )
-        return FakeResponse()
+        return FakeResponse().read()
 
-    monkeypatch.setattr(provider_module.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(provider_module, "read_provider_response", fake_urlopen)
     monkeypatch.setenv("MDI_LLM_ALLOWED_BASE_URLS", "https://llm.example.test/v1")
 
     response = provider_module._post_chat_completion(
@@ -753,9 +753,9 @@ def test_openai_provider_rejects_unapproved_or_local_base_url_before_network(
     def forbidden_urlopen(*args, **kwargs):
         nonlocal called
         called = True
-        raise AssertionError("unapproved endpoint must not reach urllib")
+        raise AssertionError("unapproved endpoint must not reach the HTTP transport")
 
-    monkeypatch.setattr(provider_module.urllib.request, "urlopen", forbidden_urlopen)
+    monkeypatch.setattr(provider_module, "read_provider_response", forbidden_urlopen)
     monkeypatch.setenv("MDI_LLM_ALLOWED_BASE_URLS", "https://approved.example.test/v1")
 
     for base_url in ("http://127.0.0.1:8000/v1", "https://unapproved.example.test/v1"):
@@ -795,11 +795,11 @@ def test_openai_provider_omits_response_format_for_gemini_openai_endpoint(monkey
                 }
             ).encode("utf-8")
 
-    def fake_urlopen(req, timeout):
+    def fake_urlopen(req, timeout, byte_limit):
         calls.append(json.loads(req.data.decode("utf-8")))
-        return FakeResponse()
+        return FakeResponse().read()
 
-    monkeypatch.setattr(provider_module.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(provider_module, "read_provider_response", fake_urlopen)
 
     response = provider_module._post_chat_completion(
         base_url="https://generativelanguage.googleapis.com/v1beta/openai",

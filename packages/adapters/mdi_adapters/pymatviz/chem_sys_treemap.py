@@ -30,7 +30,7 @@ class ChemSysTreemapResult:
 
 class ChemSysTreemapAdapter(BaseToolAdapter):
     tool_id = "composition.chem_sys_treemap"
-    adapter_version = "0.2.0"
+    adapter_version = "0.2.2"
 
     def prepare(self, context: ToolExecutionContext, input_refs: list[Any], params: dict[str, Any]) -> FormulaStats:
         if not self._resolved_inputs:
@@ -53,24 +53,35 @@ class ChemSysTreemapAdapter(BaseToolAdapter):
                 details={"errorType": "unsupported_group_mode", "groupMode": group_mode},
             )
         max_groups = max(1, int(params.get("maxGroups") or params.get("maxCells") or 50))
-        groups = _group_records(prepared, group_mode)[:max_groups]
-        if len(groups) == max_groups and len(_group_records(prepared, group_mode)) > max_groups:
+        all_groups = _group_records(prepared, group_mode)
+        groups = all_groups[:max_groups]
+        truncated = len(all_groups) > max_groups
+        if truncated:
             prepared.payload["warnings"].append("too_many_groups_warning")
-        try:
-            figure = pmv.chem_sys_treemap(
-                formula_list(prepared.parsed),
-                group_by="chem_sys" if group_mode == "chem_sys" else "formula",
-                max_cells=max_groups,
-                show_counts=params.get("showCounts", "value"),
-            )
-            figure.update_layout(title_text=params.get("title") or "Chemical System Treemap")
-        except Exception:
+        figure = None
+        source_function = "pymatviz.chem_sys_treemap"
+        # The library groups by arity implicitly and caps each arity separately.
+        # Those defaults cannot implement a requested arity-only or global cap.
+        if group_mode != "arity" and not truncated:
+            try:
+                figure = pmv.chem_sys_treemap(
+                    formula_list(prepared.parsed), group_by=group_mode,
+                    show_counts=params.get("showCounts", "value"),
+                )
+                figure.update_layout(title_text=params.get("title") or "Chemical System Treemap")
+            except Exception:
+                pass
+        if figure is None:
             figure = treemap_figure(
                 [group["label"] for group in groups],
                 ["" for _ in groups],
                 [group["count"] for group in groups],
                 title=str(params.get("title") or "Chemical System Treemap"),
             )
+            count_mode = params.get("showCounts", "value")
+            textinfo = {"value": "label+value", "percent": "label+percent root", "value+percent": "label+value+percent root"}.get(str(count_mode), "label")
+            figure.update_traces(textinfo=textinfo)
+            source_function = "mdi_adapters.composition_common.treemap_figure"
         metadata = {
             "artifactType": "composition.chem_sys_treemap",
             "chartType": "treemap",
@@ -82,6 +93,9 @@ class ChemSysTreemapAdapter(BaseToolAdapter):
             "parsedFormulaCount": prepared.payload["parsedFormulaCount"],
             "failedFormulaCount": prepared.payload["failedFormulaCount"],
             "warnings": list(prepared.payload.get("warnings", [])),
+            "sourceFunction": source_function,
+            "totalGroups": len(all_groups),
+            "retainedGroups": len(groups),
         }
         return ChemSysTreemapResult(metadata=metadata, figure=figure, params=params)
 
@@ -95,7 +109,7 @@ class ChemSysTreemapAdapter(BaseToolAdapter):
             json_name="chem_sys_treemap.json",
             title="Chemical System Treemap",
             provenance={
-                "sourceFunction": "pymatviz.chem_sys_treemap",
+                "sourceFunction": result.metadata["sourceFunction"],
                 "adapter": self.tool_id,
                 "formulaColumn": result.metadata["formulaColumn"],
                 "groupMode": result.metadata["groupMode"],

@@ -1,0 +1,750 @@
+{
+  "schema_version": "mdi.reference.elements/1.0",
+  "reference_id": "elements",
+  "version": "1.0.0",
+  "compiled_on": "2026-10-09",
+  "properties": {
+    "atomic_number": {
+      "label": "原子序数",
+      "unit": null,
+      "definition": "Number of protons in the atomic nucleus.",
+      "coverage": "H–Og (1–118)"
+    },
+    "covalent_radius": {
+      "label": "参考共价半径",
+      "unit": "angstrom",
+      "definition": "Cordero et al. (2008) tabulated covalent radii as distributed by ASE. These are reference radii, not measured bond lengths or ionic radii.",
+      "coverage": "H–Cm (1–96); later ASE placeholder values are excluded.",
+      "citation": "Cordero et al., Dalton Trans. 2008, 2832–2838. DOI: 10.1039/B801115J"
+    }
+  },
+  "sources": [
+    {
+      "name": "ASE element symbols and Cordero covalent radii",
+      "version": "3.29.0",
+      "url": "https://ase-lib.org/ase/data.html",
+      "license": "LGPL-2.1-or-later"
+    },
+    {
+      "name": "pymatgen element names",
+      "version": "2026.5.4",
+      "url": "https://pymatgen.org/pymatgen.core.html#pymatgen.core.periodic_table.Element",
+      "license": "MIT"
+    },
+    {
+      "name": "IUPAC element naming and periodic-table overview",
+      "url": "https://iupac.org/what-we-do/periodic-table-of-elements/",
+      "use": "Reference link; no graphic or PDF is reproduced."
+    }
+  ],
+  "records": [
+    {
+      "atomic_number": 1,
+      "symbol": "H",
+      "name": "Hydrogen",
+      "covalent_radius_angstrom": 0.31
+    },
+    {
+      "atomic_number": 2,
+      "symbol": "He",
+      "name": "Helium",
+      "covalent_radius_angstrom": 0.28
+    },
+    {
+      "atomic_number": 3,
+      "symbol": "Li",
+      "name": "Lithium",
+      "covalent_radius_angstrom": 1.28
+    },
+    {
+      "atomic_number": 4,
+      "symbol": "Be",
+      "name": "Beryllium",
+      "covalent_radius_angstrom": 0.96
+    },
+    {
+      "atomic_number": 5,
+      "symbol": "B",
+      "name": "Boron",
+      "covalent_radius_angstrom": 0.84
+    },
+    {
+      "atomic_number": 6,
+      "symbol": "C",
+      "name": "Carbon",
+      "covalent_radius_angstrom": 0.76
+    },
+    {
+      "atomic_number": 7,
+      "symbol": "N",
+      "name": "Nitrogen",
+      "covalent_radius_angstrom": 0.71
+    },
+    {
+      "atomic_number": 8,
+      "symbol": "O",
+      "name": "Oxygen",
+      "covalent_radius_angstrom": 0.66
+    },
+    {
+      "atomic_number": 9,
+      "symbol": "F",
+      "name": "Fluorine",
+      "covalent_radius_angstrom": 0.57
+    },
+    {
+      "atomic_number": 10,
+      "symbol": "Ne",
+      "name": "Neon",
+      "covalent_radius_angstrom": 0.58
+    },
+    {
+      "atomic_number": 11,
+      "symbol": "Na",
+      "name": "Sodium",
+      "covalent_radius_angstrom": 1.66
+    },
+    {
+      "atomic_number": 12,
+      "symbol": "Mg",
+      "name": "Magnesium",
+      "covalent_radius_angstrom": 1.41
+    },
+    {
+      "atomic_number": 13,
+      "symbol": "Al",
+      "name": "Aluminium",
+      "covalent_radius_angstrom": 1.21
+    },
+    {
+      "atomic_number": 14,
+      "symbol": "Si",
+      "name": "Silicon",
+      "covalent_radius_angstrom": 1.11
+    },
+    {
+      "atomic_number": 15,
+      "symbol": "P",
+      "name": "Phosphorus",
+      "covalent_radius_angstrom": 1.07
+    },
+    {
+      "atomic_number": 16,
+      "symbol": "S",
+      "name": "Sulfur",
+      "covalent_radius_angstrom": 1.05
+    },
+    {
+      "atomic_number": 17,
+      "symbol": "Cl",
+      "name": "Chlorine",
+      "covalent_radius_angstrom": 1.02
+    },
+    {
+      "atomic_number": 18,
+      "symbol": "Ar",
+      "name": "Argon",
+      "covalent_radius_angstrom": 1.06
+    },
+    {
+      "atomic_number": 19,
+      "symbol": "K",
+      "name": "Potassium",
+      "covalent_radius_angstrom": 2.03
+    },
+    {
+      "atomic_number": 20,
+      "symbol": "Ca",
+      "name": "Calcium",
+      "covalent_radius_angstrom": 1.76
+    },
+    {
+      "atomic_number": 21,
+      "symbol": "Sc",
+      "name": "Scandium",
+      "covalent_radius_angstrom": 1.7
+    },
+    {
+      "atomic_number": 22,
+      "symbol": "Ti",
+      "name": "Titanium",
+      "covalent_radius_angstrom": 1.6
+    },
+    {
+      "atomic_number": 23,
+      "symbol": "V",
+      "name": "Vanadium",
+      "covalent_radius_angstrom": 1.53
+    },
+    {
+      "atomic_number": 24,
+      "symbol": "Cr",
+      "name": "Chromium",
+      "covalent_radius_angstrom": 1.39
+    },
+    {
+      "atomic_number": 25,
+      "symbol": "Mn",
+      "name": "Manganese",
+      "covalent_radius_angstrom": 1.39
+    },
+    {
+      "atomic_number": 26,
+      "symbol": "Fe",
+      "name": "Iron",
+      "covalent_radius_angstrom": 1.32
+    },
+    {
+      "atomic_number": 27,
+      "symbol": "Co",
+      "name": "Cobalt",
+      "covalent_radius_angstrom": 1.26
+    },
+    {
+      "atomic_number": 28,
+      "symbol": "Ni",
+      "name": "Nickel",
+      "covalent_radius_angstrom": 1.24
+    },
+    {
+      "atomic_number": 29,
+      "symbol": "Cu",
+      "name": "Copper",
+      "covalent_radius_angstrom": 1.32
+    },
+    {
+      "atomic_number": 30,
+      "symbol": "Zn",
+      "name": "Zinc",
+      "covalent_radius_angstrom": 1.22
+    },
+    {
+      "atomic_number": 31,
+      "symbol": "Ga",
+      "name": "Gallium",
+      "covalent_radius_angstrom": 1.22
+    },
+    {
+      "atomic_number": 32,
+      "symbol": "Ge",
+      "name": "Germanium",
+      "covalent_radius_angstrom": 1.2
+    },
+    {
+      "atomic_number": 33,
+      "symbol": "As",
+      "name": "Arsenic",
+      "covalent_radius_angstrom": 1.19
+    },
+    {
+      "atomic_number": 34,
+      "symbol": "Se",
+      "name": "Selenium",
+      "covalent_radius_angstrom": 1.2
+    },
+    {
+      "atomic_number": 35,
+      "symbol": "Br",
+      "name": "Bromine",
+      "covalent_radius_angstrom": 1.2
+    },
+    {
+      "atomic_number": 36,
+      "symbol": "Kr",
+      "name": "Krypton",
+      "covalent_radius_angstrom": 1.16
+    },
+    {
+      "atomic_number": 37,
+      "symbol": "Rb",
+      "name": "Rubidium",
+      "covalent_radius_angstrom": 2.2
+    },
+    {
+      "atomic_number": 38,
+      "symbol": "Sr",
+      "name": "Strontium",
+      "covalent_radius_angstrom": 1.95
+    },
+    {
+      "atomic_number": 39,
+      "symbol": "Y",
+      "name": "Yttrium",
+      "covalent_radius_angstrom": 1.9
+    },
+    {
+      "atomic_number": 40,
+      "symbol": "Zr",
+      "name": "Zirconium",
+      "covalent_radius_angstrom": 1.75
+    },
+    {
+      "atomic_number": 41,
+      "symbol": "Nb",
+      "name": "Niobium",
+      "covalent_radius_angstrom": 1.64
+    },
+    {
+      "atomic_number": 42,
+      "symbol": "Mo",
+      "name": "Molybdenum",
+      "covalent_radius_angstrom": 1.54
+    },
+    {
+      "atomic_number": 43,
+      "symbol": "Tc",
+      "name": "Technetium",
+      "covalent_radius_angstrom": 1.47
+    },
+    {
+      "atomic_number": 44,
+      "symbol": "Ru",
+      "name": "Ruthenium",
+      "covalent_radius_angstrom": 1.46
+    },
+    {
+      "atomic_number": 45,
+      "symbol": "Rh",
+      "name": "Rhodium",
+      "covalent_radius_angstrom": 1.42
+    },
+    {
+      "atomic_number": 46,
+      "symbol": "Pd",
+      "name": "Palladium",
+      "covalent_radius_angstrom": 1.39
+    },
+    {
+      "atomic_number": 47,
+      "symbol": "Ag",
+      "name": "Silver",
+      "covalent_radius_angstrom": 1.45
+    },
+    {
+      "atomic_number": 48,
+      "symbol": "Cd",
+      "name": "Cadmium",
+      "covalent_radius_angstrom": 1.44
+    },
+    {
+      "atomic_number": 49,
+      "symbol": "In",
+      "name": "Indium",
+      "covalent_radius_angstrom": 1.42
+    },
+    {
+      "atomic_number": 50,
+      "symbol": "Sn",
+      "name": "Tin",
+      "covalent_radius_angstrom": 1.39
+    },
+    {
+      "atomic_number": 51,
+      "symbol": "Sb",
+      "name": "Antimony",
+      "covalent_radius_angstrom": 1.39
+    },
+    {
+      "atomic_number": 52,
+      "symbol": "Te",
+      "name": "Tellurium",
+      "covalent_radius_angstrom": 1.38
+    },
+    {
+      "atomic_number": 53,
+      "symbol": "I",
+      "name": "Iodine",
+      "covalent_radius_angstrom": 1.39
+    },
+    {
+      "atomic_number": 54,
+      "symbol": "Xe",
+      "name": "Xenon",
+      "covalent_radius_angstrom": 1.4
+    },
+    {
+      "atomic_number": 55,
+      "symbol": "Cs",
+      "name": "Caesium",
+      "covalent_radius_angstrom": 2.44
+    },
+    {
+      "atomic_number": 56,
+      "symbol": "Ba",
+      "name": "Barium",
+      "covalent_radius_angstrom": 2.15
+    },
+    {
+      "atomic_number": 57,
+      "symbol": "La",
+      "name": "Lanthanum",
+      "covalent_radius_angstrom": 2.07
+    },
+    {
+      "atomic_number": 58,
+      "symbol": "Ce",
+      "name": "Cerium",
+      "covalent_radius_angstrom": 2.04
+    },
+    {
+      "atomic_number": 59,
+      "symbol": "Pr",
+      "name": "Praseodymium",
+      "covalent_radius_angstrom": 2.03
+    },
+    {
+      "atomic_number": 60,
+      "symbol": "Nd",
+      "name": "Neodymium",
+      "covalent_radius_angstrom": 2.01
+    },
+    {
+      "atomic_number": 61,
+      "symbol": "Pm",
+      "name": "Promethium",
+      "covalent_radius_angstrom": 1.99
+    },
+    {
+      "atomic_number": 62,
+      "symbol": "Sm",
+      "name": "Samarium",
+      "covalent_radius_angstrom": 1.98
+    },
+    {
+      "atomic_number": 63,
+      "symbol": "Eu",
+      "name": "Europium",
+      "covalent_radius_angstrom": 1.98
+    },
+    {
+      "atomic_number": 64,
+      "symbol": "Gd",
+      "name": "Gadolinium",
+      "covalent_radius_angstrom": 1.96
+    },
+    {
+      "atomic_number": 65,
+      "symbol": "Tb",
+      "name": "Terbium",
+      "covalent_radius_angstrom": 1.94
+    },
+    {
+      "atomic_number": 66,
+      "symbol": "Dy",
+      "name": "Dysprosium",
+      "covalent_radius_angstrom": 1.92
+    },
+    {
+      "atomic_number": 67,
+      "symbol": "Ho",
+      "name": "Holmium",
+      "covalent_radius_angstrom": 1.92
+    },
+    {
+      "atomic_number": 68,
+      "symbol": "Er",
+      "name": "Erbium",
+      "covalent_radius_angstrom": 1.89
+    },
+    {
+      "atomic_number": 69,
+      "symbol": "Tm",
+      "name": "Thulium",
+      "covalent_radius_angstrom": 1.9
+    },
+    {
+      "atomic_number": 70,
+      "symbol": "Yb",
+      "name": "Ytterbium",
+      "covalent_radius_angstrom": 1.87
+    },
+    {
+      "atomic_number": 71,
+      "symbol": "Lu",
+      "name": "Lutetium",
+      "covalent_radius_angstrom": 1.87
+    },
+    {
+      "atomic_number": 72,
+      "symbol": "Hf",
+      "name": "Hafnium",
+      "covalent_radius_angstrom": 1.75
+    },
+    {
+      "atomic_number": 73,
+      "symbol": "Ta",
+      "name": "Tantalum",
+      "covalent_radius_angstrom": 1.7
+    },
+    {
+      "atomic_number": 74,
+      "symbol": "W",
+      "name": "Tungsten",
+      "covalent_radius_angstrom": 1.62
+    },
+    {
+      "atomic_number": 75,
+      "symbol": "Re",
+      "name": "Rhenium",
+      "covalent_radius_angstrom": 1.51
+    },
+    {
+      "atomic_number": 76,
+      "symbol": "Os",
+      "name": "Osmium",
+      "covalent_radius_angstrom": 1.44
+    },
+    {
+      "atomic_number": 77,
+      "symbol": "Ir",
+      "name": "Iridium",
+      "covalent_radius_angstrom": 1.41
+    },
+    {
+      "atomic_number": 78,
+      "symbol": "Pt",
+      "name": "Platinum",
+      "covalent_radius_angstrom": 1.36
+    },
+    {
+      "atomic_number": 79,
+      "symbol": "Au",
+      "name": "Gold",
+      "covalent_radius_angstrom": 1.36
+    },
+    {
+      "atomic_number": 80,
+      "symbol": "Hg",
+      "name": "Mercury",
+      "covalent_radius_angstrom": 1.32
+    },
+    {
+      "atomic_number": 81,
+      "symbol": "Tl",
+      "name": "Thallium",
+      "covalent_radius_angstrom": 1.45
+    },
+    {
+      "atomic_number": 82,
+      "symbol": "Pb",
+      "name": "Lead",
+      "covalent_radius_angstrom": 1.46
+    },
+    {
+      "atomic_number": 83,
+      "symbol": "Bi",
+      "name": "Bismuth",
+      "covalent_radius_angstrom": 1.48
+    },
+    {
+      "atomic_number": 84,
+      "symbol": "Po",
+      "name": "Polonium",
+      "covalent_radius_angstrom": 1.4
+    },
+    {
+      "atomic_number": 85,
+      "symbol": "At",
+      "name": "Astatine",
+      "covalent_radius_angstrom": 1.5
+    },
+    {
+      "atomic_number": 86,
+      "symbol": "Rn",
+      "name": "Radon",
+      "covalent_radius_angstrom": 1.5
+    },
+    {
+      "atomic_number": 87,
+      "symbol": "Fr",
+      "name": "Francium",
+      "covalent_radius_angstrom": 2.6
+    },
+    {
+      "atomic_number": 88,
+      "symbol": "Ra",
+      "name": "Radium",
+      "covalent_radius_angstrom": 2.21
+    },
+    {
+      "atomic_number": 89,
+      "symbol": "Ac",
+      "name": "Actinium",
+      "covalent_radius_angstrom": 2.15
+    },
+    {
+      "atomic_number": 90,
+      "symbol": "Th",
+      "name": "Thorium",
+      "covalent_radius_angstrom": 2.06
+    },
+    {
+      "atomic_number": 91,
+      "symbol": "Pa",
+      "name": "Protactinium",
+      "covalent_radius_angstrom": 2.0
+    },
+    {
+      "atomic_number": 92,
+      "symbol": "U",
+      "name": "Uranium",
+      "covalent_radius_angstrom": 1.96
+    },
+    {
+      "atomic_number": 93,
+      "symbol": "Np",
+      "name": "Neptunium",
+      "covalent_radius_angstrom": 1.9
+    },
+    {
+      "atomic_number": 94,
+      "symbol": "Pu",
+      "name": "Plutonium",
+      "covalent_radius_angstrom": 1.87
+    },
+    {
+      "atomic_number": 95,
+      "symbol": "Am",
+      "name": "Americium",
+      "covalent_radius_angstrom": 1.8
+    },
+    {
+      "atomic_number": 96,
+      "symbol": "Cm",
+      "name": "Curium",
+      "covalent_radius_angstrom": 1.69
+    },
+    {
+      "atomic_number": 97,
+      "symbol": "Bk",
+      "name": "Berkelium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 98,
+      "symbol": "Cf",
+      "name": "Californium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 99,
+      "symbol": "Es",
+      "name": "Einsteinium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 100,
+      "symbol": "Fm",
+      "name": "Fermium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 101,
+      "symbol": "Md",
+      "name": "Mendelevium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 102,
+      "symbol": "No",
+      "name": "Nobelium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 103,
+      "symbol": "Lr",
+      "name": "Lawrencium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 104,
+      "symbol": "Rf",
+      "name": "Rutherfordium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 105,
+      "symbol": "Db",
+      "name": "Dubnium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 106,
+      "symbol": "Sg",
+      "name": "Seaborgium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 107,
+      "symbol": "Bh",
+      "name": "Bohrium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 108,
+      "symbol": "Hs",
+      "name": "Hassium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 109,
+      "symbol": "Mt",
+      "name": "Meitnerium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 110,
+      "symbol": "Ds",
+      "name": "Darmstadtium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 111,
+      "symbol": "Rg",
+      "name": "Roentgenium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 112,
+      "symbol": "Cn",
+      "name": "Copernicium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 113,
+      "symbol": "Nh",
+      "name": "Nihonium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 114,
+      "symbol": "Fl",
+      "name": "Flerovium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 115,
+      "symbol": "Mc",
+      "name": "Moscovium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 116,
+      "symbol": "Lv",
+      "name": "Livermorium",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 117,
+      "symbol": "Ts",
+      "name": "Tennessine",
+      "covalent_radius_angstrom": null
+    },
+    {
+      "atomic_number": 118,
+      "symbol": "Og",
+      "name": "Oganesson",
+      "covalent_radius_angstrom": null
+    }
+  ]
+}

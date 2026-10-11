@@ -1,4 +1,5 @@
 import { VOLUMETRIC_BROWSER_CAPS, VolumetricViewerError } from "./volumetricViewerTypes";
+import { decodeScientificImage, encodeScientificPng } from "../viewer-scene/scientificPngExport";
 
 export async function createAnnotatedVolumetricPng(args: Readonly<{
   source: HTMLCanvasElement | Blob;
@@ -31,16 +32,19 @@ export async function createAnnotatedVolumetricPng(args: Readonly<{
   let bitmap: ImageBitmap | null = null;
   try {
     const source: CanvasImageSource = args.source instanceof Blob
-      ? (bitmap = await createImageBitmap(args.source))
+      ? (bitmap = await decodeScientificImage(args.source))
       : args.source;
-    context.drawImage(source, 0, 0, args.outputWidth, args.imageHeight);
+    const scale = Math.min(args.outputWidth / source.width, args.imageHeight / source.height);
+    if (!Number.isFinite(scale) || scale <= 0) throw new Error("VIEWER_EXPORT_EMPTY_IMAGE");
+    const width = source.width * scale, height = source.height * scale;
+    context.drawImage(source, (args.outputWidth - width) / 2, (args.imageHeight - height) / 2, width, height);
     context.fillStyle = "#17232b";
     context.fillRect(0, args.imageHeight, args.outputWidth, captionHeight);
     context.fillStyle = "#f7f9fb";
     context.font = "14px system-ui, sans-serif";
     context.textBaseline = "top";
     lines.forEach((line, index) => context.fillText(line, 16, args.imageHeight + 14 + index * 22, args.outputWidth - 32));
-    return await new Promise<Blob>((resolve, reject) => canvas.toBlob((value) => value ? resolve(value) : reject(new VolumetricViewerError("VOLUME_VIEWER_RENDERER_FAILED", "PNG encoding failed safely.")), "image/png"));
+    return await encodeScientificPng(canvas);
   } finally {
     bitmap?.close();
     canvas.width = 1;

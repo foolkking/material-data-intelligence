@@ -10,6 +10,7 @@ from botocore.exceptions import ClientError
 from mdi_api.artifact_storage import ArtifactStorage
 from mdi_api.scientific_viewers.registry import ScientificViewerRegistry
 from mdi_api.scientific_viewers.schemas import ScientificViewerProjection
+from mdi_api.scientific_viewers.structure_preview import source_structure_preview
 from mdi_api.unit_of_work import RepositoryFactory
 
 
@@ -107,6 +108,12 @@ class ScientificViewerProjectionService:
                 payload, omitted, projection_limitations = self._bounded_projection(str(version["object_type"]), decoded)
                 limitations.extend(projection_limitations)
 
+        preview = source_structure_preview(
+            payload, object_type=str(version["object_type"]), object_id=str(logical["id"]),
+            source_hash=str(version["content_hash"]), version_id=str(version["id"]),
+            dataset_id=next((str(ref["dataset_id"]) for ref in version.get("source_resource_refs_json") or []
+                             if isinstance(ref, dict) and ref.get("dataset_id")), None),
+        ) if payload_status == "READY" else None
         return ScientificViewerProjection(
             project_id=str(logical["project_id"]),
             object_id=logical["id"],
@@ -120,6 +127,8 @@ class ScientificViewerProjectionService:
             viewer=descriptor,
             payload_status=payload_status,
             payload=payload,
+            viewer_scene=preview.scene if preview else None,
+            viewer_scene_issue=preview.issue if preview else None,
             canonical_metadata=dict(version["canonical_metadata_json"] or {}),
             source_resource_refs=list(version["source_resource_refs_json"] or []),
             content_hash=str(version["content_hash"]),

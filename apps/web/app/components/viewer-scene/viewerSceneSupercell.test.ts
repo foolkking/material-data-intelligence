@@ -47,6 +47,50 @@ describe("bounded periodic supercell derivation", () => {
     expect(result.scene.atoms).toHaveLength(27);
   });
 
+  it.each([0, 1])("shows the full neighbor endpoints of canonical site %s without unrelated copies", index => {
+    const mapped = mapViewerSceneForRenderer(periodicBoundaryScene());
+    if (!mapped.ok) throw new Error("fixture invalid");
+    const before = JSON.stringify(mapped.scene);
+    const result = derivePeriodicSupercell(mapped.scene, [1, 1, 1], { mode: "neighbors", center: { siteIndex: index, imageOffset: [0, 0, 0] } });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.scene.atoms).toHaveLength(3);
+    expect(result.scene.bonds).toHaveLength(1);
+    const bond = result.scene.bonds[0];
+    expect(Math.hypot(...bond.displacementCartesian)).toBeCloseTo(0.4);
+    expect(bond.distanceAngstrom).toBe(0.4);
+    expect(result.scene.atoms.some(atom => atom.siteIndex === 1 - index && atom.ref.imageOffset[0] === (index ? -1 : 1))).toBe(true);
+    expect(JSON.stringify(mapped.scene)).toBe(before);
+  });
+
+  it("retains both directions of a periodic self-neighbor", () => {
+    const mapped = mapViewerSceneForRenderer(periodicBoundaryScene());
+    if (!mapped.ok) throw new Error("fixture invalid");
+    const first = mapped.scene.atoms[0];
+    const canonical = { ...mapped.scene, atoms: [first], bonds: [{ ...mapped.scene.bonds[0],
+      toSiteIndex: 0, toRef: { siteIndex: 0, imageOffset: [1, 0, 0] as const },
+      start: first.position, end: [19.8, 0, 0] as const, distanceAngstrom: 10, displacementCartesian: [10, 0, 0] as const }] };
+    const result = derivePeriodicSupercell(canonical, [1, 1, 1], { mode: "neighbors", center: { siteIndex: 0, imageOffset: [0, 0, 0] } });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.scene.atoms).toHaveLength(3);
+    expect(result.scene.bonds).toHaveLength(2);
+    expect(result.scene.bonds.map(bond => bond.toRef.imageOffset[0]).sort()).toEqual([-1, 1]);
+    expect(result.scene.bonds.every(bond => Math.abs(Math.hypot(...bond.displacementCartesian) - 10) < 1e-8)).toBe(true);
+  });
+
+  it("restores an exact boundary image without growing another shell and rejects unbounded neighborhoods", () => {
+    const mapped = mapViewerSceneForRenderer(periodicBoundaryScene());
+    if (!mapped.ok) throw new Error("fixture invalid");
+    const center = { siteIndex: 0, imageOffset: [3, 0, 0] as const };
+    const image = derivePeriodicSupercell(mapped.scene, [1, 1, 1], { mode: "image", center });
+    expect(image.ok).toBe(true);
+    if (!image.ok) return;
+    expect(image.scene.atoms).toHaveLength(3);
+    expect(image.scene.atoms.some(atom => atom.siteIndex === 0 && atom.ref.imageOffset[0] === 3)).toBe(true);
+    expect(derivePeriodicSupercell(mapped.scene, [1, 1, 1], { mode: "neighbors", center })).toMatchObject({ ok: false, error: "PERIODIC_NEIGHBOR_IMAGE_LIMIT_EXCEEDED" });
+  });
+
   it("replicates complete cross-boundary edges without floating or duplicate bonds",()=>{
     const mapped=mapViewerSceneForRenderer(periodicBoundaryScene()); if(!mapped.ok)throw new Error("fixture invalid");
     const one=derivePeriodicSupercell(mapped.scene,[1,1,1]); expect(one.ok).toBe(true); if(one.ok)expect(one.scene.bonds).toHaveLength(0);

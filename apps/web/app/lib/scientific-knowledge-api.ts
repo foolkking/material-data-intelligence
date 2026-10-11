@@ -33,6 +33,8 @@ export type LiteratureCandidate = {
 
 export type LiteratureEvidenceRow = {
   id: string;
+  project_id?: string;
+  research_turn_id?: string;
   title?: string;
   citation?: string;
   publication_status?: string;
@@ -48,6 +50,23 @@ export type LiteratureEvidenceRow = {
   selected_at: string;
 };
 
+export type LiteratureEvidenceSelection = Omit<LiteratureEvidenceRow, "id"> & { evidence_id: string; project_id: string; research_turn_id: string };
+
+/** Match the current server's LiteratureSearchCandidate.preferred_snapshot. */
+export function preferredLiteratureSnapshot(candidate: LiteratureCandidate) {
+  return [...candidate.snapshots].sort((left, right) =>
+    Number(left.publication_status === "RETRACTED") - Number(right.publication_status === "RETRACTED") ||
+    Number(left.provider !== "CROSSREF") - Number(right.provider !== "CROSSREF") ||
+    Math.floor(Date.parse(right.retrieved_at) / 1000) - Math.floor(Date.parse(left.retrieved_at) / 1000),
+  )[0];
+}
+
+export class KnowledgeRequestError extends Error {
+  constructor(readonly status: number) {
+    super(`文献请求暂时未能完成 (${status})`);
+  }
+}
+
 async function knowledgeRequest<T>(
   path: string,
   init?: RequestInit,
@@ -60,28 +79,18 @@ async function knowledgeRequest<T>(
       ...(init?.headers || {}),
     },
   });
-  if (!response.ok) {
-    let message = `文献服务暂时不可用 (${response.status})`;
-    try {
-      const body = (await response.json()) as {
-        detail?: string | { message?: string };
-      };
-      if (typeof body.detail === "string") message = body.detail;
-      else if (body.detail?.message) message = body.detail.message;
-    } catch {
-      // Keep a bounded user-facing error.
-    }
-    throw new Error(message);
-  }
+  if (response.status === 401 && typeof window !== "undefined") window.dispatchEvent(new CustomEvent("mdi:session-expired"));
+  if (!response.ok) throw new KnowledgeRequestError(response.status);
   return response.json() as Promise<T>;
 }
 
-export function listTurnLiteratureEvidence(turnId: string) {
+export function listTurnLiteratureEvidence(turnId: string, options: Readonly<{ signal?: AbortSignal }> = {}) {
   return knowledgeRequest<{
     turnId: string;
     literatureEvidence: LiteratureEvidenceRow[];
   }>(
     `/api/research/turns/${encodeURIComponent(turnId)}/scientific-literature`,
+    options,
   );
 }
 
@@ -89,16 +98,19 @@ export function searchScientificLiterature(
   projectId: string,
   turnId: string,
   question: string,
+  options: Readonly<{ signal?: AbortSignal }> = {},
 ) {
   return knowledgeRequest<{
     candidates: LiteratureCandidate[];
     cacheStatus?: string;
     scientificResultAuthority: false;
     qualificationAuthority: false;
+    search?: { project_id?: string; research_turn_id?: string };
   }>(
     `/api/projects/${encodeURIComponent(projectId)}/scientific-literature/search`,
     {
       method: "POST",
+      signal: options.signal,
       body: JSON.stringify({
         research_turn_id: turnId,
         query: {
@@ -118,15 +130,15 @@ export function selectLiteratureEvidence(
   projectId: string,
   turnId: string,
   candidate: LiteratureCandidate,
+  options: Readonly<{ signal?: AbortSignal }> = {},
 ) {
-  const snapshot =
-    candidate.snapshots.find((item) => Boolean(item.abstract)) ||
-    candidate.snapshots[0];
+  const snapshot = preferredLiteratureSnapshot(candidate);
   const abstract = snapshot?.abstract?.trim();
-  return knowledgeRequest<LiteratureEvidenceRow>(
+  return knowledgeRequest<LiteratureEvidenceSelection>(
     `/api/projects/${encodeURIComponent(projectId)}/scientific-literature/evidence`,
     {
       method: "POST",
+      signal: options.signal,
       body: JSON.stringify({
         candidate_id: candidate.candidate_id,
         research_turn_id: turnId,

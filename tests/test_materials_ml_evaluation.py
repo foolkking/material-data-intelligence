@@ -82,6 +82,24 @@ def _execute(
     return payload, artifacts
 
 
+@pytest.mark.parametrize(("target", "prediction"), [
+    ([2.0, 2.0], [1.0, 3.0]),
+    ([0.1, 0.1, 0.1], [0.1, 0.1, 0.1]),
+    ([2.0], [3.0]),
+])
+def test_constant_regression_target_has_no_r2(target, prediction) -> None:
+    metrics = regression_metric_values(target, prediction)
+    assert metrics["r2"] is None
+    assert metrics["r2Status"] == "undefined_constant_target"
+
+
+def test_small_but_nonzero_target_variance_still_has_a_defined_r2() -> None:
+    values = [0.1, 0.100000000000001, 0.100000000000002]
+    metrics = regression_metric_values(values, values)
+    assert metrics["r2"] == 1.0
+    assert metrics["r2Status"] == "defined"
+
+
 def test_metric_definitions_handle_constant_target_and_curve_bounding() -> None:
     metrics = regression_metric_values([2.0, 2.0], [1.0, 3.0])
     assert metrics["mae"] == 1.0
@@ -491,10 +509,14 @@ def test_planner_does_not_fall_back_to_basic_metrics_for_ambiguous_profile(tmp_p
     assert validate_plan(plan, registry=registry).ok
 
 
-def test_persisted_regression_plan_executes_through_queue_runtime(tmp_path: Path) -> None:
+@pytest.mark.parametrize("constant", [False, True])
+def test_persisted_regression_plan_executes_through_queue_runtime(tmp_path: Path, constant: bool) -> None:
     profile, objects = _profiled_csv(
         tmp_path,
-        "material_id,formula,y_true,y_pred\ns1,Si,1.0,1.1\ns2,NaCl,2.0,2.2\n",
+        "material_id,formula,y_true,y_pred\n" + (
+            "s1,Si,0.1,0.1\ns2,NaCl,0.1,0.1\ns3,LiF,0.1,0.1\n" if constant
+            else "s1,Si,1.0,1.1\ns2,NaCl,2.0,2.2\n"
+        ),
         dataset_id="runtime_regression",
     )
     registry = load_manifests()
@@ -536,3 +558,8 @@ def test_persisted_regression_plan_executes_through_queue_runtime(tmp_path: Path
         "summary.md",
         "recipe.json",
     }
+    if constant:
+        product = next(item for item in artifacts if item["name"] == "materials_ml_regression.json")
+        payload = json.loads((tmp_path / "runtime" / product["storageKey"]).read_text(encoding="utf-8"))
+        assert payload["evaluations"][0]["metrics"]["r2"] is None
+        assert payload["evaluations"][0]["metrics"]["r2Status"] == "undefined_constant_target"

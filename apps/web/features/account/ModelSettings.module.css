@@ -1,0 +1,59 @@
+.backdrop { position: fixed; inset: 0; z-index: var(--ds-z-modal); background: var(--color-overlay); display: grid; place-items: center; padding: 24px; }
+.dialog { width: min(720px, 100%); max-height: min(860px, calc(100dvh - 48px)); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; background: var(--color-surface); color: var(--color-text-primary); border: 1px solid var(--color-border); border-radius: var(--ds-radius-lg); box-shadow: var(--ds-shadow-overlay); overflow: hidden; }
+.header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 24px 28px; border-bottom: 1px solid var(--color-border); }
+.header h2 { margin: 0; font-size: 22px; }
+.connectionPicker { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--color-border); }
+.connectionPicker label { display: grid; gap: 8px; min-width: 0; flex: 1 1 220px; font-size: 14px; font-weight: 600; }
+.connectionPicker select { width: 100%; min-width: 0; min-height: 44px; }
+.connectionPicker button { flex-shrink: 0; }
+.header p, .hint { margin: 8px 0 0; color: var(--color-text-secondary); font-size: 14px; line-height: 1.5; }
+.header > button { flex-shrink: 0; }
+.body { min-width: 0; min-height: 0; overflow: auto; padding: 24px 28px; overscroll-behavior: contain; }
+.connection { display: grid; gap: 16px; margin-top: 20px; }
+.connectionSummary { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.connectionSummary > div { min-width: 0; }
+.connectionSummary h3 { margin: 0; font-size: 16px; overflow-wrap: anywhere; }
+.connectionSummary p { margin: 8px 0 0; color: var(--color-text-secondary); font-size: 14px; line-height: 1.5; }
+.connectionSummary > button { flex-shrink: 0; }
+.advanced { border-top: 1px solid var(--color-border); }
+.advanced summary { display: list-item; padding: 12px 0; font-size: 14px; color: var(--color-text-secondary); cursor: pointer; }
+.advanced > div { display: grid; gap: 16px; padding: 8px 0; }
+.platform { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--color-border); }
+.sectionHeading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.sectionHeading h3 { margin: 0; font-size: 16px; }
+.sectionHeading > span { font-size: 14px; color: var(--color-text-secondary); }
+.connection label, .search { display: grid; gap: 8px; font-size: 14px; font-weight: 500; }
+.connection input, .connection select, .connectionPicker select, .search input { min-width: 0; width: 100%; box-sizing: border-box; min-height: 42px; border: 1px solid var(--color-border); border-radius: var(--ds-radius-sm); background: var(--color-surface-sunken); color: var(--color-text-primary); padding: 10px 12px; font: inherit; }
+.dialog button:focus-visible, .dialog input:focus-visible, .dialog select:focus-visible, .dialog summary:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 3px; }
+.dialog button { min-height: 44px; }
+.platformRow { padding: 12px 4px; }
+.actions { display: flex; justify-content: flex-end; }
+.directory { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--color-border); display: grid; gap: 16px; }
+.selectionBar { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; font-size: 14px; color: var(--color-text-secondary); }
+.selectionBar > span { margin-right: auto; }
+.selectionBar button, .error button { background: none; border: none; color: var(--color-accent); padding: 4px 0; font: inherit; cursor: pointer; }
+.selectionBar button:disabled, .error button:disabled { color: var(--color-text-secondary); cursor: default; opacity: .65; }
+.models { margin: 0; padding: 0; list-style: none; }
+.models li + li { border-top: 1px solid var(--color-border); }
+.models label { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 8px 4px; cursor: pointer; }
+.models label:hover { background: var(--color-surface-sunken); }
+/* The clickable label supplies the 44px target; override the global mobile input minimum. */
+.models input[type="checkbox"] { width: 18px; height: 18px; min-width: 18px; min-height: 18px !important; margin: 0; flex-shrink: 0; accent-color: var(--color-accent); }
+.models span { display: grid; min-width: 0; gap: 4px; }
+.models strong { font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
+.models small { color: var(--color-text-secondary); font-size: 13px; }
+.empty { padding: 20px 0; color: var(--color-text-muted); font-size: 13px; line-height: 1.7; }
+.footer { padding: 16px 28px; border-top: 1px solid var(--color-border); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.footer > span { font-size: 14px; color: var(--color-text-secondary); }
+.footer > div { display: flex; gap: 8px; }
+.footer button { flex-shrink: 0; }
+.error { display: grid; gap: 8px; justify-items: start; padding: 12px; margin-bottom: 16px; background: var(--ds-color-danger-100); color: var(--color-status-danger); font-size: 13px; }
+.notice { font-size: 13px; line-height: 1.6; padding: 12px; background: var(--color-accent-soft); color: var(--color-accent); }
+@media (max-width: 600px) {
+  .backdrop { padding: 0; }
+  .dialog { width: 100%; height: 100dvh; max-height: 100dvh; border-radius: 0; border: none; }
+  .header, .body { padding: 20px; }
+  .connection input, .connection select, .connectionPicker select, .search input { font-size: 16px; }
+  .footer { display: grid; grid-template-columns: minmax(0, 1fr); justify-content: stretch; gap: 8px; padding: 12px 20px max(12px, env(safe-area-inset-bottom)); }
+  .footer > div > button { flex: 1; }
+}

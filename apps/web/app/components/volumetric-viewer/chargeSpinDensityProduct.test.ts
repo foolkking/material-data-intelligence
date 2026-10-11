@@ -15,6 +15,14 @@ function bundle(fields:readonly ValidatedVolumetricField[],relationships:readonl
 }
 
 describe("charge/spin density product model",()=>{
+  it("computes presets from the selected channel without changing the source integrals",()=>{
+    const source=bundle([field("total","electron_density",36,null,1,8),field("spin_difference","magnetization_density",4.5,spin("spin_difference"),-1,1)]);
+    const difference=buildChargeSpinDensityProduct(source);
+    const total=buildChargeSpinDensityProduct(source,"field:total");
+    expect(difference.presets.map(p=>p.absoluteIsovalue)).toEqual([0.1,0.25,0.5]);
+    expect(total.presets.map(p=>p.absoluteIsovalue)).toEqual([0.8,2,4]);
+    expect(total.integralRows).toEqual(difference.integralRows);
+  });
   it("separates electron density from signed electric charge",()=>{
     const electron=buildChargeSpinDensityProduct(bundle([field("total","electron_density",36)]));
     expect(electron).toMatchObject({kind:"electron_density",status:"ready"});

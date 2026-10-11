@@ -31,7 +31,7 @@ class ChemSysSunburstResult:
 
 class ChemSysSunburstAdapter(BaseToolAdapter):
     tool_id = "composition.chem_sys_sunburst"
-    adapter_version = "0.1.0"
+    adapter_version = "0.1.2"
 
     def prepare(self, context: ToolExecutionContext, input_refs: list[Any], params: dict[str, Any]) -> FormulaStats:
         if not self._resolved_inputs:
@@ -56,16 +56,16 @@ class ChemSysSunburstAdapter(BaseToolAdapter):
             )
         max_leaf_nodes = max(1, int(params.get("maxLeafNodes") or 100))
         nodes, warnings = _sunburst_nodes(prepared, hierarchy, max_leaf_nodes=max_leaf_nodes)
-        try:
-            group_by = "reduced_formula" if "reduced_formula" in hierarchy else "chem_sys"
-            figure = pmv.chem_sys_sunburst(
-                formula_list(prepared.parsed),
-                group_by=group_by,
-                max_slices=max_leaf_nodes,
-                show_counts="value",
-            )
-            figure.update_layout(title_text=params.get("title") or "Chemical System Sunburst")
-        except Exception:
+        figure = None
+        source_function = "pymatviz.chem_sys_sunburst"
+        if not warnings and hierarchy in (["arity", "chem_sys"], ["arity", "chem_sys", "reduced_formula"]):
+            try:
+                group_by = "reduced_formula" if "reduced_formula" in hierarchy else "chem_sys"
+                figure = pmv.chem_sys_sunburst(formula_list(prepared.parsed), group_by=group_by, show_counts="value")
+                figure.update_layout(title_text=params.get("title") or "Chemical System Sunburst")
+            except Exception:
+                pass
+        if figure is None:
             figure = sunburst_figure(
                 [node["id"] for node in nodes],
                 [node["label"] for node in nodes],
@@ -73,6 +73,7 @@ class ChemSysSunburstAdapter(BaseToolAdapter):
                 [node["count"] for node in nodes],
                 title=str(params.get("title") or "Chemical System Sunburst"),
             )
+            source_function = "mdi_adapters.composition_common.sunburst_figure"
         metadata = {
             "artifactType": "composition.chem_sys_sunburst",
             "chartType": "sunburst",
@@ -84,6 +85,7 @@ class ChemSysSunburstAdapter(BaseToolAdapter):
             "parsedFormulaCount": prepared.payload["parsedFormulaCount"],
             "failedFormulaCount": prepared.payload["failedFormulaCount"],
             "warnings": list(prepared.payload.get("warnings", [])) + warnings,
+            "sourceFunction": source_function,
         }
         return ChemSysSunburstResult(metadata=metadata, figure=figure, params=params)
 
@@ -97,7 +99,7 @@ class ChemSysSunburstAdapter(BaseToolAdapter):
             json_name="chem_sys_sunburst.json",
             title="Chemical System Sunburst",
             provenance={
-                "sourceFunction": "pymatviz.chem_sys_sunburst",
+                "sourceFunction": result.metadata["sourceFunction"],
                 "adapter": self.tool_id,
                 "formulaColumn": result.metadata["formulaColumn"],
                 "hierarchy": result.metadata["hierarchy"],
@@ -124,11 +126,19 @@ def _sunburst_nodes(prepared: FormulaStats, hierarchy: list[str], *, max_leaf_no
 
     nodes = sorted(counts.values(), key=lambda item: (item["parent"], item["label"]))
     warnings: list[str] = []
-    leaf_nodes = [node for node in nodes if not any(other["parent"] == node["id"] for other in nodes)]
+    parent_ids = {node["parent"] for node in nodes if node["parent"]}
+    leaf_nodes = [node for node in nodes if node["id"] not in parent_ids]
     if len(leaf_nodes) > max_leaf_nodes:
         warnings.append("too_many_leaf_nodes_warning")
-        allowed_leaf_ids = {node["id"] for node in leaf_nodes[:max_leaf_nodes]}
-        nodes = [node for node in nodes if node["id"] in allowed_leaf_ids or node["id"] not in {leaf["id"] for leaf in leaf_nodes}]
+        # Retain complete paths for the largest leaves. Unrelated ancestors must
+        # not turn into extra leaves after pruning. Saved counts stay unchanged.
+        retained_ids: set[str] = set()
+        for leaf in sorted(leaf_nodes, key=lambda node: (-node["count"], node["id"]))[:max_leaf_nodes]:
+            node_id = leaf["id"]
+            while node_id and node_id not in retained_ids:
+                retained_ids.add(node_id)
+                node_id = counts[node_id]["parent"]
+        nodes = [node for node in nodes if node["id"] in retained_ids]
     return [
         {
             "id": str(node["id"]),

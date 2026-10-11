@@ -1,7 +1,7 @@
 import React from "react";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   searchProduct: vi.fn(),
@@ -53,6 +53,7 @@ vi.mock("../../shared/layout/ProductNavigation", () => ({
 }));
 
 import { TrashCenterPage } from "./TrashCenterPage";
+import { trashRestoreBatches } from "../../features/projects/trash-operations";
 
 const trashedItems = [
   {
@@ -78,7 +79,7 @@ const trashedItems = [
 ] as const;
 
 beforeEach(() => {
-  vi.clearAllMocks();
+  vi.resetAllMocks();
   mocks.searchProduct.mockResolvedValue({
     query: "",
     count: trashedItems.length,
@@ -119,7 +120,7 @@ beforeEach(() => {
     async (_projectId: string, ids: string[]) => ({
       project_id: "project-1",
       lifecycle: "ACTIVE",
-      items: [],
+      items: ids.map((id) => ({ id, project_id: "project-1", lifecycle_status: "ACTIVE" })),
       count: ids.length,
     }),
   );
@@ -147,236 +148,219 @@ beforeEach(() => {
   mocks.deleteEmptyProject.mockResolvedValue({ projectId: "project-empty", deleted: true });
 });
 
-it("loads the unified recoverable trash and restores a research session", async () => {
-  const user = userEvent.setup();
-  render(<TrashCenterPage />);
-
-  expect(await screen.findByRole("heading", { name: "回收站" })).toBeInTheDocument();
-  expect(mocks.searchProduct).toHaveBeenCalledWith("", { status: "trashed", limit: 100 });
-  expect(screen.getByText("被移除的研究")).toBeInTheDocument();
-  expect(screen.getByText("空白验收项目")).toBeInTheDocument();
-
-  const row = screen.getByText("被移除的研究").closest("article");
-  await user.click(row!.querySelector<HTMLButtonElement>("button")!);
-
-  await waitFor(() => expect(mocks.updateResearchSession).toHaveBeenCalledWith("research-1", { lifecycle: "ACTIVE" }));
-  expect(screen.queryByText("被移除的研究")).not.toBeInTheDocument();
-  expect(screen.getByRole("status")).toHaveTextContent("已恢复");
+afterEach(() => vi.useRealTimers());
+it("keeps multi-page recovery within each service's 100-item limit", async () => {
+  const items = Array.from({ length: 205 }, (_, i) => ({ ...trashedItems[1], id: `p-${i}`, projectId: `p-${i}` }));
+  const batches = trashRestoreBatches(items);
+  expect(batches.map((batch) => batch.items.length)).toEqual([100, 100, 5]);
+  await Promise.all(batches.map((batch) => batch.run(new AbortController().signal)));
+  expect(mocks.bulkProjectAction.mock.calls.flatMap((call) => call[0])).toEqual(items.map((item) => item.id));
 });
-
-it("restores a mixed selection through authorized atomic service batches", async () => {
-  const user = userEvent.setup();
-  mocks.searchProduct.mockResolvedValueOnce({
-    query: "",
-    count: 5,
-    items: [
-      trashedItems[1],
-      {
-        kind: "dataset",
-        id: "dataset-1",
-        projectId: "project-1",
-        title: "数据集",
-        subtitle: "材料表",
-        href: "/projects/project-1/data?dataset=dataset-1",
-        status: "trashed",
-      },
-      {
-        kind: "scientific_object",
-        id: "object-1",
-        projectId: "project-1",
-        title: "结构",
-        subtitle: "科学对象",
-        href: "/projects/project-1/data?object=object-1",
-        status: "trashed",
-      },
-      trashedItems[0],
-      {
-        kind: "report",
-        id: "report-1",
-        projectId: "project-1",
-        title: "科学报告",
-        subtitle: "报告",
-        href: "/projects/project-1/reports/report-1",
-        status: "trashed",
-      },
-    ],
-  });
-  render(<TrashCenterPage />);
-
-  await screen.findByText("空白验收项目");
-  await user.click(screen.getByRole("button", { name: "选择当前筛选" }));
-  await user.click(screen.getByRole("button", { name: "恢复所选（5）" }));
-
-  await waitFor(() =>
-    expect(mocks.bulkProjectAction).toHaveBeenCalledWith(
-      ["project-empty"],
-      "restore",
-    ),
-  );
-  expect(mocks.bulkDatasetAction).toHaveBeenCalledWith(
-    ["dataset-1"],
-    "restore",
-  );
-  expect(mocks.bulkUpdateScientificObjects).toHaveBeenCalledWith(
-    "project-1",
-    ["object-1"],
-    "ACTIVE",
-  );
-  expect(mocks.bulkUpdateResearchSessions).toHaveBeenCalledWith(
-    "project-1",
-    ["research-1"],
-    "RESTORE",
-  );
-  expect(mocks.bulkUpdateScientificReportLifecycle).toHaveBeenCalledWith(
-    "project-1",
-    ["report-1"],
-    "ACTIVE",
-  );
-  expect(await screen.findByText("已恢复 5 项；科学历史与精确来源未发生变化。")).toBeInTheDocument();
-  expect(screen.getByRole("heading", { name: "当前筛选下没有内容" })).toBeInTheDocument();
-});
-
-it("keeps unauthorized batch items selected and reports an explicit partial failure", async () => {
-  const user = userEvent.setup();
-  mocks.bulkProjectAction.mockRejectedValueOnce(new Error("forbidden"));
-  render(<TrashCenterPage />);
-
-  await screen.findByText("空白验收项目");
-  await user.click(screen.getByRole("button", { name: "选择当前筛选" }));
-  await user.click(screen.getByRole("button", { name: "恢复所选（2）" }));
-
-  expect(
-    await screen.findByText(
-      "已恢复 1 项；1 项未恢复（项目）。失败项仍保留在回收站并保持选中，请检查权限或服务后重试。",
-    ),
-  ).toBeInTheDocument();
-  expect(screen.queryByText("被移除的研究")).not.toBeInTheDocument();
-  expect(screen.getByText("空白验收项目")).toBeInTheDocument();
-  expect(screen.getByRole("checkbox", { name: "选择恢复项目“空白验收项目”" })).toBeChecked();
-  expect(screen.getByRole("button", { name: "恢复所选（1）" })).toBeEnabled();
-});
-
-it("requires server approval and stable identity confirmation before permanent deletion", async () => {
-  const user = userEvent.setup();
-  render(<TrashCenterPage />);
-  const projectTitle = await screen.findByText("空白验收项目");
-  const row = projectTitle.closest("article")!;
-
-  await user.click(screen.getByRole("button", { name: "永久删除…", hidden: false }));
-  expect(await screen.findByRole("dialog", { name: "永久删除空项目？" })).toBeInTheDocument();
-  expect(screen.getByText(/自动清理已禁用/)).toBeInTheDocument();
-  expect(mocks.getProjectDependencyImpact).toHaveBeenCalledWith("project-empty");
-  const confirm = screen.getByRole("button", { name: "确认永久删除" });
-  expect(confirm).toBeDisabled();
-
-  expect(screen.getByText("标题可能重复；类型与 ID 用于确认当前选中的确切实体。")).toBeInTheDocument();
-  await user.type(screen.getByRole("textbox"), "project:project-empty");
-  expect(confirm).toBeEnabled();
-  await user.click(confirm);
-
-  await waitFor(() => expect(mocks.deleteEmptyProject).toHaveBeenCalledWith("project-empty"));
-  expect(row).not.toBeInTheDocument();
-});
-
-it("does not let duplicate titles make the destructive confirmation ambiguous", async () => {
-  const user = userEvent.setup();
-  mocks.searchProduct.mockResolvedValueOnce({
-    query: "",
-    count: 3,
-    items: [
-      ...trashedItems,
-      {
-        kind: "project",
-        id: "project-empty-2",
-        projectId: "project-empty-2",
-        title: "空白验收项目",
-        subtitle: "同名项目",
-        href: "/projects/project-empty-2",
-        status: "trashed",
-        updatedAt: "2026-08-31T10:00:00Z",
-      },
-    ],
-  });
-  render(<TrashCenterPage />);
-
-  const rows = await screen.findAllByRole("heading", { name: "空白验收项目" });
-  expect(rows).toHaveLength(2);
-  const targetRow = rows[1].closest("article")!;
-  await user.click(
-    within(targetRow).getByRole("button", { name: "永久删除…" }),
-  );
-  expect(
-    await screen.findByText("project:project-empty-2"),
-  ).toBeInTheDocument();
-  const confirm = screen.getByRole("button", { name: "确认永久删除" });
-  await user.type(screen.getByRole("textbox"), "project:project-empty");
-  expect(confirm).toBeDisabled();
-  expect(mocks.deleteEmptyProject).not.toHaveBeenCalled();
-  await user.clear(screen.getByRole("textbox"));
-  await user.type(screen.getByRole("textbox"), "project:project-empty-2");
-  expect(confirm).toBeEnabled();
-  await user.click(confirm);
-
-  await waitFor(() =>
-    expect(mocks.deleteEmptyProject).toHaveBeenCalledWith("project-empty-2"),
-  );
-});
-
-it("does not offer destructive deletion when scientific dependencies protect the item", async () => {
-  const user = userEvent.setup();
-  mocks.getProjectDependencyImpact.mockResolvedValueOnce({
-    entity: "project",
-    entityId: "project-empty",
-    displayName: "空白验收项目",
-    canDelete: false,
-    dependencyCount: 2,
-    dependencies: [{
-      kind: "scientific_result",
-      label: "科学结果",
-      count: 2,
-      href: "/projects/project-empty/research",
-    }],
-    impact: {
-      removedFromActiveDiscovery: true,
-      historicalProvenanceProtected: true,
-      historicalResearchRemainsAccessible: true,
-    },
-  });
-  render(<TrashCenterPage />);
-
-  await screen.findByText("空白验收项目");
+const signal = expect.any(AbortSignal);
+async function showProjectDetail(user: ReturnType<typeof userEvent.setup>, index = 0) {
+  await user.click((await screen.findAllByRole("button", { name: "查看 空白验收项目 的详情" }))[index]);
   await user.click(screen.getByRole("button", { name: "永久删除…" }));
-  expect(await screen.findByRole("dialog", { name: "该内容受科学依赖保护" })).toBeInTheDocument();
-  expect(screen.getByRole("link", { name: "科学结果" })).toHaveAttribute(
-    "href",
-    "/projects/project-empty/research",
-  );
+}
+async function selectAll(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole("button", { name: "批量选择" }));
+  await user.click(screen.getByRole("checkbox", { name: "选择当前显示的内容" }));
+}
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((done) => { resolve = done; });
+  return { promise, resolve };
+}
+
+it("restores one exact record and keeps implementation detail out of the list", async () => {
+  const user = userEvent.setup(); render(<TrashCenterPage />);
+  const title = await screen.findByText("被移除的研究");
+  expect(mocks.searchProduct).toHaveBeenCalledWith("", { status: "trashed", limit: 100, signal });
+  expect(screen.queryByText("技术身份")).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "永久删除…" })).not.toBeInTheDocument();
+  await user.click(within(title.closest("article")!).getByRole("button", { name: "恢复" }));
+  await waitFor(() => expect(mocks.bulkUpdateResearchSessions).toHaveBeenCalledWith("project-1", ["research-1"], "RESTORE", signal));
+  expect(screen.queryByText("被移除的研究")).not.toBeInTheDocument();
+  expect(screen.getByRole("status")).toHaveTextContent("已恢复“被移除的研究”。");
+});
+
+it("restores a mixed selection with exact atomic service batches", async () => {
+  const user = userEvent.setup();
+  mocks.searchProduct.mockResolvedValueOnce({ query: "", count: 5, items: [
+    ...trashedItems,
+    ...(["dataset", "scientific_object", "report"] as const).map((kind) => ({ kind, id: `${kind}-1`, projectId: "project-1", title: kind, subtitle: "", status: "trashed", href: "/source" })),
+  ] });
+  render(<TrashCenterPage />); await screen.findByText("空白验收项目"); await selectAll(user);
+  await user.click(screen.getByRole("button", { name: "恢复所选（5）" }));
+  expect(await screen.findByText("已恢复 5 项。")).toBeInTheDocument();
+  expect(mocks.bulkProjectAction).toHaveBeenCalledWith(["project-empty"], "restore", signal);
+  expect(mocks.bulkDatasetAction).toHaveBeenCalledWith(["dataset-1"], "restore", signal);
+  expect(mocks.bulkUpdateScientificObjects).toHaveBeenCalledWith("project-1", ["scientific_object-1"], "ACTIVE", signal);
+  expect(mocks.bulkUpdateResearchSessions).toHaveBeenCalledWith("project-1", ["research-1"], "RESTORE", signal);
+  expect(mocks.bulkUpdateScientificReportLifecycle).toHaveBeenCalledWith("project-1", ["report-1"], "ACTIVE", signal);
+  expect(screen.getByRole("heading", { name: "回收站是空的" })).toBeInTheDocument();
+});
+
+it("settles successful siblings immediately and requires rereading uncertain writes", async () => {
+  const user = userEvent.setup(), pending = deferred<unknown>();
+  mocks.bulkProjectAction.mockReturnValueOnce(pending.promise);
+  render(<TrashCenterPage />); await screen.findByText("空白验收项目"); await selectAll(user);
+  vi.useFakeTimers();
+  await act(async () => { fireEvent.click(screen.getByRole("button", { name: "恢复所选（2）" })); });
+  expect(screen.queryByText("被移除的研究")).not.toBeInTheDocument();
+  expect(screen.getByText("空白验收项目")).toBeInTheDocument();
+  await act(async () => { vi.advanceTimersByTime(10_000); });
+  expect(screen.getByRole("alert")).toHaveTextContent("已恢复 1 项；1 项的恢复结果尚未确认");
+  expect(screen.getByRole("checkbox", { name: "选择 空白验收项目" })).toBeDisabled();
+  expect(mocks.bulkProjectAction.mock.calls[0][2].aborted).toBe(true);
+  await act(async () => { pending.resolve({ action: "restore", projectIds: ["project-empty"], count: 1 }); });
+  expect(screen.getByText("空白验收项目")).toBeInTheDocument();
+  vi.useRealTimers();
+  mocks.searchProduct.mockResolvedValueOnce({ query: "", count: 1, items: [trashedItems[1]] });
+  await user.click(screen.getByRole("button", { name: "刷新列表" }));
+  await waitFor(() => expect(screen.getByRole("checkbox", { name: "选择 空白验收项目" })).toBeEnabled());
+});
+
+it("rejects a same-count response with different restored identities", async () => {
+  const user = userEvent.setup();
+  mocks.bulkProjectAction.mockResolvedValueOnce({ action: "restore", count: 1, projectIds: ["foreign"] });
+  render(<TrashCenterPage />); const title = await screen.findByText("空白验收项目");
+  await user.click(within(title.closest("article")!).getByRole("button", { name: "恢复" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent("恢复结果尚未确认");
+  expect(screen.getByText("空白验收项目")).toBeInTheDocument();
+});
+
+it("clears hidden selection when the type or search changes", async () => {
+  const user = userEvent.setup();
+  mocks.searchProduct.mockImplementation(async (query: string, options: { kind?: string }) => ({ query, count: 2, items: trashedItems.filter((item) => (!options.kind || item.kind === options.kind) && item.title.includes(query)) }));
+  render(<TrashCenterPage />); await screen.findByText("空白验收项目"); await selectAll(user);
+  await user.click(screen.getByRole("button", { name: "项目" }));
+  await waitFor(() => expect(screen.getByRole("checkbox", { name: "选择 空白验收项目" })).toBeEnabled());
+  expect(screen.getByRole("button", { name: "恢复所选（0）" })).toBeDisabled();
+  expect(screen.queryByText("被移除的研究")).not.toBeInTheDocument();
+  await user.click(screen.getByRole("checkbox", { name: "选择当前显示的内容" }));
+  await user.type(screen.getByRole("searchbox"), "空白");
+  await waitFor(() => expect(mocks.searchProduct).toHaveBeenLastCalledWith("空白", expect.objectContaining({ kind: "project", signal })));
+  expect(screen.getByRole("button", { name: "恢复所选（0）" })).toBeDisabled();
+  await user.click(screen.getByRole("checkbox", { name: "选择当前显示的内容" }));
+  await user.click(screen.getByRole("button", { name: "恢复所选（1）" }));
+  await waitFor(() => expect(mocks.bulkProjectAction).toHaveBeenCalledWith(["project-empty"], "restore", signal));
+  expect(mocks.bulkUpdateResearchSessions).not.toHaveBeenCalled();
+});
+
+it("retains loaded rows on failed refresh and retries the same page cursor", async () => {
+  const user = userEvent.setup();
+  mocks.searchProduct.mockResolvedValueOnce({ query: "", count: 1, items: [trashedItems[0]], nextCursor: "page-2", truncated: true });
+  render(<TrashCenterPage />); await screen.findByText("被移除的研究");
+  mocks.searchProduct.mockRejectedValueOnce(new Error("offline"));
+  await user.click(screen.getByRole("button", { name: "显示更多" }));
+  expect(await screen.findByText("列表暂时无法更新")).toBeInTheDocument();
+  expect(screen.getByText("被移除的研究")).toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "重新加载回收站" }));
+  await screen.findByText("空白验收项目");
+  expect(mocks.searchProduct).toHaveBeenLastCalledWith("", expect.objectContaining({ cursor: "page-2" }));
+  expect(screen.getAllByRole("heading", { name: "被移除的研究" })).toHaveLength(1);
+  mocks.searchProduct.mockRejectedValueOnce(new Error("offline"));
+  await user.click(screen.getByRole("button", { name: "刷新列表" }));
+  await screen.findByText("列表暂时无法更新");
+  expect(screen.getByText("空白验收项目")).toBeInTheDocument();
+});
+
+it("bounds a stalled refresh and ignores its late response after recovery", async () => {
+  const user = userEvent.setup(), pending = deferred<unknown>();
+  render(<TrashCenterPage />); await screen.findByText("空白验收项目");
+  mocks.searchProduct.mockReturnValueOnce(pending.promise);
+  vi.useFakeTimers();
+  await act(async () => { fireEvent.click(screen.getByRole("button", { name: "刷新列表" })); });
+  await act(async () => { vi.advanceTimersByTime(10_000); });
+  expect(screen.getByText("列表暂时无法更新")).toBeInTheDocument();
+  expect(screen.getByText("空白验收项目")).toBeInTheDocument();
+  vi.useRealTimers(); await user.click(screen.getByRole("button", { name: "重新加载回收站" }));
+  await waitFor(() => expect(screen.queryByText("列表暂时无法更新")).not.toBeInTheDocument());
+  await act(async () => { pending.resolve({ query: "", items: [], count: 0 }); });
+  expect(screen.getByText("空白验收项目")).toBeInTheDocument();
+});
+
+it("never lets an old search response replace the current search", async () => {
+  const user = userEvent.setup(), pending = deferred<unknown>();
+  render(<TrashCenterPage />); await screen.findByText("空白验收项目");
+  mocks.searchProduct.mockReturnValueOnce(pending.promise);
+  await user.type(screen.getByRole("searchbox"), "旧");
+  await waitFor(() => expect(mocks.searchProduct).toHaveBeenCalledWith("旧", expect.anything()));
+  mocks.searchProduct.mockImplementation(async (query: string) => ({ query, items: query === "新" ? [{ ...trashedItems[0], title: "新的研究" }] : [], count: 1 }));
+  await user.clear(screen.getByRole("searchbox")); await user.type(screen.getByRole("searchbox"), "新");
+  await screen.findByText("新的研究");
+  await act(async () => pending.resolve({ query: "旧", items: trashedItems, count: 2 }));
+  expect(screen.queryByText("空白验收项目")).not.toBeInTheDocument();
+});
+
+it("keeps exact identity confirmation for duplicate names", async () => {
+  const user = userEvent.setup();
+  mocks.searchProduct.mockResolvedValueOnce({ query: "", count: 3, items: [...trashedItems, { ...trashedItems[1], id: "project-empty-2", projectId: "project-empty-2" }] });
+  mocks.getProjectDependencyImpact.mockImplementation(async (id: string) => ({ entity: "project", entityId: id, canDelete: true, dependencies: [] }));
+  mocks.deleteEmptyProject.mockResolvedValueOnce({ projectId: "project-empty-2", deleted: true });
+  render(<TrashCenterPage />); await showProjectDetail(user, 1);
+  await screen.findByRole("dialog", { name: "永久删除这项内容？" });
+  expect(mocks.getProjectDependencyImpact).toHaveBeenCalledWith("project-empty-2", signal);
+  const input = screen.getByRole("textbox"), confirm = screen.getByRole("button", { name: "确认永久删除" });
+  await user.type(input, "project:project-empty"); expect(confirm).toBeDisabled();
+  await user.type(input, "-2"); expect(confirm).toBeEnabled();
+  await user.dblClick(confirm);
+  await waitFor(() => expect(mocks.deleteEmptyProject).toHaveBeenCalledWith("project-empty-2", signal));
+  expect(mocks.deleteEmptyProject).toHaveBeenCalledTimes(1);
+  expect(screen.getAllByRole("heading", { name: "空白验收项目" })).toHaveLength(1);
+});
+
+it("keeps protected records and links to their actual dependencies", async () => {
+  const user = userEvent.setup();
+  mocks.getProjectDependencyImpact.mockResolvedValueOnce({ entity: "project", entityId: "project-empty", canDelete: false, dependencies: [{ kind: "result", label: "分析结果", count: 2, href: "/projects/project-empty/research" }] });
+  render(<TrashCenterPage />); await showProjectDetail(user);
+  await screen.findByRole("dialog", { name: "这项内容暂不能永久删除" });
+  expect(screen.getByRole("link", { name: "分析结果" })).toHaveAttribute("href", "/projects/project-empty/research");
   expect(screen.queryByRole("button", { name: "确认永久删除" })).not.toBeInTheDocument();
   expect(mocks.deleteEmptyProject).not.toHaveBeenCalled();
 });
 
-it("keeps an empty trash view from becoming a navigation dead end", async () => {
-  mocks.searchProduct.mockResolvedValueOnce({
-    query: "",
-    count: 0,
-    items: [],
-  });
-  render(<TrashCenterPage />);
-
-  expect(await screen.findByRole("heading", { name: "当前筛选下没有内容" })).toBeInTheDocument();
-  expect(screen.getByRole("link", { name: "查看项目" })).toHaveAttribute("href", "/projects");
-  expect(screen.getByRole("link", { name: "返回控制台" })).toHaveAttribute("href", "/console");
+it("rejects a dependency preview for another entity", async () => {
+  const user = userEvent.setup();
+  mocks.getProjectDependencyImpact.mockResolvedValueOnce({ entity: "project", entityId: "foreign", canDelete: true, dependencies: [] });
+  render(<TrashCenterPage />); await showProjectDetail(user);
+  expect(await screen.findByRole("alert")).toHaveTextContent("暂时无法确认能否删除");
+  expect(screen.queryByRole("button", { name: "确认永久删除" })).not.toBeInTheDocument();
 });
 
-it("offers an in-place retry when the trash inventory cannot be read", async () => {
-  const user = userEvent.setup();
-  mocks.searchProduct
-    .mockRejectedValueOnce(new Error("service unavailable"))
-    .mockResolvedValueOnce({ query: "", count: 0, items: [] });
-  render(<TrashCenterPage />);
+it("contains delete failures in the open dialog and blocks an immediate repeat", async () => {
+  const user = userEvent.setup(); mocks.deleteEmptyProject.mockRejectedValueOnce(new Error("socket closed"));
+  render(<TrashCenterPage />); await showProjectDetail(user); await screen.findByRole("textbox");
+  await user.type(screen.getByRole("textbox"), "project:project-empty");
+  await user.click(screen.getByRole("button", { name: "确认永久删除" }));
+  expect(await within(screen.getByRole("dialog")).findByRole("alert")).toHaveTextContent("删除结果尚未确认");
+  expect(screen.getByRole("button", { name: "确认永久删除" })).toBeDisabled();
+  expect(mocks.deleteEmptyProject).toHaveBeenCalledTimes(1);
+  await user.keyboard("{Escape}");
+  expect(screen.getByRole("heading", { name: "空白验收项目" })).toBeInTheDocument();
+});
 
-  expect(await screen.findByRole("heading", { name: "回收站暂时无法读取" })).toBeInTheDocument();
+it("cancels closed dependency reads so they cannot reopen the dialog", async () => {
+  const user = userEvent.setup(), pending = deferred<unknown>(); mocks.getProjectDependencyImpact.mockReturnValueOnce(pending.promise);
+  render(<TrashCenterPage />); await showProjectDetail(user);
+  await user.keyboard("{Escape}");
+  expect(mocks.getProjectDependencyImpact.mock.calls[0][1].aborted).toBe(true);
+  await act(async () => { pending.resolve({ entity: "project", entityId: "project-empty", canDelete: true, dependencies: [] }); });
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+});
+
+it("distinguishes empty trash, missing search results and failed reads", async () => {
+  const user = userEvent.setup();
+  mocks.searchProduct.mockRejectedValueOnce(new Error("offline"));
+  render(<TrashCenterPage />); await screen.findByText("回收站暂时无法读取");
+  expect(screen.queryByText("回收站是空的")).not.toBeInTheDocument();
+  mocks.searchProduct.mockImplementation(async (query: string) => ({ query, items: [], count: 0 }));
   await user.click(screen.getByRole("button", { name: "重新加载回收站" }));
-  expect(await screen.findByRole("heading", { name: "当前筛选下没有内容" })).toBeInTheDocument();
-  expect(mocks.searchProduct).toHaveBeenCalledTimes(2);
+  await screen.findByRole("heading", { name: "回收站是空的" });
+  expect(screen.getByRole("link", { name: "查看项目" })).toHaveAttribute("href", "/projects");
+  await user.type(screen.getByRole("searchbox"), "不存在");
+  await screen.findByRole("heading", { name: "没有找到匹配的内容" });
+  await user.click(screen.getByRole("button", { name: "清除筛选" }));
+  await screen.findByRole("heading", { name: "回收站是空的" });
+  expect(screen.getByRole("searchbox")).toHaveFocus();
 });

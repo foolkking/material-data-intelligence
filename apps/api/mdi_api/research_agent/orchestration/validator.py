@@ -118,6 +118,8 @@ class ResearchTurnDecisionValidator:
                     code="ORCHESTRATOR_UNKNOWN_REQUIREMENT",
                 )
             manifest = self.requirements.require(proposed.requirement_id)
+            if not manifest.requires_material:
+                self._require(not proposed.subject_ref_keys, "Reference and parameter-only requirements cannot bind material subjects")
             if manifest.status == "DEPRECATED":
                 raise InvalidResearchTurnDecision(f"Deprecated requirement: {proposed.requirement_id}")
             for key in proposed.subject_ref_keys:
@@ -141,8 +143,26 @@ class ResearchTurnDecisionValidator:
 
     def _validate_analysis(self, decision: ResearchTurnDecision) -> None:
         self._require(bool(decision.research_objective), f"{decision.action.value} requires research_objective")
-        self._require(bool(decision.selected_scope_ref_keys), f"{decision.action.value} requires selected scope")
         self._require(bool(decision.scientific_requirements), f"{decision.action.value} requires scientific requirements")
+        material_requirements = []
+        for item in decision.scientific_requirements:
+            if not self.requirements.contains(item.requirement_id):
+                raise InvalidResearchTurnDecision(
+                    f"Unknown requirement: {item.requirement_id}",
+                    code="ORCHESTRATOR_UNKNOWN_REQUIREMENT",
+                )
+            if self.requirements.require(item.requirement_id).requires_material:
+                material_requirements.append(item.requirement_id)
+        if material_requirements:
+            self._require(bool(decision.selected_scope_ref_keys),
+                f"Requirements requiring existing material objects: {', '.join(material_requirements)}. "
+                "Use authorized object keys in selected_scope_ref_keys and subject_ref_keys. "
+                "A generated model is not an existing source object in this decision. "
+                "Request only requirements satisfied by the current inputs; CLARIFY if a real sample is missing.")
+        else:
+            self._require(not decision.selected_scope_ref_keys,
+                "All requested requirements are independent of material. Leave selected_scope_ref_keys "
+                "and subject_ref_keys empty; do not bind unrelated project materials.")
         self._require(
             any(item.criticality == RequirementCriticality.REQUIRED for item in decision.scientific_requirements),
             f"{decision.action.value} requires at least one REQUIRED requirement",

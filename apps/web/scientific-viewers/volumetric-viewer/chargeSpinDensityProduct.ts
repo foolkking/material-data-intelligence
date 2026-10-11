@@ -15,7 +15,7 @@ export type ChargeSpinDensityProduct = Readonly<{
   formulaIds: readonly string[];
 }>;
 
-export function buildChargeSpinDensityProduct(bundle: ValidatedVolumetricBundle): ChargeSpinDensityProduct {
+export function buildChargeSpinDensityProduct(bundle: ValidatedVolumetricBundle, selectedFieldId?: string): ChargeSpinDensityProduct {
   const fields = bundle.fields.filter((item) => item.supported).map((item) => item.field);
   const byChannel = new Map(fields.filter((field) => field.spin).map((field) => [field.spin!.channel, field]));
   const total = fields.find((field) => field.quantity === "electron_density" && field.fieldName === "total") ?? fields.find((field) => field.quantity === "electron_density");
@@ -34,9 +34,10 @@ export function buildChargeSpinDensityProduct(bundle: ValidatedVolumetricBundle)
     const modes: Record<string, string> = { total: total.fieldId, spin_difference: spin.fieldId };
     if (up) modes.spin_up = up.fieldId;
     if (down) modes.spin_down = down.fieldId;
+    const selected = fields.find(field => field.fieldId === selectedFieldId && Object.values(modes).includes(field.fieldId)) ?? spin;
     return freeze({
       kind: "collinear_spin", title: "Collinear charge / spin density", status: "ready", defaultFieldId: spin.fieldId,
-      modeFieldIds: modes, presets: presets(spin, true), warnings, augmentationIncluded,
+      modeFieldIds: modes, presets: presets(selected, selected === spin), warnings, augmentationIncluded,
       integralRows: integralRows([total, spin, ...(up && down ? [up, down] : [])]),
       formulaIds: derivedReady ? ["COLLINEAR_SPIN_UP_V1", "COLLINEAR_SPIN_DOWN_V1"] : [],
     });

@@ -13,8 +13,8 @@ from mdi_api.domain.scientific_reasoning.contracts import ClaimSupportAssessment
 
 
 REPORT_COMPOSER_CONTRACT_VERSION = "2.0"
-REPORT_COMPOSER_VERSION = "agent2.report-composer/2.0"
-REPORT_COMPOSER_PROMPT_VERSION = "scientific-report-composer/2.0"
+REPORT_COMPOSER_VERSION = "agent2.report-composer/2.9"
+REPORT_COMPOSER_PROMPT_VERSION = "scientific-report-composer/2.9"
 _SAFE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$")
 
 

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { Artifact } from "../../lib/planner-api";
 import type { WorkspacePanel } from "../../lib/workspace-api";
 import { workspaceSnapshotFixture } from "./workspace-test-fixture";
-import { validateWorkspaceSelectionContext } from "./workspace-selection-contract";
+import { decodeWorkspaceSelectionUrl, encodeWorkspaceSelectionUrl, validateWorkspaceSelectionContext } from "./workspace-selection-contract";
 import { artifactSelectionFromArtifact, artifactSelectionFromPanel, claimSelection, coordinationSiteSelection, datasetSampleIdentityFromTableRow, datasetSampleSelection, evidenceItemSelection, evidenceSourceArtifactSelection, resolvePanelSelection, structureSiteSelection, WorkspaceSelectionStore } from "./workspace-selection-runtime";
 
 const HASH = "a".repeat(64);
@@ -104,6 +104,18 @@ describe("Phase 10M-3 exact selection runtime", () => {
     expect(() => new WorkspaceSelectionStore(snapshot.workspace, mutate(selection, { datasetVersion: "v2" }))).toThrowError("SELECTION_STALE_DATASET_VERSION");
   });
 
+  it("accepts adapter-owned versioned sample identities at the runtime selection boundary", () => {
+    const snapshot = workspaceSnapshotFixture();
+    const sampleRef = "dataset_demo@v1:1f4ba55e6e625275:0";
+    const selection = datasetSampleSelection(snapshot.workspace, {
+      objectId: "object_1",
+      sampleRef,
+      sampleKey: `object_1:${sampleRef}`,
+    });
+    expect(selection.primary).toMatchObject({ kind: "DATASET_SAMPLE", sampleRef });
+    expect(resolvePanelSelection(snapshot.panels.find((panel) => panel.panelKind === "SCIENTIFIC_RESULT")!, selection, snapshot.workspace)).toMatchObject({ compatibility: "EXACT" });
+  });
+
   it("uses sample_id for rendered Dataset rows and never derives semantic identity from a formula or visual row", () => {
     expect(datasetSampleIdentityFromTableRow({ sample_id: "mat-2", formula: "NaCl" }, "dataset_1")).toEqual({
       objectId: "dataset_1",
@@ -135,6 +147,18 @@ describe("Phase 10M-3 exact selection runtime", () => {
     } });
     expect(resolvePanelSelection(snapshot.panels.find((panel) => panel.panelKind === "DATA")!, selection, snapshot.workspace)).toMatchObject({ compatibility: "EXACT" });
     expect(structureSiteSelection({ ...snapshot.workspace, datasetId: null }, artifact, { siteId: "Si-0:0.0.0" })).toBeNull();
+  });
+
+  it("round-trips a structure site with real-length imported source identities within the URL bound", () => {
+    const datasetId = "dataset_0002_7d84dd2fe2424b9c";
+    const objectId = `${datasetId}:obj_structure_6d93a281007b`;
+    const snapshot = workspaceSnapshotFixture();
+    const workspace = { ...snapshot.workspace, projectId: "project_0001_d280978e0f6c432c", datasetId, datasetVersion: HASH, sourceReferenceHash: HASH };
+    const artifact: Artifact = { id: `source:${objectId}`, type: "structure_json", version: "1", sha256: HASH, metadata: { sourceObjectId: objectId } };
+    const selection = structureSiteSelection(workspace, artifact, { siteId: "Li-0:0.0.0" })!;
+    const token = encodeWorkspaceSelectionUrl(selection);
+    expect(token.length).toBeLessThanOrEqual(2048);
+    expect(decodeWorkspaceSelectionUrl(token)).toEqual(selection);
   });
 
   it("constructs exact grounded evidence and claim identities without display-label authority", () => {

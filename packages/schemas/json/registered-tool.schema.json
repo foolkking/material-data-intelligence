@@ -109,6 +109,7 @@
     },
     "ToolDomain": {
       "enum": [
+        "reference",
         "dataset",
         "table",
         "viz",

@@ -12,6 +12,7 @@ from ..ml_common import PreparedRegressionFrame, prepare_regression_frame, regre
 
 class BasicMetricsAdapter(BaseToolAdapter):
     tool_id = "ml.basic_metrics"
+    adapter_version = "0.2.0"
 
     def prepare(self, context: ToolExecutionContext, input_refs: list[Any], params: dict[str, Any]) -> PreparedRegressionFrame:
         resolved = self._resolved_inputs
@@ -25,6 +26,7 @@ class BasicMetricsAdapter(BaseToolAdapter):
         prepared: PreparedRegressionFrame = result["prepared"]
         metrics = result["metrics"]
         params = result["params"]
+        r2_text = "undefined (constant target)" if metrics["r2"] is None else f"{metrics['r2']:.6g}"
         payloads: list[ArtifactPayload] = []
         if ArtifactType.metrics_json in artifact_types:
             payloads.append(
@@ -50,7 +52,7 @@ class BasicMetricsAdapter(BaseToolAdapter):
                         f"- Rows: {metrics['n']}\n"
                         f"- MAE: {metrics['mae']:.6g}\n"
                         f"- RMSE: {metrics['rmse']:.6g}\n"
-                        f"- R2: {metrics['r2']:.6g}\n"
+                        f"- R2: {r2_text}\n"
                     ),
                     media_type="text/markdown",
                 )

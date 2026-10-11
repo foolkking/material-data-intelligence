@@ -5,7 +5,6 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
 
 from mdi_artifact_core import ArtifactPayload, stable_json_dumps
@@ -94,46 +93,15 @@ class ChartResult:
 
 class ScatterAdapter(BaseToolAdapter):
     tool_id = "viz.scatter"
-    adapter_version = "0.1.0"
+    adapter_version = "0.2.0"
 
     def prepare(self, context: ToolExecutionContext, input_refs: list[Any], params: dict[str, Any]) -> pd.DataFrame:
         return _table_input(self._resolved_inputs, tool_id=self.tool_id)
 
     def run(self, prepared: pd.DataFrame, params: dict[str, Any]) -> ChartResult:
-        frame = prepared
-        x_column = str(params.get("xColumn") or "")
-        y_column = str(params.get("yColumn") or "")
-        _require_numeric(frame, x_column, tool_id=self.tool_id)
-        _require_numeric(frame, y_column, tool_id=self.tool_id)
-        color_column = params.get("colorColumn")
-        if color_column:
-            _require_column(frame, str(color_column), tool_id=self.tool_id)
-        hover_columns = [column for column in params.get("hoverColumns", []) if column in frame.columns]
-        plot_frame = frame[[x_column, y_column, *([str(color_column)] if color_column else []), *hover_columns]].dropna(
-            subset=[x_column, y_column]
-        )
-        warnings: list[str] = []
-        if len(plot_frame) > 50000:
-            warnings.append("too_many_points_warning")
-            plot_frame = plot_frame.head(50000)
-        fig = px.scatter(
-            plot_frame,
-            x=x_column,
-            y=y_column,
-            color=str(color_column) if color_column else None,
-            hover_data=hover_columns or None,
-            title=params.get("title") or f"{x_column} vs {y_column}",
-        )
-        metadata = {
-            "chartType": "scatter",
-            "xColumn": x_column,
-            "yColumn": y_column,
-            "pointCount": int(len(plot_frame)),
-            "traces": int(len(fig.data)),
-            "xRange": [_finite_or_none(plot_frame[x_column].min()), _finite_or_none(plot_frame[x_column].max())],
-            "yRange": [_finite_or_none(plot_frame[y_column].min()), _finite_or_none(plot_frame[y_column].max())],
-            "warnings": warnings,
-        }
+        from .table_scatter import saved_scatter
+
+        metadata, fig = saved_scatter(prepared, params, tool_id=self.tool_id)
         return ChartResult(metadata=metadata, figure=fig, params=params)
 
     def export(self, result: ChartResult, artifact_types: list[ArtifactType]) -> list[Artifact]:
@@ -142,48 +110,15 @@ class ScatterAdapter(BaseToolAdapter):
 
 class HistogramAdapter(BaseToolAdapter):
     tool_id = "viz.histogram"
-    adapter_version = "0.1.0"
+    adapter_version = "0.2.0"
 
     def prepare(self, context: ToolExecutionContext, input_refs: list[Any], params: dict[str, Any]) -> pd.DataFrame:
         return _table_input(self._resolved_inputs, tool_id=self.tool_id)
 
     def run(self, prepared: pd.DataFrame, params: dict[str, Any]) -> ChartResult:
-        frame = prepared
-        column = str(params.get("column") or "")
-        _require_numeric(frame, column, tool_id=self.tool_id)
-        group_by = params.get("groupBy")
-        if group_by:
-            _require_column(frame, str(group_by), tool_id=self.tool_id)
-        bins = max(1, int(params.get("bins") or 20))
-        values = _numeric_series(frame, column, tool_id=self.tool_id).dropna()
-        if values.empty:
-            raise ToolExecutionError(
-                code="TOOL_INPUT_INVALID",
-                message=f"Column has no numeric values: {column}",
-                tool_id=self.tool_id,
-                details={"errorType": "non_numeric_column", "column": column},
-            )
-        bin_counts, bin_edges = np.histogram(values.to_numpy(), bins=bins)
-        fig = px.histogram(
-            frame,
-            x=column,
-            color=str(group_by) if group_by else None,
-            nbins=bins,
-            title=params.get("title") or f"{column} distribution",
-        )
-        metadata = {
-            "chartType": "histogram",
-            "column": column,
-            "count": int(values.count()),
-            "bins": int(bins),
-            "binEdges": [_finite_or_none(value) for value in bin_edges.tolist()],
-            "binCounts": [int(value) for value in bin_counts.tolist()],
-            "min": _finite_or_none(values.min()),
-            "max": _finite_or_none(values.max()),
-            "mean": _finite_or_none(values.mean()),
-            "median": _finite_or_none(values.median()),
-            "warnings": [],
-        }
+        from .table_histogram import saved_histogram
+
+        metadata, fig = saved_histogram(prepared, params, tool_id=self.tool_id)
         return ChartResult(metadata=metadata, figure=fig, params=params)
 
     def export(self, result: ChartResult, artifact_types: list[ArtifactType]) -> list[Artifact]:
@@ -192,7 +127,7 @@ class HistogramAdapter(BaseToolAdapter):
 
 class CorrelationAdapter(BaseToolAdapter):
     tool_id = "viz.correlation"
-    adapter_version = "0.1.0"
+    adapter_version = "0.1.2"
 
     def prepare(self, context: ToolExecutionContext, input_refs: list[Any], params: dict[str, Any]) -> pd.DataFrame:
         return _table_input(self._resolved_inputs, tool_id=self.tool_id)
@@ -207,8 +142,31 @@ class CorrelationAdapter(BaseToolAdapter):
                 tool_id=self.tool_id,
                 details={"errorType": "unsupported_method", "method": method},
             )
-        columns = _numeric_columns(frame, params.get("numericColumns"), tool_id=self.tool_id)
-        columns = columns[:30]
+        selected = params.get("numericColumns")
+        if selected is not None and (
+            not isinstance(selected, list)
+            or not 2 <= len(selected) <= 30
+            or any(not isinstance(column, str) for column in selected)
+            or len(set(selected)) != len(selected)
+        ):
+            raise ToolExecutionError(
+                "TOOL_PARAM_INVALID", "相关性分析需要选择 2–30 个不重复的数值列。", self.tool_id,
+                details={"errorType": "CORRELATION_PARAMS_INVALID"},
+            )
+        duplicates = set(frame.columns[frame.columns.duplicated(keep=False)])
+        if (selected is None and (duplicates or any(not isinstance(column, str) for column in frame.columns))) or (
+            selected is not None and any(column in duplicates for column in selected)
+        ):
+            raise ToolExecutionError(
+                "TOOL_INPUT_INVALID", "所选数据的列名不唯一或不是文本，无法确定相关性分析的列。请修正列名后重试。", self.tool_id,
+                details={"errorType": "CORRELATION_COLUMN_IDENTITY_INVALID"},
+            )
+        columns = _numeric_columns(frame, selected, tool_id=self.tool_id)
+        if len(columns) > 30:
+            raise ToolExecutionError(
+                "TOOL_INPUT_INVALID", "相关性分析一次最多支持 30 个数值列。请明确选择需要比较的列后重试。", self.tool_id,
+                details={"errorType": "CORRELATION_COLUMN_LIMIT_EXCEEDED", "columnCount": len(columns), "maximumColumns": 30},
+            )
         if len(columns) < 2:
             raise ToolExecutionError(
                 code="TOOL_INPUT_INVALID",
@@ -223,6 +181,15 @@ class CorrelationAdapter(BaseToolAdapter):
             [_finite_or_none(corr.loc[row, column]) for column in columns]
             for row in columns
         ]
+        pair_count = len(columns) * (len(columns) - 1) // 2
+        valid_pair_count = sum(matrix[row][column] is not None
+            for row in range(len(columns)) for column in range(row + 1, len(columns)))
+        if not valid_pair_count:
+            raise ToolExecutionError(
+                "TOOL_INPUT_INVALID",
+                "所选列之间没有可计算的相关系数。请检查共同有效样本是否足够，并选择有变化的数值列后重试。",
+                self.tool_id, details={"errorType": "CORRELATION_NO_VALID_PAIRS"},
+            )
         fig = go.Figure(
             data=go.Heatmap(
                 z=matrix,
@@ -234,14 +201,23 @@ class CorrelationAdapter(BaseToolAdapter):
                 colorbar={"title": method},
             )
         )
-        fig.update_layout(title=params.get("title") or f"{method.title()} correlation")
+        # Column identifiers are categories even when their text is numeric.
+        # Persist the order so every viewer/export uses the same matrix cells.
+        fig.update_layout(
+            title=params.get("title") or f"{method.title()} correlation",
+            xaxis={"type": "category", "categoryorder": "array", "categoryarray": columns},
+            yaxis={"type": "category", "categoryorder": "array", "categoryarray": columns},
+        )
         metadata = {
             "chartType": "correlation_heatmap",
             "method": method,
             "columns": columns,
             "matrix": matrix,
-            "pairCount": int(len(columns) * (len(columns) - 1) / 2),
-            "warnings": [],
+            "pairCount": pair_count,
+            "validPairCount": valid_pair_count,
+            "missingPairCount": pair_count - valid_pair_count,
+            "minNonNullCount": min_non_null,
+            "warnings": ["部分变量对因共同有效样本不足或零方差而无法计算，对应单元格保留为空值。"] if valid_pair_count < pair_count else [],
         }
         return ChartResult(metadata=metadata, figure=fig, params=params)
 
@@ -343,7 +319,7 @@ def _summary_and_recipe_payloads(
 
 def _summary_markdown(title: str, metadata: dict[str, Any]) -> str:
     lines = [f"# {title}", ""]
-    for key in ("chartType", "xColumn", "yColumn", "column", "pointCount", "count", "method", "pairCount"):
+    for key in ("chartType", "xColumn", "yColumn", "column", "pointCount", "validPointCount", "omittedPointCount", "count", "inputCount", "excludedCount", "groupBy", "intervalConvention", "method", "pairCount", "validPairCount", "missingPairCount", "minNonNullCount"):
         if key in metadata:
             lines.append(f"- {key}: {metadata[key]}")
     if metadata.get("warnings"):

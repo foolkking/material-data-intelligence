@@ -1,123 +1,80 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import {
-  createAgent2AdmissionKey,
-  createAgent2ResearchTurn,
-  getAgent2ResearchTurnInterpretation,
-  getAgent2ResearchTurnResult,
-  type Agent2ResearchTurnInterpretation,
-  type Agent2ResearchTurnResult,
-} from "../../app/lib/agent2-research-api";
+import type { Agent2ResearchTurnResult } from "../../app/lib/agent2-research-api";
+import type { ResultResearchAction } from "./result-follow-up";
 import { compileScientificPresentation } from "../../app/lib/scientific-presentation";
 import { ScientificPresentationBlocks } from "./ScientificPresentationBlocks";
 import type { ScientificEvidenceItem } from "../../app/lib/planner-api";
-import {
-  getAgent2SessionMemory,
-  pinAgent2Object,
-  pinAgent2Result,
-  unpinAgent2Object,
-  unpinAgent2Result,
-  type Agent2SessionMemory,
-} from "../../app/lib/agent2-memory-api";
-import { useProductRouter } from "../../shared/layout/ProductNavigation";
+import { hasPinnedObject, type SessionMemoryController } from "./use-session-memory";
+import { SessionMemoryNotice } from "./SessionMemoryNotice";
+import { useTurnPresentation } from "./use-turn-presentation";
+import type { Agent2ProgressView } from "../../app/lib/agent2-execution-api";
+import { ScientificToolProcess } from "./ScientificToolProcess";
+import { SavedResearchOutputs } from "./ResearchTurnResultState";
+import { resolveResultVisualTarget, type ResearchResultTarget } from "./result-navigation";
 
 type Agent2ScientificPresentationProps = {
   turnId: string;
   projectId: string;
   sessionId?: string;
-  sessionMemory?: Agent2SessionMemory | null;
-  onSessionMemoryChange?: (memory: Agent2SessionMemory) => void;
+  context?: SessionMemoryController;
+  onContinue?: () => void;
+  onEdit?: () => void;
+  onRun?: (action: ResultResearchAction, result: Agent2ResearchTurnResult) => Promise<void>;
+  canModify?: boolean;
+  progress?: Agent2ProgressView | null;
+  resultTarget?: ResearchResultTarget;
 };
 
 export function Agent2ScientificPresentation({
   turnId,
   projectId,
   sessionId,
-  sessionMemory,
-  onSessionMemoryChange,
+  context,
+  onContinue,
+  onEdit,
+  onRun,
+  canModify = true,
+  progress,
+  resultTarget,
 }: Agent2ScientificPresentationProps) {
-  const router = useProductRouter();
-  const [result, setResult] = useState<Agent2ResearchTurnResult | null>(null);
-  const [interpretation, setInterpretation] = useState<Agent2ResearchTurnInterpretation | null>(null);
-  const [failed, setFailed] = useState(false);
-  const [reinterpretPending, setReinterpretPending] = useState(false);
-  const [reinterpretError, setReinterpretError] = useState("");
-  const [followUpPending, setFollowUpPending] = useState<"continue" | "rerun" | null>(null);
-  const [followUpError, setFollowUpError] = useState("");
-  const [resultPinned, setResultPinned] = useState(false);
-  const [sourcesPinned, setSourcesPinned] = useState(false);
-  const [pinPending, setPinPending] = useState(false);
-  const [pinError, setPinError] = useState("");
-  const pinMutationSeq = useRef(0);
-
+  const ownedProgress = progress?.turn_id === turnId ? progress : null;
+  const interpretationReady = !ownedProgress || !["RESULT_READY", "INTERPRETING", "RESULT_PENDING"].includes(ownedProgress.status);
+  const reads = useTurnPresentation(projectId, turnId, interpretationReady);
+  const result = reads.result.value;
+  const interpretation = reads.interpretation.value;
+  const [resultActionPending, setResultActionPending] = useState<ResultResearchAction | null>(null);
+  const [resultActionError, setResultActionError] = useState("");
+  const resultActionOwner = useRef<symbol | null>(null);
   useEffect(() => {
-    let active = true;
-    setFailed(false);
-    void getAgent2ResearchTurnResult(turnId)
-      .then((next) => { if (active) setResult(next); })
-      .catch(() => { if (active) setFailed(true); });
-    void getAgent2ResearchTurnInterpretation(turnId)
-      .then((next) => { if (active) setInterpretation(next); })
-      .catch(() => { if (active) setInterpretation(null); });
-    return () => { active = false; };
-  }, [turnId]);
+    setResultActionPending(null); setResultActionError("");
+    return () => { resultActionOwner.current = null; };
+  }, [projectId, sessionId, turnId]);
+  const memory = context?.memory;
+  const resultPinned = Boolean(memory && result && memory.pinned_result_refs.includes(result.result_snapshot_id || result.result_id));
+  const sourceCount = (result?.source_object_refs || []).filter((ref) => memory && hasPinnedObject(memory, ref)).length;
+  const sourcesPinned = Boolean(sourceCount && sourceCount === result?.source_object_refs?.length);
+  const pinPending = Boolean(context?.updating);
 
-  useEffect(() => {
-    if (!sessionId || !result?.result_id) {
-      setResultPinned(false);
-      setSourcesPinned(false);
-      return;
-    }
-    const applyMemory = (memory: Agent2SessionMemory | null) => {
-      setResultPinned(
-        Boolean(memory) &&
-          memory!.pinned_result_refs.includes(
-            result.result_snapshot_id || result.result_id,
-          ),
-      );
-      const refs = result.source_object_refs || [];
-      setSourcesPinned(
-        Boolean(memory) &&
-          refs.length > 0 &&
-          refs.every((source) =>
-            (memory!.pinned_object_refs || []).some(
-              (pinned) =>
-                pinned.object_id === source.object_id &&
-                pinned.version_id === source.version_id,
-            ),
-          ),
-      );
-    };
-    if (sessionMemory !== undefined) {
-      applyMemory(sessionMemory);
-      return;
-    }
-    let active = true;
-    const requestSeq = pinMutationSeq.current;
-    void getAgent2SessionMemory(projectId, sessionId)
-      .then((memory) => {
-        if (active && requestSeq === pinMutationSeq.current) {
-          applyMemory(memory);
-        }
-      })
-      .catch(() => {
-        if (active && requestSeq === pinMutationSeq.current) {
-          applyMemory(null);
-        }
-      });
-    return () => { active = false; };
-  }, [
-    projectId,
-    sessionId,
-    sessionMemory,
-    result?.result_id,
-    result?.result_snapshot_id,
-    result?.source_object_refs,
-  ]);
-
-  if (failed) return <section className="scientific-presentation scientific-presentation-unavailable" role="status"><p>科学结果已保存；呈现投影暂时无法读取。</p></section>;
-  if (!result) return <section className="scientific-presentation scientific-presentation-unavailable" role="status"><p>正在读取已验证的科学结果…</p></section>;
+  const readNotice = (
+    <div className="research-result-read-error" role="status">
+      {reads.result.failed ? <p>分析结果暂时无法读取，请重试。</p> : null}
+      {reads.interpretation.failed && result ? <p>{reads.interpretation.notReady && !interpretation
+        ? ownedProgress?.status === "FAILED" || ownedProgress?.status === "CANCELED"
+          ? "本次研究未生成可用解读，已完成的科学结果仍可查看。"
+          : "结果解读尚未生成，已完成的科学结果仍可查看。"
+        : "结果解读暂时无法读取，分析结果仍可查看。"}</p> : null}
+      {reads.result.failed ? <button type="button" className="product-secondary-action" disabled={reads.result.pending} onClick={reads.result.retry}>{reads.result.pending ? "正在读取…" : "重新读取分析结果"}</button> : null}
+      {reads.interpretation.failed && result ? <button type="button" className="product-secondary-action" disabled={reads.interpretation.pending} onClick={reads.interpretation.retry}>{reads.interpretation.pending ? "正在读取…" : reads.interpretation.notReady && !interpretation ? "检查解读状态" : "重新读取结果解读"}</button> : null}
+    </div>
+  );
+  if (!result) {
+    return <div className="agent2-scientific-presentation">
+      {reads.result.failed ? readNotice : <section className="scientific-presentation scientific-presentation-unavailable" role="status"><p>正在读取分析结果…</p></section>}
+      <SavedResearchOutputs turnId={turnId} progress={ownedProgress} />
+    </div>;
+  }
 
   const evidence: ScientificEvidenceItem[] = (result.evidence || []).map((item) => ({
     schemaVersion: "1.0",
@@ -169,13 +126,18 @@ export function Agent2ScientificPresentation({
     return mapping;
   }, {});
 
+  // The saved polyhedron result owns its N1 dependency, but only N2 is its
+  // visual. Keep the original dependency available in the tool process.
+  const polyhedronItems = (result.result_items || []).filter(item => item.result_type === "structure.local_environment.polyhedra");
+  const declaredVisualIds = new Set([...(result.figures || []), ...(result.tables || [])].flatMap(item => item.artifact_ids));
+  const dependencyIds = new Set(polyhedronItems.flatMap(item => item.artifact_ids).filter(id => !declaredVisualIds.has(id)));
   const presentation = compileScientificPresentation({
     resultId: result.result_id,
     interpretationId: interpretation?.interpretation_id,
     relevance: result.relevance_status,
     persistedInterpretation: interpretation?.status === "VALID" ? interpretation.interpretation : undefined,
     evidence,
-    artifacts: result.artifacts || [],
+    artifacts: (result.artifacts || []).filter(artifact => !dependencyIds.has(artifact.artifactId || artifact.id || "")),
     artifactSourceRefs,
     validatedNarrative: interpretation?.status === "VALID" ? interpretation.message : undefined,
     facts: (result.facts || []).map((fact) => ({
@@ -203,177 +165,65 @@ export function Agent2ScientificPresentation({
       semanticLocator: selection.semantic_locator,
     })),
   });
-  async function reinterpret() {
-    if (!sessionId || !result || reinterpretPending) return;
-    setReinterpretPending(true);
-    setReinterpretError("");
-    try {
-      const refs = result.source_object_refs || [];
-      const snapshotId = result.result_snapshot_id || result.result_id;
-      const next = await createAgent2ResearchTurn(projectId, sessionId, {
-        message: "请重新解释这份科学结果，突出关键发现、证据与限制；不要重新计算科学结果。",
-        admission_key: createAgent2AdmissionKey(),
-        reply_to_turn_id: turnId,
-        ui_context: {
-          active_object_refs: refs,
-          selection_refs: refs,
-          scientific_selections: result.scientific_selections || [],
-          explicit_object_refs: refs,
-          explicit_result_ids: [snapshotId],
-          explicit_finding_refs: [],
-        },
-      });
-      router.push(`/projects/${projectId}/research/${encodeURIComponent(sessionId)}?turn=${encodeURIComponent(next.turn_id)}`);
-    } catch (reason) {
-      setReinterpretError(reason instanceof Error ? reason.message : "重新解释请求未能提交");
-    } finally {
-      setReinterpretPending(false);
-    }
-  }
-  async function createFollowUp(mode: "continue" | "rerun") {
-    if (!sessionId || !result || followUpPending) return;
-    setFollowUpPending(mode);
-    setFollowUpError("");
-    try {
-      const refs = result.source_object_refs || [];
-      const isContinue = mode === "continue";
-      const snapshotId = result.result_snapshot_id || result.result_id;
-      const next = await createAgent2ResearchTurn(projectId, sessionId, {
-        message: isContinue
-          ? "请基于这份已完成的科学结果继续研究，只补充当前证据支持的后续分析；如需新的计算，请明确说明。"
-          : `请重新执行同一个科学研究问题：${result.research_question}。这是一次新的研究运行，不要覆盖之前的结果。`,
-        admission_key: createAgent2AdmissionKey(),
-        reply_to_turn_id: turnId,
-        ui_context: {
-          active_object_refs: refs,
-          selection_refs: refs,
-          scientific_selections: result.scientific_selections || [],
-          explicit_object_refs: refs,
-          explicit_result_ids: isContinue ? [snapshotId] : [],
-          explicit_finding_refs: [],
-        },
-      });
-      router.push(`/projects/${projectId}/research/${encodeURIComponent(sessionId)}?turn=${encodeURIComponent(next.turn_id)}`);
-    } catch (reason) {
-      setFollowUpError(reason instanceof Error ? reason.message : "后续研究请求未能提交");
-    } finally {
-      setFollowUpPending(null);
-    }
-  }
-  function editQuestion() {
-    if (!sessionId || !result) return;
-    router.push(`/projects/${projectId}/research/${encodeURIComponent(sessionId)}?turn=${encodeURIComponent(turnId)}&edit=${encodeURIComponent(turnId)}`);
-  }
-  async function togglePinnedResult() {
-    if (!sessionId || !result || pinPending) return;
-    pinMutationSeq.current += 1;
-    const previousPinned = resultPinned;
-    setResultPinned(!previousPinned);
-    setPinPending(true);
-    setPinError("");
-    try {
-      const next = resultPinned
-        ? await unpinAgent2Result(projectId, sessionId, result.result_snapshot_id || result.result_id)
-        : await pinAgent2Result(projectId, sessionId, result.result_snapshot_id || result.result_id);
-      // Invalidate any session-memory read that started before this mutation
-      // completed. Without this bump, a slower stale read can overwrite the
-      // optimistic/server-confirmed pin state and make the control appear to
-      // have reverted.
-      pinMutationSeq.current += 1;
-      setResultPinned(next.pinned_result_refs.includes(result.result_snapshot_id || result.result_id));
-      onSessionMemoryChange?.(next);
-    } catch (reason) {
-      pinMutationSeq.current += 1;
-      setResultPinned(previousPinned);
-      setPinError(reason instanceof Error ? reason.message : "上下文固定操作未能完成");
-    } finally {
-      setPinPending(false);
-    }
-  }
-  async function togglePinnedSources() {
-    if (!sessionId || !result || pinPending || !result.source_object_refs?.length) return;
-    const refs = result.source_object_refs;
-    const previousPinned = sourcesPinned;
-    setSourcesPinned(!previousPinned);
-    setPinPending(true);
-    setPinError("");
-    try {
-      let nextMemory = null;
-      for (const source of refs) {
-        const objectRef = {
-          object_id: source.object_id,
-          version_id: source.version_id,
-          project_id: source.project_id,
-          object_type: source.object_type,
-          display_name: source.display_name,
-        };
-        nextMemory = previousPinned
-          ? await unpinAgent2Object(projectId, sessionId, objectRef)
-          : await pinAgent2Object(projectId, sessionId, objectRef);
-      }
-      pinMutationSeq.current += 1;
-      setSourcesPinned(
-        Boolean(nextMemory) &&
-          refs.every((source) =>
-            (nextMemory!.pinned_object_refs || []).some(
-              (pinned) =>
-                pinned.object_id === source.object_id &&
-                pinned.version_id === source.version_id,
-            ),
-          ),
-      );
-      if (nextMemory) onSessionMemoryChange?.(nextMemory);
-    } catch (reason) {
-      pinMutationSeq.current += 1;
-      setSourcesPinned(previousPinned);
-      setPinError(reason instanceof Error ? reason.message : "来源版本固定操作未能完成");
-    } finally {
-      setPinPending(false);
-    }
+  async function runResultAction(action: ResultResearchAction) {
+    if (!onRun || !result || resultActionOwner.current) return;
+    const owner = Symbol(); resultActionOwner.current = owner;
+    setResultActionPending(action); setResultActionError("");
+    try { await onRun(action, result); }
+    catch (reason) { if (resultActionOwner.current === owner) setResultActionError(reason instanceof Error ? reason.message : "研究请求暂未确认，请重试。"); }
+    finally { if (resultActionOwner.current === owner) { resultActionOwner.current = null; setResultActionPending(null); } }
   }
   return <section className="agent2-scientific-presentation">
+    {reads.result.failed || reads.interpretation.failed ? readNotice : null}
+    {!reads.interpretation.failed && reads.interpretation.pending ? <p className="scientific-presentation-action-status" role="status">正在读取结果解读…</p> : null}
+    {!reads.interpretation.failed && interpretation?.status === "PENDING" ? <p className="scientific-presentation-action-status" role="status">结果解读尚未完成。 <button type="button" className="product-link-button" disabled={reads.interpretation.pending} onClick={reads.interpretation.retry}>重新读取结果解读</button></p> : null}
+    {!reads.interpretation.failed && interpretation?.status === "REJECTED" ? <p className="scientific-presentation-action-status" role="status">结果解读未通过检查，分析结果仍可查看。</p> : null}
     <ScientificPresentationBlocks
+      layout="research"
       presentation={presentation}
       projectId={projectId}
       instanceId={turnId}
       artifactCatalog={result.artifacts || []}
+      resultFacts={result.facts || []}
+      inputProvenance={result.input_provenance}
+      visualTarget={resolveResultVisualTarget(result, resultTarget)}
+      executionProcess={<ScientificToolProcess turnId={turnId} projectId={projectId} sources={result.source_object_refs || []} artifacts={result.artifacts || []} toolCallIds={result.tool_call_ids} progress={ownedProgress} />}
     />
-    {sessionId && result ? <section className="scientific-presentation-actions" aria-labelledby={`scientific-presentation-actions-${turnId}`}>
+    {sessionId && result && canModify ? <section className="scientific-presentation-actions" aria-labelledby={`scientific-presentation-actions-${turnId}`}>
       <div className="scientific-presentation-actions-heading">
-        <h3 id={`scientific-presentation-actions-${turnId}`}>继续这项研究</h3>
-        <p>下面的操作会明确区分继续、重新计算与仅重新解释。</p>
+        <h3 id={`scientific-presentation-actions-${turnId}`}>下一步</h3>
       </div>
       <div className="scientific-presentation-action-primary">
-        <button type="button" className="product-primary-action" onClick={() => void createFollowUp("continue")} disabled={Boolean(followUpPending) || reinterpretPending}>
-          {followUpPending === "continue" ? "正在准备后续研究…" : "继续研究"}
+        <button type="button" className="product-primary-action" onClick={onContinue} disabled={!onContinue || Boolean(resultActionPending)}>
+          继续研究
         </button>
-        <button type="button" className="product-secondary-action" onClick={editQuestion} disabled={Boolean(followUpPending) || reinterpretPending}>
+        <button type="button" className="product-secondary-action" onClick={onEdit} disabled={!onEdit || Boolean(resultActionPending)}>
           编辑问题
         </button>
       </div>
+      <details className="scientific-presentation-more-actions">
+      <summary>更多操作</summary>
       <div className="scientific-presentation-action-secondary" aria-label="其他研究操作">
-        <button type="button" className="product-secondary-action" onClick={() => void reinterpret()} disabled={reinterpretPending}>
-          {reinterpretPending ? "正在创建解释分支…" : "重新解释（不重算科学结果）"}
+        <button type="button" className="product-secondary-action" onClick={() => void runResultAction("reinterpret")} disabled={!onRun || Boolean(resultActionPending)}>
+          {resultActionPending === "reinterpret" ? "正在创建解释分支…" : "重新解释（不重算科学结果）"}
         </button>
-        <button type="button" className="product-secondary-action scientific-presentation-rerun" onClick={() => void createFollowUp("rerun")} disabled={Boolean(followUpPending) || reinterpretPending}>
-          {followUpPending === "rerun" ? "正在创建新的研究运行…" : "重新研究（新运行）"}
+        <button type="button" className="product-secondary-action scientific-presentation-rerun" onClick={() => void runResultAction("rerun")} disabled={!onRun || Boolean(resultActionPending)}>
+          {resultActionPending === "rerun" ? "正在创建新的研究运行…" : "重新研究（新运行）"}
         </button>
-        <button type="button" className="product-secondary-action" onClick={() => void togglePinnedResult()} disabled={pinPending}>
+        <button type="button" className="product-secondary-action" onClick={() => void context?.setResultPinned(result.result_snapshot_id || result.result_id, !resultPinned)} disabled={!context?.canUpdate}>
           {pinPending ? "正在更新上下文…" : resultPinned ? "从本会话上下文移除结果" : "将结果加入本会话上下文"}
         </button>
         {result.source_object_refs?.length ? (
-          <button type="button" className="product-secondary-action" onClick={() => void togglePinnedSources()} disabled={pinPending}>
+          <button type="button" className="product-secondary-action" onClick={() => void context?.setSourcesPinned(result.source_object_refs || [], !sourcesPinned)} disabled={!context?.canUpdate}>
             {pinPending ? "正在更新来源…" : sourcesPinned ? "从本会话上下文移除来源版本" : "将来源版本加入本会话上下文"}
           </button>
         ) : null}
       </div>
-      <p className="scientific-presentation-action-status">
-        本会话上下文会影响后续研究；列表置顶只改变排序，不会进入科学上下文。
-      </p>
-      {followUpError ? <p className="product-form-error" role="alert">{followUpError}</p> : null}
-      {reinterpretError ? <p className="product-form-error" role="alert">{reinterpretError}</p> : null}
-      {pinError ? <p className="product-form-error" role="alert">{pinError}</p> : null}
-      {(followUpPending || reinterpretPending || pinPending) ? <p className="scientific-presentation-action-status" role="status" aria-live="polite">正在提交操作，科学结果本身不会被覆盖。</p> : null}
+      </details>
+      {resultActionError ? <p className="product-form-error" role="alert">{resultActionError}</p> : null}
+      {context ? <SessionMemoryNotice context={context} /> : null}
+      {sourceCount > 0 && !sourcesPinned ? <p className="scientific-presentation-action-status">已加入 {sourceCount} / {result.source_object_refs?.length} 个来源。</p> : null}
+      {resultActionPending ? <p className="scientific-presentation-action-status" role="status" aria-live="polite">正在提交操作，科学结果本身不会被覆盖。</p> : null}
     </section> : null}
   </section>;
 }

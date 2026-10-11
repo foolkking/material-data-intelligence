@@ -20,6 +20,8 @@ describe("Phase 10M-3 canonical Workspace selection contract", () => {
     const ref = validateWorkspaceSelectionRef(selection(kind));
     expect(ref.kind).toBe(kind);
     expect(selectionRefIdentity(ref)).toBe(canonicalSelectionJson(ref));
+    const context = contextFor(kind);
+    expect(decodeWorkspaceSelectionUrl(encodeWorkspaceSelectionUrl(context))).toEqual(context);
   });
 
   it("round-trips canonical URL state and rejects non-canonical, duplicate-key, and over-cap tokens", () => {
@@ -28,7 +30,7 @@ describe("Phase 10M-3 canonical Workspace selection contract", () => {
     expect(token.length).toBeLessThanOrEqual(2_048);
     expect(decodeWorkspaceSelectionUrl(token)).toEqual(context);
 
-    const duplicate = canonicalSelectionJson(context).replace('"schemaVersion":"1.0"', '"schemaVersion":"1.0","schemaVersion":"1.0"');
+    const duplicate = Buffer.from(token, "base64url").toString("utf8").replace('"schemaVersion":"1.0"', '"schemaVersion":"1.0","schemaVersion":"1.0"');
     expect(() => decodeWorkspaceSelectionUrl(base64url(duplicate))).toThrowError(/invalid or non-canonical/u);
     expect(() => decodeWorkspaceSelectionUrl("not+base64")).toThrowError(/base64url/u);
     expect(() => decodeWorkspaceSelectionUrl("a".repeat(2_049))).toThrowError(/2048/u);
@@ -43,6 +45,18 @@ describe("Phase 10M-3 canonical Workspace selection contract", () => {
     expect(decodeWorkspaceSelectionUrl(base64url(raw))).toEqual(context);
   });
 
+  it("omits absent identities while restoring older canonical tokens with null fields", () => {
+    const context = contextFor("PERIODIC_SITE");
+    const compact = encodeWorkspaceSelectionUrl(context);
+    const oldPayload = JSON.parse(canonicalSelectionJson(context));
+    for (const field of ["electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId", "bandEdgeId", "dosChannelId", "projectionId", "energyPointId"]) delete oldPayload.primary[field];
+    const legacy = base64url(canonicalSelectionJson(oldPayload));
+    expect(compact.length).toBeLessThan(legacy.length);
+    expect(decodeWorkspaceSelectionUrl(legacy)).toEqual(context);
+    expect(decodeWorkspaceSelectionUrl(compact)).toEqual(context);
+    expect(() => decodeWorkspaceSelectionUrl(base64url(JSON.stringify(oldPayload, null, 2)))).toThrow();
+  });
+
   it("rejects index, display-label, fuzzy, path, URL, and executable authority fields", () => {
     for (const injected of [
       { rowIndex: 0 }, { displayLabel: "sample one" }, { fuzzyTarget: "band gap-ish" },
@@ -53,6 +67,14 @@ describe("Phase 10M-3 canonical Workspace selection contract", () => {
     }
     const prototypeKey = JSON.parse('{"__proto__":{"polluted":true}}') as Record<string, unknown>;
     expect(() => validateWorkspaceSelectionRef({ ...selection("DATASET_SAMPLE"), ...prototypeKey })).toThrow();
+  });
+
+  it("accepts the durable dataset-version sample reference emitted by adapters", () => {
+    const ref = validateWorkspaceSelectionRef({
+      ...selection("DATASET_SAMPLE"),
+      sampleRef: "dataset_0001@2:1f4ba55e6e625275:0",
+    });
+    expect(ref.sampleRef).toBe("dataset_0001@2:1f4ba55e6e625275:0");
   });
 
   it("rejects stale, foreign, mixed-kind, and duplicate multi-selection", () => {
@@ -137,6 +159,7 @@ function selection(kind: WorkspaceSelectionKind): WorkspaceSelectionRef {
     ELECTRONIC_DOS_PROJECTION: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", artifactId: "artifact_dos", artifactChecksum: HASH, electronicResourceId: "electronic_dos_1", spinChannelId: "none", dosChannelId: "element:Si", projectionId: "projection_si" },
     ELECTRONIC_DOS_POINT: { datasetId: "dataset_1", datasetVersion: "v1", jobId: "job_1", artifactId: "artifact_dos", artifactChecksum: HASH, electronicResourceId: "electronic_dos_1", spinChannelId: "none", dosChannelId: "total", energyPointId: "energy_1" },
     PHONON_Q_POINT: { datasetId: "dataset_1", datasetVersion: "v1", phononArtifactId: "artifact_phonon", artifactChecksum: HASH, qPointId: "qpoint_1" },
+    PHONON_DOS_POINT: { datasetId: "dataset_1", datasetVersion: "v1", phononArtifactId: "artifact_phonon", artifactChecksum: HASH, frequencyPointId: "frequency:0", dosChannelId: "total" },
     PHONON_BRANCH: { datasetId: "dataset_1", datasetVersion: "v1", phononArtifactId: "artifact_phonon", artifactChecksum: HASH, branchId: "branch_1" },
     RECIPROCAL_POINT: { datasetId: "dataset_1", datasetVersion: "v1", reciprocalArtifactId: "artifact_bz", artifactChecksum: HASH, reciprocalPointId: "point_gamma" },
     VOLUMETRIC_FIELD: { datasetId: "dataset_1", datasetVersion: "v1", fieldId: "field_charge", artifactId: "artifact_volume", artifactChecksum: HASH },

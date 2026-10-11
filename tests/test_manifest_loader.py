@@ -21,7 +21,7 @@ def test_loads_three_manifests_and_expected_tool_counts(repo_root):
 
     assert len([tool for tool in tools if tool.source.get("manifest") == "pymatviz_manifest.yaml"]) == 25
     assert len([tool for tool in tools if tool.source.get("manifest") == "matterviz_manifest.yaml"]) == 1
-    assert len([tool for tool in tools if tool.source.get("manifest") == "platform_builtin_manifest.yaml"]) == 36
+    assert len([tool for tool in tools if tool.source.get("manifest") == "platform_builtin_manifest.yaml"]) == 38
     assert len({tool.toolId for tool in tools}) == len(tools)
 
 
@@ -40,7 +40,8 @@ def test_registry_filters_and_lookup():
     registry = load_manifests()
 
     assert registry.get_tool_by_id("composition.ptable_heatmap").adapter == "PTableHeatmapAdapter"
-    assert len(registry.list_tools_by_stage("mvp")) == 50
+    assert len(registry.list_tools_by_stage("mvp")) == 52
+    assert {tool.toolId for tool in registry.list_tools_by_domain("reference")} == {"reference.periodic_table", "reference.compare_elements"}
     assert {tool.toolId for tool in registry.list_tools_by_domain("dataset")} == {
         "dataset.composition_space",
         "dataset.materials_explorer",
@@ -110,7 +111,15 @@ def test_mvp_tools_reject_unregistered_params():
         validator = Draft202012Validator(tool.paramsSchema)
         errors = sorted(validator.iter_errors({"unknownParam": True}), key=lambda error: error.path)
         assert errors, tool.toolId
-        assert "Additional properties are not allowed" in errors[0].message
+        assert any("Additional properties are not allowed" in error.message for error in errors)
+
+
+def test_correlation_column_selection_contract_matches_its_bounded_executor():
+    validator = Draft202012Validator(load_manifests().get_tool_by_id("viz.correlation").paramsSchema)
+    assert validator.is_valid({})
+    assert validator.is_valid({"numericColumns": [f"column_{i}" for i in range(30)]})
+    for columns in ([], ["a"], ["a", "a"], [f"column_{i}" for i in range(31)]):
+        assert not validator.is_valid({"numericColumns": columns})
 
 
 def test_registered_tools_validate_against_json_schema(repo_root):

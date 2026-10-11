@@ -32,6 +32,7 @@ from mdi_api.db import (
     tool_calls,
 )
 from mdi_api.infrastructure.persistence.bundles import InMemoryRepositoryBundle
+from mdi_api.infrastructure.scientific_results.execution_records import read_snapshot_execution_records
 from mdi_api.provider_connections import decrypt_api_key, get_connection, thinking_budget
 from mdi_llm import (
     ARTIFACT_PROJECTOR_CONTRACTS,
@@ -554,6 +555,10 @@ def planner_jobs(
         )
 
     dependency_order: list[str] = []
+    if plan.get("schemaVersion") == "0.3" or "sourceContexts" in plan or "sourceVersions" in plan:
+        return PlannerJobsResult(ok=False, job_id=None, plan_id=None, plan_hash=None,
+            validation_errors=[{"code": "MULTI_SOURCE_REQUIRES_RESEARCH", "message": "Cross-dataset plans require the Research workflow's authorized source context.", "detail": None}],
+            plan=None, planner_provider=_provider_name(llm))
     if plan.get("schemaVersion") == "0.2":
         selected_ids = sorted(item.toolId for item in capability_result.decision.selections) if capability_result else None
         dependency_validation = validate_dependency_plan(plan, registry=reg, selected_tool_ids=selected_ids)
@@ -880,7 +885,7 @@ def get_planner_job_dependencies(job_id: str, *, repositories: Any = None) -> di
     plan_record = _try_get_job_plan(repos, job)
     plan = (plan_record or {}).get("analysisPlan") or {}
     plan_id = str((plan_record or {}).get("planId") or (plan_record or {}).get("id") or "")
-    is_dependency_plan = plan.get("schemaVersion") == "0.2"
+    is_dependency_plan = plan.get("schemaVersion") in {"0.2", "0.3"}
     execution = repos.dependency_execution.get_execution_for_job(job_id) if is_dependency_plan else None
     return {
         "jobId": job.get("jobId") or job.get("id"),
@@ -1168,10 +1173,7 @@ def _get_agent2_interpretation_evidence(interpretation_id: str, repos: Any) -> d
             })
 
         job_id = str(snapshot.get("job_id") or bundle.get("provenance", {}).get("job_id") or "")
-        raw_artifacts = connection.execute(
-            select(artifacts).where(artifacts.c.job_id == job_id).order_by(artifacts.c.created_at, artifacts.c.id)
-        ).mappings().all() if job_id else []
-        artifact_rows = [dict(row) for row in raw_artifacts]
+        artifact_rows, raw_tools = read_snapshot_execution_records(connection, snapshot)
         artifact_by_id = {str(row["id"]): row for row in artifact_rows}
         artifact_descriptors = [{
             "id": str(row["id"]),
@@ -1184,9 +1186,6 @@ def _get_agent2_interpretation_evidence(interpretation_id: str, repos: Any) -> d
             "sha256": row.get("sha256") or row.get("content_hash"),
             "contentType": row.get("content_type"),
         } for row in artifact_rows[:64]]
-        raw_tools = connection.execute(
-            select(tool_calls).where(tool_calls.c.job_id == job_id).order_by(tool_calls.c.created_at, tool_calls.c.id)
-        ).mappings().all() if job_id else []
         tool_descriptors = [{
             "id": str(row["id"]),
             "toolCallId": str(row["id"]),
@@ -2283,6 +2282,10 @@ def _test_providers_allowed() -> bool:
 
 
 def _planner_user_config_from_request(request: Any, *, selected_provider: Any = None) -> PlannerUserConfig | None:
+    from mdi_api.account_model_provider import AccountModelProvider
+    if isinstance(selected_provider, AccountModelProvider):
+        # Account authority resolves credentials at call time, never via global names.
+        return None
     fields = ("baseUrl", "model", "secretId", "temperature", "maxTokens", "timeoutSeconds", "thinkingMode")
     provider_name = _requested_planner_provider_name(getattr(request, "provider", None))
     has_explicit_config = any(getattr(request, field, None) not in (None, "") for field in fields)

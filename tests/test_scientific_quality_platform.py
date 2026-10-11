@@ -55,18 +55,18 @@ def test_all_canonical_capabilities_have_explicit_evidence_backed_status():
     report = _quality_report()
     assert report.accepted
     assert report.error_count == 0
-    assert report.capability_count == 27
+    assert report.capability_count == 29
     assert report.qualification_counts == {
         "DOMAIN_VALIDATED": 11,
         "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED": 12,
         "NOT_YET_SCIENTIFICALLY_QUALIFIED": 1,
-        "REFERENCE_VALIDATED": 3,
+        "REFERENCE_VALIDATED": 5,
     }
-    assert report.reference_case_count == 13
+    assert report.reference_case_count == 15
     assert report.invariant_case_count == 11
-    assert report.domain_negative_case_count == 22
+    assert report.domain_negative_case_count == 26
     assert report.artifact_semantics_case_count == 2
-    assert report.result_projection_case_count == 4
+    assert report.result_projection_case_count == 5
     assert report.interpretation_evaluation_case_count == 7
     assert report.report_evaluation_case_count == 2
     assert len(report.inventory_fingerprint) == 64
@@ -77,6 +77,7 @@ def test_quality_evidence_is_bound_to_current_scientific_contract():
     registries = build_default_agent2_registries()
     for manifest in registries.capabilities.list_all():
         evidence = QUALITY_EVIDENCE_BY_CAPABILITY[manifest.capability_id]
+        assert evidence.capability_version == manifest.version
         assert evidence.qualified_contract_fingerprint == scientific_contract_fingerprint(
             manifest
         )
@@ -110,6 +111,19 @@ def test_scientific_contract_change_makes_qualification_stale():
     assert any(
         issue.code == "STALE_QUALIFICATION"
         and issue.capability_id == "structure.rdf"
+        for issue in report.issues
+    )
+
+
+def test_mismatched_evidence_version_is_stale_even_with_current_contract_hash():
+    records = dict(QUALITY_EVIDENCE_BY_CAPABILITY)
+    records["structure.summary"] = records["structure.summary"].model_copy(
+        update={"capability_version": "0.9"}
+    )
+    report = _quality_report(evidence=records)
+    assert any(
+        issue.code == "STALE_QUALIFICATION"
+        and issue.capability_id == "structure.summary"
         for issue in report.issues
     )
 

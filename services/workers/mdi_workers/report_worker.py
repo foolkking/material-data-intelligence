@@ -9,7 +9,7 @@ from mdi_api.infrastructure.scientific_reports.client import FakeStructuredRepor
 from mdi_api.infrastructure.scientific_reports.service import ScientificReportService
 
 
-def run_queued_report_generation(generation_id: str) -> dict:
+def run_queued_report_generation(generation_id: str, *, expected_attempt: int | None = None) -> dict:
     factory = create_repository_factory()
     client = None
     fixture = os.getenv("MDI_AGENT2_REPORT_FIXTURE_JSON")
@@ -19,6 +19,7 @@ def run_queued_report_generation(generation_id: str) -> dict:
         generation_id,
         repository_factory=factory,
         report_generator=ScientificReportService(factory, client=client),
+        expected_attempt=expected_attempt,
     )
     return {**result, "process_id": os.getpid()}
 

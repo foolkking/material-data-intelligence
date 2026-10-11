@@ -68,7 +68,7 @@ def build_scientific_viewer_registry() -> ScientificViewerRegistry:
         _descriptor("electronic.band_structure", "band-structure", interactions=["zoom", "inspect_k_path", "inspect_energy"], selections=["BAND_POINT", "BAND_SEGMENT"], maximum_payload_bytes=16 * mib),
         _descriptor("electronic.dos", "density-of-states", interactions=["zoom", "inspect_series", "inspect_energy"], selections=["DOS_SERIES", "ENERGY_INTERVAL"], maximum_payload_bytes=16 * mib),
         _descriptor("phonon.band_structure", "phonon-band", interactions=["zoom", "inspect_q_path"], selections=["PHONON_Q_POINT", "PHONON_BRANCH"], maximum_payload_bytes=16 * mib),
-        _descriptor("phonon.dos", "phonon-dos", interactions=["zoom", "inspect_series"], selections=["PHONON_BRANCH", "ENERGY_INTERVAL"], maximum_payload_bytes=16 * mib),
+        _descriptor("phonon.dos", "phonon-dos", interactions=["zoom", "inspect_series"], selections=["PHONON_DOS_POINT", "PHONON_BRANCH", "ENERGY_INTERVAL"], maximum_payload_bytes=16 * mib),
         _descriptor("volumetric.field", "volumetric", interactions=["isosurface", "slice", "inspect_field"], selections=["VOLUMETRIC_REGION"], maximum_payload_bytes=16 * mib),
         _descriptor("volumetric.charge_density", "volumetric", interactions=["isosurface", "slice", "inspect_field"], selections=["VOLUMETRIC_REGION"], maximum_payload_bytes=16 * mib),
     ])

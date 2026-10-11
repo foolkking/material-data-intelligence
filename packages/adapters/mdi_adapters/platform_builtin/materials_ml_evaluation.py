@@ -15,7 +15,7 @@ from ..base import BaseToolAdapter
 from ..composition_common import parse_formula
 from ..context import ToolExecutionContext
 from ..errors import ToolExecutionError
-from ..ml_common import coerce_dataframe
+from ..ml_common import coerce_dataframe, regression_r2
 from ..profile_binding import canonical_profile_resource_ref
 
 
@@ -176,6 +176,7 @@ class _MaterialsMLAdapter(BaseToolAdapter):
 
 
 class RegressionEvaluationAdapter(_MaterialsMLAdapter):
+    adapter_version = "0.2.0"
     tool_id = REGRESSION_TOOL_ID
     expected_kind = "regression"
     schema_version = REGRESSION_SCHEMA_VERSION
@@ -289,7 +290,7 @@ def regression_metric_values(target: Iterable[float], prediction: Iterable[float
     squared = residual**2
     ss_total = float(np.sum((target_array - float(np.mean(target_array))) ** 2))
     ss_residual = float(np.sum(squared))
-    r2 = None if ss_total == 0 else float(1.0 - ss_residual / ss_total)
+    r2 = regression_r2(target_array, ss_residual=ss_residual, ss_total=ss_total)
     return {
         "sampleCount": int(len(target_array)),
         "mae": float(np.mean(absolute)),

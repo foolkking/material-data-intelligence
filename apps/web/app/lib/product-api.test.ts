@@ -4,17 +4,49 @@ import {
   invalidateResearchSessionList,
   listNotificationReadStates,
   listResearchSessions,
+  getResearchSession,
+  createResearchSession,
   executeSavedProductSearch,
   login,
   safeApiDetail,
   updateResearchSession,
   updateSavedProductSearch,
   updateNotificationReadState,
+  getAuthUser,
+  listAuthSessions,
+  updateAuthProfile,
+  createPlatformInvitation,
+  updatePlatformAdminUser,
+  updatePlatformAdminProjectMember,
+  removePlatformAdminProjectMember,
 } from "./product-api";
 
 afterEach(() => {
   invalidateResearchSessionList();
   vi.unstubAllGlobals();
+  vi.useRealTimers();
+  sessionStorage.clear();
+});
+
+it.each(["transport", "body"])("bounds session creation %s and reuses its request on manual retry", async stage => {
+  vi.useFakeTimers();
+  const stalled = new Promise<never>(() => {});
+  const fetchMock = vi.fn().mockImplementationOnce(() => stage === "transport" ? stalled : Promise.resolve({ ok: true, status: 200, json: () => stalled }))
+    .mockImplementation(async (_url, init) => {
+      const body = JSON.parse(init.body);
+      return new Response(JSON.stringify({ id: "session", title: body.title, project_id: "project", status: "active", creationKey: body.creationKey }));
+    });
+  vi.stubGlobal("fetch", fetchMock);
+  const first = createResearchSession("project", "Question", "dataset");
+  const failure = expect(first).rejects.toThrow("输入已保留");
+  await vi.advanceTimersByTimeAsync(10_000);
+  await failure;
+  expect(fetchMock.mock.calls[0][1].signal.aborted).toBe(true);
+  const recovered = await createResearchSession("project", "Question", "dataset");
+  expect(fetchMock.mock.calls[0][1].body).toBe(fetchMock.mock.calls[1][1].body);
+  expect(recovered.id).toBe("session");
+  await createResearchSession("project", "Question", "dataset");
+  expect(JSON.parse(fetchMock.mock.calls[2][1].body).creationKey).not.toBe(recovered.creationKey);
 });
 
 describe("product API errors", () => {
@@ -65,6 +97,54 @@ describe("product API errors", () => {
       .toBe("请选择一个明确的数据范围。");
     expect(safeApiDetail([{ loc: ["body"] }]))
       .toBe("请求输入不完整，请检查后重试。");
+  });
+});
+
+it("passes abort signals to each bounded administrative write", async () => {
+  const fetchMock = vi.fn().mockImplementation(() => Promise.resolve(new Response("{}", { status: 200, headers: { "Content-Type": "application/json" } })));
+  vi.stubGlobal("fetch", fetchMock);
+  const signal = new AbortController().signal;
+  await createPlatformInvitation("invited@example.invalid", "受邀者", 7, { signal });
+  await updatePlatformAdminUser("user/2", { isActive: false }, { signal });
+  await updatePlatformAdminProjectMember("project/1", "user/2", "viewer", { signal });
+  await removePlatformAdminProjectMember("project/1", "user/2", { signal });
+  for (const [index, path, method] of [[0, "/api/api/admin/invitations", "POST"], [1, "/api/api/admin/users/user%2F2", "PATCH"], [2, "/api/api/admin/projects/project%2F1/members/user%2F2", "PUT"], [3, "/api/api/admin/projects/project%2F1/members/user%2F2", "DELETE"]] as const) {
+    expect(fetchMock.mock.calls[index]).toEqual([path, expect.objectContaining({ method, signal })]);
+  }
+});
+
+describe("account-owned requests", () => {
+  it("bypasses shared authentication cache for independently cancellable account reads", async () => {
+    const cached = { id: "account_1", displayName: "旧名称" };
+    const latest = { id: "account_1", displayName: "当前名称" };
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify(cached)))
+      .mockResolvedValueOnce(new Response(JSON.stringify(latest)))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ items: [], count: 0 })));
+    vi.stubGlobal("fetch", fetchMock);
+    await login("account@example.invalid", "example-password");
+    const controller = new AbortController();
+    expect(await getAuthUser({ signal: controller.signal })).toEqual(latest);
+    await listAuthSessions({ signal: controller.signal });
+    expect(fetchMock).toHaveBeenNthCalledWith(2, "/api/auth/me", expect.objectContaining({ signal: expect.any(AbortSignal), cache: "no-store" }));
+    expect(fetchMock).toHaveBeenNthCalledWith(3, "/api/auth/sessions", expect.objectContaining({ signal: controller.signal, cache: "no-store" }));
+  });
+
+  it("does not replace the shared profile cache with an aborted late save", async () => {
+    const cached = { id: "account_1", displayName: "当前名称" };
+    let resolveBody!: (value: unknown) => void;
+    vi.stubGlobal("fetch", vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify(cached)))
+      .mockResolvedValueOnce({ ok: true, status: 200, json: () => new Promise((resolve) => { resolveBody = resolve; }) }));
+    await login("account@example.invalid", "example-password");
+    const controller = new AbortController();
+    const save = updateAuthProfile("迟到的名称", { signal: controller.signal });
+    const rejection = expect(save).rejects.toBeDefined();
+    await vi.waitFor(() => expect(resolveBody).toBeTypeOf("function"));
+    controller.abort();
+    resolveBody({ id: "account_1", displayName: "迟到的名称" });
+    await rejection;
+    expect(await getAuthUser()).toEqual(cached);
   });
 });
 
@@ -157,13 +237,14 @@ describe("notification read state API", () => {
       }));
     vi.stubGlobal("fetch", fetchMock);
 
-    await listNotificationReadStates();
-    await updateNotificationReadState("project_1", "job_1", true);
+    const controller = new AbortController();
+    await listNotificationReadStates({ signal: controller.signal });
+    await updateNotificationReadState("project_1", "job_1", true, { signal: controller.signal });
 
     expect(fetchMock).toHaveBeenNthCalledWith(
       1,
       "/api/api/notifications/read-state",
-      expect.objectContaining({ credentials: "include" }),
+      expect.objectContaining({ credentials: "include", signal: controller.signal }),
     );
     expect(fetchMock).toHaveBeenNthCalledWith(
       2,
@@ -171,6 +252,7 @@ describe("notification read state API", () => {
       expect.objectContaining({
         method: "PATCH",
         body: JSON.stringify({ read: true }),
+        signal: controller.signal,
       }),
     );
   });
@@ -219,4 +301,18 @@ describe("research session list cache", () => {
       expect.objectContaining({ credentials: "include" }),
     );
   });
+});
+
+it("keeps owned session reads outside the shared warm cache and carries their cancellation", async () => {
+  const shared = [{ id: "one", project_id: "project", title: "shared", status: "active" }];
+  const owned = [{ ...shared[0], title: "fresh" }];
+  const fetchMock = vi.fn().mockResolvedValueOnce(new Response(JSON.stringify(shared))).mockResolvedValueOnce(new Response(JSON.stringify(owned))).mockResolvedValueOnce(new Response(JSON.stringify(owned[0])));
+  vi.stubGlobal("fetch", fetchMock);
+  expect(await listResearchSessions("project")).toEqual(shared);
+  const controller = new AbortController();
+  expect(await listResearchSessions("project", controller.signal)).toEqual(owned);
+  expect(await listResearchSessions("project")).toEqual(shared);
+  expect(await getResearchSession("one", controller.signal)).toEqual(owned[0]);
+  expect(fetchMock).toHaveBeenNthCalledWith(2, "/api/projects/project/research-sessions", expect.objectContaining({ signal: controller.signal, cache: "no-store" }));
+  expect(fetchMock).toHaveBeenNthCalledWith(3, "/api/research-sessions/one", expect.objectContaining({ signal: controller.signal }));
 });

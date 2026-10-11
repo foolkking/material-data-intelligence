@@ -16,6 +16,7 @@ from mdi_api.research_agent.context.schemas import (
     ResearchContextCandidateBundle,
 )
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
+from mdi_api.research_agent.schemas import ScientificSelectionContext
 
 
 _MAX_MESSAGE_CHARS = 4000
@@ -39,11 +40,13 @@ class ResearchContextCandidateAssembler:
         current_user_message = next((str(row["content_summary"]) for row in current_messages if row["role"] == "user"), None)
         ui_context = ((received or {}).get("payload_json") or {}).get("ui_context") or {}
         selection_refs = list(ui_context.get("selection_refs") or [])
-        scientific_selections = list(ui_context.get("scientific_selections") or [])
+        scientific_selections = [
+            ScientificSelectionContext.model_validate(item)
+            for item in (ui_context.get("scientific_selections") or [])
+        ]
         selection_refs.extend(
-            item["object_ref"]
+            item.object_ref.model_dump(mode="json")
             for item in scientific_selections
-            if isinstance(item, dict) and isinstance(item.get("object_ref"), dict)
         )
         active_refs = list(ui_context.get("active_object_refs") or [])
         explicit_refs = list(ui_context.get("explicit_object_refs") or [])
@@ -215,6 +218,7 @@ class ResearchContextCandidateAssembler:
             research_session_id=session_id,
             research_turn_id=turn["id"],
             active_object_candidates=objects,
+            scientific_selections=scientific_selections,
             result_candidates=results,
             finding_candidates=finding_rows[:16],
             explicit_constraints=list((memory_state or {}).get("session_constraints_json") or []) or list((latest_snapshot or {}).get("effective_constraints_json") or []),

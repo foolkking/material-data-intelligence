@@ -325,7 +325,11 @@ def validate_scientific_quality(
                 capability_id=capability_id,
             )
         before = sum(item.severity == "ERROR" for item in issues)
-        stale = current_fingerprint != record.qualified_contract_fingerprint
+        stale = (
+            current_fingerprint != record.qualified_contract_fingerprint
+            or manifest is None
+            or record.capability_version != manifest.version
+        )
         if stale:
             _issue(
                 issues,

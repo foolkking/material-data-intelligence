@@ -92,6 +92,11 @@ class ResearchTurnService:
     ) -> CreateResearchTurnResponse:
         """Persist one user message, one RECEIVED turn, and one event atomically."""
 
+        model_selection = None
+        if request.model_selection is not None:
+            from mdi_api.user_models import validate_user_selection
+            model_selection = validate_user_selection(current_user.id, request.model_selection.model_dump())
+
         with _keyed_lock(_session_locks, session_id):
             with self.repository_factory.unit_of_work() as unit:
                 self.repository_factory.project_access.require(
@@ -170,8 +175,10 @@ class ResearchTurnService:
                     "content_summary": request.message,
                     "payload_json": {
                         "source": "agent2_research_turn",
+                        "_model_selection": model_selection,
                         "uiContext": ui_context,
                         "replyToTurnId": str(parent_turn_id) if parent_turn_id else None,
+                        "requested_action": request.requested_action,
                         "autonomy": autonomy,
                         "_mdi_admission": {
                             "key_hash": (
@@ -214,6 +221,7 @@ class ResearchTurnService:
                         "status": ResearchTurnStatus.RECEIVED.value,
                         "ui_context": ui_context,
                         "autonomy": autonomy,
+                        "requested_action": request.requested_action,
                     },
                     created_at=now,
                 )
@@ -247,6 +255,10 @@ class ResearchTurnService:
             ),
             "autonomy_mode": request.autonomy_mode.value,
         }
+        if request.model_selection is not None:
+            payload["model_selection"] = request.model_selection.model_dump()
+        if request.requested_action is not None:
+            payload["requested_action"] = request.requested_action
         return hashlib.sha256(
             json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
         ).hexdigest()
@@ -416,6 +428,8 @@ class ResearchTurnService:
                 child_turn_id = uuid4()
                 message_id = f"message_{uuid4().hex}"
                 ui_payload = ui_context.model_dump(mode="json")
+                parent_message = unit.agent2.research_turns.get_message(str(parent["user_message_id"]))
+                inherited_model = (parent_message.get("payload_json") or {}).get("_model_selection")
                 generated_message = unit.agent2.research_turns.add_message(
                     {
                         "id": message_id,
@@ -428,6 +442,7 @@ class ResearchTurnService:
                             "uiContext": ui_payload,
                             "replyToTurnId": str(parent_turn_id),
                             "autonomy": autonomy,
+                            "_model_selection": inherited_model,
                         },
                         "created_at": now,
                     }
@@ -563,6 +578,9 @@ class ResearchTurnService:
         turn_id: UUID,
         code: str,
         summary: str,
+        *,
+        expected_statuses: frozenset[ResearchTurnStatus],
+        expected_version: int | None = None,
     ) -> dict[str, Any] | None:
         """Terminalize an active turn after a worker-boundary failure.
 
@@ -570,8 +588,9 @@ class ResearchTurnService:
         import/configuration failure can happen before ``AgentTurnProcessor``
         exists and before its normal exception handling is available.  This
         small lifecycle operation reuses the authoritative turn state machine
-        and compare-and-set write so those failures cannot leave a durable
-        RECEIVED/active turn behind a failed RQ job.
+        and compare-and-set write. Callers must name the stages they own: a
+        late failure from an earlier worker must not fail downstream work or
+        overwrite a cancellation already in progress.
         """
 
         with _keyed_lock(_turn_locks, str(turn_id)):
@@ -580,20 +599,9 @@ class ResearchTurnService:
                 status = ResearchTurnStatus(str(turn["status"]))
                 if status in TERMINAL_TURN_STATUSES:
                     return None
-                if status not in {
-                    ResearchTurnStatus.RECEIVED,
-                    ResearchTurnStatus.RESOLVING_CONTEXT,
-                    ResearchTurnStatus.ORCHESTRATING,
-                    ResearchTurnStatus.READY_TO_PLAN,
-                    ResearchTurnStatus.PLANNING,
-                    ResearchTurnStatus.PLAN_READY,
-                    ResearchTurnStatus.QUEUED,
-                    ResearchTurnStatus.RUNNING,
-                    ResearchTurnStatus.CANCELING,
-                    ResearchTurnStatus.RESULT_PENDING,
-                    ResearchTurnStatus.RESULT_READY,
-                    ResearchTurnStatus.INTERPRETING,
-                }:
+                if status not in expected_statuses:
+                    return None
+                if expected_version is not None and int(turn["row_version"]) != expected_version:
                     return None
                 ensure_transition(status, ResearchTurnStatus.FAILED)
                 updated = unit.agent2.research_turns.compare_and_set_status(
@@ -970,7 +978,9 @@ class ResearchTurnService:
         status = ResearchTurnStatus(str(turn["status"]))
         if status in TERMINAL_TURN_STATUSES or status == ResearchTurnStatus.RESULT_PENDING:
             raise InvalidResearchTurnTransition("TURN_TERMINAL")
-        if turn.get("job_id"):
+        # Interpretation owns the Turn after scientific execution has ended.
+        # Cancel its claim without sending Stop to the completed scientific Job.
+        if turn.get("job_id") and status != ResearchTurnStatus.INTERPRETING:
             from mdi_api.research_agent.execution.supervisor import ResearchExecutionSupervisor
             return ResearchExecutionSupervisor(self.repository_factory).request_cancel(turn_id)
         return self.transition(
@@ -1051,6 +1061,25 @@ class ResearchTurnService:
                 raise UnauthorizedScientificObjectReference("ScientificObjectRef failed server-side project/version authorization")
 
     @staticmethod
+    def _submitted_source_context(session: Any, turn: dict[str, Any], messages: list[dict[str, Any]]) -> dict[str, Any] | None:
+        """Recover admitted sources without claiming a resolved model context."""
+        message = next((row for row in messages if row["id"] == turn["user_message_id"]), None)
+        payload = (message or {}).get("payload_json") or {}
+        if payload.get("source") != "agent2_research_turn" or "uiContext" not in payload:
+            return None
+        submitted = ResearchTurnUIContext.model_validate(payload["uiContext"] if payload["uiContext"] is not None else {})
+        refs = list({(ref.object_id, ref.version_id): ref for ref in [
+            *submitted.active_object_refs, *submitted.explicit_object_refs,
+            *submitted.selection_refs, *(item.object_ref for item in submitted.scientific_selections),
+        ]}.values())
+        ResearchTurnService._authorize_context_refs(session, str(turn["project_id"]), refs)
+        return {
+            "scope": [ref.model_dump(mode="json") for ref in refs],
+            "selection": [ref.model_dump(mode="json") for ref in submitted.selection_refs],
+            "scientific_selection": [item.model_dump(mode="json") for item in submitted.scientific_selections],
+        }
+
+    @staticmethod
     def _turn_view(session: Any, turn: dict[str, Any]) -> dict[str, Any]:
         message_rows = session.agent2.research_turns.referenced_messages(turn)
         messages_view = [{
@@ -1060,6 +1089,11 @@ class ResearchTurnService:
             "created_at": row["created_at"],
         } for row in message_rows]
         snapshot = session.agent2.research_context_snapshots.get_for_turn(turn["id"])
+        context = {
+            "scope": snapshot["active_scope_refs_json"] or [],
+            "selection": snapshot["selection_refs_json"] or [],
+            "scientific_selection": snapshot["scientific_selections_json"] or [],
+        } if snapshot is not None else ResearchTurnService._submitted_source_context(session, turn, message_rows)
         decision = session.agent2.research_turn_decisions.get_for_turn(turn["id"])
         capability_resolution = session.agent2.research_capability_resolutions.get_for_turn(turn["id"])
         capability_plan = session.agent2.research_capability_plans.get_for_turn(turn["id"])
@@ -1085,11 +1119,8 @@ class ResearchTurnService:
             "status": turn["status"],
             "messages": messages_view,
             "context_snapshot_summary": summary,
-            "context": None if snapshot is None else {
-                "scope": snapshot["active_scope_refs_json"] or [],
-                "selection": snapshot["selection_refs_json"] or [],
-                "scientific_selection": snapshot["scientific_selections_json"] or [],
-            },
+            "context": context,
+            "context_source": "RESOLVED" if snapshot is not None else "SUBMITTED" if context is not None else None,
             "orchestration": {
                 "decision_available": decision is not None,
                 "action_dispatch_status": None if decision is None else decision["action_dispatch_status"],

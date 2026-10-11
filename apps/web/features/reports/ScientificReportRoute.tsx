@@ -4,9 +4,8 @@ import { ProductLink as Link } from "../../shared/layout/ProductNavigation";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import {
-  buildScientificReportMarkdown,
-  buildScientificReportReproducibilityManifest,
   compareScientificReportRevisions,
+  dedupeReportSentences,
   getScientificReport,
   humanizeScientificMethodSummary,
   listScientificReportRevisions,
@@ -14,13 +13,23 @@ import {
   type ScientificReportRevisionList,
   type ScientificReportView,
 } from "../../app/lib/scientific-report-api";
-import { compileReportPresentation, presentationLimitationText, presentationScientificText } from "../../app/lib/scientific-presentation";
+import { formatScientificNarrativeNumbers, presentationScientificText } from "../../app/lib/scientific-presentation";
+import { reportLimitationPresentation } from "../../app/lib/scientific-limitation-text";
 import { ProductShell, RequireProductAuth } from "../../shared/layout/ProductShell";
 import { useProductRouter } from "../../shared/layout/ProductNavigation";
-import { ScientificPresentationBlocks } from "../research/ScientificPresentationBlocks";
 import { ArtifactOpenLink } from "../../shared/ui/ArtifactOpenLink";
 import { ArtifactDownloadLink } from "../../shared/ui/ArtifactDownloadLink";
 import { ScientificReportArtifactPreview } from "./ScientificReportArtifactPreview";
+import { ScientificReportBasis } from "./ScientificReportBasis";
+import { boundReportBasis, reportParameterInputs } from "../../app/lib/scientific-report-basis";
+import { readPlatformReferences } from "../../app/lib/platform-reference";
+import { PlatformReferenceSources } from "../../shared/ui/PlatformReferenceSources";
+import { ProjectInputDetails } from "../../shared/ui/ProjectInputDetails";
+import { inputOriginNames, projectScienceNames } from "../../app/lib/project-science-labels";
+import { readReportContent } from "./report-read";
+import { scientificReportDownloadHref } from "../../app/lib/scientific-report-download";
+import { reportFindingPresentation } from "../../app/lib/scientific-report-findings";
+import styles from "./ReportDocument.module.css";
 
 const LegacyReportReaderPage = dynamic(
   () => import("./ReportPages").then((module) => module.ReportReaderPage),
@@ -34,6 +43,18 @@ const LegacyReportReaderPage = dynamic(
     ),
   },
 );
+
+function scrollToReportChapter(target: string) {
+  const chapter = document.getElementById(target);
+  if (!chapter) return;
+  chapter.scrollIntoView({
+    behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    block: "start",
+  });
+  chapter.tabIndex = -1;
+  chapter.focus({ preventScroll: true });
+  window.history.replaceState(window.history.state, "", `#${target}`);
+}
 
 const relevanceCopy = {
   CURRENT: null,
@@ -75,25 +96,29 @@ function sourceLifecycleLabel(status: string | undefined) {
 }
 
 export function ScientificReportRoute({ projectId, reportId }: { projectId: string; reportId: string }) {
+  return <ScientificReportLoader key={`${projectId}:${reportId}`} projectId={projectId} reportId={reportId} />;
+}
+
+function ScientificReportLoader({ projectId, reportId }: { projectId: string; reportId: string }) {
   const router = useProductRouter();
   const [report, setReport] = useState<ScientificReportView | null>(null);
-  const [legacy, setLegacy] = useState(false);
+  const legacy = isLegacyRunReference(reportId);
   const [error, setError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   useEffect(() => {
-    let active = true;
-    if (isLegacyRunReference(reportId)) {
-      setLegacy(true);
-      return () => { active = false; };
-    }
-    void getScientificReport(reportId)
-      .then((value) => { if (active) setReport(value); })
-      .catch((reason: Error & { status?: number }) => {
-        if (!active) return;
-        if (reason.status === 404) setLegacy(true);
-        else setError(true);
-    });
-    return () => { active = false; };
-  }, [reportId]);
+    if (legacy) return;
+    const controller = new AbortController();
+    setError(false);
+    void readReportContent((signal) => getScientificReport(reportId, signal), controller.signal)
+      .then((value) => {
+        if (!value.report) throw new Error("Report body unavailable");
+        if (!controller.signal.aborted) setReport(value);
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setError(true);
+      });
+    return () => controller.abort();
+  }, [reportId, legacy, reloadKey]);
   useEffect(() => {
     if (!report?.project_id || report.project_id === projectId) return;
     router.replace(
@@ -107,7 +132,7 @@ export function ScientificReportRoute({ projectId, reportId }: { projectId: stri
   );
   return <RequireProductAuth><ProductShell projectId={authoritativeProjectId}>
     {!report && !error ? <section className="scientific-report-shell" aria-label="科学报告加载状态"><div className="product-loading" role="status" aria-live="polite">正在打开科学报告…</div></section> : null}
-    {error ? <section className="scientific-report-shell" aria-label="科学报告错误状态"><div className="product-state" role="alert"><h1>报告暂时无法打开</h1><p>已生成的报告仍保存在项目中，请稍后重试。</p><Link className="product-secondary-action" href={`/projects/${projectId}/reports`}>返回报告列表</Link></div></section> : null}
+    {error ? <section className="scientific-report-shell" aria-label="科学报告错误状态"><div className="product-state" role="alert"><h1>报告暂时无法打开</h1><p>未能读取报告正文。请重试，或返回报告列表确认访问权限与报告状态。</p><div className="product-row-actions"><button type="button" className="product-secondary-action" onClick={() => setReloadKey((key) => key + 1)}>重新加载报告</button><Link className="product-secondary-action" href={`/projects/${projectId}/reports`}>返回报告列表</Link></div></div></section> : null}
     {isCorrectingProjectRoute ? <section className="scientific-report-shell" aria-label="报告项目校正状态"><div className="product-loading" role="status" aria-live="polite">正在返回报告所属项目…</div></section> : null}
     {report?.report && !isCorrectingProjectRoute ? <ScientificReportDocument projectId={authoritativeProjectId} view={report} /> : null}
   </ProductShell></RequireProductAuth>;
@@ -115,88 +140,57 @@ export function ScientificReportRoute({ projectId, reportId }: { projectId: stri
 
 function ScientificReportDocument({ projectId, view }: { projectId: string; view: ScientificReportView }) {
   const report = view.report!;
-  const [exportStatus, setExportStatus] = useState<"idle" | "markdown" | "manifest" | "error">("idle");
+  const findingPresentation = reportFindingPresentation(report.main_findings);
   const [revisions, setRevisions] =
     useState<ScientificReportRevisionList | null>(null);
   const [comparison, setComparison] =
     useState<ScientificReportRevisionComparison | null>(null);
+  const [revisionErrors, setRevisionErrors] = useState<string[]>([]);
+  const [revisionBusy, setRevisionBusy] = useState(false);
+  const [revisionReloadKey, setRevisionReloadKey] = useState(0);
   useEffect(() => {
-    let active = true;
-    void listScientificReportRevisions(view.report_id)
-      .then((value) => {
-        if (!active) return;
-        setRevisions(value);
-        if ((view.revision_number || 1) > 1) {
-          void compareScientificReportRevisions(view.report_id)
-            .then((result) => {
-              if (active) setComparison(result);
-            })
-            .catch(() => {
-              if (active) setComparison(null);
-            });
-        }
-      })
-      .catch(() => {
-        if (active) setRevisions(null);
-      });
-    return () => {
-      active = false;
-    };
-  }, [view.report_id, view.revision_number]);
+    const controller = new AbortController();
+    setRevisionBusy(true);
+    async function readRevisionPart<T>(label: string, request: (signal: AbortSignal) => Promise<T>, accept: (value: T) => void) {
+      try {
+        const value = await readReportContent(request, controller.signal);
+        if (controller.signal.aborted) return;
+        accept(value);
+        setRevisionErrors((current) => current.filter((item) => item !== label));
+      } catch {
+        if (!controller.signal.aborted) setRevisionErrors((current) => current.includes(label) ? current : [...current, label]);
+      }
+    }
+    void Promise.all([
+      readRevisionPart("版本记录", (signal) => listScientificReportRevisions(view.report_id, signal), setRevisions),
+      ...(view.revision_number && view.revision_number > 1
+        ? [readRevisionPart("版本比较", (signal) => compareScientificReportRevisions(view.report_id, undefined, signal), setComparison)]
+        : []),
+    ]).then(() => {
+      if (!controller.signal.aborted) setRevisionBusy(false);
+    });
+    return () => controller.abort();
+  }, [view.report_id, view.revision_number, revisionReloadKey]);
   const warning = relevanceCopy[view.current_effective_relevance];
   const lifecycle = lifecycleCopy[
     String(view.lifecycle_status || "ACTIVE").toUpperCase() as keyof typeof lifecycleCopy
   ];
-  const limitations = report.limitations
-    .map((item) => ({ ...item, statement: presentationLimitationText(item.statement) }))
-    .filter((item, index, items) => items.findIndex((candidate) => candidate.statement.trim().toLocaleLowerCase() === item.statement.trim().toLocaleLowerCase()) === index);
+  const limitations = reportLimitationPresentation(report.limitations);
   const methodSummary = dedupeReportSentences(
     humanizeScientificMethodSummary(presentationScientificText(report.method_summary)),
   );
   const readableReportText = (value: string) =>
     normalizeReportNarrative(presentationScientificText(value));
-  const readableReproducibilitySummary = readableReportText(report.reproducibility_summary)
-    .replaceAll("exact source version", "精确源版本")
-    .replaceAll("exact source versions", "精确源版本");
-  const presentation = compileReportPresentation(view);
-  const sourceCount = view.viewer_sources?.length || report.data_sources.length;
+  const readableReproducibilitySummary = readableReportText(report.reproducibility_summary);
+  const referenceSources = readPlatformReferences(boundReportBasis(view)?.reference_sources);
+  const parameterInputs = reportParameterInputs(view);
+  const sourceCount = (view.viewer_sources?.length || report.data_sources.length) + referenceSources.length + parameterInputs.length;
   const sourceResearchHref = view.research_session_id
     ? `/projects/${projectId}/research/${encodeURIComponent(view.research_session_id)}?turn=${encodeURIComponent(view.research_turn_id)}`
     : `/projects/${projectId}/research?turn=${encodeURIComponent(view.research_turn_id)}`;
-  const exportBlob = (contents: string, mimeType: string, filename: string, status: "markdown" | "manifest") => {
-    try {
-      const createObjectURL = URL.createObjectURL;
-      if (typeof createObjectURL !== "function") throw new Error("下载能力不可用");
-      const url = createObjectURL.call(URL, new Blob([contents], { type: mimeType }));
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = filename;
-      anchor.rel = "noopener";
-      anchor.style.display = "none";
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-      setExportStatus(status);
-      window.setTimeout(() => URL.revokeObjectURL(url), 0);
-    } catch {
-      setExportStatus("error");
-    }
-  };
-  const downloadMarkdown = () => exportBlob(
-    buildScientificReportMarkdown(view),
-    "text/markdown;charset=utf-8",
-    `${report.title.replace(/[^\w\u4e00-\u9fff.-]+/g, "-").slice(0, 96) || "scientific-report"}.md`,
-    "markdown",
-  );
-  const downloadReproducibilityManifest = () => exportBlob(
-    buildScientificReportReproducibilityManifest(view),
-    "application/json;charset=utf-8",
-    `${report.title.replace(/[^\w\u4e00-\u9fff.-]+/g, "-").slice(0, 96) || "scientific-report"}-reproducibility.json`,
-    "manifest",
-  );
   const anchor = (section: string) => `report-${view.report_id}-${section}`;
   const reportSections = [
-    { id: anchor("question"), label: "研究问题" },
+    { id: anchor("question"), label: "摘要" },
     { id: anchor("methods"), label: "数据与方法" },
     ...(report.main_findings.length ? [{ id: anchor("findings"), label: "主要发现" }] : []),
     ...(report.primary_figures.length ? [{ id: anchor("figures"), label: "图表" }] : []),
@@ -207,14 +201,14 @@ function ScientificReportDocument({ projectId, view }: { projectId: string; view
     ...(report.next_steps?.text ? [{ id: anchor("next-steps"), label: "后续工作建议" }] : []),
   ];
   return <section className="scientific-report-shell" aria-label="科学报告阅读器">
-    <article className="scientific-report-document">
-      <nav className="scientific-report-back" aria-label="报告导航"><div className="scientific-report-back-primary"><Link href={`/projects/${projectId}/reports`}>返回报告</Link><Link className="product-primary-action" href={sourceResearchHref}>打开来源研究</Link></div><div className="scientific-report-back-secondary"><button type="button" className="product-secondary-action" data-testid="scientific-report-export-markdown" onClick={downloadMarkdown}>导出 Markdown</button><button type="button" className="product-secondary-action" data-testid="scientific-report-export-manifest" onClick={downloadReproducibilityManifest}>导出复现清单</button></div>{exportStatus !== "idle" ? <span className="scientific-report-export-status" role="status" aria-label="报告导出状态" aria-live="polite">{exportStatus === "markdown" ? "Markdown 已准备下载" : exportStatus === "manifest" ? "复现清单已准备下载" : "导出失败，请稍后重试"}</span> : null}</nav>
+    <article className={`scientific-report-document ${styles.document}`}>
+      <nav className="scientific-report-back" aria-label="报告导航"><div className="scientific-report-back-primary"><Link href={`/projects/${projectId}/reports`}>返回报告</Link><Link className="product-primary-action" href={sourceResearchHref}>打开来源研究</Link></div><div className="scientific-report-back-secondary"><a className="product-secondary-action" data-testid="scientific-report-export-zip" href={scientificReportDownloadHref(view.report_id, "zip")} target="_blank" rel="noopener" title="打包正文、图表与原始数据；解压后打开 report.html 阅读">导出 ZIP（含图表）</a><a className="product-secondary-action" data-testid="scientific-report-export-markdown" href={scientificReportDownloadHref(view.report_id, "markdown")} target="_blank" rel="noopener" title="下载在新窗口处理，原报告保持打开">导出 Markdown</a><a className="product-secondary-action" data-testid="scientific-report-export-manifest" href={scientificReportDownloadHref(view.report_id, "manifest")} target="_blank" rel="noopener" title="下载在新窗口处理，原报告保持打开">导出复现清单</a></div></nav>
       <header className="scientific-report-masthead">
         <p className="product-kicker">经验证科学报告</p>
         <h1>{report.title}</h1>
         <p className="scientific-report-context">{new Date(view.created_at).toLocaleString("zh-CN")} · 第 {view.revision_number || 1} 版 · {report.main_findings.length} 项主要发现</p>
       </header>
-      {revisions && revisions.count > 1 ? (
+      {(revisions && revisions.count > 1) || comparison || revisionErrors.length ? (
         <section
           className="scientific-report-revision-bar"
           aria-labelledby={anchor("revisions-heading")}
@@ -222,13 +216,17 @@ function ScientificReportDocument({ projectId, view }: { projectId: string; view
           <div>
             <p className="product-kicker">不可变修订历史</p>
             <h2 id={anchor("revisions-heading")}>
-              {revisions.count} 个报告版本
+              {revisions ? `${revisions.count} 个报告版本` : "报告版本"}
             </h2>
             <p>
               每个版本都保留同一精确 ScientificResult 与来源；打开或比较不会重新运行科学计算。
             </p>
           </div>
-          <nav aria-label="报告修订版本">
+          {revisionErrors.length ? <div role="alert" className="scientific-report-revision-error">
+            <p>未能读取：{revisionErrors.join("、")}。报告正文与已读取的版本信息仍可查看。</p>
+            <button type="button" className="product-secondary-action" disabled={revisionBusy} onClick={() => setRevisionReloadKey((key) => key + 1)}>{revisionBusy ? "正在重新加载…" : "重新加载版本信息"}</button>
+          </div> : null}
+          {revisions ? <nav aria-label="报告修订版本">
             {revisions.items.map((item) => (
               <Link
                 key={item.report_id}
@@ -240,7 +238,7 @@ function ScientificReportDocument({ projectId, view }: { projectId: string; view
                 第 {item.revision_number || 1} 版
               </Link>
             ))}
-          </nav>
+          </nav> : null}
           {comparison ? (
             <details className="scientific-report-revision-comparison">
               <summary>
@@ -279,7 +277,11 @@ function ScientificReportDocument({ projectId, view }: { projectId: string; view
       <nav className="scientific-report-contents" aria-label="报告章节">
         <span>章节</span>
         {reportSections.map((section) => (
-          <a key={section.id} href={`#${section.id}`}>{section.label}</a>
+          <a key={section.id} href={`#${section.id}`} onClick={(event) => {
+            if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            scrollToReportChapter(section.id);
+          }}>{section.label}</a>
         ))}
         <label className="scientific-report-contents-select">
           <span>跳转章节</span>
@@ -289,11 +291,8 @@ function ScientificReportDocument({ projectId, view }: { projectId: string; view
             onChange={(event) => {
               const target = event.target.value;
               if (!target) return;
-              document.getElementById(target)?.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-              });
-              window.history.replaceState(null, "", `#${target}`);
+              scrollToReportChapter(target);
+              event.target.value = "";
             }}
           >
             <option value="" disabled>选择章节</option>
@@ -308,48 +307,78 @@ function ScientificReportDocument({ projectId, view }: { projectId: string; view
       </nav>
       {lifecycle ? <aside className={`scientific-report-status is-${String(view.lifecycle_status).toLowerCase()}`} role="note"><strong>{lifecycle.label}</strong><p>{lifecycle.body}</p></aside> : null}
       {warning ? <aside className={`scientific-report-status is-${view.current_effective_relevance.toLowerCase()}`} role="note"><strong>{view.current_effective_relevance === "STALE" ? "历史版本" : "来源状态提示"}</strong><p>{warning}</p></aside> : null}
-      <section id={anchor("question")} className="scientific-report-lead" aria-labelledby={`${anchor("question")}-heading`}><p className="product-kicker">研究问题</p><h2 id={`${anchor("question")}-heading`}>{readableReportText(report.research_question)}</h2><p>{readableReportText(report.summary)}</p></section>
-      <section id={anchor("methods")} className="scientific-report-methods" aria-labelledby={`${anchor("methods")}-heading`}><h2 id={`${anchor("methods")}-heading`}>数据与方法</h2><p>{methodSummary}</p>{view.viewer_sources?.length ? <ul className="scientific-report-sources">{view.viewer_sources.map((source) => { const sourceLifecycle = sourceLifecycleLabel(source.lifecycle_status); return <li key={`${source.object_id}:${source.version_id}`}><strong>{source.display_name}</strong><span>{humanizeSourceType(source.object_type)} · 版本 {source.version_id}{source.is_current_version ? " · 当前版本" : " · 历史版本"}{sourceLifecycle ? ` · ${sourceLifecycle}` : ""}</span></li>; })}</ul> : <p className="scientific-report-source-fallback">报告保留了来源引用；当前页面未返回可展示的对象版本摘要。</p>}</section>
-      <ScientificPresentationBlocks presentation={presentation} mode="report_supplement" projectId={projectId} instanceId={view.report_id} />
-      {report.discussion?.text ? <section id={anchor("discussion")} className="scientific-report-discussion" aria-labelledby={`${anchor("discussion")}-heading`}><h2 id={`${anchor("discussion")}-heading`}>科学讨论</h2><p>{readableReportText(report.discussion.text)}</p></section> : null}
+      <section id={anchor("question")} className="scientific-report-lead" aria-labelledby={`${anchor("question")}-heading`}>
+        <h2 id={`${anchor("question")}-heading`}>摘要</h2>
+        <p>{readableReportText(report.summary)}</p>
+        <details className={styles.question}><summary>研究问题</summary><p>{report.research_question}</p></details>
+      </section>
+      <section id={anchor("methods")} className="scientific-report-methods" aria-labelledby={`${anchor("methods")}-heading`}>
+        <h2 id={`${anchor("methods")}-heading`}>数据与方法</h2><p>{methodSummary}</p>
+        {view.viewer_sources?.length ? <ul className="scientific-report-sources">{view.viewer_sources.map((source) => { const sourceLifecycle = sourceLifecycleLabel(source.lifecycle_status); return <li key={`${source.object_id}:${source.version_id}`}><Link href={`/projects/${encodeURIComponent(projectId)}/data?object=${encodeURIComponent(source.object_id)}&version=${encodeURIComponent(source.version_id)}`}>{source.display_name}</Link><span>{humanizeSourceType(source.object_type)}{source.is_current_version ? " · 当前版本" : " · 历史版本"}{sourceLifecycle ? ` · ${sourceLifecycle}` : ""}</span></li>; })}</ul>
+          : referenceSources.length || parameterInputs.length ? null : <p className="scientific-report-source-fallback">{report.data_sources.length ? "报告保留了来源引用；当前页面未返回可展示的对象版本摘要。" : "输入来源暂不可读取。"}</p>}
+        <ProjectInputDetails provenance={{ execution_scope: "PROJECT", input_origin: boundReportBasis(view)?.input_origin, parameter_inputs: parameterInputs }} />
+        <PlatformReferenceSources sources={referenceSources} />
+      </section>
+      <section id={anchor("findings")} className="scientific-report-findings" aria-labelledby={`${anchor("findings")}-heading`}><h2 id={`${anchor("findings")}-heading`}>主要发现</h2>
+        {findingPresentation.sharedLimitations.length ? <p className={styles.sharedLimitation} role="note" aria-label="共同限制">共同限制：{readableReportText(findingPresentation.sharedLimitations.join(""))}</p> : null}
+        <ol>{report.main_findings.map((finding, index) => {
+        return <li key={`${finding.statement}-${index}`}><div className="scientific-report-finding-body"><p>{readableReportText(findingPresentation.statements[index])}</p>
+          <ScientificReportBasis view={view} references={finding} originalStatement={findingPresentation.statements[index] !== finding.statement || formatScientificNarrativeNumbers(finding.statement) !== finding.statement ? finding.statement : undefined} />
+        </div></li>;
+      })}</ol></section>
       {report.primary_figures.length ? <section id={anchor("figures")} className="scientific-report-figures" aria-labelledby={`${anchor("figures")}-heading`}><h2 id={`${anchor("figures")}-heading`}>主要图表</h2>{report.primary_figures.map((figure, index) => {
-        const figureSource = (view.figure_sources || []).find((candidate) => candidate.figure_ref === figure.figure_ref);
+        const matchingSources = (view.figure_sources || []).filter((candidate) => candidate.figure_ref === figure.figure_ref);
+        const figureSource = matchingSources.length === 1 ? matchingSources[0] : null;
         const artifactId = figureSource?.artifact_ids?.[0];
         const artifactHref = artifactId && figureSource?.job_id
           ? `/api/planner/jobs/${encodeURIComponent(figureSource.job_id)}/artifacts/${encodeURIComponent(artifactId)}/content`
           : null;
-        return <figure key={figure.figure_ref}><div className="scientific-report-figure-plate" data-figure-ref={figure.figure_ref}><span>{String(index + 1).padStart(2, "0")}</span><strong>{readableReportText(figure.caption)}</strong><p>{artifactHref ? "已绑定持久化 Artifact；打开或下载不会重新执行科学计算。" : "交互图形和完整数据保留在对应的 Scientific Result 中。"}</p>{artifactHref ? <ScientificReportArtifactPreview jobId={figureSource!.job_id!} artifactId={artifactId!} kind="figure" title={readableReportText(figure.caption)} /> : null}{artifactHref ? <><ArtifactOpenLink href={artifactHref}>打开权威 Artifact</ArtifactOpenLink><ArtifactDownloadLink href={artifactHref} downloadName={`${figure.figure_ref}.figure.json`}>下载权威 Artifact</ArtifactDownloadLink></> : view.viewer_sources?.[0] ? <Link href={`/projects/${projectId}/data?object=${encodeURIComponent(view.viewer_sources[0].object_id)}&version=${encodeURIComponent(view.viewer_sources[0].version_id)}&name=${encodeURIComponent(view.viewer_sources[0].display_name)}`}>在科学视图中查看</Link> : <Link href={sourceResearchHref}>打开对应科学结果</Link>}</div><figcaption>图表 {index + 1} · {readableReportText(figure.caption)}</figcaption></figure>;
+        return <figure key={figure.figure_ref} className="scientific-report-figure-plate" data-figure-ref={figure.figure_ref}>
+          <figcaption><span>图表 {index + 1}</span><strong>{readableReportText(figure.caption)}</strong></figcaption>
+          {!artifactHref ? <p>此图表暂未提供可预览的文件，可返回来源研究查看。</p> : null}
+          {artifactHref ? <ScientificReportArtifactPreview jobId={figureSource!.job_id!} artifactId={artifactId!} kind="figure" title={readableReportText(figure.caption)}
+            viewer={figureSource?.renderer === "volumetric" ? { projectId, artifacts: figureSource.artifacts || [] } : undefined} /> : null}
+          <div className="scientific-report-artifact-actions">
+            {artifactHref ? <>
+              <ArtifactOpenLink href={artifactHref}>查看源文件</ArtifactOpenLink>
+              <ArtifactDownloadLink href={artifactHref} downloadName={`${figure.figure_ref}.figure.json`}>下载</ArtifactDownloadLink>
+            </> : figureSource?.object_id && figureSource.version_id ? <Link href={`/projects/${encodeURIComponent(projectId)}/data?object=${encodeURIComponent(figureSource.object_id)}&version=${encodeURIComponent(figureSource.version_id)}`}>在科学视图中查看</Link> : <Link href={sourceResearchHref}>打开来源研究</Link>}
+          </div>
+        </figure>;
       })}</section> : null}
       {view.table_sources?.length ? <section id={anchor("tables")} className="scientific-report-tables" aria-labelledby={`${anchor("tables")}-heading`}><h2 id={`${anchor("tables")}-heading`}>主要数据表</h2><div className="scientific-report-table-list">{view.table_sources.map((table, index) => {
         const artifactId = table.artifact_ids[0];
         const artifactHref = artifactId && table.job_id
           ? `/api/planner/jobs/${encodeURIComponent(table.job_id)}/artifacts/${encodeURIComponent(artifactId)}/content`
           : null;
-        const sourceLabel = table.source_refs?.length
-          ? `精确版本 ${table.source_refs.map((source) => source.version_id).join("、")}`
-          : "来自 ScientificResult";
-        return <article key={table.table_ref} className="scientific-report-table-card"><div><span>表格 {String(index + 1).padStart(2, "0")}</span><strong>{table.title || table.table_ref}</strong>{table.title && table.title !== table.table_ref ? <small>{table.table_ref}</small> : null}<p>{sourceLabel} · 读取或下载已持久化数据，不会重新执行科学计算。</p>{artifactHref ? <ScientificReportArtifactPreview jobId={table.job_id!} artifactId={artifactId!} kind="table" title={table.title || table.table_ref} /> : null}</div>{artifactHref ? <><ArtifactOpenLink href={artifactHref}>打开权威数据表</ArtifactOpenLink><ArtifactDownloadLink href={artifactHref} downloadName={`${table.table_ref}.table.json`}>下载权威数据表</ArtifactDownloadLink></> : <Link href={sourceResearchHref}>打开来源研究</Link>}</article>;
+        const tableTitle = table.title || `数据表 ${index + 1}`;
+        return <article key={table.table_ref} className="scientific-report-table-card">
+          <header><span>表格 {index + 1}</span><h3>{tableTitle}</h3></header>
+          {artifactHref ? <ScientificReportArtifactPreview jobId={table.job_id!} artifactId={artifactId!} kind="table" title={tableTitle} /> : <p>此数据表暂未提供可预览的文件。</p>}
+          <div className="scientific-report-artifact-actions">
+            {artifactHref ? <>
+              <ArtifactOpenLink href={artifactHref}>查看源文件</ArtifactOpenLink>
+              <ArtifactDownloadLink href={artifactHref} downloadName={`${table.table_ref}.table.json`}>下载</ArtifactDownloadLink>
+            </> : <Link href={sourceResearchHref}>打开来源研究</Link>}
+          </div>
+          <details className={styles.sourceDetails}><summary>来源详情</summary><dl>
+            <div><dt>数据表标识</dt><dd>{table.table_ref}</dd></div>
+            {table.source_refs?.map(source => <div key={`${source.object_id}:${source.version_id}`}><dt>精确版本</dt><dd><Link href={`/projects/${encodeURIComponent(projectId)}/data?object=${encodeURIComponent(source.object_id)}&version=${encodeURIComponent(source.version_id)}`}>{source.version_id}</Link></dd></div>)}
+          </dl></details>
+        </article>;
       })}</div></section> : null}
-      <section id={anchor("findings")} className="scientific-report-findings" aria-labelledby={`${anchor("findings")}-heading`}><h2 id={`${anchor("findings")}-heading`}>主要发现</h2><ol>{report.main_findings.map((finding, index) => {
-        const exactSource = view.viewer_sources?.[0];
-        const factRefs = [...new Set(finding.fact_refs || [])];
-        const evidenceRefs = [...new Set(finding.evidence_refs || [])];
-        const findingRefs = [...new Set(finding.finding_refs || [])];
-        return <li key={`${finding.statement}-${index}`}><span>{String(index + 1).padStart(2, "0")}</span><div className="scientific-report-finding-body"><p>{readableReportText(finding.statement)}</p><details className="scientific-report-finding-evidence"><summary>查看科学依据</summary><dl>
-          <div><dt>ScientificResult</dt><dd><code>{view.scientific_result_snapshot_id}</code></dd></div>
-          {exactSource ? <div><dt>精确来源</dt><dd>{exactSource.display_name} · {exactSource.version_id}{exactSource.lifecycle_status === "ARCHIVED" ? " · 来源对象已归档" : ""}</dd></div> : null}
-          <div><dt>Result 事实</dt><dd>{factRefs.length ? factRefs.map((ref) => <code key={ref}>{ref}</code>) : "该发现未声明独立 fact ref；仍受报告 grounding 校验约束。"}</dd></div>
-          <div><dt>证据</dt><dd>{evidenceRefs.length ? evidenceRefs.map((ref) => <code key={ref}>{ref}</code>) : "该发现未声明独立 evidence ref。"}</dd></div>
-          {findingRefs.length ? <div><dt>发现引用</dt><dd>{findingRefs.map((ref) => <code key={ref}>{ref}</code>)}</dd></div> : null}
-        </dl></details></div></li>;
-      })}</ol></section>
+      {view.file_sources?.length ? <details className="scientific-report-tables"><summary>结果文件 · {view.file_sources.length} 项</summary><ul>{view.file_sources.map((file) => {
+        const href = file.job_id ? `/api/planner/jobs/${encodeURIComponent(file.job_id)}/artifacts/${encodeURIComponent(file.artifact_id)}/content` : null;
+        return <li key={file.artifact_id}><span>{file.title}</span><div className="scientific-report-artifact-actions">{href ? <><ArtifactOpenLink href={href}>查看源文件</ArtifactOpenLink><ArtifactDownloadLink href={href} downloadName={`${file.artifact_id}.json`}>下载</ArtifactDownloadLink></> : <Link href={sourceResearchHref}>打开来源研究</Link>}</div></li>;
+      })}</ul></details> : null}
+      {report.discussion?.text ? <section id={anchor("discussion")} className="scientific-report-discussion" aria-labelledby={`${anchor("discussion")}-heading`}><h2 id={`${anchor("discussion")}-heading`}>科学讨论</h2><p>{readableReportText(report.discussion.text)}</p><ScientificReportBasis view={view} references={report.discussion} /></section> : null}
       <section id={anchor("limitations")} className="scientific-report-limitations" aria-labelledby={`${anchor("limitations")}-heading`}><h2 id={`${anchor("limitations")}-heading`}>限制与适用范围</h2>{limitations.length ? <ul>{limitations.map((item) => <li key={item.statement}>{item.statement}</li>)}</ul> : <p>未记录额外限制；结论仍只适用于本报告绑定的精确源版本。</p>}</section>
-      {report.conclusion?.text ? <section id={anchor("conclusion")} className="scientific-report-conclusion" aria-labelledby={`${anchor("conclusion")}-heading`}><h2 id={`${anchor("conclusion")}-heading`}>结论</h2><p>{readableReportText(report.conclusion.text)}</p></section> : null}
-      {report.next_steps?.text ? <section id={anchor("next-steps")} className="scientific-report-next-steps" aria-labelledby={`${anchor("next-steps")}-heading`}><h2 id={`${anchor("next-steps")}-heading`}>后续工作建议</h2><p>{readableReportText(report.next_steps.text)}</p></section> : null}
+      {report.conclusion?.text ? <section id={anchor("conclusion")} className="scientific-report-conclusion" aria-labelledby={`${anchor("conclusion")}-heading`}><h2 id={`${anchor("conclusion")}-heading`}>结论</h2><p>{readableReportText(report.conclusion.text)}</p><ScientificReportBasis view={view} references={report.conclusion} /></section> : null}
+      {report.next_steps?.text ? <section id={anchor("next-steps")} className="scientific-report-next-steps" aria-labelledby={`${anchor("next-steps")}-heading`}><h2 id={`${anchor("next-steps")}-heading`}>后续工作建议</h2><p>{readableReportText(report.next_steps.text)}</p><ScientificReportBasis view={view} references={report.next_steps} /></section> : null}
       {report.supporting_results.length ? <section className="scientific-report-supporting" aria-labelledby="report-supporting"><h2 id="report-supporting">支持结果</h2><div>{report.supporting_results.map((item) => <article key={item.result_item_ref}><strong>{item.description}</strong><span>已验证 supporting result</span></article>)}</div></section> : null}
       <section className="scientific-report-disclosures" aria-label="报告依据与复现信息">
-        <details><summary>科学依据 · {report.evidence_refs.length}</summary><p>所有发现与图表引用均已通过 ReportGroundingValidator，并绑定到同一 ScientificResult。</p></details>
-        <details><summary>来源数据 · {sourceCount}</summary><ul>{view.viewer_sources?.length ? view.viewer_sources.map((source) => { const sourceLifecycle = sourceLifecycleLabel(source.lifecycle_status); return <li key={source.source_ref}><strong>{source.display_name}</strong> · 精确版本 {source.version_id}{sourceLifecycle ? ` · ${sourceLifecycle}` : ""}</li>; }) : report.data_sources.map((source) => <li key={source}>已授权精确源版本</li>)}</ul></details>
+        <ScientificReportBasis view={view} references={{ evidence_refs: report.evidence_refs }} label={`科学依据 · ${report.evidence_refs.length}`} />
+        <details><summary>来源数据 · {sourceCount}</summary><ul>{view.viewer_sources?.length ? view.viewer_sources.map((source) => { const sourceLifecycle = sourceLifecycleLabel(source.lifecycle_status); return <li key={source.source_ref}><strong>{source.display_name}</strong> · 精确版本 {source.version_id}{sourceLifecycle ? ` · ${sourceLifecycle}` : ""}</li>; }) : report.data_sources.map((source) => <li key={source}>已授权精确源版本</li>)}{referenceSources.map(source => <li key={source.referenceId}>{source.name} · {source.version}</li>)}{parameterInputs.map(input => <li key={input.tool_call_id}>{projectScienceNames[input.tool_id]} · {inputOriginNames[input.input_origin]}</li>)}</ul></details>
         <details><summary>复现信息</summary><p>{readableReproducibilitySummary}</p><p className="scientific-report-technical">报告契约 {report.contract_version} · 系统校验已通过</p></details>
         <details className="scientific-report-technical-details">
           <summary>技术详情（用于复现与排查）</summary>
@@ -359,7 +388,11 @@ function ScientificReportDocument({ projectId, view }: { projectId: string; view
             <div><dt>报告快照</dt><dd><code>{view.snapshot_id}</code></dd></div>
             <div><dt>研究回合</dt><dd><code>{view.research_turn_id}</code></dd></div>
             <div><dt>ScientificResult</dt><dd><code>{view.scientific_result_snapshot_id}</code></dd></div>
-            <div><dt>精确来源</dt><dd>{view.viewer_sources?.length ? view.viewer_sources.map((source) => `${source.object_id} / ${source.version_id}`).join("；") : "报告中未返回来源摘要"}</dd></div>
+            <div><dt>精确来源</dt><dd>{[
+              ...(view.viewer_sources || []).map(source => `${source.object_id} / ${source.version_id}`),
+              ...referenceSources.map(source => `${source.name} / ${source.version} / SHA256 ${source.contentHash}`),
+              ...parameterInputs.map(input => `${projectScienceNames[input.tool_id]} / SHA256 ${input.content_hash}`),
+            ].join("；") || "报告中未返回来源摘要"}</dd></div>
           </dl>
         </details>
       </section>
@@ -372,21 +405,6 @@ function normalizeReportNarrative(value: string): string {
     .replaceAll("。；", "；")
     .replaceAll("；。", "。")
     .replaceAll("。。", "。")
-    .trim();
-}
-
-function dedupeReportSentences(value: string): string {
-  const sentences = value.match(/[^。！？!?]*[。！？!?]|[^。！？!?]+$/gu) || [];
-  const seen = new Set<string>();
-  return sentences
-    .map((sentence) => sentence.trim())
-    .filter((sentence) => {
-      const key = sentence.toLocaleLowerCase();
-      if (!sentence || seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    })
-    .join("")
     .trim();
 }
 

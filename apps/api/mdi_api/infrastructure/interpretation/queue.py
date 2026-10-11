@@ -61,6 +61,8 @@ class RedisRQInterpretationQueue:
             worker_queue_definition("interpretation").handler,
             str(turn_id),
             job_id=job_id,
+            # Initial interpretation and its single repair each allow 120 seconds.
+            job_timeout=300,
         )
         return InterpretationQueueSubmitResult(turn_id, True, "rq", f"turn queued on {self.queue_name}")
 

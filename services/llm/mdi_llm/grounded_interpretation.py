@@ -821,11 +821,16 @@ def _project_ml_metrics(source: InterpretationSource, candidate: ArtifactProject
         ("max_abs_error", "maxAbsError", EvidenceKind.scalar),
     )
     required = {payload_key for _, payload_key, _ in metric_fields}
+    r2_status = metrics.get("r2Status")
+    undefined_r2 = r2_status == "undefined_constant_target" and metrics.get("r2") is None
+    expected = required | ({"r2Status"} if "r2Status" in metrics else set())
     if (
-        set(metrics) != required
+        set(metrics) != expected
         or not _nonnegative_int(metrics.get("n"))
         or metrics["n"] == 0
-        or any(not _finite(metrics[key]) for key in required - {"n"})
+        or any(not _finite(metrics[key]) for key in required - {"n", "r2"})
+        or ("r2Status" in metrics and r2_status not in ("defined", "undefined_constant_target"))
+        or (not undefined_r2 and (not _finite(metrics["r2"]) or r2_status == "undefined_constant_target"))
     ):
         raise InterpretationError("SOURCE_INTEGRITY_FAILED", "ML metrics contain missing or non-finite values.")
     if (
@@ -840,7 +845,7 @@ def _project_ml_metrics(source: InterpretationSource, candidate: ArtifactProject
     if not _safe_semantic_name(payload.get("targetColumn")) or not _safe_semantic_name(payload.get("predictionColumn")) or payload["targetColumn"] == payload["predictionColumn"]:
         raise InterpretationError("SOURCE_INTEGRITY_FAILED", "ML target and prediction identities are invalid.")
     subject = f"target:{payload['targetColumn']}"
-    return [
+    items = [
         _item(
             source,
             candidate,
@@ -853,7 +858,12 @@ def _project_ml_metrics(source: InterpretationSource, candidate: ArtifactProject
             entity=str(payload["targetColumn"]),
         )
         for semantic_key, payload_key, evidence_kind in metric_fields
+        if payload_key != "r2" or not undefined_r2
     ]
+    if undefined_r2:
+        items.append(_item(source, candidate, "ml.r2_status", EvidenceKind.category, subject,
+                           "category", r2_status, field="metrics.r2Status", entity=str(payload["targetColumn"])))
+    return items
 
 
 def _project_dataset_materials_explorer(
@@ -1874,6 +1884,8 @@ def _claim_semantics(item: ScientificEvidenceItem) -> tuple[ClaimPredicate, Clai
 
 
 def _render_item_claim(item: ScientificEvidenceItem, predicate: ClaimPredicate) -> str:
+    if item.semanticRole == "ml.r2_status" and item.displayValue == "undefined_constant_target":
+        return "R² 未定义（目标值为常数）。"
     # Correlation evidence is intentionally rendered as a scientific sentence
     # rather than exposing the internal ``correlation:<left>:<right>`` subject.
     # The value remains the exact grounded scalar from the artifact; only the

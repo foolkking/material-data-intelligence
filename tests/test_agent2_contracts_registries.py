@@ -229,6 +229,18 @@ def test_dataset_requirements_accept_only_bounded_semantic_hints():
     assert list(Draft202012Validator(schema).iter_errors({"sql": "select * from materials"}))
 
 
+def test_structure_rdf_requirement_preserves_bounded_range_and_bin_width():
+    schema = build_default_requirement_registry().require("structure.compute_rdf").constraint_schema
+    validator = Draft202012Validator(schema)
+    for name in ("cutoff_angstrom", "r_max_angstrom"):
+        assert not list(validator.iter_errors({name: 6.0, "bin_width_angstrom": 0.2}))
+        for value in (0, 0.4, 31, "8", True):
+            assert list(validator.iter_errors({name: value}))
+    for value in (0, 0.009, 1.1, "0.2", True):
+        assert list(validator.iter_errors({"bin_width_angstrom": value}))
+    assert list(validator.iter_errors({"python": "arbitrary code"}))
+
+
 def test_trajectory_requirements_accept_only_bounded_adapter_constraints():
     registry = build_default_requirement_registry()
     msd_schema = registry.require("trajectory.compute_msd").constraint_schema

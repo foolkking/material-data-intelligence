@@ -66,7 +66,7 @@ class DistributionSummaryResult:
 
 class DistributionSummaryAdapter(BaseToolAdapter):
     tool_id = "table.distribution_summary"
-    adapter_version = "0.1.0"
+    adapter_version = "0.1.1"
 
     def prepare(self, context: ToolExecutionContext, input_refs: list[Any], params: dict[str, Any]) -> pd.DataFrame:
         if not self._resolved_inputs:
@@ -96,11 +96,11 @@ class DistributionSummaryAdapter(BaseToolAdapter):
         )
 
         numeric_summary = {
-            column: self._numeric_distribution(frame[column], quantiles=quantiles)
+            column: {"column": column, **self._numeric_distribution(frame[column], quantiles=quantiles)}
             for column in numeric_columns
         }
         categorical_summary = {
-            column: self._categorical_distribution(frame[column], max_categories=max_categories)
+            column: {"column": column, **self._categorical_distribution(frame[column], max_categories=max_categories)}
             for column in categorical_columns
         }
         warnings: list[str] = []

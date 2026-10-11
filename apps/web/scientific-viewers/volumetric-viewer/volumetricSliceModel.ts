@@ -128,6 +128,14 @@ export function fractionalToWorld(grid: ValidatedVolumetricGrid, fractional: Vol
   return add(add(add(grid.origin, scale(basis[0], fractional[0])), scale(basis[1], fractional[1])), scale(basis[2], fractional[2]));
 }
 
+export function gridIndexToFractional(grid: ValidatedVolumetricGrid, axis: VolumetricSliceAxis, index: number): number {
+  if (!Number.isSafeInteger(index) || index < 0 || index >= grid.shape[axis]) {
+    throw new VolumetricViewerError("VOLUME_VIEWER_CONTRACT_INVALID", "Grid coordinate is outside the canonical field.");
+  }
+  const scale = axisCoordinateScale(grid, axis);
+  return scale === 0 ? 0 : index / scale;
+}
+
 export function probeCanonicalField(args: Readonly<{
   buffer: ArrayBuffer;
   dtype: "float32" | "float64";

@@ -3,6 +3,10 @@ from __future__ import annotations
 from collections import Counter
 from typing import Any, Mapping
 
+from mdi_schemas import AnalysisPlanV03
+from mdi_schemas.multi_source_planning import step_source_inventory
+from mdi_api.application.jobs.source_datasets import verified_multi_source_job_plan
+
 
 PROJECT_HISTORY_SCHEMA_VERSION = "ProjectHistoryView/1.0"
 
@@ -53,6 +57,29 @@ class ProjectHistoryService:
         reports_by_job = _group_by(reports, "jobId", "sourceJobId")
         recipes_by_job = _group_by(recipes, "sourceJobId", "jobId")
         interpretations_by_job = _group_by(interpretations, "jobId")
+        plan_records: dict[str, dict[str, Any]] = {}
+        calls_by_job: dict[str, list[dict[str, Any]]] = {}
+        source_datasets: dict[str, list[str]] = {}
+        artifact_datasets: dict[str, set[str]] = {}
+        available_datasets = {str(item.get("datasetId") or item.get("id")) for item in datasets}
+        for job in jobs:
+            job_id = str(job.get("jobId") or job.get("id") or "")
+            try:
+                plan_record = _record(self.repositories.analysis_plans.get_plan_for_job(job_id))
+            except (LookupError, ValueError):
+                plan_record = {}
+            plan_records[job_id] = plan_record
+            calls = _records(self.repositories.tool_calls.list_for_job(job_id))
+            calls_by_job[job_id] = calls
+            plan_payload = plan_record.get("analysisPlan") or plan_record
+            if plan_payload.get("schemaVersion") == "0.3":
+                plan = verified_multi_source_job_plan(job, plan_record, available_datasets)
+                source_datasets[job_id] = [item.datasetId for item in plan.sourceContexts] if plan else []
+                for artifact in artifacts_by_job.get(job_id, []):
+                    artifact_id = str(artifact.get("artifactId") or artifact.get("id") or "")
+                    artifact_datasets[artifact_id] = _multi_source_artifact_datasets(artifact, calls, plan, job, plan_record)
+            else:
+                source_datasets[job_id] = [str(job["datasetId"])] if job.get("datasetId") else []
 
         dataset_views = [
             self._dataset_view(
@@ -64,6 +91,8 @@ class ProjectHistoryService:
                 interpretations,
                 reports,
                 recipes,
+                source_datasets,
+                artifact_datasets,
             )
             for dataset in datasets
         ]
@@ -75,6 +104,9 @@ class ProjectHistoryService:
                 interpretations_by_job,
                 reports_by_job,
                 recipes_by_job,
+                plan_records[str(job.get("jobId") or job.get("id") or "")],
+                calls_by_job[str(job.get("jobId") or job.get("id") or "")],
+                source_datasets[str(job.get("jobId") or job.get("id") or "")],
             )
             for job in jobs
         ]
@@ -133,15 +165,17 @@ class ProjectHistoryService:
         interpretations: list[dict[str, Any]],
         reports: list[dict[str, Any]],
         recipes: list[dict[str, Any]],
+        source_datasets: Mapping[str, list[str]],
+        artifact_datasets: Mapping[str, set[str]],
     ) -> dict[str, Any]:
         dataset_id = str(dataset.get("datasetId") or dataset.get("id") or "")
         metadata = _record(dataset.get("metadata") or {})
         files = metadata.get("files") or []
         exports = metadata.get("normalizedExports") or []
-        dataset_jobs = [item for item in jobs if str(item.get("datasetId") or "") == dataset_id]
+        dataset_jobs = [item for item in jobs if dataset_id in source_datasets.get(str(item.get("jobId") or item.get("id")), [])]
         latest_job = max(dataset_jobs, key=_updated_at, default=None)
         job_ids = {str(item.get("jobId") or item.get("id") or "") for item in dataset_jobs}
-        dataset_artifacts = _related_records(artifacts, dataset_id, job_ids)
+        dataset_artifacts = _related_records(artifacts, dataset_id, job_ids, artifact_datasets)
         dataset_workspaces = _related_records(workspaces, dataset_id, job_ids)
         dataset_interpretations = _related_records(interpretations, dataset_id, job_ids)
         dataset_reports = _related_records(reports, dataset_id, job_ids)
@@ -189,9 +223,11 @@ class ProjectHistoryService:
         interpretations_by_job: Mapping[str, list[dict[str, Any]]],
         reports_by_job: Mapping[str, list[dict[str, Any]]],
         recipes_by_job: Mapping[str, list[dict[str, Any]]],
+        plan_record: Mapping[str, Any],
+        calls: list[dict[str, Any]],
+        source_dataset_ids: list[str],
     ) -> dict[str, Any]:
         job_id = str(job.get("jobId") or job.get("id") or "")
-        calls = _records(self.repositories.tool_calls.list_for_job(job_id))
         question = job.get("userPrompt") or job.get("prompt")
         execution = self.repositories.analysis_intents.get_execution_for_job(job_id)
         if isinstance(execution, Mapping):
@@ -203,14 +239,7 @@ class ProjectHistoryService:
                     question = intent.get("rawUserRequest") or intent.get("userRequest") or question
                 except LookupError:
                     pass
-        plan: dict[str, Any] | None = None
-        try:
-            plan = _record(self.repositories.analysis_plans.get_plan_for_job(job_id))
-        except (LookupError, ValueError):
-            # Legacy rows may predate persisted analysis_plan_json. Keep the
-            # historical job projection readable without weakening validation
-            # for newly-created plans.
-            pass
+        plan = plan_record.get("analysisPlan") or plan_record
         artifacts = artifacts_by_job.get(job_id, [])
         return {
             "jobId": job_id,
@@ -220,6 +249,7 @@ class ProjectHistoryService:
             # not have it and remain readable with a null value.
             "researchTurnId": job.get("researchTurnId") or job.get("research_turn_id"),
             "datasetId": job.get("datasetId"),
+            "sourceDatasetIds": source_dataset_ids,
             "status": str(job.get("status") or "created"),
             "createdAt": job.get("createdAt"),
             "updatedAt": job.get("updatedAt") or job.get("createdAt"),
@@ -377,12 +407,56 @@ def _related_records(
     records: list[dict[str, Any]],
     dataset_id: str,
     job_ids: set[str],
+    exact_scopes: Mapping[str, set[str]] | None = None,
 ) -> list[dict[str, Any]]:
-    return [
-        item for item in records
-        if str(item.get("datasetId") or "") == dataset_id
-        or str(item.get("jobId") or item.get("sourceJobId") or "") in job_ids
-    ]
+    related = []
+    for item in records:
+        item_id = str(item.get("artifactId") or item.get("id") or "")
+        if exact_scopes is not None and item_id in exact_scopes:
+            matches = dataset_id in exact_scopes[item_id]
+        else:
+            matches = (
+                str(item.get("datasetId") or "") == dataset_id
+                or str(item.get("jobId") or item.get("sourceJobId") or "") in job_ids
+            )
+        if matches:
+            related.append(item)
+    return related
+
+
+def _multi_source_artifact_datasets(
+    artifact: Mapping[str, Any], calls: list[dict[str, Any]], plan: AnalysisPlanV03 | None,
+    job: Mapping[str, Any], plan_record: Mapping[str, Any],
+) -> set[str]:
+    if plan is None or artifact.get("projectId") != job.get("projectId"):
+        return set()
+    job_id = job.get("jobId") or job.get("id")
+    matches = [call for call in calls if
+        (call.get("toolCallId") or call.get("id")) == artifact.get("toolCallId")
+        and call.get("jobId") == artifact.get("jobId") == job_id
+        and call.get("projectId") in {None, job.get("projectId")}]
+    if len(matches) != 1:
+        return set()
+    call = matches[0]
+    step = next((item for item in plan.steps if item.stepId == call.get("stepId") and item.toolId == call.get("toolId")), None)
+    if step is None:
+        return set()
+    contexts, versions = step_source_inventory(plan, step.stepId)
+    metadata = artifact.get("metadata")
+    provenance = metadata.get("provenance") if isinstance(metadata, Mapping) else None
+    if not isinstance(provenance, Mapping) or (
+        provenance.get("planId") != (plan_record.get("planId") or plan_record.get("id"))
+        or provenance.get("planHash") != plan_record.get("planHash")
+        or provenance.get("sourceContexts") != [item.model_dump(mode="json") for item in contexts]
+        or provenance.get("sourceVersions") != [item.model_dump(mode="json") for item in versions]
+    ):
+        return set()
+    sources = {item.datasetId for item in contexts}
+    # A combined output has no single-dataset owner. An explicit owner must
+    # agree with the producer's exact source set, never the Job routing pair.
+    if artifact.get("datasetId") and sources != {artifact["datasetId"]}:
+        return set()
+    return sources
 
 
 def _project_records(repo: Any, project_id: str, jobs: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:

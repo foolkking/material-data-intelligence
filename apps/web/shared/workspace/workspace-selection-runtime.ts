@@ -447,9 +447,9 @@ function panelSourceCompatible(panel: WorkspacePanel, context: WorkspaceSelectio
     );
   }
   const artifactId = selected.kind === "ARTIFACT" ? selected.artifactId
-    : selected.kind === "PHONON_Q_POINT" || selected.kind === "PHONON_BRANCH" ? selected.phononArtifactId
+    : selected.kind === "PHONON_Q_POINT" || selected.kind === "PHONON_BRANCH" || selected.kind === "PHONON_DOS_POINT" ? selected.phononArtifactId
       : selected.kind === "RECIPROCAL_POINT" ? selected.reciprocalArtifactId
-        : selected.kind === "VOLUMETRIC_FIELD" ? selected.artifactId : null;
+        : ["VOLUMETRIC_FIELD", "TRAJECTORY_FRAME", "TRAJECTORY_ATOM"].includes(selected.kind) ? selected.artifactId : null;
   const checksum = "artifactChecksum" in selected ? selected.artifactChecksum : null;
   if (artifactId) {
     const exactArtifactRef = panel.sourceRefs.some((source) => source.kind === "ARTIFACT" && source.sourceId === artifactId && source.sourceHash === checksum && source.jobId === workspace.sourceJobId);

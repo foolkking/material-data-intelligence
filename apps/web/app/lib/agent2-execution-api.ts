@@ -1,6 +1,6 @@
 const API_BASE = (process.env.NEXT_PUBLIC_MDI_API_BASE_URL || (typeof window === "undefined" ? "http://127.0.0.1:8000" : "/api")).replace(/\/$/, "");
 
-export type Agent2ExecutionStatus = "ORCHESTRATING" | "READY_TO_PLAN" | "PLANNING" | "PLAN_READY" | "QUEUED" | "RUNNING" | "CANCELING" | "RESULT_PENDING" | "RESULT_READY" | "INTERPRETING" | "COMPLETED" | "PARTIAL" | "FAILED" | "CANCELED" | "ANSWERED";
+export type Agent2ExecutionStatus = "RECEIVED" | "RESOLVING_CONTEXT" | "NEEDS_CLARIFICATION" | "UNSUPPORTED" | "PLAN_REJECTED" | "ORCHESTRATING" | "READY_TO_PLAN" | "PLANNING" | "PLAN_READY" | "QUEUED" | "RUNNING" | "CANCELING" | "RESULT_PENDING" | "RESULT_READY" | "INTERPRETING" | "COMPLETED" | "PARTIAL" | "FAILED" | "CANCELED" | "ANSWERED";
 export type Agent2ProgressStep = {
   step_id: string;
   display_name: string;
@@ -91,36 +91,73 @@ export type Agent2ProgressView = {
   active_step_ids: string[];
   completed_step_count: number;
   total_step_count: number;
-  incremental_outputs: Array<{ output_key: string; step_id: string; display_label: string; artifact_id: string; preview_available: boolean; available_at: string }>;
+  incremental_outputs: Array<{ output_key: string; step_id: string; display_label: string; artifact_id: string; preview_available: boolean; available_at: string; content_url?: string }>;
   warnings: Array<{ code: string; message: string }>;
   execution_outcome?: "SUCCESS" | "PARTIAL" | "FAILED" | "CANCELED" | null;
   result_projection_pending: boolean;
+  preserved_result_available?: boolean;
+  execution_dispatch_pending?: boolean;
   autonomy?: Agent2AutonomyProgress;
 };
 
-async function request<T>(
-  path: string,
-  options: Readonly<{ signal?: AbortSignal }> = {},
-): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, {
-    credentials: "include",
-    signal: options.signal,
+export const isAgent2ExecutionTerminal = (status?: string) => ["COMPLETED", "PARTIAL", "FAILED", "CANCELED", "ANSWERED", "NEEDS_CLARIFICATION", "UNSUPPORTED", "PLAN_REJECTED"].includes(status || "");
+const executionStatuses = new Set(["RECEIVED", "RESOLVING_CONTEXT", "NEEDS_CLARIFICATION", "UNSUPPORTED", "PLAN_REJECTED", "ORCHESTRATING", "READY_TO_PLAN", "PLANNING", "PLAN_READY", "QUEUED", "RUNNING", "CANCELING", "RESULT_PENDING", "RESULT_READY", "INTERPRETING", "COMPLETED", "PARTIAL", "FAILED", "CANCELED", "ANSWERED"]);
+
+export class Agent2ExecutionRequestError extends Error {
+  constructor(message: string, readonly status?: number, readonly uncertain = false) {
+    super(message);
+    this.name = "Agent2ExecutionRequestError";
+  }
+}
+
+/** Bound receipt of a response, without imposing a deadline on scientific work. */
+export async function readExecutionResponse<T>(path: string, operation: "progress" | "cancel" | "dispatch", signal?: AbortSignal): Promise<T> {
+  signal?.throwIfAborted();
+  const controller = new AbortController();
+  const label = operation === "cancel" ? "取消" : "执行";
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  let cancel = () => {};
+  const interrupted = new Promise<never>((_, reject) => {
+    cancel = () => { controller.abort(); reject(new DOMException("Request cancelled", "AbortError")); };
+    signal?.addEventListener("abort", cancel, { once: true });
+    timer = setTimeout(() => {
+      controller.abort();
+      reject(new Agent2ExecutionRequestError(operation === "progress" ? "进度读取超时，请重试。" : `${label}结果尚未确认，请重新读取研究状态。`, undefined, operation !== "progress"));
+    }, 10_000);
   });
-  if (!response.ok) throw new Error(`执行进度暂时无法读取 (${response.status})`);
-  return (await response.json()) as T;
+  try {
+    return await Promise.race([interrupted, (async () => {
+      const response = await fetch(`${API_BASE}${path}`, { method: operation === "progress" ? "GET" : "POST", credentials: "include", signal: controller.signal });
+      if (response.status === 401 && typeof window !== "undefined") window.dispatchEvent(new CustomEvent("mdi:session-expired"));
+      if (!response.ok) throw new Agent2ExecutionRequestError(operation === "progress" ? `执行进度暂时无法读取 (${response.status})` : `${label}请求暂未确认 (${response.status})`, response.status, operation !== "progress" && response.status >= 500);
+      return await response.json() as T;
+    })()]);
+  } catch (reason) {
+    if (reason instanceof Agent2ExecutionRequestError || (reason instanceof DOMException && reason.name === "AbortError")) throw reason;
+    throw new Agent2ExecutionRequestError(operation === "progress" ? "研究进度暂时无法读取，请重试。" : `${label}结果尚未确认，请重新读取研究状态。`, undefined, operation !== "progress");
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener("abort", cancel);
+    controller.abort();
+  }
 }
 
-async function mutate<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, { method: "POST", credentials: "include" });
-  if (!response.ok) throw new Error(`取消请求未能提交 (${response.status})`);
-  return (await response.json()) as T;
+export function validateExecutionIdentity(value: { turn_id?: string; status?: string } | null, turnId: string) {
+  if (!value || value.turn_id !== turnId || !executionStatuses.has(value.status || "")) throw new Agent2ExecutionRequestError("研究状态与当前请求不匹配，请重新读取。", undefined, true);
 }
 
-export const getAgent2ExecutionProgress = (
-  turnId: string,
-  options: Readonly<{ signal?: AbortSignal }> = {},
-) => request<Agent2ProgressView>(
-  `/api/research/turns/${encodeURIComponent(turnId)}/progress`,
-  options,
-);
-export const cancelAgent2Execution = (turnId: string) => mutate<{ turn_id: string; status: Agent2ExecutionStatus }>(`/api/research/turns/${encodeURIComponent(turnId)}/cancel`);
+export async function getAgent2ExecutionProgress(turnId: string, options: Readonly<{ signal?: AbortSignal }> = {}) {
+  const value = await readExecutionResponse<Agent2ProgressView>(`/api/research/turns/${encodeURIComponent(turnId)}/progress`, "progress", options.signal);
+  validateExecutionIdentity(value, turnId);
+  if (!Array.isArray(value.steps) || !Array.isArray(value.incremental_outputs) || !Array.isArray(value.warnings) ||
+      value.warnings.some(warning => !warning || typeof warning.code !== "string" || typeof warning.message !== "string")) {
+    throw new Agent2ExecutionRequestError("研究进度内容暂时无法读取，请重试。");
+  }
+  return value;
+}
+
+export async function cancelAgent2Execution(turnId: string, options: Readonly<{ signal?: AbortSignal }> = {}) {
+  const value = await readExecutionResponse<{ turn_id: string; status: Agent2ExecutionStatus }>(`/api/research/turns/${encodeURIComponent(turnId)}/cancel`, "cancel", options.signal);
+  validateExecutionIdentity(value, turnId);
+  return value;
+}

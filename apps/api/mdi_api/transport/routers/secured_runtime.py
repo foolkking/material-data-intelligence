@@ -2186,6 +2186,17 @@ def get_dataset_profile_secured(dataset_id: str, current_user: CurrentUser = Dep
     return get_phase2_dataset_profile(dataset_id)
 
 
+def get_dataset_research_sources_secured(dataset_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
+    _authorize_dataset(dataset_id, current_user)
+    from mdi_api.bootstrap.repository_factory import create_repository_factory
+    from mdi_api.application.research.source_catalog import research_source_catalog
+
+    with create_repository_factory(load_settings()).session() as session:
+        dataset = dict(session.repositories.datasets.get(dataset_id))
+        profiles = [dict(p) for p in session.repositories.data_profiles.list_for_dataset(dataset_id)]
+    return research_source_catalog(dataset, profiles)
+
+
 def get_dataset_object_store_secured(dataset_id: str, current_user: CurrentUser = Depends(get_current_user_compat)) -> dict[str, Any]:
     _authorize_dataset(dataset_id, current_user)
     from mdi_api.infrastructure.phase2.runtime import get_phase2_dataset

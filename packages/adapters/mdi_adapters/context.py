@@ -69,7 +69,7 @@ def _is_series(value: Any) -> bool:
 class ToolExecutionContext:
     job_id: str
     project_id: str
-    dataset_id: str
+    dataset_id: str | None
     tool_id: str
     tool_version: str
     adapter_version: str

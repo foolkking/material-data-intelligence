@@ -1,6 +1,9 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+import { cloneScientificExportCamera, copyScientificCameraView, createAtomSphereGeometry, fitScientificCamera, resizeScientificCamera, trackInitialCameraFit } from "../viewer-scene/scientificCamera";
+import { captureScientificCanvas, createScientificPngExporter } from "../viewer-scene/scientificPngExport";
+import { displayedOverlayBonds, volumetricRenderBounds } from "./volumetricRenderGeometry";
 import { captureOrbitControlsDisposer } from "../viewer-scene/orbitControlsLifecycle";
 import { domainBasis } from "./volumetricSliceModel";
 import { affineVolumeClipPlane, inspectVolumeGpuCapabilities } from "./volumetricVolumeModel";
@@ -47,8 +50,8 @@ export async function createVolumetricVolumeRendererEngine(args: Readonly<{
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.setClearColor(0xf7f9fb, 1);
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, args.quality.pixelRatioCap, VOLUMETRIC_BROWSER_CAPS.maximumVolumePixelRatio));
-  const width = Math.max(320, container.clientWidth || 760);
-  const height = Math.max(320, Math.min(640, container.clientHeight || 520));
+  let width = Math.max(1, container.clientWidth || 760);
+  let height = Math.max(1, container.clientHeight || 520);
   if (width * height * renderer.getPixelRatio() ** 2 > VOLUMETRIC_BROWSER_CAPS.maximumVolumeRenderPixels) renderer.setPixelRatio(1);
   renderer.setSize(width, height, false);
   renderer.autoClear = false;
@@ -62,21 +65,24 @@ export async function createVolumetricVolumeRendererEngine(args: Readonly<{
   const basis = domainBasis(grid);
   const transform = affineTransform(grid.origin, basis);
   const inverseTransform = transform.clone().invert();
-  const bounds = new THREE.Box3().setFromPoints(unitCorners().map((point) => point.applyMatrix4(transform)));
-  const sphere = bounds.getBoundingSphere(new THREE.Sphere());
-  const radius = Math.max(sphere.radius, 1);
-  const initialPosition = sphere.center.clone().add(new THREE.Vector3(radius * 1.8, radius * 1.55, radius * 1.4));
-  const perspectiveCamera = new THREE.PerspectiveCamera(42, width / height, Math.max(radius / 100, 0.01), Math.max(radius * 40, 20));
-  const orthographicCamera = new THREE.OrthographicCamera(-radius * 2 * width / height, radius * 2 * width / height, radius * 2, -radius * 2, Math.max(radius / 100, 0.01), Math.max(radius * 40, 20));
+  const sphere = volumetricRenderBounds(grid, args.overlay);
+  const direction = new THREE.Vector3(1.8, 1.55, 1.4);
+  const perspectiveCamera = new THREE.PerspectiveCamera(42);
+  const orthographicCamera = new THREE.OrthographicCamera();
   let camera: THREE.PerspectiveCamera | THREE.OrthographicCamera = perspectiveCamera;
   let projection: "perspective" | "orthographic" = "perspective";
-  camera.position.copy(initialPosition);
-  camera.updateProjectionMatrix();
-  let controls = new OrbitControls<THREE.Camera>(camera, renderer.domElement);
-  let disposeControls = captureOrbitControlsDisposer(controls);
+  fitScientificCamera(camera, sphere, width / height, direction);
+  const controls = new OrbitControls<THREE.Camera>(camera, renderer.domElement);
+  const disposeControls = captureOrbitControlsDisposer(controls);
   controls.enableDamping = false;
   controls.screenSpacePanning = true;
   controls.target.copy(sphere.center);
+  const fit = () => {
+    fitScientificCamera(camera, sphere, width / height, direction);
+    controls.target.copy(sphere.center);
+    controls.update();
+  };
+  const initialFit = trackInitialCameraFit(controls, fit);
 
   const texture = new THREE.Data3DTexture(args.values, grid.shape[2], grid.shape[1], grid.shape[0]);
   texture.format = THREE.RedFormat;
@@ -143,10 +149,13 @@ export async function createVolumetricVolumeRendererEngine(args: Readonly<{
   const resources: Array<{ dispose: () => void }> = [];
   const clippableMaterials: Array<THREE.Material & { clippingPlanes: THREE.Plane[] | null }> = [];
   addStructureOverlay(structureGroup, args.overlay, resources, clippableMaterials);
-  const cell = addCell(structureGroup, grid, resources, clippableMaterials);
+  const cellGroup = new THREE.Group();
+  cellGroup.renderOrder = 2;
+  scene.add(cellGroup);
+  addCell(cellGroup, grid, resources, clippableMaterials);
   const ambient = new THREE.AmbientLight(0xffffff, 1.4);
   const key = new THREE.DirectionalLight(0xffffff, 2.1);
-  key.position.copy(initialPosition);
+  key.position.copy(camera.position);
   scene.add(ambient, key);
 
   let disposed = false;
@@ -184,21 +193,25 @@ export async function createVolumetricVolumeRendererEngine(args: Readonly<{
     uniforms.uCameraUnit.value.copy(cameraUnit);
     camera.updateMatrixWorld();
     uniforms.uInverseProjectionView.value.multiplyMatrices(camera.matrixWorld, camera.projectionMatrixInverse);
-    uniforms.uHasStructureDepth.value = structureVisible;
+    const overlayVisible = structureVisible || cellVisible;
+    uniforms.uHasStructureDepth.value = overlayVisible;
 
     volumeMesh.visible = false;
     structureGroup.visible = structureVisible;
+    cellGroup.visible = cellVisible;
     renderer.setRenderTarget(structureDepthTarget);
     renderer.clear(true, true, false);
-    if (structureVisible) renderer.render(scene, camera);
+    if (overlayVisible) renderer.render(scene, camera);
 
     renderer.setRenderTarget(null);
     renderer.clear(true, true, false);
-    if (structureVisible) renderer.render(scene, camera);
+    if (overlayVisible) renderer.render(scene, camera);
     structureGroup.visible = false;
+    cellGroup.visible = false;
     volumeMesh.visible = true;
     renderer.render(scene, camera);
     structureGroup.visible = structureVisible;
+    cellGroup.visible = cellVisible;
     publish();
   };
   const bindControls = () => controls.addEventListener("change", render);
@@ -208,16 +221,15 @@ export async function createVolumetricVolumeRendererEngine(args: Readonly<{
   const onVisibility = () => { if (document.visibilityState === "visible") render(); };
   document.addEventListener("visibilitychange", onVisibility);
   const resize = () => {
-    if (disposed) return;
-    const nextWidth = Math.max(320, container.clientWidth || width);
-    const nextHeight = Math.max(320, Math.min(640, container.clientHeight || height));
-    if (camera instanceof THREE.PerspectiveCamera) camera.aspect = nextWidth / nextHeight;
-    else setOrthographicFrustum(camera, radius, nextWidth / nextHeight);
-    camera.updateProjectionMatrix();
-    renderer.setSize(nextWidth, nextHeight, false);
+    if (disposed || !container.clientWidth || !container.clientHeight) return;
+    width = container.clientWidth;
+    height = container.clientHeight;
+    resizeScientificCamera(camera, width / height);
+    renderer.setSize(width, height, false);
+    initialFit.resize();
     const ratio = renderer.getPixelRatio();
-    const depthWidth = Math.max(1, Math.floor(nextWidth * ratio));
-    const depthHeight = Math.max(1, Math.floor(nextHeight * ratio));
+    const depthWidth = Math.max(1, Math.floor(width * ratio));
+    const depthHeight = Math.max(1, Math.floor(height * ratio));
     structureDepthTarget.setSize(depthWidth, depthHeight);
     uniforms.uDepthViewport.value.set(depthWidth, depthHeight);
     render();
@@ -228,11 +240,30 @@ export async function createVolumetricVolumeRendererEngine(args: Readonly<{
   controls.update();
   render();
 
+  const exportImage = createScientificPngExporter(([exportWidth, exportHeight, pixelRatio]: readonly [number, number, number]) => {
+    if (!Number.isSafeInteger(exportWidth) || !Number.isSafeInteger(exportHeight) || exportWidth < 256 || exportHeight < 256 || exportWidth > 4096 || exportHeight > 4096 || ![1,2].includes(pixelRatio) || exportWidth * exportHeight * pixelRatio * pixelRatio > VOLUMETRIC_BROWSER_CAPS.maximumExportPixels) throw new VolumetricViewerError("VOLUME_VIEWER_MESH_CAP_EXCEEDED", "PNG export exceeds the bounded pixel budget.");
+    if (disposed || contextLost) throw new Error("VIEWER_EXPORT_CONTEXT_UNAVAILABLE");
+    const oldSize = renderer.getSize(new THREE.Vector2()), oldRatio = renderer.getPixelRatio(), oldCamera = camera;
+    try {
+      camera = cloneScientificExportCamera(oldCamera, oldSize.x / oldSize.y, exportWidth / exportHeight);
+      renderer.setPixelRatio(pixelRatio); renderer.setSize(exportWidth, exportHeight, false);
+      structureDepthTarget.setSize(exportWidth * pixelRatio, exportHeight * pixelRatio);
+      uniforms.uDepthViewport.value.set(exportWidth * pixelRatio, exportHeight * pixelRatio);
+      render();
+      return captureScientificCanvas(renderer.domElement);
+    } finally {
+      camera = oldCamera;
+      renderer.setPixelRatio(oldRatio); renderer.setSize(oldSize.x, oldSize.y, false);
+      structureDepthTarget.setSize(Math.floor(oldSize.x * oldRatio), Math.floor(oldSize.y * oldRatio));
+      uniforms.uDepthViewport.value.set(Math.floor(oldSize.x * oldRatio), Math.floor(oldSize.y * oldRatio));
+      render();
+    }
+  });
   const engine: VolumetricVolumeRendererEngine = Object.freeze({
     setTransferFunction: (value) => { uniforms.uWindow.value.set(value.windowLow, value.windowHigh); uniforms.uOpacityScale.value = value.opacityScale; uniforms.uPalette.value = paletteIndex(value.paletteId); uniforms.uTransparentZero.value = value.zeroPolicy === "transparent_zero"; render(); },
     setQuality: (value) => { quality = value; uniforms.uSamplesPerVoxel.value = value.samplesPerVoxel; uniforms.uMaximumSteps.value = Math.min(768, value.maximumRaySteps); renderer.setPixelRatio(Math.min(devicePixelRatio || 1, value.pixelRatioCap, VOLUMETRIC_BROWSER_CAPS.maximumVolumePixelRatio)); resize(); },
-    setStructureVisible: (visible) => { structureVisible = visible; structureGroup.visible = visible; if (cell) cell.visible = cellVisible && visible; render(); },
-    setCellVisible: (visible) => { cellVisible = visible; if (cell) cell.visible = visible && structureVisible; render(); },
+    setStructureVisible: (visible) => { structureVisible = visible; render(); },
+    setCellVisible: (visible) => { cellVisible = visible; render(); },
     setClipping: (enabled, axis, offset) => {
       clippingEnabled = enabled;
       const boundedOffset = Math.min(1, Math.max(0, Number.isFinite(offset) ? offset : 1));
@@ -243,25 +274,22 @@ export async function createVolumetricVolumeRendererEngine(args: Readonly<{
     },
     setProjection: (value) => {
       if (value === projection) return;
-      const previousPosition = camera.position.clone(); const previousTarget = controls.target.clone();
-      controls.removeEventListener("change", render); disposeControls();
-      projection = value; camera = value === "orthographic" ? orthographicCamera : perspectiveCamera;
-      camera.position.copy(previousPosition); camera.up.set(0, 1, 0); camera.lookAt(previousTarget); camera.updateProjectionMatrix();
-      controls = new OrbitControls<THREE.Camera>(camera, renderer.domElement); disposeControls = captureOrbitControlsDisposer(controls); controls.enableDamping = false; controls.screenSpacePanning = true; controls.target.copy(previousTarget); bindControls(); controls.update(); render();
+      const next = value === "orthographic" ? orthographicCamera : perspectiveCamera;
+      copyScientificCameraView(camera, next, controls.target, width / height);
+      camera = next;
+      projection = value;
+      controls.object = camera;
+      controls.update();
+      render();
     },
-    resetCamera: () => { camera.position.copy(initialPosition); if (camera instanceof THREE.OrthographicCamera) camera.zoom = 1; camera.updateProjectionMatrix(); controls.target.copy(sphere.center); controls.update(); render(); },
+    resetCamera: () => { fit(); render(); },
     render,
     snapshot,
-    exportPng: async (exportWidth, exportHeight, pixelRatio) => {
-      if (!Number.isSafeInteger(exportWidth) || !Number.isSafeInteger(exportHeight) || exportWidth < 256 || exportHeight < 256 || exportWidth > 4096 || exportHeight > 4096 || exportWidth * exportHeight * pixelRatio * pixelRatio > VOLUMETRIC_BROWSER_CAPS.maximumExportPixels) throw new VolumetricViewerError("VOLUME_VIEWER_MESH_CAP_EXCEEDED", "PNG export exceeds the bounded pixel budget.");
-      const oldSize = renderer.getSize(new THREE.Vector2()); const oldRatio = renderer.getPixelRatio();
-      try { renderer.setPixelRatio(pixelRatio); renderer.setSize(exportWidth, exportHeight, false); render(); return await new Promise<Blob>((resolve, reject) => renderer.domElement.toBlob((value) => value ? resolve(value) : reject(new Error("blob")), "image/png")); }
-      finally { renderer.setPixelRatio(oldRatio); renderer.setSize(oldSize.x, oldSize.y, false); render(); }
-    },
+    exportPng: (width, height, ratio) => exportImage([width,height,ratio]),
     dispose: () => {
       if (disposed) return;
       disposed = true;
-      observer?.disconnect(); window.removeEventListener("resize", resize); document.removeEventListener("visibilitychange", onVisibility); renderer.domElement.removeEventListener("webglcontextlost", onLost); controls.removeEventListener("change", render); disposeControls();
+      observer?.disconnect(); window.removeEventListener("resize", resize); document.removeEventListener("visibilitychange", onVisibility); renderer.domElement.removeEventListener("webglcontextlost", onLost); controls.removeEventListener("change", render); initialFit.dispose(); disposeControls();
       texture.dispose(); structureDepthTarget.dispose(); volumeGeometry.dispose(); volumeMaterial.dispose(); resources.forEach((resource) => resource.dispose()); renderer.forceContextLoss(); renderer.dispose(); renderer.domElement.remove(); publish();
     },
   });
@@ -272,12 +300,10 @@ function affineTransform(origin: readonly number[], basis: readonly (readonly nu
   const center = new THREE.Vector3(origin[0], origin[1], origin[2]).add(new THREE.Vector3(...basis[0]).add(new THREE.Vector3(...basis[1])).add(new THREE.Vector3(...basis[2])).multiplyScalar(0.5));
   return new THREE.Matrix4().set(basis[0][0], basis[1][0], basis[2][0], center.x, basis[0][1], basis[1][1], basis[2][1], center.y, basis[0][2], basis[1][2], basis[2][2], center.z, 0, 0, 0, 1);
 }
-function unitCorners(): THREE.Vector3[] { const result: THREE.Vector3[] = []; for (const x of [-0.5, 0.5]) for (const y of [-0.5, 0.5]) for (const z of [-0.5, 0.5]) result.push(new THREE.Vector3(x, y, z)); return result; }
 function paletteIndex(value: VolumeTransferFunction["paletteId"]): number { return value === "diverging_blue_red" ? 1 : value === "magma" ? 2 : value === "elf_teal_yellow" ? 3 : 0; }
-function setOrthographicFrustum(camera: THREE.OrthographicCamera, radius: number, aspect: number) { const halfHeight = radius * 2; camera.left = -halfHeight * aspect; camera.right = halfHeight * aspect; camera.top = halfHeight; camera.bottom = -halfHeight; }
 function addStructureOverlay(group: THREE.Group, overlay: VolumetricStructureOverlay | null, resources: Array<{ dispose: () => void }>, clippableMaterials: Array<THREE.Material & { clippingPlanes: THREE.Plane[] | null }>) {
   if (!overlay?.atoms.length) return;
-  const geometry = new THREE.SphereGeometry(1, 12, 8); resources.push(geometry);
+  const geometry = createAtomSphereGeometry(overlay.atoms.length); resources.push(geometry);
   const bySpecies = new Map<string, typeof overlay.atoms>();
   for (const atom of overlay.atoms) bySpecies.set(atom.species, [...(bySpecies.get(atom.species) ?? []), atom]);
   for (const atoms of bySpecies.values()) {
@@ -286,8 +312,9 @@ function addStructureOverlay(group: THREE.Group, overlay: VolumetricStructureOve
     atoms.forEach((atom, index) => { matrix.makeScale(atom.radius, atom.radius, atom.radius); matrix.setPosition(...atom.position); mesh.setMatrixAt(index, matrix); });
     mesh.renderOrder = 2; group.add(mesh);
   }
-  if (overlay.bonds.length) {
-    const bondGeometry = new THREE.BufferGeometry(); bondGeometry.setAttribute("position", new THREE.Float32BufferAttribute(overlay.bonds.flatMap((bond) => [...bond.start, ...bond.end]), 3)); resources.push(bondGeometry);
+  const displayedBonds = displayedOverlayBonds(overlay);
+  if (displayedBonds.length) {
+    const bondGeometry = new THREE.BufferGeometry(); bondGeometry.setAttribute("position", new THREE.Float32BufferAttribute(displayedBonds.flatMap((bond) => [...bond.start, ...bond.end]), 3)); resources.push(bondGeometry);
     const material = new THREE.LineBasicMaterial({ color: 0x526879, transparent: true, opacity: 0.72 }); resources.push(material); clippableMaterials.push(material); group.add(new THREE.LineSegments(bondGeometry, material));
   }
 }

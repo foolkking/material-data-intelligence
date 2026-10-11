@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
+import pytest
 
 from mdi_api.repositories import InMemoryRepositoryBundle
 from mdi_api.routers.planner import PlannerJobsRequest, planner_jobs
@@ -164,6 +165,41 @@ def test_persisted_composition_visual_plan_executes_exactly_one_tool_call(tmp_pa
     assert len(tool_calls) == 1
     assert tool_calls[0]["toolId"] == "composition.elements_hist"
     assert {artifact["type"] for artifact in artifacts} >= {"plotly_json", "plotly_html", "summary_md", "recipe_json"}
+
+
+@pytest.mark.parametrize("tool_id,params,data,reason", [
+    ("viz.correlation", {}, {f"column_{i}": [1, 2 + i, 4 + i] for i in range(31)}, "CORRELATION_COLUMN_LIMIT_EXCEEDED"),
+    ("viz.correlation", {}, {"A": [1, 1, 1], "B": [2, 2, 2]}, "CORRELATION_NO_VALID_PAIRS"),
+    ("viz.correlation", {}, {"A": [1, 2, None, None], "B": [None, None, 1, 2]}, "CORRELATION_NO_VALID_PAIRS"),
+    ("viz.histogram", {"column": "x"}, {"x": ["bad", None]}, "HISTOGRAM_VALUES_INVALID"),
+    ("viz.histogram", {"column": "x", "groupBy": "g"}, {"x": list(range(17)), "g": list(range(17))}, "HISTOGRAM_GROUP_LIMIT"),
+    ("viz.scatter", {"xColumn": "x", "yColumn": "y"}, {"x": ["bad", None], "y": [1, 2]}, "SCATTER_VALUES_INVALID"),
+    ("viz.scatter", {"xColumn": "x", "yColumn": "y", "colorColumn": "g"}, {"x": list(range(65)), "y": list(range(65)), "g": [str(i) for i in range(65)]}, "SCATTER_GROUP_LIMIT"),
+])
+def test_table_plot_queue_preserves_the_failure_reason_for_product_recovery(tmp_path: Path, tool_id, params, data, reason) -> None:
+    from mdi_api.research_agent.execution.diagnostics import current_attempt_events, execution_warnings
+
+    repos = InMemoryRepositoryBundle.create()
+    plan = _valid_scatter_plan().model_dump(mode="json")
+    plan["steps"][0].update(toolId=tool_id, params=params)
+    runtime = QueueWorkerRuntime(repositories=repos, registry=load_manifests(), artifact_root=tmp_path / "artifacts")
+    result = planner_jobs(PlannerJobsRequest(userPrompt="Compare numeric columns", projectId="project_10a1",
+        datasetId="dataset_matpes", profileId="profile_matpes", enqueue=True), provider=MockLLMProvider(fixed_plan=plan),
+        repositories=repos, queue_runtime=runtime, registry=load_manifests())
+    assert result.ok
+    frame = pd.DataFrame(data)
+    worker = runtime.handle_job(result.job_id or "", object_store={"ml_table": frame})
+    assert worker.status == "failed"
+    calls = repos.tool_calls.list_for_job(result.job_id or "")
+    assert len(calls) == 1 and calls[0]["status"] == "failed"
+    assert calls[0]["error"]["details"] == {"errorType": reason}
+    job = repos.jobs.get(result.job_id or "")
+    events = current_attempt_events(job, repos.job_events.list_for_job(result.job_id or ""))
+    event = next(item for item in events if item["eventType"] == "tool.failed")
+    assert event["payload"]["error"] == {"code": "TOOL_INPUT_INVALID", "details": {"errorType": reason}}
+    assert event["payload"]["executionAttempt"] == 1
+    assert execution_warnings(job, events)[0].code == reason
+    assert not repos.artifacts.list_for_job(result.job_id or "")
 
 
 def test_invalid_new_tool_params_rejected_before_persistence() -> None:

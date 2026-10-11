@@ -148,6 +148,36 @@ def _ml_candidate() -> ArtifactProjectionInput:
     )
 
 
+@pytest.mark.parametrize("status,value", [("defined", 0.93), ("undefined_constant_target", None)])
+def test_basic_metrics_explicit_r2_status_keeps_numeric_and_undefined_evidence_distinct(status, value):
+    payload = {**_ml_candidate().payload, "metrics": {**_ml_candidate().payload["metrics"], "r2Status": status, "r2": value}}
+    candidate = _candidate(payload, artifact_type="metrics_json", tool_id="ml.basic_metrics", suffix="r2-status")
+    bundle = build_scientific_evidence_bundle(_source(), [candidate])
+    by_role = {item.semanticRole: item for item in bundle.evidenceItems}
+    result = deterministic_interpret(bundle)
+    assert result.outcome.value == "INTERPRETATION_READY"
+    if value is None:
+        assert "ml.r2" not in by_role
+        assert by_role["ml.r2_status"].displayValue == "undefined_constant_target"
+        assert any(claim.renderedText == "R² 未定义（目标值为常数）。" for claim in result.interpretation.claims)
+    else:
+        assert by_role["ml.r2"].displayValue == "0.93"
+        assert "ml.r2_status" not in by_role
+
+
+@pytest.mark.parametrize("changes", [
+    {"r2Status": "defined", "r2": None},
+    {"r2Status": "undefined_constant_target", "r2": 0.5},
+    {"r2Status": "unknown"}, {"r2Status": None}, {"r2Status": []}, {"r2Status": {}}, {"r2": None},
+    {"r2Status": "defined", "r2": True}, {"unreviewedMetric": 2},
+])
+def test_basic_metrics_conflicting_or_missing_r2_status_fails_explicitly(changes):
+    payload = {**_ml_candidate().payload, "metrics": {**_ml_candidate().payload["metrics"], **changes}}
+    candidate = _candidate(payload, artifact_type="metrics_json", tool_id="ml.basic_metrics", suffix="invalid-r2")
+    with pytest.raises(InterpretationError):
+        build_scientific_evidence_bundle(_source(), [candidate])
+
+
 def _outlier_candidate() -> ArtifactProjectionInput:
     return _candidate(
         {

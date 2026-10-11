@@ -1,3 +1,5 @@
+import { projectScienceNames } from "./project-science-labels";
+
 export type ResearchRunDisplaySource = {
   userQuestion?: string | null;
   toolIds?: string[];
@@ -8,6 +10,43 @@ export type ResearchRunStatusSource = {
   status?: string | null;
   researchTurnStatus?: string | null;
 };
+
+export type ResearchSourceDataset = { datasetId: string; name: string };
+
+export function researchRunSourceDatasets(
+  run: { datasetId?: string | null; sourceDatasetIds?: readonly string[] },
+  datasets: readonly ResearchSourceDataset[],
+): ResearchSourceDataset[] {
+  const ids = run.sourceDatasetIds === undefined
+    ? run.datasetId ? [run.datasetId] : []
+    : run.sourceDatasetIds;
+  const names = new Map(datasets.map((dataset) => [dataset.datasetId, dataset.name]));
+  return [...new Set(ids)].map((datasetId) => ({
+    datasetId,
+    name: names.has(datasetId) ? names.get(datasetId)?.trim() || "未命名数据" : "来源数据不可用",
+  }));
+}
+
+export function researchRunFailureMessage(events: ReadonlyArray<{
+  eventType?: string;
+  message?: string | null;
+  payload?: Record<string, unknown> | null;
+}>): string {
+  const failure = [...events].reverse().find((event) =>
+    event.eventType === "job.failed" || event.eventType === "tool.failed",
+  );
+  const message = failure?.message || "";
+  const code = String(failure?.payload?.errorCode || failure?.payload?.error_code || message.split(":", 1)[0]).toUpperCase();
+  if (code === "TOOL_INPUT_INVALID") {
+    return message.includes("Requested target column does not exist")
+      ? "分析所需的目标列不存在。请打开数据确认列名，再修改问题重试。"
+      : "分析输入未通过工具校验。请确认所选数据与问题中的参数后重试。";
+  }
+  if (message === "Requested DataProfile is unavailable for this dataset.") {
+    return "本次分析需要的数据描述无法读取。请打开数据检查导入状态后重试。";
+  }
+  return "本次分析执行失败。当前记录没有可展示的具体原因；可检查数据后修改问题重试。";
+}
 
 export function researchRunStatusLabel(run: ResearchRunStatusSource) {
   const status = String(run.researchTurnStatus || run.status || "")
@@ -24,6 +63,7 @@ export function researchRunStatusLabel(run: ResearchRunStatusSource) {
 }
 
 export function researchRunTitle(run: ResearchRunDisplaySource) {
+  if (run.toolIds?.length && run.toolIds.every(id => projectScienceNames[id])) return [...new Set(run.toolIds.map(id => projectScienceNames[id]))].join("、");
   const tools = (run.toolIds || []).join(" ").toLowerCase();
   const artifacts = (run.artifactTypes || []).join(" ").toLowerCase();
   const hasTrajectoryMsd = tools.includes("trajectory.msd") || artifacts.includes("trajectory_msd");
@@ -37,7 +77,7 @@ export function researchRunTitle(run: ResearchRunDisplaySource) {
   if (tools.includes("trajectory")) return "AIMD 轨迹分析";
   if (tools.includes("phonon")) return "声子色散与态密度";
   if (tools.includes("electronic")) return "电子能带与态密度";
-  if (tools.includes("correlation") || artifacts.includes("correlation")) return "形成能与带隙的相关关系";
+  if (tools.includes("correlation") || artifacts.includes("correlation")) return run.userQuestion?.trim() || "材料属性相关性分析";
   if (tools.includes("coordination") || tools.includes("local_environment") || artifacts.includes("coordination") || artifacts.includes("local_environment")) return "局部配位环境分析";
   if (tools.includes("scatter")) return "材料属性关系";
   if (tools.includes("histogram")) return "材料属性分布";
@@ -47,5 +87,5 @@ export function researchRunTitle(run: ResearchRunDisplaySource) {
   if (tools.includes("classification") || artifacts.includes("classification")) return "材料分类评估";
   if (tools.includes("uncertainty") || artifacts.includes("uncertainty")) return "预测不确定性评估";
   if (run.userQuestion?.trim()) return run.userQuestion.trim();
-  return "已完成的材料数据分析";
+  return "材料数据分析";
 }

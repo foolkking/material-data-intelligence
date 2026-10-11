@@ -22,7 +22,7 @@ def run_queued_planning(turn_id: str) -> dict:
     settings = load_settings()
     processor = CapabilityPlanningProcessor(
         create_repository_factory(),
-        llm_client=DeepSeekStructuredLLMClient(),
+        llm_client=DeepSeekStructuredLLMClient(turn_id=turn_id),
     )
     from mdi_workers.queue_runtime import RedisRQQueueBackend
 

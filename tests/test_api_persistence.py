@@ -203,7 +203,8 @@ def test_interpretation_api_create_read_is_idempotent_and_read_only(tmp_path: Pa
     assert listed["count"] == 1
 
 
-def test_real_ml_adapter_artifact_is_interpretable_without_service_dependencies(tmp_path: Path) -> None:
+@pytest.mark.parametrize("constant_target", [False, True])
+def test_real_ml_adapter_artifact_is_interpretable_without_service_dependencies(tmp_path: Path, constant_target: bool) -> None:
     from tests.integration.test_interpretation_chain_service_backed import (
         _metrics_table,
         _persist_job,
@@ -228,7 +229,10 @@ def test_real_ml_adapter_artifact_is_interpretable_without_service_dependencies(
         queue_backend=InMemoryQueueBackend(),
         registry=load_manifests(),
     )
-    executed = runtime.handle_job("job_l4_real_ml", object_store={"ml_table": _metrics_table()})
+    table = _metrics_table()
+    if constant_target:
+        table["y_true"] = 0.1
+    executed = runtime.handle_job("job_l4_real_ml", object_store={"ml_table": table})
     assert executed.status == "completed"
 
     interpreted = create_planner_job_interpretation(
@@ -237,17 +241,19 @@ def test_real_ml_adapter_artifact_is_interpretable_without_service_dependencies(
         repositories=repos,
         queue_runtime=runtime,
     )
-    assert interpreted["outcome"] == "INTERPRETATION_READY"
+    assert interpreted["outcome"] == "INTERPRETATION_READY", interpreted
     evidence = get_planner_interpretation_evidence(interpreted["interpretationId"], repositories=repos)
     assert {item["semanticRole"] for item in evidence["evidenceItems"]}.issuperset({
         "ml.n",
         "ml.mae",
         "ml.rmse",
-        "ml.r2",
+        "ml.r2_status" if constant_target else "ml.r2",
         "ml.mean_error",
         "ml.max_abs_error",
     })
     assert {item["sourceToolId"] for item in evidence["evidenceItems"]} == {"ml.basic_metrics"}
+    if constant_target:
+        assert not any(item["semanticRole"] == "ml.r2" for item in evidence["evidenceItems"])
 
 
 def test_concurrent_idempotent_requests_execute_interpreter_once(
@@ -690,98 +696,32 @@ def test_interpretation_evidence_exposes_exact_source_chain_without_mutating_bun
     assert evidence["jobId"] == "job-1"
 
 
-def test_agent2_interpretation_evidence_compatibility_projects_tool_chain() -> None:
+def test_agent2_interpretation_evidence_compatibility_projects_tool_chain(monkeypatch) -> None:
     """Agent2 durable interpretations remain inspectable via the planner route."""
+    from sqlalchemy import insert
+    from mdi_api.db import agent2_scientific_interpretations
+    from tests.test_agent2_results import _persisted_projection
 
+    factory, turn_id, _job_id, service = _persisted_projection()
+    monkeypatch.setattr(service, "_enqueue_interpretation", lambda _: None)
+    snapshot = service.project_turn(turn_id)
     interpretation_id = uuid4()
-    snapshot_id = uuid4()
-    calls = {"count": 0}
-
-    class _Result:
-        def __init__(self, *, first_value=None, all_values=None):
-            self._first = first_value
-            self._all = all_values if all_values is not None else []
-
-        def mappings(self):
-            return self
-
-        def first(self):
-            return self._first
-
-        def all(self):
-            return self._all
-
-    class _Connection:
-        def execute(self, _statement):
-            calls["count"] += 1
-            if calls["count"] == 1:
-                return _Result(first_value={
-                    "id": interpretation_id,
-                    "result_snapshot_id": snapshot_id,
-                })
-            if calls["count"] == 2:
-                return _Result(first_value={
-                    "id": snapshot_id,
-                    "job_id": "job_agent2_compat",
-                    "source_fingerprint": "f" * 64,
-                    "bundle_json": {
-                        "source_object_refs": [{
-                            "object_id": "object-1",
-                            "version_id": "version-2",
-                            "object_type": "Structure",
-                            "display_name": "Silicon",
-                        }],
-                        "facts": [{
-                            "fact_id": "fact-1",
-                            "predicate": "coordination.number",
-                            "subject_ref": "site-1",
-                            "value": 4,
-                            "unit": "count",
-                            "source": {
-                                "toolCallId": "call-1",
-                                "artifactId": "artifact-1",
-                            },
-                        }],
-                        "evidence": [{
-                            "evidence_id": "evidence-1",
-                            "evidence_type": "SCALAR",
-                            "artifact_id": "artifact-1",
-                            "supports_fact_refs": ["fact-1"],
-                        }],
-                        "provenance": {"analysis_plan_id": "plan-1"},
-                    },
-                })
-            if calls["count"] == 3:
-                return _Result(all_values=[{
-                    "id": "artifact-1",
-                    "job_id": "job_agent2_compat",
-                    "tool_call_id": "call-1",
-                    "type": "json",
-                    "name": "result.json",
-                    "content_hash": "a" * 64,
-                    "sha256": "a" * 64,
-                    "content_type": "application/json",
-                }])
-            return _Result(all_values=[{
-                "id": "call-1",
-                "tool_id": "structure.summary",
-                "status": "completed",
-            }])
-
-    class _Interpretations:
-        bind = object()
-
-        def _with_connection(self, callback):
-            return callback(_Connection())
-
-    repos = SimpleNamespace(interpretations=_Interpretations())
+    with factory.engine.begin() as connection:
+        connection.execute(insert(agent2_scientific_interpretations), {
+            "id": interpretation_id, "research_turn_id": turn_id, "result_snapshot_id": snapshot["id"],
+            "project_id": "project", "contract_version": "1.0", "prompt_version": "test",
+            "provider": "test", "model": "test", "input_fingerprint": "f" * 64,
+            "grounding_status": "VALID", "output_json": {},
+        })
+    repos = SqlAlchemyRepositoryBundle.create(factory.engine)
     evidence = get_planner_interpretation_evidence(str(interpretation_id), repositories=repos)
-
     assert evidence["interpretationId"] == str(interpretation_id)
-    assert evidence["sourceObjectRefs"][0]["versionId"] == "version-2"
-    assert evidence["evidenceItems"][0]["sourceToolId"] == "call-1"
-    assert evidence["toolCalls"][0]["toolId"] == "structure.summary"
-    assert evidence["artifacts"][0]["toolCallId"] == "call-1"
+    assert evidence["planId"] == "plan_phase4"
+    assert evidence["evidenceItems"][0]["sourceToolId"] == "call-output"
+    assert evidence["toolCalls"][0]["toolId"] == "structure.xrd"
+    assert evidence["artifacts"][0]["toolCallId"] == "call-output"
+    with factory.session() as session:
+        assert session.agent2.scientific_result_snapshots.get(snapshot["id"]) == snapshot
 
     class Body:
         def __init__(self) -> None:

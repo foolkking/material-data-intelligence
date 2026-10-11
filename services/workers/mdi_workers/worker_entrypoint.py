@@ -34,6 +34,7 @@ def create_worker(
     queue_names: Sequence[str],
     name: str | None = None,
     platform_name: str | None = None,
+    local_control: bool = False,
 ) -> Any:
     from redis import Redis
 
@@ -42,11 +43,22 @@ def create_worker(
     worker_class = resolve_worker_class(platform_name=platform_name)
     from mdi_workers.observability import rq_exception_handler
 
+    extra: dict[str, Any] = {}
+    if local_control:
+        if not name:
+            raise ValueError("Local worker control requires an explicit name")
+        from mdi_workers.local_control import LocalControlMixin, local_control_queue
+        extra["queue_class"] = local_control_queue(name)
+        # A short dequeue interval lets an idle worker observe a drain without
+        # signals, forceful termination or a synthetic application job.
+        worker_class = type("LocalControlledWorker", (LocalControlMixin, worker_class), {})
+
     return worker_class(
         list(queue_names),
         connection=connection,
         name=name,
         exception_handlers=[rq_exception_handler],
+        **extra,
     )
 
 
@@ -59,6 +71,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-jobs", type=int)
     parser.add_argument("--max-idle-time", type=int)
     parser.add_argument("--logging-level", default="INFO")
+    parser.add_argument("--local-control", action="store_true")
     return parser
 
 
@@ -81,6 +94,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         redis_url=redis_url,
         queue_names=args.queues,
         name=args.name,
+        local_control=args.local_control,
     )
     worker.work(
         burst=args.burst,

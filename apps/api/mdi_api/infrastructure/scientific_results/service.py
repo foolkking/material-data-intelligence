@@ -96,7 +96,7 @@ class ScientificResultProjectionService:
                 projector = self.projector_registry.require(projector_id)
             except KeyError as exc:
                 raise ScientificResultProjectionFailed(f"result projector is not registered: {projector_id}", code="RESULT_PROJECTOR_NOT_REGISTERED") from exc
-            projections.append(projector.project(self._context_for_projector(context, projector_id)))
+            projections.extend(projector.project(scoped) for scoped in self._contexts_for_projector(context, projector_id))
         bundle = self._merge_projections(context, projections).bundle
         source_fingerprint = ScientificResultSourceFingerprint.compute(
             research_turn_id=context.research_turn_id,
@@ -122,7 +122,8 @@ class ScientificResultProjectionService:
     def project_context(self, context: ScientificResultProjectionContext) -> ScientificResultBundle:
         projector_ids = self._projector_ids(context)
         context = ScientificResultProjectionContext(**{**context.__dict__, "projector_ids": tuple(projector_ids)})
-        projections = [self.projector_registry.require(projector_id).project(self._context_for_projector(context, projector_id)) for projector_id in projector_ids]
+        projections = [self.projector_registry.require(projector_id).project(scoped)
+                       for projector_id in projector_ids for scoped in self._contexts_for_projector(context, projector_id)]
         return self._merge_projections(context, projections).bundle
 
     def _load_projection_context(self, turn_id: UUID) -> tuple[ScientificResultProjectionContext, dict[str, Any] | None]:
@@ -141,6 +142,15 @@ class ScientificResultProjectionService:
         return self._load_artifact_payloads(context), existing
 
     def _context_from_rows(self, session: Any, turn: dict[str, Any], summary: dict[str, Any]) -> ScientificResultProjectionContext:
+        message = session.agent2.research_turns.get_message(str(turn["user_message_id"]))
+        question = message.get("content_summary")
+        if (
+            message.get("role") != "user"
+            or str(message.get("session_id")) != str(turn["research_session_id"])
+            or not isinstance(question, str)
+            or not question.strip()
+        ):
+            raise ScientificResultProjectionFailed("original research question is unavailable or inconsistent")
         plan = session.repositories.analysis_plans.get_plan(str(turn.get("analysis_plan_id")))
         cap = session.agent2.research_capability_plans.get_for_turn(turn["id"])
         resolution = session.agent2.research_capability_resolutions.get_for_turn(turn["id"])
@@ -149,14 +159,29 @@ class ScientificResultProjectionService:
         snapshot = session.agent2.research_context_snapshots.get_for_turn(turn["id"])
         if snapshot is None:
             raise ScientificResultProjectionFailed("context snapshot is missing")
-        refs = self._snapshot_refs(snapshot, str(turn["project_id"]))
-        for ref in refs:
+        plan_json = plan.get("analysisPlan") or plan.get("analysis_plan") or plan
+        project_scoped = plan_json.get("schemaVersion") == "0.4"
+        if project_scoped:
+            from mdi_schemas import AnalysisPlanV04
+            validated_plan = AnalysisPlanV04.model_validate(plan_json)
+            if validated_plan.projectId != str(turn["project_id"]):
+                raise ScientificResultProjectionFailed("project reference plan belongs to another project")
+        refs = [] if project_scoped else self._snapshot_refs(snapshot, str(turn["project_id"]))
+        for index, ref in enumerate(refs):
             logical = session.agent2.scientific_objects.get_object(ref.object_id)
             version = session.agent2.scientific_objects.get_version(ref.version_id)
             if str(logical["project_id"]) != str(turn["project_id"]) or str(version["scientific_object_id"]) != str(ref.object_id) or str(version["availability_status"]) in {"SOURCE_MISSING", "INVALID"}:
                 raise ScientificResultSourceUnavailable(f"exact source version is unavailable: {ref.version_id}")
+            if len(refs) > 1:
+                profile_ref = version.get("semantic_profile_ref_json") or {}
+                if profile_ref.get("profileId"):
+                    profile = session.repositories.data_profiles.get(str(profile_ref["profileId"]))
+                    label = self._source_file_label(version, profile)
+                    if label:
+                        refs[index] = ref.model_copy(update={"display_name": label})
         job_id = str(summary["job_id"])
         job = session.repositories.jobs.get(job_id)
+        self._validate_execution_identity(turn, summary, plan, cap, job)
         current_attempt = int(job.get("executionAttempt") or 0)
         tool_calls = tuple(
             self._as_dict(item)
@@ -184,12 +209,61 @@ class ScientificResultProjectionService:
                     step["capability_version"] = candidate.get("capability_version")
         return ScientificResultProjectionContext(
             project_id=str(turn["project_id"]), research_session_id=str(turn["research_session_id"]),
-            research_turn_id=str(turn["id"]), research_question=str((snapshot.get("research_goal") or plan_json.get("goal") or "Scientific analysis")),
+            research_turn_id=str(turn["id"]), research_question=question,
             execution_summary={**summary, "id": summary.get("id")},
             capability_plan=capability_plan, analysis_plan=plan_json,
             tool_calls=tool_calls, artifacts=artifacts, artifact_payloads={},
             source_object_refs=tuple(refs), projector_ids=tuple(),
+            scientific_selections=() if project_scoped else tuple(snapshot.get("scientific_selections_json") or ()),
+            analysis_plan_id=str(plan["planId"]), capability_plan_id=str(cap["id"]),
         )
+
+    @staticmethod
+    def _validate_execution_identity(
+        turn: dict[str, Any], summary: dict[str, Any], plan: dict[str, Any],
+        capability_plan: dict[str, Any], job: dict[str, Any],
+    ) -> None:
+        payload = summary.get("summary_json") or {}
+        identities = (
+            (turn.get("id"), (
+                summary.get("research_turn_id"), payload.get("research_turn_id"),
+                capability_plan.get("research_turn_id"),
+            )),
+            (turn.get("project_id"), (plan.get("projectId"), job.get("projectId"))),
+            (turn.get("analysis_plan_id"), (
+                plan.get("planId"), job.get("planId"), payload.get("analysis_plan_id"),
+            )),
+            (turn.get("job_id"), (summary.get("job_id"), payload.get("job_id"), job.get("id"))),
+        )
+        if not capability_plan.get("id") or any(
+            not expected or any(str(actual or "") != str(expected) for actual in values)
+            for expected, values in identities
+        ):
+            raise ScientificResultProjectionFailed("execution provenance is inconsistent")
+
+    @staticmethod
+    def _source_file_label(version: dict[str, Any], profile: dict[str, Any]) -> str | None:
+        """Name a resource only through its saved exact Profile/file edges."""
+        profile_ref = version.get("semantic_profile_ref_json") or {}
+        if any(str(profile.get(key) or "") != str(profile_ref.get(key) or "")
+               for key in ("profileId", "datasetId", "semanticHash")):
+            return None
+        resources = [item for item in profile.get("objects", [])
+                     if item.get("objectId") == profile_ref.get("resourceId")
+                     and item.get("objectHash") == profile_ref.get("resourceHash")]
+        if len(resources) != 1:
+            return None
+        names = []
+        for file_id in resources[0].get("sourceFileIds", []):
+            files = [item for item in profile.get("files", []) if item.get("fileId") == file_id]
+            if len(files) != 1:
+                return None
+            name = str(files[0].get("fileName") or "")
+            if not name or len(name) > 240 or any(char in name for char in ("/", "\\", "\n", "\r")):
+                return None
+            names.append(name)
+        label = ", ".join(dict.fromkeys(names))
+        return label if label and len(label) <= 512 else None
 
     def _load_artifact_payloads(self, context: ScientificResultProjectionContext) -> ScientificResultProjectionContext:
         payloads: dict[str, Any] = {}
@@ -260,6 +334,25 @@ class ScientificResultProjectionService:
         return sorted(set(ids))
 
     @staticmethod
+    def _contexts_for_projector(context: ScientificResultProjectionContext, projector_id: str) -> list[ScientificResultProjectionContext]:
+        steps = [step for step in context.capability_plan.get("steps") or []
+                 if str(step.get("capability_id")) == projector_id.removeprefix("agent2.")]
+        if len(steps) <= 1:
+            return [ScientificResultProjectionService._context_for_projector(context, projector_id)]
+        contexts = []
+        for step in steps:
+            step_id = str(step.get("step_id") or step.get("stepId"))
+            scoped = ScientificResultProjectionContext(**{
+                **context.__dict__, "capability_plan": {**context.capability_plan, "steps": [step]},
+                "projection_scope_key": step_id,
+            })
+            # Apply the execution outcome per invocation, including repeated
+            # uses of the same capability in a partially successful Job.
+            if projector_id in ScientificResultProjectionService._projector_ids(scoped):
+                contexts.append(ScientificResultProjectionService._context_for_projector(scoped, projector_id))
+        return contexts
+
+    @staticmethod
     def _context_for_projector(context: ScientificResultProjectionContext, projector_id: str) -> ScientificResultProjectionContext:
         capability_id = projector_id.removeprefix("agent2.")
         steps = [step for step in context.capability_plan.get("steps") or [] if str(step.get("capability_id")) == capability_id]
@@ -286,6 +379,10 @@ class ScientificResultProjectionService:
             if str(input_ref.get("refType") or input_ref.get("ref_type") or "")
             == "normalized_object"
         }
+        bound_version_ids.update(
+            str(version_id) for step in analysis_steps
+            for version_id in (step.get("output") or {}).get("sourceObjectVersionIds", [])
+        )
         exact_source_refs = tuple(
             ref
             for ref in context.source_object_refs
@@ -294,16 +391,22 @@ class ScientificResultProjectionService:
         # Modern AnalysisPlans bind exact ScientificObjectVersion IDs. Legacy
         # plans without that binding retain the complete source set rather
         # than guessing a single source and manufacturing false provenance.
-        projector_source_refs = exact_source_refs or context.source_object_refs
+        project_scoped = context.analysis_plan.get("schemaVersion") == "0.4"
+        projector_source_refs = () if project_scoped else exact_source_refs or context.source_object_refs
         calls = tuple(
             call
             for call in context.tool_calls
             if str(call.get("stepId") or call.get("step_id"))
             in analysis_step_ids
         )
+        if context.projection_scope_key and not project_scoped and (
+            not exact_source_refs
+            or bound_version_ids != {str(ref.version_id) for ref in exact_source_refs}
+        ):
+            raise ScientificResultProjectionFailed("repeated capability invocation has no exact source binding")
         call_ids = {str(call.get("id")) for call in calls}
         artifacts = tuple(artifact for artifact in context.artifacts if str(artifact.get("toolCallId") or artifact.get("tool_call_id")) in call_ids or str(artifact.get("stepId") or artifact.get("step_id")) in step_ids)
-        if not artifacts and len(context.projector_ids) <= 1:
+        if not artifacts and len(context.projector_ids) <= 1 and not context.projection_scope_key:
             artifacts = context.artifacts
         payloads = {str(item.get("id")): context.artifact_payloads.get(str(item.get("id"))) for item in artifacts}
         return ScientificResultProjectionContext(**{
@@ -343,6 +446,27 @@ class ScientificResultProjectionService:
         )
         bundle.provenance.tool_call_ids = sorted(set(bundle.provenance.tool_call_ids))
         bundle.provenance.artifact_ids = sorted(set(bundle.provenance.artifact_ids))
+        project_inputs = [projection.bundle.provenance.model_dump(mode="json") for projection in projections]
+        if any(item.get("execution_scope") == "PROJECT" for item in project_inputs):
+            if not all(item.get("execution_scope") == "PROJECT" for item in project_inputs):
+                raise ScientificResultProjectionFailed("Project inputs cannot inherit sample provenance")
+            from mdi_api.domain.scientific_results.contracts import ProvenanceRecord
+            from mdi_api.domain.scientific_results.reference_sources import project_reference_context
+            origins = sorted({origin for item in project_inputs for origin in item.get("input_origins", [item.get("input_origin")])})
+            references: dict[str, dict[str, Any]] = {}
+            for item in project_inputs:
+                for reference in item.get("reference_sources", []):
+                    key = reference["referenceId"]
+                    if key in references and references[key] != reference:
+                        raise ScientificResultProjectionFailed("Composite reference versions conflict")
+                    references[key] = reference
+            bundle.provenance = ProvenanceRecord.model_validate({**bundle.provenance.model_dump(mode="json"),
+                "input_origin": origins[0] if len(origins) == 1 else "MIXED", "input_origins": origins,
+                "reference_sources": [references[key] for key in sorted(references)],
+                "parameter_inputs": [record for item in project_inputs for record in item.get("parameter_inputs", [])]})
+            project_reference_context(bundle)
+        bundle.limitations = list({item.limitation_id: item for item in bundle.limitations}.values())
+        bundle.warnings = list({item.warning_id: item for item in bundle.warnings}.values())
         return type(first)(bundle=ScientificResultBundle.model_validate(bundle.model_dump()), projector_id="agent2.composite", projector_version="1.0")
 
     def _persist(self, turn_id: UUID, bundle: ScientificResultBundle, source_fingerprint: str, job_id: str | None) -> dict[str, Any]:

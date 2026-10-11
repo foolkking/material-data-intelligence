@@ -450,6 +450,20 @@ def test_quality_policy_requires_current_evidence_and_preserves_external_scope()
     assert rejected.reason_code == "QUALIFICATION_EVIDENCE_STALE_OR_MISSING"
 
 
+@pytest.mark.parametrize("capability_id", ["structure.summary", "structure.viewer_scene"])
+def test_current_structure_contracts_remain_eligible_without_promoting_scientific_scope(capability_id):
+    manifest = DEFAULT_AGENT2_REGISTRIES.capabilities.require(capability_id, "1.1")
+    policy = CapabilityAutonomyPolicy()
+    current = policy.qualification_snapshot(manifest)
+    assert current.allowed_for_autonomy
+    assert current.reason_code == "QUALIFICATION_CURRENT_AND_ALLOWED"
+    assert current.qualification_level == "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED"
+    assert current.validated_domains and current.known_limitations
+    stale = policy.qualification_snapshot(manifest.model_copy(update={"version": "1.0"}))
+    assert not stale.allowed_for_autonomy
+    assert stale.reason_code == "QUALIFICATION_EVIDENCE_STALE_OR_MISSING"
+
+
 def test_progress_assessment_is_minimum_sufficient_and_stops_causal_overclaim() -> None:
     turn_id, result_id = uuid4(), uuid4()
     source = ScientificObjectRef(

@@ -1,0 +1,31 @@
+.panel { min-width: 0; }
+.panel h5 { margin: 0; }
+.panel .metrics dt, .panel .tableScroll th { text-transform: none; letter-spacing: normal; }
+.summary { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.summary p { margin: 0; color: var(--product-secondary); font-size: 13px; }
+.curve { min-width: 0; width: 100%; }
+.curve svg { display: block; width: 100%; height: auto; overflow: visible; font: 12px var(--font-sans, sans-serif); fill: var(--product-secondary); }
+.grid { stroke: var(--product-border); stroke-width: 0.7; }
+.axis { fill: none; stroke: var(--product-secondary); stroke-width: 0.8; }
+.legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; list-style: none; padding: 0; margin: 4px 0 12px; font-size: 13px; }
+.legend li { display: flex; align-items: center; gap: 8px; }
+.legend span { display: inline-block; width: 24px; border-top: 2px solid; }
+.details { min-width: 0; border-top: 1px solid var(--product-border); padding-top: 12px; }
+.details > summary { cursor: pointer; width: fit-content; font-size: 13px; font-weight: 500; padding: 4px 0; }
+.tableScroll { max-height: 360px; max-width: 100%; overflow: auto; margin-top: 12px; scrollbar-gutter: stable; }
+.tableScroll table { min-width: 640px; width: 100%; font-variant-numeric: tabular-nums; }
+.tableScroll th, .tableScroll td { white-space: nowrap; }
+.tableScroll thead th { position: sticky; top: 0; background: var(--product-surface, #fff); z-index: 1; }
+.details dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; font-size: 13px; }
+.details dd { margin: 0; overflow-wrap: anywhere; }
+.details dt { color: var(--product-secondary); }
+.details ul { padding-inline-start: 20px; font-size: 13px; line-height: 1.7; }
+.diagnostic { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 12px 0; border-block: 1px solid var(--product-border); }
+.diagnostic p { margin: 6px 0 0; font-size: 13px; line-height: 1.6; }
+.diagnostic strong { color: var(--product-foreground); }
+.metrics { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 24px; margin: 0; }
+.metrics > div { min-width: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--product-border); }
+.metrics dt { font-size: 13px; color: var(--product-secondary); }
+.metrics dd { margin: 0; font-size: 14px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; text-align: right; }
+@media (max-width: 700px) { .metrics { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 420px) { .details dl { grid-template-columns: minmax(0, 1fr); gap: 4px; } .details dd { margin-bottom: 8px; } }

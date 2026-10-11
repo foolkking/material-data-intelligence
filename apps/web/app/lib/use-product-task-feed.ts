@@ -129,7 +129,14 @@ function startSharedProductTaskFeed() {
     else pauseSharedProductTaskFeed();
   };
   const onOnline = () => refresh();
-  const onOffline = () => pauseSharedProductTaskFeed();
+  const onOffline = () => {
+    pauseSharedProductTaskFeed();
+    if (document.visibilityState === "visible") {
+      publish(snapshot.feed
+        ? { ...snapshot, isRefreshing: false, refreshError: true }
+        : { state: "error", feed: null, isRefreshing: false, refreshError: false });
+    }
+  };
 
   document.addEventListener("visibilitychange", onVisibility);
   window.addEventListener("online", onOnline);

@@ -652,6 +652,8 @@ export type DatasetSourceResource = {
   versionId?: string;
   displayName?: string;
   payload: unknown;
+  viewerScene?: unknown;
+  viewerSceneIssue?: string | null;
 };
 
 export type PromotedDatasetTable = {
@@ -671,6 +673,20 @@ export type PromotedDatasetTable = {
     semantic_hash?: string;
   };
 };
+
+export type ResearchSourceResource = Omit<DatasetSourceResource, "payload">;
+
+export async function getResearchSourceVersion(objectId: string, versionId: string, signal?: AbortSignal) {
+  return apiFetch<PromotedDatasetTable["version"]>(
+    `/api/scientific-objects/${encodeURIComponent(objectId)}/versions/${encodeURIComponent(versionId)}`, { signal },
+  );
+}
+
+export async function getDatasetResearchSources(datasetId: string, signal?: AbortSignal) {
+  return apiFetch<{ projectId: string; datasetId: string; resources: ResearchSourceResource[] }>(
+    `/datasets/${encodeURIComponent(datasetId)}/research-sources`, { signal },
+  );
+}
 
 export type ProjectSummary = {
   id: string;
@@ -766,6 +782,7 @@ export type ProjectHistory = {
   analyses: Array<{
     jobId: string;
     datasetId?: string;
+    sourceDatasetIds?: string[];
     status: string;
     createdAt?: string | null;
     updatedAt?: string | null;
@@ -1080,8 +1097,8 @@ export function getPlannerJobEventsStreamUrl(jobId: string, afterSeq = 0): strin
   return `${API_BASE}/planner/jobs/${encodeURIComponent(jobId)}/events/stream${query}`;
 }
 
-export async function getPlannerJobToolCalls(jobId: string): Promise<ToolCall[]> {
-  return apiFetch<ToolCall[]>(`/planner/jobs/${encodeURIComponent(jobId)}/tool-calls`);
+export async function getPlannerJobToolCalls(jobId: string, options: Readonly<{ signal?: AbortSignal }> = {}): Promise<ToolCall[]> {
+  return apiFetch<ToolCall[]>(`/planner/jobs/${encodeURIComponent(jobId)}/tool-calls`, options);
 }
 
 export async function getPlannerJobArtifacts(jobId: string, options: Readonly<{ signal?: AbortSignal }> = {}): Promise<Artifact[]> {
@@ -1104,11 +1121,14 @@ export async function createPlannerJobInterpretation(
     maxTokens?: number;
     timeoutSeconds?: number;
     idempotencyKey?: string;
+    signal?: AbortSignal;
   }> = {},
 ): Promise<InterpretationResponse> {
+  const { signal, ...bodyOptions } = options;
   return apiFetch<InterpretationResponse>(`/planner/jobs/${encodeURIComponent(jobId)}/interpretations`, {
     method: "POST",
-    body: JSON.stringify({ mode: options.mode || "DETERMINISTIC", expectedPlanHash, ...options }),
+    signal,
+    body: JSON.stringify({ mode: options.mode || "DETERMINISTIC", expectedPlanHash, ...bodyOptions }),
   });
 }
 
@@ -1203,7 +1223,11 @@ export async function listDatasets(options: Readonly<{ forceRefresh?: boolean }>
   return promise;
 }
 
-export async function listProjects(options: Readonly<{ forceRefresh?: boolean }> = {}): Promise<ProjectSummary[]> {
+export async function listProjects(options: Readonly<{ forceRefresh?: boolean; signal?: AbortSignal }> = {}): Promise<ProjectSummary[]> {
+  if (options.signal) {
+    const result = await apiFetch<ProjectSummary[] | { value: ProjectSummary[] }>("/projects", { signal: options.signal, cache: "no-store" });
+    return Array.isArray(result) ? result : result.value;
+  }
   if (!options.forceRefresh && projectsDirectoryCache && projectsDirectoryCache.expiresAt > Date.now()) {
     return projectsDirectoryCache.promise;
   }
@@ -1244,10 +1268,11 @@ export async function searchProduct(
   });
 }
 
-export async function createProject(name: string): Promise<ProjectSummary> {
+export async function createProject(name: string, signal?: AbortSignal): Promise<ProjectSummary> {
   const project = await apiFetch<ProjectSummary>("/projects", {
     method: "POST",
     body: JSON.stringify({ name }),
+    signal,
   });
   invalidateProjectHistory();
   invalidateProductDirectories();
@@ -1264,10 +1289,12 @@ export async function updateProject(
     pinned?: boolean;
     tags?: string[];
   }>,
+  signal?: AbortSignal,
 ): Promise<ProjectSummary> {
   const project = await apiFetch<ProjectSummary>(`/projects/${encodeURIComponent(projectId)}`, {
     method: "PATCH",
     body: JSON.stringify(changes),
+    signal,
   });
   invalidateProjectHistory(projectId);
   invalidateProductDirectories();
@@ -1277,20 +1304,22 @@ export async function updateProject(
 export async function bulkProjectAction(
   projectIds: string[],
   action: "archive" | "trash" | "restore" | "pin" | "unpin",
+  signal?: AbortSignal,
 ): Promise<{ action: "archive" | "trash" | "restore" | "pin" | "unpin"; projectIds: string[]; count: number }> {
   const result = await apiFetch<{ action: "archive" | "trash" | "restore" | "pin" | "unpin"; projectIds: string[]; count: number }>("/projects/bulk", {
     method: "POST",
     body: JSON.stringify({ projectIds, action }),
+    signal,
   });
   projectIds.forEach((projectId) => invalidateProjectHistory(projectId));
   invalidateProductDirectories();
   return result;
 }
 
-export async function deleteEmptyProject(projectId: string): Promise<{ projectId: string; deleted: boolean }> {
+export async function deleteEmptyProject(projectId: string, signal?: AbortSignal): Promise<{ projectId: string; deleted: boolean }> {
   const result = await apiFetch<{ projectId: string; deleted: boolean }>(
     `/projects/${encodeURIComponent(projectId)}`,
-    { method: "DELETE" },
+    { method: "DELETE", signal },
   );
   invalidateProjectHistory(projectId);
   invalidateProductDirectories();
@@ -1319,8 +1348,8 @@ export type DependencyImpact = {
   };
 };
 
-export async function getProjectDependencyImpact(projectId: string): Promise<DependencyImpact> {
-  return apiFetch<DependencyImpact>(`/projects/${encodeURIComponent(projectId)}/dependency-impact`);
+export async function getProjectDependencyImpact(projectId: string, signal?: AbortSignal): Promise<DependencyImpact> {
+  return apiFetch<DependencyImpact>(`/projects/${encodeURIComponent(projectId)}/dependency-impact`, { signal });
 }
 
 export type ProjectExportManifest = Readonly<{
@@ -1348,9 +1377,9 @@ export type ProjectExportManifest = Readonly<{
   excluded: ReadonlyArray<string>;
 }>;
 
-export async function getProjectExportManifest(projectId: string): Promise<ProjectExportManifest> {
+export async function getProjectExportManifest(projectId: string, signal?: AbortSignal): Promise<ProjectExportManifest> {
   return apiFetch<ProjectExportManifest>(
-    `/projects/${encodeURIComponent(projectId)}/export-manifest`,
+    `/projects/${encodeURIComponent(projectId)}/export-manifest`, { signal },
   );
 }
 
@@ -1382,8 +1411,13 @@ export function getCachedProjectHistory(projectId: string): ProjectHistory | nul
 
 export async function getProjectHistory(
   projectId: string,
-  options: Readonly<{ forceRefresh?: boolean; limit?: number; datasetsCursor?: string; analysesCursor?: string; activityCursor?: string }> = {},
+  options: Readonly<{ forceRefresh?: boolean; limit?: number; datasetsCursor?: string; analysesCursor?: string; activityCursor?: string; signal?: AbortSignal }> = {},
 ): Promise<ProjectHistory> {
+  // Owned page reads must not cancel or replace the shell's shared warm request.
+  if (options.signal) return apiFetch<ProjectHistory>(
+    "/projects/" + encodeURIComponent(projectId) + "/history" + historyQuery(options),
+    { signal: options.signal, cache: "no-store" },
+  );
   const continuation = Boolean(options.datasetsCursor || options.analysesCursor || options.activityCursor);
   const cacheable = !continuation;
   const requestsBoundedPage = options.limit !== undefined;
@@ -1452,10 +1486,12 @@ export async function getDataset(datasetId: string): Promise<DatasetDetail> {
 export async function updateDataset(
   datasetId: string,
   changes: Readonly<{ name?: string; archived?: boolean; lifecycle?: "ACTIVE" | "ARCHIVED" | "TRASHED" }>,
+  signal?: AbortSignal,
 ): Promise<DatasetDetail> {
   const dataset = await apiFetch<DatasetDetail>(`/datasets/${encodeURIComponent(datasetId)}`, {
     method: "PATCH",
     body: JSON.stringify(changes),
+    signal,
   });
   invalidateProjectHistory();
   invalidateProductDirectories();
@@ -1465,28 +1501,30 @@ export async function updateDataset(
 export async function bulkDatasetAction(
   datasetIds: string[],
   action: "archive" | "trash" | "restore",
+  signal?: AbortSignal,
 ): Promise<{ action: "archive" | "trash" | "restore"; datasetIds: string[]; count: number }> {
   const result = await apiFetch<{ action: "archive" | "trash" | "restore"; datasetIds: string[]; count: number }>("/datasets/bulk", {
     method: "POST",
     body: JSON.stringify({ datasetIds, action }),
+    signal,
   });
   invalidateProjectHistory();
   invalidateProductDirectories();
   return result;
 }
 
-export async function deleteEmptyDataset(datasetId: string): Promise<{ datasetId: string; deleted: boolean }> {
+export async function deleteEmptyDataset(datasetId: string, signal?: AbortSignal): Promise<{ datasetId: string; deleted: boolean }> {
   const result = await apiFetch<{ datasetId: string; deleted: boolean }>(
     `/datasets/${encodeURIComponent(datasetId)}`,
-    { method: "DELETE" },
+    { method: "DELETE", signal },
   );
   invalidateProjectHistory();
   invalidateProductDirectories();
   return result;
 }
 
-export async function getDatasetDependencyImpact(datasetId: string): Promise<DependencyImpact> {
-  return apiFetch<DependencyImpact>(`/datasets/${encodeURIComponent(datasetId)}/dependency-impact`);
+export async function getDatasetDependencyImpact(datasetId: string, signal?: AbortSignal): Promise<DependencyImpact> {
+  return apiFetch<DependencyImpact>(`/datasets/${encodeURIComponent(datasetId)}/dependency-impact`, { signal });
 }
 
 export async function getDatasetSourceResources(datasetId: string, signal?: AbortSignal): Promise<DatasetSourceResource[]> {

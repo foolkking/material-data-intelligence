@@ -30,6 +30,12 @@ from mdi_schemas import Artifact, ArtifactType
 from ..base import BaseToolAdapter
 from ..context import ToolExecutionContext
 from ..errors import ToolExecutionError
+from .structure_neighbors import (
+    COVALENT_RADIUS_REFERENCE,
+    COVALENT_RADIUS_SCALE,
+    NeighborPreviewLimit,
+    covalent_radius_neighbors,
+)
 
 try:  # pragma: no cover - exercised through dependency-present path in CI.
     from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
@@ -1347,6 +1353,7 @@ def _viewer_assets_manifest_payload(scene_payload: dict[str, Any], *, params: di
 def _viewer_scene_v1_params(params: dict[str, Any], resource_limits: dict[str, int], *, tool_id: str) -> dict[str, Any]:
     allowed = {
         "include_bonds",
+        "bond_method",
         "bond_cutoff_angstrom",
         "max_sites",
         "max_bonds",
@@ -1395,6 +1402,15 @@ def _viewer_scene_v1_params(params: dict[str, Any], resource_limits: dict[str, i
         raise _viewer_scene_param_error(tool_id, "viewer_scene_style_preset_invalid", "style_preset")
     if result["camera_preset"] != "auto":
         raise _viewer_scene_param_error(tool_id, "viewer_scene_camera_preset_invalid", "camera_preset")
+    if "bond_method" in params:
+        method = params["bond_method"]
+        if not isinstance(method, str) or method not in {"distance_cutoff", "covalent_radii"}:
+            raise _viewer_scene_param_error(tool_id, "viewer_scene_bond_method_invalid", "bond_method")
+        if method == "covalent_radii" and "bond_cutoff_angstrom" in params:
+            raise _viewer_scene_param_error(tool_id, "viewer_scene_bond_method_conflict", "bond_cutoff_angstrom")
+        result["bond_method"] = method
+        if method == "covalent_radii":
+            del result["bond_cutoff_angstrom"]
     expansion = result["cell_expansion"]
     if expansion != [1, 1, 1]:
         raise _viewer_scene_param_error(tool_id, "viewer_scene_cell_expansion_limit_exceeded", "cell_expansion")
@@ -1428,13 +1444,17 @@ def _viewer_scene_v1_payload(
 
     warnings: list[dict[str, str]] = []
     sites = _viewer_scene_v1_sites(structure, include_fractional=bool(params["include_fractional_positions"]))
-    bonds, bond_count_before_limit, offset_limited_count = _viewer_scene_periodic_bonds(
-        structure,
-        max_bonds=int(params["max_bonds"]),
-        include_bonds=bool(params["include_bonds"]),
-        cutoff_angstrom=float(params["bond_cutoff_angstrom"]),
-        warnings=warnings,
-    )
+    if params.get("bond_method") == "covalent_radii":
+        bonds, bond_count_before_limit = _viewer_scene_radius_bonds(structure, params, warnings, tool_id=tool_id)
+        offset_limited_count = 0
+    else:
+        bonds, bond_count_before_limit, offset_limited_count = _viewer_scene_periodic_bonds(
+            structure,
+            max_bonds=int(params["max_bonds"]),
+            include_bonds=bool(params["include_bonds"]),
+            cutoff_angstrom=float(params["bond_cutoff_angstrom"]),
+            warnings=warnings,
+        )
     if len(structure) == max_sites:
         warnings.append({"code": "VIEWER_SCENE_CAP_NEAR_LIMIT", "message": "Site count reaches the configured max_sites cap."})
     if bond_count_before_limit > int(params["max_bonds"]):
@@ -1524,6 +1544,8 @@ def _viewer_scene_v1_payload(
             "html_allowed": False,
         },
     }
+    if params.get("bond_method") == "covalent_radii":
+        payload["metadata"]["connectivity"] = _radius_connectivity_metadata()
     manifest = _viewer_scene_v1_manifest(payload, tool_id=tool_id)
     return payload, manifest
 
@@ -1643,7 +1665,54 @@ def _viewer_scene_nonperiodic_payload(
             "html_allowed": False,
         },
     }
+    if params.get("bond_method") == "covalent_radii":
+        bonds, candidate_count = _viewer_scene_radius_bonds(molecule, params, warnings, tool_id=tool_id)
+        payload["scene"]["bonds"] = [
+            {"from": bond["from"]["site_index"], "to": bond["to"]["site_index"],
+             "distance": bond["distance_angstrom"], "source": "distance_cutoff", "authoritative": False}
+            for bond in bonds
+        ]
+        payload["metadata"]["connectivity"] = _radius_connectivity_metadata()
+        payload["validation"]["truncated"] = candidate_count > len(bonds)
+        if candidate_count > len(bonds):
+            warnings.append({"code": "VIEWER_SCENE_BONDS_TRUNCATED", "message": "Inferred connection candidates were truncated to max_bonds."})
     return payload, _viewer_scene_v1_manifest(payload, tool_id=tool_id)
+
+
+def _radius_connectivity_metadata() -> dict[str, Any]:
+    return {"method": "covalent_radii", "radius_scale": COVALENT_RADIUS_SCALE,
+            "radius_reference": COVALENT_RADIUS_REFERENCE, "authoritative": False}
+
+
+def _viewer_scene_radius_bonds(
+    structure: Structure | Molecule,
+    params: dict[str, Any],
+    warnings: list[dict[str, str]],
+    *,
+    tool_id: str,
+) -> tuple[list[dict[str, Any]], int]:
+    if not params["include_bonds"]:
+        warnings.append({"code": "VIEWER_SCENE_BONDS_SKIPPED", "message": "Connection generation disabled by params."})
+        return [], 0
+    if any(not site.is_ordered for site in structure):
+        raise ToolExecutionError(code="TOOL_INPUT_INVALID", message="Automatic radius connections require ordered sites.", tool_id=tool_id,
+                                 details={"errorType": "viewer_scene_disordered_connections_unsupported"})
+    periodic = isinstance(structure, Structure)
+    try:
+        result = covalent_radius_neighbors(
+            [_site_element(site) for site in structure], structure.cart_coords,
+            structure.lattice.matrix if periodic else [[0.0] * 3 for _ in range(3)],
+            [bool(value) for value in structure.pbc] if periodic else [False, False, False],
+            max_bonds=int(params["max_bonds"]),
+        )
+    except NeighborPreviewLimit as exc:
+        raise ToolExecutionError(code="TOOL_RESOURCE_LIMIT", message="The complete connection search exceeds the bounded viewer policy.",
+                                 tool_id=tool_id, details={"errorType": str(exc)}) from exc
+    if result.missing_elements:
+        warnings.append({"code": "VIEWER_SCENE_RADII_UNAVAILABLE", "message": "No reference covalent radius is available for: " + ", ".join(result.missing_elements)})
+    if result.bonds:
+        warnings.append({"code": "VIEWER_SCENE_BONDS_NON_AUTHORITATIVE", "message": "Connections use reference covalent radii and do not assign chemical bonds or bond orders."})
+    return result.bonds, result.candidate_count
 
 
 def _viewer_scene_v1_sites(structure: Structure, *, include_fractional: bool) -> list[dict[str, Any]]:

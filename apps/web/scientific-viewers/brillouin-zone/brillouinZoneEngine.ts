@@ -2,13 +2,17 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 import { captureOrbitControlsDisposer } from "../viewer-scene/orbitControlsLifecycle";
+import { cloneScientificExportCamera, copyScientificCameraView, fitScientificCamera, resizeScientificCamera, trackInitialCameraFit } from "../viewer-scene/scientificCamera";
+import { bindScientificPointerPick } from "../viewer-scene/scientificPointerPick";
+import { brillouinZoneBounds } from "./brillouinZoneBounds";
+import { composeBrillouinZoneImage, encodeBrillouinZonePng } from "./brillouinZoneExport";
 import type { BZCameraPreset, BZExportRequest, BZProjection, BZRendererEngine, BZRendererEngineFactory, BZRendererSnapshot, BZScene, BZSelection, BZVector3, BZVisibility } from "./brillouinZoneTypes";
 
 export const createBrillouinZoneEngine: BZRendererEngineFactory = async (args) => {
   const started = now();
   const { container, scene } = args;
-  const width = Math.max(container.clientWidth || 720, 320);
-  const height = Math.max(container.clientHeight || 520, 280);
+  let width = Math.max(container.clientWidth || 720, 1);
+  let height = Math.max(container.clientHeight || 520, 1);
   let renderer: THREE.WebGLRenderer;
   try {
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
@@ -30,28 +34,35 @@ export const createBrillouinZoneEngine: BZRendererEngineFactory = async (args) =
   const root = new THREE.Group();
   threeScene.add(root);
   const scaled = (value: BZVector3) => new THREE.Vector3(value[0] * scene.visualScale, value[1] * scene.visualScale, value[2] * scene.visualScale);
-  const frame = cameraFrame(scene);
+  const bounds = brillouinZoneBounds(scene);
   let projection: BZProjection = args.projection;
-  const perspective = new THREE.PerspectiveCamera(42, width / height, frame.near, frame.far);
-  const orthographic = new THREE.OrthographicCamera(-frame.ortho * width / height, frame.ortho * width / height, frame.ortho, -frame.ortho, frame.near, frame.far);
+  const perspective = new THREE.PerspectiveCamera(42, width / height);
+  const orthographic = new THREE.OrthographicCamera();
   let camera: THREE.PerspectiveCamera | THREE.OrthographicCamera = projection === "perspective" ? perspective : orthographic;
-  const initialTarget = new THREE.Vector3(0, 0, 0);
+  const initialTarget = bounds.center.clone();
   let cameraPreset: BZCameraPreset = "isometric";
-  const initialPosition = presetPosition(scene, cameraPreset, frame.distance);
-  for (const item of [perspective, orthographic]) { item.position.copy(initialPosition); item.up.set(0, 0, 1); item.lookAt(initialTarget); item.updateProjectionMatrix(); }
+  const fitCamera = (item: THREE.PerspectiveCamera | THREE.OrthographicCamera, preset: BZCameraPreset) => {
+    item.up.set(0, 0, 1);
+    fitScientificCamera(item, bounds, width / height, presetPosition(scene, preset, 1));
+    item.far = Math.max(item.far, item.position.distanceTo(initialTarget) * 12);
+    item.updateProjectionMatrix();
+  };
+  for (const item of [perspective, orthographic]) fitCamera(item, cameraPreset);
   const controls = new OrbitControls(camera, renderer.domElement);
   const disposeControls = captureOrbitControlsDisposer(controls);
   controls.target.copy(initialTarget);
   controls.enableDamping = false;
   controls.enablePan = true;
-  controls.minDistance = Math.max(0.2, frame.radius * 0.35);
-  controls.maxDistance = frame.distance * 10;
+  controls.minDistance = Math.max(0.2, bounds.radius * 0.35);
+  controls.maxDistance = camera.far * 0.8;
+  controls.update();
 
   let visibility = args.visibility;
   let opacity = boundedOpacity(args.opacity);
   let variantId = args.variantId;
   let selection: BZSelection | null = null;
   let disposed = false;
+  let exporting = false;
   let contextLost = false;
   let firstFrameMs = 0;
   let initializationMs = 0;
@@ -131,35 +142,31 @@ export const createBrillouinZoneEngine: BZRendererEngineFactory = async (args) =
   controls.addEventListener("change", notifyView);
 
   const syncCamera = (next: THREE.PerspectiveCamera | THREE.OrthographicCamera) => {
-    next.position.copy(camera.position);
-    next.quaternion.copy(camera.quaternion);
-    next.up.copy(camera.up);
-    next.near = camera.near;
-    next.far = camera.far;
-    next.updateProjectionMatrix();
+    copyScientificCameraView(camera, next, controls.target, width / height);
     camera = next;
     (controls as unknown as { object: THREE.Camera }).object = camera;
     controls.update();
   };
   const resetCamera = () => {
     cameraPreset = "isometric";
-    const position = presetPosition(scene, cameraPreset, frame.distance);
-    for (const item of [perspective, orthographic]) { item.position.copy(position); item.up.set(0,0,1); item.lookAt(initialTarget); item.zoom = 1; item.updateProjectionMatrix(); }
+    for (const item of [perspective, orthographic]) fitCamera(item, cameraPreset);
     camera = projection === "perspective" ? perspective : orthographic;
     (controls as unknown as { object: THREE.Camera }).object = camera;
     controls.target.copy(initialTarget);
+    controls.maxDistance = camera.far * 0.8;
     controls.update();
     notifyView();
   };
   const setCameraPreset = (preset: BZCameraPreset) => {
+    initialFit.markInteracted();
     cameraPreset = preset;
-    camera.position.copy(presetPosition(scene, preset, frame.distance));
-    camera.up.set(0,0,1);
-    camera.lookAt(controls.target);
-    camera.updateProjectionMatrix();
+    fitCamera(camera, preset);
+    controls.target.copy(initialTarget);
+    controls.maxDistance = camera.far * 0.8;
     controls.update();
     notifyView();
   };
+  const initialFit = trackInitialCameraFit(controls, resetCamera);
 
   const updateSelection = (next: BZSelection | null) => {
     selection = next;
@@ -218,22 +225,18 @@ export const createBrillouinZoneEngine: BZRendererEngineFactory = async (args) =
     }
     args.onSelection(null);
   };
-  let pointerStart: { id:number;x:number;y:number } | null = null;
-  const onPointerDown = (event: PointerEvent) => { if(event.button===0)pointerStart={id:event.pointerId,x:event.clientX,y:event.clientY}; };
-  const onPointerUp = (event: PointerEvent) => { const start=pointerStart;pointerStart=null;if(start&&start.id===event.pointerId&&Math.hypot(event.clientX-start.x,event.clientY-start.y)<=5)pickAt(event.clientX,event.clientY); };
-  const onPointerCancel = () => { pointerStart=null; };
-  renderer.domElement.addEventListener("pointerdown",onPointerDown);
-  renderer.domElement.addEventListener("pointerup",onPointerUp);
-  renderer.domElement.addEventListener("pointercancel",onPointerCancel);
+  const disposePicking = bindScientificPointerPick(renderer.domElement, pickAt);
   const onLost = (event: Event) => { event.preventDefault(); if(contextLost||disposed)return;contextLost=true;args.onContextLost(); };
   renderer.domElement.addEventListener("webglcontextlost",onLost,false);
 
   const resize = () => {
-    if(disposed)return;
-    const nextWidth=Math.max(container.clientWidth||720,320);const nextHeight=Math.max(container.clientHeight||520,280);const aspect=nextWidth/nextHeight;
-    perspective.aspect=aspect;
-    orthographic.left=-frame.ortho*aspect;orthographic.right=frame.ortho*aspect;orthographic.top=frame.ortho;orthographic.bottom=-frame.ortho;
-    perspective.updateProjectionMatrix();orthographic.updateProjectionMatrix();renderer.setSize(nextWidth,nextHeight,false);render();
+    if(disposed || !container.clientWidth || !container.clientHeight)return;
+    width = container.clientWidth;
+    height = container.clientHeight;
+    resizeScientificCamera(camera, width / height);
+    renderer.setSize(width, height, false);
+    initialFit.resize();
+    notifyView();
   };
   const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize);
   resizeObserver?.observe(container);
@@ -256,15 +259,81 @@ export const createBrillouinZoneEngine: BZRendererEngineFactory = async (args) =
     resetCamera,
     fit: resetCamera,
     setCameraPreset,
-    setProjection(next) { if(next===projection)return;projection=next;syncCamera(next==="perspective"?perspective:orthographic);notifyView(); },
+    setProjection(next) { if(next===projection)return;initialFit.markInteracted();projection=next;syncCamera(next==="perspective"?perspective:orthographic);notifyView(); },
     setVisibility(next) { visibility=next;applyVisibility();if(selection&&((selection.kind==="point"&&!next.points)||(selection.kind==="vertex"&&!next.vertices)||(selection.kind==="face"&&!next.faces)||((selection.kind==="segment"||selection.kind==="reciprocal_sample")&&!next.path)))args.onSelection(null);render(); },
     setOpacity(next) { opacity=boundedOpacity(next);faceMaterial.opacity=opacity;render(); },
     setVariant(next) { if(next===variantId)return;variantId=next;pathData.geometry.dispose();pathData=pathBuffer(scene,variantId,scaled);path.geometry=pathData.geometry;path.visible=visibility.path&&Boolean(variantId);if(selection?.kind==="segment"&&selection.variantId!==variantId)args.onSelection(null);render(); },
     setSelection: updateSelection,
-    keyboardCamera(action) { const offset=camera.position.clone().sub(controls.target);const spherical=new THREE.Spherical().setFromVector3(offset);if(action.startsWith("rotate_")){const step=0.12;if(action==="rotate_left")spherical.theta-=step;if(action==="rotate_right")spherical.theta+=step;if(action==="rotate_up")spherical.phi=Math.max(0.1,spherical.phi-step);if(action==="rotate_down")spherical.phi=Math.min(Math.PI-0.1,spherical.phi+step);camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(spherical));}else if(action.startsWith("pan_")){const right=new THREE.Vector3().crossVectors(camera.getWorldDirection(new THREE.Vector3()),camera.up).normalize();const delta=action==="pan_left"?right.multiplyScalar(-frame.radius*.08):action==="pan_right"?right.multiplyScalar(frame.radius*.08):new THREE.Vector3();camera.position.add(delta);controls.target.add(delta);}else{const factor=action==="zoom_in"?.88:1.14;camera.position.copy(controls.target).add(offset.multiplyScalar(factor));}cameraPreset="isometric";controls.update();notifyView(); },
-    async exportPng(request) { validateExport(request);if(disposed||contextLost)throw new Error("BZ_RENDERER_CONTEXT_UNAVAILABLE");const previousSize=renderer.getSize(new THREE.Vector2());const previousRatio=renderer.getPixelRatio();const previousColor=renderer.getClearColor(new THREE.Color()).clone();const previousAlpha=renderer.getClearAlpha();const previousAspect=perspective.aspect;try{renderer.setPixelRatio(request.pixelRatio);renderer.setSize(request.width,request.height,false);perspective.aspect=request.width/request.height;perspective.updateProjectionMatrix();const color=request.background==="dark"?0x101820:0xf5f7f8;renderer.setClearColor(color,request.background==="transparent"?0:1);render();return await new Promise<Blob>((resolve,reject)=>renderer.domElement.toBlob((blob)=>blob?resolve(blob):reject(new Error("BZ_EXPORT_FAILED")),"image/png"));}finally{renderer.setPixelRatio(previousRatio);renderer.setSize(previousSize.x,previousSize.y,false);renderer.setClearColor(previousColor,previousAlpha);perspective.aspect=previousAspect;perspective.updateProjectionMatrix();render();}},
+    keyboardCamera(action) {
+      initialFit.markInteracted();
+      const offset = camera.position.clone().sub(controls.target);
+      if (action.startsWith("rotate_")) {
+        const spherical = new THREE.Spherical().setFromVector3(offset);
+        if (action === "rotate_left") spherical.theta -= 0.12;
+        if (action === "rotate_right") spherical.theta += 0.12;
+        if (action === "rotate_up") spherical.phi = Math.max(0.1, spherical.phi - 0.12);
+        if (action === "rotate_down") spherical.phi = Math.min(Math.PI - 0.1, spherical.phi + 0.12);
+        camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(spherical));
+      } else if (action.startsWith("pan_")) {
+        const right = new THREE.Vector3().crossVectors(camera.getWorldDirection(new THREE.Vector3()), camera.up).normalize();
+        const delta = right.multiplyScalar(bounds.radius * (action === "pan_left" ? -0.08 : 0.08));
+        camera.position.add(delta);
+        controls.target.add(delta);
+      } else {
+        const factor = action === "zoom_in" ? 0.88 : 1.14;
+        if (camera instanceof THREE.OrthographicCamera) {
+          camera.zoom = THREE.MathUtils.clamp(camera.zoom / factor, 0.1, 20);
+          camera.updateProjectionMatrix();
+        } else camera.position.copy(controls.target).add(offset.multiplyScalar(factor));
+      }
+      cameraPreset = "isometric";
+      controls.update();
+      notifyView();
+    },
+    async exportPng(request) {
+      validateExport(request);
+      if (disposed || contextLost) throw new Error("BZ_RENDERER_CONTEXT_UNAVAILABLE");
+      if (exporting) throw new Error("BZ_EXPORT_IN_PROGRESS");
+      exporting = true;
+      const previousSize = renderer.getSize(new THREE.Vector2());
+      const previousRatio = renderer.getPixelRatio();
+      const previousColor = renderer.getClearColor(new THREE.Color()).clone();
+      const previousAlpha = renderer.getClearAlpha();
+      const colors = [edgeMaterial, vertexMaterial, axisMaterial, pointMaterial, pathMaterial, selectionMaterial, selectedPointMaterial].map(material => [material, material.color.clone()] as const);
+      try {
+        let image: HTMLCanvasElement;
+        try {
+          // Keep the complete current viewport when the requested image has a different aspect.
+          const exportCamera = cloneScientificExportCamera(camera, width / height, request.width / request.height);
+          renderer.setPixelRatio(request.pixelRatio);
+          renderer.setSize(request.width, request.height, false);
+          renderer.setClearColor(request.background === "dark" ? 0x101820 : 0xf5f7f8, request.background === "transparent" ? 0 : 1);
+          if (request.background === "dark") {
+            edgeMaterial.color.set(0xa9cbd4); vertexMaterial.color.set(0xa9cbd4);
+            axisMaterial.color.set(0x71c1a1); pointMaterial.color.set(0xffa89b);
+            pathMaterial.color.set(0xf5c86e); selectionMaterial.color.set(0xff85ad); selectedPointMaterial.color.set(0xff85ad);
+          }
+          renderer.render(threeScene, exportCamera);
+          const labels = visibility.labels ? scene.points.flatMap(point => {
+            const projected = screenPositionAtSize(point.id, scaled(point.cartesian), exportCamera, request.width, request.height);
+            return projected.visible ? [{ ...projected, text: point.displayLabel, selected: selection?.kind === "point" && selection.id === point.id }] : [];
+          }) : [];
+          image = composeBrillouinZoneImage(renderer.domElement, request, labels);
+        } finally {
+          renderer.setPixelRatio(previousRatio);
+          renderer.setSize(previousSize.x, previousSize.y, false);
+          renderer.setClearColor(previousColor, previousAlpha);
+          for (const [material, color] of colors) material.color.copy(color);
+          render();
+        }
+        // Encoding is asynchronous; the interactive renderer has already been restored.
+        return await encodeBrillouinZonePng(image);
+      } finally {
+        exporting = false;
+      }
+    },
     snapshot,
-    dispose() { if(disposed)return;disposed=true;controls.removeEventListener("change",notifyView);disposeControls();resizeObserver?.disconnect();renderer.domElement.removeEventListener("pointerdown",onPointerDown);renderer.domElement.removeEventListener("pointerup",onPointerUp);renderer.domElement.removeEventListener("pointercancel",onPointerCancel);renderer.domElement.removeEventListener("webglcontextlost",onLost);for(const geometry of [faceGeometry.geometry,edgeGeometry,vertexGeometry,axisGeometry,pointGeometry,pathData.geometry,selectionGeometry,selectedPointGeometry])geometry.dispose();for(const material of [faceMaterial,edgeMaterial,vertexMaterial,axisMaterial,pointMaterial,pathMaterial,selectionMaterial,selectedPointMaterial])material.dispose();threeScene.clear();renderer.forceContextLoss();renderer.dispose();if(renderer.domElement.parentElement===container)renderer.domElement.remove(); },
+    dispose() { if(disposed)return;disposed=true;controls.removeEventListener("change",notifyView);initialFit.dispose();disposeControls();resizeObserver?.disconnect();disposePicking();renderer.domElement.removeEventListener("webglcontextlost",onLost);for(const geometry of [faceGeometry.geometry,edgeGeometry,vertexGeometry,axisGeometry,pointGeometry,pathData.geometry,selectionGeometry,selectedPointGeometry])geometry.dispose();for(const material of [faceMaterial,edgeMaterial,vertexMaterial,axisMaterial,pointMaterial,pathMaterial,selectionMaterial,selectedPointMaterial])material.dispose();threeScene.clear();renderer.forceContextLoss();renderer.dispose();if(renderer.domElement.parentElement===container)renderer.domElement.remove(); },
   };
   render();
   initializationMs=elapsed(started);
@@ -275,9 +344,9 @@ function faceBuffer(scene: BZScene, scaled:(value:BZVector3)=>THREE.Vector3) { c
 function lineBuffer(points:readonly THREE.Vector3[]){const geometry=new THREE.BufferGeometry();geometry.setAttribute("position",new THREE.Float32BufferAttribute(points.flatMap((point)=>[point.x,point.y,point.z]),3));geometry.computeBoundingSphere();return geometry;}
 function pointsBuffer(points:readonly THREE.Vector3[]){return lineBuffer(points);}
 function pathBuffer(scene:BZScene,variantId:string|null,scaled:(value:BZVector3)=>THREE.Vector3){const allowed=new Set(scene.variants.find((item)=>item.id===variantId)?.segmentIds??[]);const segments=scene.segments.filter((item)=>allowed.has(item.id));return{geometry:lineBuffer(segments.flatMap((item)=>[scaled(item.start),scaled(item.end)])),segmentIds:segments.map((item)=>item.id)};}
-function cameraFrame(scene:BZScene){const points=scene.vertices.map((item)=>new THREE.Vector3(...item.cartesian).multiplyScalar(scene.visualScale));const box=new THREE.Box3().setFromPoints(points);const sphere=box.getBoundingSphere(new THREE.Sphere());const radius=Math.max(sphere.radius,1);return{radius,distance:radius*3.2,near:Math.max(radius/100,0.01),far:radius*50,ortho:radius*1.45};}
 function presetPosition(scene:BZScene,preset:BZCameraPreset,distance:number){const matrix=scene.reciprocalMatrix.map((item)=>new THREE.Vector3(...item).normalize());const direction=preset==="b1"?matrix[0]:preset==="b2"?matrix[1]:preset==="b3"?matrix[2]:matrix[0].clone().add(matrix[1]).add(matrix[2]).normalize();if(direction.lengthSq()<1e-12)direction.set(1,1,1).normalize();return direction.multiplyScalar(distance);}
-function screenPosition(id:string,point:THREE.Vector3,camera:THREE.Camera,canvas:HTMLCanvasElement){const projected=point.clone().project(camera);return Object.freeze({id,x:round((projected.x+1)*.5*canvas.clientWidth),y:round((1-projected.y)*.5*canvas.clientHeight)});}
+function screenPosition(id:string,point:THREE.Vector3,camera:THREE.Camera,canvas:HTMLCanvasElement){return screenPositionAtSize(id,point,camera,canvas.clientWidth,canvas.clientHeight);}
+function screenPositionAtSize(id:string,point:THREE.Vector3,camera:THREE.Camera,width:number,height:number){const projected=point.clone().project(camera);return Object.freeze({id,x:round((projected.x+1)*.5*width),y:round((1-projected.y)*.5*height),visible:Math.abs(projected.x)<=1&&Math.abs(projected.y)<=1&&Math.abs(projected.z)<=1});}
 function validateExport(value:BZExportRequest){if(!Number.isSafeInteger(value.width)||!Number.isSafeInteger(value.height)||value.width<256||value.height<256||value.width>4096||value.height>4096||![1,2].includes(value.pixelRatio)||value.width*value.height*value.pixelRatio*value.pixelRatio>16_777_216||!["light","dark","transparent"].includes(value.background))throw new Error("BZ_EXPORT_LIMIT_EXCEEDED");}
 function boundedOpacity(value:number){if(!Number.isFinite(value))return .28;return Math.min(.65,Math.max(.08,value));}
 function vector(value:THREE.Vector3):BZVector3{return Object.freeze([round(value.x),round(value.y),round(value.z)]);}

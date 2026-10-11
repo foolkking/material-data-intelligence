@@ -10,7 +10,8 @@ from typing import Any
 from uuid import UUID, uuid4
 
 from pydantic import ValidationError
-from mdi_llm.providers import LLMProviderError
+from mdi_llm.providers import LLMProviderError, PROVIDER_TIMEOUT_CODES
+from mdi_llm.http_transport import ProviderStreamCancelled
 
 from mdi_api.agent2_errors import (
     ConcurrentTurnModification,
@@ -37,6 +38,7 @@ from mdi_api.research_agent.llm.structured_client import (
     load_research_orchestrator_prompt,
 )
 from mdi_api.research_agent.orchestration.router import ResearchActionRouter
+from mdi_api.research_agent.orchestration.answer_stream import ResearchAnswerPublisher
 from mdi_api.research_agent.orchestration.schemas import (
     ClarificationRequest,
     OrchestratorConfidence,
@@ -65,6 +67,7 @@ class PreparedTurn:
     user_message: str
     autonomy: dict[str, Any]
     explicit_result_candidate_keys: frozenset[str]
+    requested_action: str | None = None
 
 
 @dataclass(frozen=True)
@@ -160,7 +163,8 @@ class AgentTurnProcessor:
 
         orchestrator_input = self._orchestrator_input(prepared)
         policy_decision = (
-            self._trajectory_window_decision(prepared)
+            self._requested_action_decision(prepared)
+            or self._trajectory_window_decision(prepared)
             or self._autonomy_decision(prepared)
         )
         if policy_decision is not None:
@@ -173,16 +177,19 @@ class AgentTurnProcessor:
                 ),
             )
             provider_result = StructuredLLMResult(
-                provider="deterministic_bounded_policy",
+                provider="explicit_user_action" if prepared.requested_action else "deterministic_bounded_policy",
                 model="none",
                 parsed=decision.model_dump(mode="json"),
                 latency_ms=0,
                 repair_attempted=False,
-                prompt_version="agent2.bounded-policy/1.0",
+                prompt_version="agent2.explicit-action/1.0" if prepared.requested_action else "agent2.bounded-policy/1.0",
             )
             calls = 0
         else:
-            provider_result, decision, calls = await self._generate_validated(prepared, orchestrator_input)
+            try:
+                provider_result, decision, calls = await self._generate_validated(prepared, orchestrator_input)
+            except ProviderStreamCancelled:
+                return self._noop_result(turn_id, provider_calls=1)
         try:
             routed = self.router.apply(
                 turn_id=turn_id,
@@ -208,6 +215,24 @@ class AgentTurnProcessor:
             "validation_outcome": "VALIDATED",
         })
         return ProcessTurnResult("APPLIED", routed.turn_status, calls)
+
+    @staticmethod
+    def _requested_action_decision(prepared: PreparedTurn) -> ResearchTurnDecision | None:
+        if prepared.requested_action != "INTERPRET_RESULT":
+            return None
+        # _prepare has resolved the exact, authorized snapshot. The regular
+        # validator/router still reauthorize it before asynchronous dispatch.
+        return ResearchTurnDecision(
+            contract_version="1.0",
+            action=ResearchAction.INTERPRET_RESULT,
+            assistant_message=None,
+            research_objective=None,
+            selected_scope_ref_keys=[],
+            scientific_requirements=[],
+            reusable_result_ref_keys=sorted(prepared.explicit_result_candidate_keys),
+            clarification=None,
+            confidence=OrchestratorConfidence.HIGH,
+        )
 
     def _trajectory_window_decision(
         self,
@@ -376,12 +401,39 @@ class AgentTurnProcessor:
                 "status": ResearchTurnStatus.RESOLVING_CONTEXT.value,
             })
             bundle = self.assembler.assemble(unit, resolving)
+            received_event = next(
+                (event for event in unit.agent2.research_turn_events.list_for_turn(turn_id)
+                 if event["event_type"] == ResearchTurnEventType.TURN_RECEIVED.value),
+                None,
+            )
+            received_payload = (received_event or {}).get("payload_json") or {}
+            requested_action = received_payload.get("requested_action")
+            explicit_result_ids = (received_payload.get("ui_context") or {}).get("explicit_result_ids") or []
+            explicit_result_candidate_keys = frozenset(
+                item.candidate_key for item in bundle.result_candidates
+                if item.result_id is not None
+                and str(item.result_id) in {str(result_id) for result_id in explicit_result_ids}
+            )
             resolution = self.resolver.resolve(bundle)
+            if requested_action is not None:
+                if (
+                    requested_action != "INTERPRET_RESULT"
+                    or len(explicit_result_ids) != 1
+                    or len(explicit_result_candidate_keys) != 1
+                ):
+                    raise ValueError("所选科学结果不可用于重新解释，请重新选择可用结果。")
+                # Object ambiguity cannot change an explicit result action
+                # into analysis or a request to choose unrelated source data.
+                resolution = ReferenceResolution((), (), tuple(explicit_result_candidate_keys), ())
             budget_policy = context_budget_policy(ContextOperation.ORCHESTRATOR)
+            user_message = str(unit.agent2.research_turns.get_message(str(turn["user_message_id"]))["content_summary"])
             compact = self.compiler.compile(
                 turn=resolving,
                 candidates=bundle,
                 token_budget=budget_policy.effective_input_budget,
+                input_payload=None if requested_action is not None else lambda context: self._build_orchestrator_input(
+                    user_message=user_message, context=context, bundle=bundle, turn=resolving,
+                ).model_dump(mode="json"),
             )
             snapshot_id = uuid4()
             active_refs = [
@@ -394,16 +446,8 @@ class AgentTurnProcessor:
                 for item in bundle.active_object_candidates
                 if item.source == ReferenceCandidateSource.UI_SELECTION
             ]
-            received_event = next(
-                (event for event in unit.agent2.research_turn_events.list_for_turn(turn_id)
-                 if event["event_type"] == ResearchTurnEventType.TURN_RECEIVED.value),
-                None,
-            )
-            received_payload = (received_event or {}).get("payload_json") or {}
-            raw_selections = (received_payload.get("ui_context") or {}).get("scientific_selections") or []
             scientific_selections = [
-                ScientificSelectionContext.model_validate(item).model_dump(mode="json")
-                for item in raw_selections
+                item.model_dump(mode="json") for item in bundle.scientific_selections
             ]
             manifest_context = ResolvedResearchContext(
                 project_id=bundle.project_id,
@@ -457,44 +501,33 @@ class AgentTurnProcessor:
                 bundle=bundle,
                 compact_context=compact,
                 resolution=resolution,
-                user_message=str(
-                    unit.agent2.research_turns.get_message(
-                        str(turn["user_message_id"])
-                    )["content_summary"]
-                ),
+                user_message=user_message,
                 autonomy=dict(received_payload.get("autonomy") or {}),
-                explicit_result_candidate_keys=frozenset(
-                    item.candidate_key
-                    for item in bundle.result_candidates
-                    if item.result_id is not None
-                    and str(item.result_id)
-                    in {
-                        str(result_id)
-                        for result_id in (
-                            (received_payload.get("ui_context") or {}).get(
-                                "explicit_result_ids"
-                            )
-                            or []
-                        )
-                    }
-                ),
+                explicit_result_candidate_keys=explicit_result_candidate_keys,
+                requested_action=requested_action,
             )
-            orchestrator_input = self._orchestrator_input(prepared)
-            context_manifest = ResearchTurnService._build_context_manifest(
-                turn_id=turn_id,
-                context=manifest_context,
-                context_fingerprint=compact.context_fingerprint,
-                serialized_input=orchestrator_input.model_dump(mode="json"),
-                serialized_input_version=orchestrator_input.contract_version,
-                invocation_role="research_turn_orchestrator",
-                prompt_template_version=PROMPT_VERSION,
-                input_state="ACTUAL",
-            )
-            self._append_event(unit, turn_id, ResearchTurnEventType.CONTEXT_RESOLVED, {
+            resolved_payload = {
                 "status": ResearchTurnStatus.ORCHESTRATING.value,
                 "context_snapshot_id": str(snapshot_id),
-                "context_manifest": context_manifest.model_dump(mode="json"),
-            })
+            }
+            if requested_action is None:
+                orchestrator_input = self._orchestrator_input(prepared)
+                context_manifest = ResearchTurnService._build_context_manifest(
+                    turn_id=turn_id,
+                    context=manifest_context,
+                    context_fingerprint=compact.context_fingerprint,
+                    serialized_input=orchestrator_input.model_dump(mode="json"),
+                    serialized_input_version=orchestrator_input.contract_version,
+                    invocation_role="research_turn_orchestrator",
+                    prompt_template_version=PROMPT_VERSION,
+                    input_state="ACTUAL",
+                )
+                resolved_payload["context_manifest"] = context_manifest.model_dump(mode="json")
+            else:
+                # No intent-model invocation took place. The interpreter
+                # records its actual input manifest when its queue runs.
+                resolved_payload["requested_action"] = requested_action
+            self._append_event(unit, turn_id, ResearchTurnEventType.CONTEXT_RESOLVED, resolved_payload)
             if resolution.requires_clarification:
                 self._append_event(unit, turn_id, ResearchTurnEventType.CONTEXT_AMBIGUOUS, {
                     "candidate_keys": list(resolution.ambiguous_object_keys),
@@ -577,21 +610,31 @@ class AgentTurnProcessor:
         )
 
     def _orchestrator_input(self, prepared: PreparedTurn) -> ResearchOrchestratorInput:
+        return self._build_orchestrator_input(
+            user_message=prepared.user_message, context=prepared.compact_context,
+            bundle=prepared.bundle, turn=prepared.turn,
+        )
+
+    def _build_orchestrator_input(
+        self, *, user_message: str, context: CompactResearchContext,
+        bundle: ResearchContextCandidateBundle, turn: dict[str, Any],
+    ) -> ResearchOrchestratorInput:
         return ResearchOrchestratorInput(
             contract_version="1.0",
-            user_message=prepared.user_message,
-            research_context=prepared.compact_context,
+            user_message=user_message,
+            research_context=context,
             available_requirement_ids=[OrchestratorRequirementOption(
                 requirement_id=item.requirement_id,
                 display_name=item.display_name,
                 description=item.description,
                 constraint_schema=item.constraint_schema,
+                requires_material=item.requires_material,
             ) for item in self.registries.requirements.list_active()],
-            allowed_actions=self._allowed_actions(prepared),
+            allowed_actions=self._allowed_actions(bundle, turn),
         )
 
     @staticmethod
-    def _allowed_actions(prepared: PreparedTurn) -> list[ResearchAction]:
+    def _allowed_actions(bundle: ResearchContextCandidateBundle, turn: dict[str, Any]) -> list[ResearchAction]:
         """Advertise only actions that the resolved context can satisfy.
 
         The validator remains the fail-closed authority.  This bounded
@@ -600,9 +643,9 @@ class AgentTurnProcessor:
         no reusable result.
         """
 
-        result_available = bool(prepared.bundle.result_candidates)
+        result_available = bool(bundle.result_candidates)
         continuation_available = (
-            result_available or prepared.turn.get("parent_turn_id") is not None
+            result_available or turn.get("parent_turn_id") is not None
         )
         unavailable: set[ResearchAction] = set()
         if not result_available:
@@ -622,6 +665,7 @@ class AgentTurnProcessor:
     ) -> tuple[StructuredLLMResult, ResearchTurnDecision, int]:
         first_error: Exception | None = None
         for attempt in range(2):
+            stream = ResearchAnswerPublisher(self.repository_factory, prepared.turn)
             try:
                 if transaction_active():
                     raise RuntimeError("Provider boundary retained an open database transaction")
@@ -636,6 +680,7 @@ class AgentTurnProcessor:
                             "turn_id": str(prepared.turn["id"]),
                             "prompt_version": PROMPT_VERSION,
                             "repair_attempted": attempt == 1,
+                            "on_answer_delta": stream.feed,
                             "repair": None if attempt == 0 else {
                                 "validation_error": str(first_error)[:1000],
                                 "legal_candidate_keys": self._candidate_keys(prepared.bundle),
@@ -675,25 +720,61 @@ class AgentTurnProcessor:
                     candidate_bundle=prepared.bundle,
                     continuation_turn_available=prepared.turn.get("parent_turn_id") is not None,
                 )
+                decision = self._coalesce_local_environment_requirements(decision)
                 if attempt == 1 and not result.repair_attempted:
                     result = result.model_copy(update={"repair_attempted": True})
+                stream.finish(decision.assistant_message, action=decision.action.value)
                 return result, decision, attempt + 1
             except (InvalidResearchTurnDecision, ValidationError, ValueError) as exc:
+                stream.discard()
                 first_error = exc
                 if attempt == 1:
                     code = exc.code if isinstance(exc, InvalidResearchTurnDecision) else "ORCHESTRATOR_INVALID_OUTPUT"
                     self._fail_if_active(prepared.turn["id"], code, str(exc))
                     raise
             except TimeoutError as exc:
+                stream.discard()
                 self._fail_if_active(prepared.turn["id"], "ORCHESTRATOR_TIMEOUT", "Orchestrator request timed out")
                 raise OrchestratorTimeout("Orchestrator request timed out") from exc
             except LLMProviderError as exc:
-                code = "ORCHESTRATOR_TIMEOUT" if "TIMEOUT" in exc.code else "ORCHESTRATOR_PROVIDER_UNAVAILABLE"
+                stream.discard()
+                if exc.code == "PROVIDER_INVALID_RESPONSE":
+                    first_error = ValueError("Provider returned no valid structured object")
+                    if attempt == 0:
+                        continue
+                    self._fail_if_active(prepared.turn["id"], "ORCHESTRATOR_INVALID_OUTPUT", exc.safe_message)
+                    raise InvalidResearchTurnDecision(exc.safe_message) from None
+                provider_code = "PROVIDER_TIMEOUT" if exc.code in PROVIDER_TIMEOUT_CODES else exc.code
+                code = {
+                    "PROVIDER_TIMEOUT": "ORCHESTRATOR_TIMEOUT",
+                    "PROVIDER_RATE_LIMITED": "ORCHESTRATOR_PROVIDER_RATE_LIMITED",
+                    "PROVIDER_AUTH_FAILED": "ORCHESTRATOR_PROVIDER_AUTH_FAILED",
+                    "PROVIDER_REQUEST_REJECTED": "ORCHESTRATOR_PROVIDER_REQUEST_REJECTED",
+                    "PROVIDER_OUTPUT_TRUNCATED": "ORCHESTRATOR_OUTPUT_TRUNCATED",
+                }.get(provider_code, "ORCHESTRATOR_PROVIDER_UNAVAILABLE")
                 self._fail_if_active(prepared.turn["id"], code, exc.safe_message)
                 if code == "ORCHESTRATOR_TIMEOUT":
                     raise OrchestratorTimeout(exc.safe_message) from exc
                 raise OrchestratorProviderUnavailable(exc.safe_message) from exc
         raise AssertionError("unreachable")
+
+    @staticmethod
+    def _coalesce_local_environment_requirements(decision: ResearchTurnDecision) -> ResearchTurnDecision:
+        """The registered polyhedron suite already runs its exact N1 method.
+
+        Coalesce only validated, unconstrained requirements for the same exact
+        source scope and method. Other methods, source sets and parameters stay
+        independent; optional geometry cannot replace required coordination.
+        """
+        covered = {
+            (item.requirement_id.replace("inspect_local_environment_", "inspect_coordination_"), frozenset(item.subject_ref_keys))
+            for item in decision.scientific_requirements
+            if item.requirement_id in {"structure.inspect_local_environment_crystalnn", "structure.inspect_local_environment_voronoi"}
+            and item.criticality == RequirementCriticality.REQUIRED
+        }
+        requirements = [item for item in decision.scientific_requirements
+                        if item.constraints or (item.requirement_id, frozenset(item.subject_ref_keys)) not in covered]
+        return decision.model_copy(update={"scientific_requirements": requirements})
 
     @staticmethod
     def _normalize_materials_exploration_decision(
@@ -799,6 +880,11 @@ class AgentTurnProcessor:
             turn_id,
             code,
             summary,
+            expected_statuses=frozenset({
+                ResearchTurnStatus.RECEIVED,
+                ResearchTurnStatus.RESOLVING_CONTEXT,
+                ResearchTurnStatus.ORCHESTRATING,
+            }),
         )
 
     @staticmethod

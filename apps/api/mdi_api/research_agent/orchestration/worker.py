@@ -30,7 +30,7 @@ def run_queued_turn(turn_id: str) -> ProcessTurnResult:
     processor = AgentTurnProcessor(
         repository_factory=create_repository_factory(),
         registries=build_default_agent2_registries(),
-        llm_client=DeepSeekStructuredLLMClient(),
+        llm_client=DeepSeekStructuredLLMClient(turn_id=turn_id),
         planning_queue=planning_queue,
         interpretation_queue=interpretation_queue,
     )

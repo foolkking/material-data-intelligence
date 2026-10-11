@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 from types import SimpleNamespace
+
+import pytest
 
 from mdi_api.project_history import ProjectHistoryService
 from mdi_api.application.projects.history import (
@@ -253,3 +256,102 @@ def test_project_history_paginates_large_dataset_history_with_stable_cursor() ->
     assert len(second["datasets"]) == 100
     assert second["datasets"][0]["datasetId"] == "dataset_0991"
     assert second["pagination"]["datasets"]["nextCursor"] == "108"
+
+
+def _multi_material_history():
+    from mdi_api.application.research.planning.integrity import compute_plan_hash
+    from mdi_schemas import AnalysisPlanV03
+    from mdi_schemas.multi_source_planning import step_source_inventory
+    from tests.test_multi_source_plan_contract import payload, V1, V2
+
+    plan = payload()
+    third = "33333333-3333-4333-8333-333333333333"
+    plan["sourceContexts"].append({"datasetId": "dataset_c", "profileId": "profile_c"})
+    plan["sourceVersions"].append({"objectId": third, "versionId": third, "datasetId": "dataset_c", "objectType": "Structure"})
+    plan["steps"].append({**deepcopy(plan["steps"][0]), "stepId": "s3", "inputRefs": [
+        {"refType": "normalized_object", "ref": third, "objectType": "Structure"}], "output": {"sourceObjectVersionIds": [third]}})
+    plan["steps"].append({"stepId": "compare_ab", "toolId": "compare", "purpose": "Compare two materials", "reason": "Pairwise comparison",
+        "inputRefs": [{"refType": "normalized_object", "ref": value, "objectType": "Structure"} for value in (V1, V2)],
+        "output": {"sourceObjectVersionIds": [V1, V2]}})
+    plan_record = {"planId": "plan_multi", "projectId": "project_1", "datasetId": "dataset_a", "profileId": "profile_a",
+        "analysisPlan": plan, "planHash": compute_plan_hash(plan)}
+
+    class MultiPlanRecords(Records):
+        def get_plan_for_job(self, job_id):
+            return self.records[0]
+
+    # SQL ToolCalls inherit Project ownership through Job; they do not carry
+    # the denormalized projectId field from older in-memory fixtures.
+    calls = [{"id": f"call_{step['stepId']}", "jobId": "job_multi", "stepId": step["stepId"], "toolId": step["toolId"]} for step in plan["steps"]]
+    artifacts = [{"artifactId": f"artifact_{index}", "jobId": "job_multi", "projectId": "project_1", "toolCallId": call["id"],
+        "datasetId": f"dataset_{chr(97 + index)}" if index < 3 else None, "type": "table_json"} for index, call in enumerate(calls)]
+    for artifact, call in zip(artifacts, calls):
+        contexts, versions = step_source_inventory(AnalysisPlanV03.model_validate(plan), call["stepId"])
+        artifact["metadata"] = {"provenance": {"planId": "plan_multi", "planHash": plan_record["planHash"],
+            "sourceContexts": [item.model_dump(mode="json") for item in contexts],
+            "sourceVersions": [item.model_dump(mode="json") for item in versions]}}
+    return SimpleNamespace(
+        projects=Records([{"id": "project_1", "projectId": "project_1", "name": "Three materials"}]),
+        datasets=Records([{"datasetId": f"dataset_{key}", "projectId": "project_1", "name": key} for key in "abc"]),
+        data_profiles=Records([]), jobs=Records([{"jobId": "job_multi", "projectId": "project_1", "datasetId": "dataset_a", "planId": "plan_multi", "status": "completed"}]),
+        tool_calls=Records(calls), artifacts=Records(artifacts), workspaces=Records([]), reports=Records([]), recipes=Records([]),
+        interpretations=Records([]), analysis_intents=IntentRecords([]), analysis_plans=MultiPlanRecords([plan_record]),
+    )
+
+
+def test_multi_material_history_counts_each_analysis_once_and_only_its_own_outputs():
+    repositories = _multi_material_history()
+    before = deepcopy({name: value.records for name, value in vars(repositories).items()})
+    history = ProjectHistoryService(repositories).build("project_1")
+    assert len(history["analyses"]) == 1
+    assert history["analyses"][0]["sourceDatasetIds"] == ["dataset_a", "dataset_b", "dataset_c"]
+    assert history["analyses"][0]["datasetId"] == "dataset_a"  # Job routing identity remains intact.
+    assert history["analyses"][0]["stepCount"] == 4
+    assert history["summary"]["analysisCount"] == 1
+    assert history["summary"]["artifactCount"] == 4
+    by_dataset = {item["datasetId"]: item for item in history["datasets"]}
+    for dataset in by_dataset.values():
+        assert dataset["analysisCount"] == 1
+        assert dataset["lastAnalysisStatus"] == "completed"
+    assert [by_dataset[f"dataset_{key}"]["resultSummary"]["artifactCount"] for key in "abc"] == [2, 2, 1]
+    assert before == {name: value.records for name, value in vars(repositories).items()}
+    paged = ProjectHistoryService(repositories).build("project_1", limit=1, datasets_cursor="1")
+    assert paged["datasets"][0]["analysisCount"] == 1
+    assert paged["datasets"][0]["resultSummary"]["artifactCount"] == 2
+
+
+@pytest.mark.parametrize("field,value", [("planId", "another_plan"), ("projectId", "foreign"), ("planHash", "0" * 64), ("profileId", "foreign_profile")])
+def test_multi_material_history_does_not_guess_sources_from_an_unverified_plan(field, value):
+    repositories = _multi_material_history()
+    repositories.analysis_plans.records[0][field] = value
+    history = ProjectHistoryService(repositories).build("project_1")
+    assert history["analyses"][0]["sourceDatasetIds"] == []
+    assert history["summary"]["artifactCount"] == 4  # Originals stay accessible by Job.
+    assert all(item["analysisCount"] == 0 and item["resultSummary"]["artifactCount"] == 0 for item in history["datasets"])
+
+
+def test_multi_material_history_does_not_borrow_outputs_from_another_step_or_project():
+    repositories = _multi_material_history()
+    repositories.artifacts.records[0]["toolCallId"] = "unknown"
+    repositories.artifacts.records[1]["datasetId"] = "dataset_a"
+    repositories.tool_calls.records[2]["projectId"] = "foreign"
+    history = ProjectHistoryService(repositories).build("project_1")
+    assert [item["resultSummary"]["artifactCount"] for item in history["datasets"]] == [1, 1, 0]
+
+
+@pytest.mark.parametrize("field,value", [("planHash", "0" * 64), ("planId", "another_plan"), ("sourceVersions", []), ("sourceContexts", [])])
+def test_multi_material_history_rejects_conflicting_saved_output_provenance(field, value):
+    repositories = _multi_material_history()
+    repositories.artifacts.records[3]["metadata"]["provenance"][field] = value
+    history = ProjectHistoryService(repositories).build("project_1")
+    assert [item["resultSummary"]["artifactCount"] for item in history["datasets"]] == [1, 1, 1]
+
+
+def test_failed_multi_material_history_retains_all_sources_without_inventing_outputs():
+    repositories = _multi_material_history()
+    repositories.jobs.records[0]["status"] = "failed"
+    repositories.artifacts.records.clear()
+    repositories.tool_calls.records.clear()
+    history = ProjectHistoryService(repositories).build("project_1")
+    assert history["analyses"][0]["sourceDatasetIds"] == ["dataset_a", "dataset_b", "dataset_c"]
+    assert all(item["analysisCount"] == 1 and item["lastAnalysisStatus"] == "failed" and item["resultSummary"]["artifactCount"] == 0 for item in history["datasets"])

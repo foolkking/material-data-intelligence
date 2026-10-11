@@ -36,8 +36,8 @@ class SqlAlchemyAnalysisPlanRepository(_SqlAlchemyRepository):
             else:
                 existing_schema = (_json_copy(existing["analysis_plan_json"]) or {}).get("schemaVersion")
                 new_schema = normalized["analysisPlan"].get("schemaVersion")
-                if "0.2" in {existing_schema, new_schema} and existing["plan_hash"] != normalized["planHash"]:
-                    raise ValueError("AnalysisPlan 0.2 records are immutable")
+                if {"0.2", "0.3", "0.4"}.intersection({existing_schema, new_schema}) and existing["plan_hash"] != normalized["planHash"]:
+                    raise ValueError("Dependency AnalysisPlan records are immutable")
                 connection.execute(
                     analysis_plans.update()
                     .where(analysis_plans.c.id == plan_id)

@@ -3,6 +3,7 @@
 import { ProductLink as Link, useProductRouter } from "../../shared/layout/ProductNavigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { getAuthUser, login, logout, type AuthUser } from "../../app/lib/product-api";
+import { useAccountRequest } from "./use-account-request";
 
 export function LandingPage() {
   const router = useProductRouter();
@@ -102,33 +103,79 @@ export function safeProductReturnTo(value: string | null): string | null {
 function LoginModal({ onClose, onLogin, sessionExpired = false }: { onClose: () => void; onLogin: (user: AuthUser) => void; sessionExpired?: boolean }) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
+  const closeRef = useRef(onClose);
+  const restoreFrameRef = useRef<number | null>(null);
+  const activeRef = useRef(true);
+  const submittingRef = useRef(false);
+  const errorRef = useRef<HTMLParagraphElement>(null);
+  const runRequest = useAccountRequest();
+  closeRef.current = onClose;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   useEffect(() => {
-    triggerRef.current = document.activeElement as HTMLElement;
-    const first = dialogRef.current?.querySelector<HTMLInputElement>("input"); first?.focus();
+    activeRef.current = true;
+    return () => { activeRef.current = false; };
+  }, []);
+  useEffect(() => { if (error) errorRef.current?.focus(); }, [error]);
+  useEffect(() => {
+    if (restoreFrameRef.current !== null) window.cancelAnimationFrame(restoreFrameRef.current);
+    triggerRef.current ||= document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const dialog = dialogRef.current;
+    const backdrop = dialog?.parentElement;
+    const background = Array.from(backdrop?.parentElement?.children || [])
+      .filter((element): element is HTMLElement => element instanceof HTMLElement && element !== backdrop)
+      .map((element) => ({ element, inert: element.hasAttribute("inert") }));
+    const bodyOverflow = document.body.style.overflow;
+    const rootOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = document.documentElement.style.overflow = "hidden";
+    background.forEach(({ element }) => element.setAttribute("inert", ""));
+    dialog?.querySelector<HTMLInputElement>("input")?.focus();
     function keydown(event: KeyboardEvent) {
-      if (event.key === "Escape") { onClose(); triggerRef.current?.focus(); }
-      if (event.key === "Tab" && dialogRef.current) {
-        const nodes = [...dialogRef.current.querySelectorAll<HTMLElement>("button,input,a")].filter((node) => !node.hasAttribute("disabled"));
+      if (event.key === "Escape") { event.preventDefault(); closeRef.current(); }
+      if (event.key === "Tab" && dialog) {
+        const nodes = [...dialog.querySelectorAll<HTMLElement>("button:not(:disabled), input:not(:disabled), a[href]")];
         const firstNode = nodes[0], lastNode = nodes[nodes.length - 1];
-        if (event.shiftKey && document.activeElement === firstNode) { event.preventDefault(); lastNode?.focus(); }
+        if (!dialog.contains(document.activeElement)) { event.preventDefault(); (event.shiftKey ? lastNode : firstNode)?.focus(); }
+        else if (event.shiftKey && document.activeElement === firstNode) { event.preventDefault(); lastNode?.focus(); }
         else if (!event.shiftKey && document.activeElement === lastNode) { event.preventDefault(); firstNode?.focus(); }
       }
     }
-    document.addEventListener("keydown", keydown); return () => document.removeEventListener("keydown", keydown);
-  }, [onClose]);
-  async function submit(event: FormEvent) { event.preventDefault(); setBusy(true); setError(""); try { onLogin(await login(email, password)); } catch (reason) { setError(reason instanceof Error ? reason.message : "登录失败"); } finally { setBusy(false); } }
-  return <div className="product-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) onClose(); }}>
-    <div ref={dialogRef} className="product-modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
-      <button className="product-modal-close" onClick={onClose} aria-label="关闭登录窗口">×</button>
-      <p className="product-kicker">材料智能平台</p><h2 id="login-title">{sessionExpired ? "登录已过期" : "登录"}</h2><p>{sessionExpired ? "重新登录后将返回刚才的页面；本浏览器中尚未提交的研究草稿会保留。" : "继续你的材料研究项目。"}</p>
-      <form onSubmit={(event) => void submit(event)}>
-        <label>邮箱<input type="email" autoComplete="username" required value={email} onChange={(event) => setEmail(event.target.value)} /></label>
-        <label>密码<input type="password" autoComplete="current-password" required value={password} onChange={(event) => setPassword(event.target.value)} /></label>
-        {error && <p className="product-form-error" role="alert">{error}</p>}
+    document.addEventListener("keydown", keydown);
+    return () => {
+      document.removeEventListener("keydown", keydown);
+      document.body.style.overflow = bodyOverflow;
+      document.documentElement.style.overflow = rootOverflow;
+      background.forEach(({ element, inert }) => { if (!inert) element.removeAttribute("inert"); });
+      const trigger = triggerRef.current;
+      restoreFrameRef.current = window.requestAnimationFrame(() => { if (trigger?.isConnected) trigger.focus({ preventScroll: true }); });
+    };
+  }, []);
+  async function submit(event: FormEvent) {
+    event.preventDefault();
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      const user = await runRequest(signal => login(email, password, { signal }), "登录响应超时，请重试。");
+      if (activeRef.current) onLogin(user);
+    } catch (reason) {
+      if (activeRef.current) setError(reason instanceof Error ? reason.message : "登录结果暂时无法确认，请重试。");
+    } finally {
+      submittingRef.current = false;
+      if (activeRef.current) setBusy(false);
+    }
+  }
+  return <div className="product-modal-backdrop product-login-backdrop" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) onClose(); }}>
+    <div ref={dialogRef} className="product-modal" role="dialog" aria-modal="true" aria-labelledby="login-title" aria-describedby="login-description">
+      <button type="button" className="product-modal-close" onClick={onClose} aria-label="关闭登录窗口">×</button>
+      <p className="product-kicker">材料智能平台</p><h2 id="login-title">{sessionExpired ? "登录已过期" : "登录"}</h2><p id="login-description">{sessionExpired ? "重新登录后将返回刚才的页面；本浏览器中尚未提交的研究草稿会保留。" : "继续你的材料研究项目。"}</p>
+      <form aria-busy={busy} onSubmit={(event) => void submit(event)}>
+        <label>邮箱<input type="email" autoComplete="username" required readOnly={busy} value={email} onChange={(event) => setEmail(event.target.value)} /></label>
+        <label>密码<input type="password" autoComplete="current-password" required readOnly={busy} value={password} onChange={(event) => setPassword(event.target.value)} /></label>
+        {error && <p ref={errorRef} tabIndex={-1} className="product-form-error" role="alert">{error}</p>}
         <button className="product-primary-action" disabled={busy}>{busy ? "正在登录…" : "登录"}</button>
       </form>
     </div>

@@ -1,0 +1,49 @@
+.content.content {
+  min-width: 0;
+  margin-top: var(--ds-space-1);
+  padding: 0;
+  background: transparent;
+  color: var(--product-ink);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.content.content p {
+  margin: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  white-space: pre-wrap;
+}
+
+.content.content ol,
+.content.content ul {
+  margin: 0;
+  padding-inline-start: var(--ds-space-6);
+}
+
+.content li { padding-inline-start: var(--ds-space-1); }
+.content li + li { margin-top: var(--ds-space-2); }
+.content.content > :not(:first-child) { margin-top: var(--ds-space-3); }
+.content strong { font-weight: 600; }
+.content code { font-size: 0.9375em; }
+.content h1, .content h2, .content h3 { margin: 0; font-size: 18px; line-height: 1.4; }
+.content h4, .content h5, .content h6 { margin: 0; font-size: 16px; line-height: 1.5; }
+.content a { color: var(--product-accent); text-underline-offset: 3px; }
+.content a:focus-visible, .tableScroll:focus-visible, .codeBlock pre:focus-visible { outline: 2px solid var(--product-accent); outline-offset: 2px; }
+.content blockquote { margin: 0; padding-inline-start: var(--ds-space-3); border-inline-start: 2px solid var(--product-border-strong); }
+.content hr { margin-block: var(--ds-space-4); border: 0; border-top: 1px solid var(--product-border); }
+.tableScroll { max-width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; }
+.content.content table { width: 100%; min-width: 100%; max-width: none; border-collapse: collapse; font-size: 14px; }
+.content.content th, .content.content td { min-width: 6rem; max-width: 24rem; padding: var(--ds-space-2); border: 1px solid var(--product-border); text-align: left; vertical-align: top; white-space: normal; font-size: inherit; color: inherit; }
+.content.content th:first-child, .content.content td:first-child { min-width: 4.5rem; }
+.content th { font-weight: 600; background: var(--product-surface); }
+.codeBlock { position: relative; min-width: 0; border: 1px solid var(--product-border); border-radius: var(--ds-radius-sm); background: var(--product-surface); }
+.codeBlock > button { display: block; min-height: var(--ds-control-touch); margin-inline-start: auto; padding: var(--ds-space-2) var(--ds-space-3); border: 0; background: none; color: var(--product-secondary); font: inherit; font-size: 14px; cursor: pointer; }
+.content.content .codeBlock pre { max-width: 100%; margin: 0; padding: var(--ds-space-3); overflow-x: auto; white-space: pre; background: none; color: inherit; font-size: 14px; line-height: 1.6; }
+.content.content .codeBlock code { font-size: inherit; line-height: inherit; }
+.content :global(.katex-display) { max-width: 100%; margin: 0; overflow-x: auto; overflow-y: hidden; padding-block: var(--ds-space-2); }
+.content :global(.katex) { font-size: 1.1em; color: inherit; }
+.content :global(.katex *) { color: inherit; }
+.content :global(.katex span) { font-size: inherit; }

@@ -13,9 +13,13 @@ from mdi_api.research_agent.capabilities.packs import CapabilityExtensionRegistr
 from mdi_api.research_agent.capabilities.quality_evidence import (
     qualification_for_capability,
 )
+from mdi_tool_registry.project_parameters import PARAMETER_TOOLS
 
 
 _DISPLAY_NAMES = {
+    **{key: value[0] for key, value in PARAMETER_TOOLS.items()},
+    "reference.periodic_table": "绘制元素周期表",
+    "reference.compare_elements": "比较元素参考性质",
     "structure.rdf": "计算径向分布函数",
     "diffraction.theoretical_xrd": "生成理论 XRD 图谱",
     "diffraction.experimental_theoretical_comparison": "比较实验与理论 XRD 峰",
@@ -34,6 +38,8 @@ _DISPLAY_NAMES = {
     "structure.coordination_hist": "分析配位数分布",
     "structure.coordination_crystalnn": "检查 CrystalNN 局域配位",
     "structure.coordination_voronoinn": "检查 VoronoiNN 局域配位",
+    "structure.local_environment_crystalnn": "生成 CrystalNN 配位多面体",
+    "structure.local_environment_voronoi": "生成 VoronoiNN 配位多面体",
     "trajectory.rdf": "计算轨迹径向分布函数",
     "electronic.band_structure": "检查电子能带",
     "electronic.dos": "检查电子态密度",
@@ -98,6 +104,7 @@ def _suite_manifest(
     priority: int = 100,
     viewer_bindings: list[str] | None = None,
     dependency_from_tool: dict[str, str] | None = None,
+    version: str = "1.0",
 ) -> CapabilityManifest:
     manifest = _manifest(
         capability_id,
@@ -112,6 +119,7 @@ def _suite_manifest(
     dependency_from_tool = dependency_from_tool or {}
     return manifest.model_copy(
         update={
+            "version": version,
             "tool_bindings": [
                 ToolBinding(
                     tool_id=tool_id,
@@ -137,6 +145,12 @@ def build_default_capability_registry() -> InMemoryCapabilityRegistry:
     trajectory = CapabilityInputSlot(name="trajectory", accepted_object_types=["trajectory.atomic"])
     registry = InMemoryCapabilityRegistry()
     manifests = [
+        *[_manifest(key, description, [key], [], [CapabilityOutputSlot(name="calculation", result_type=key)], key)
+          for key, (_title, description) in PARAMETER_TOOLS.items()],
+        _manifest("reference.periodic_table", "Draw a complete or filtered periodic table from versioned platform element references.",
+                  ["reference.periodic_table"], [], [CapabilityOutputSlot(name="reference", result_type="reference.periodic_table")], "reference.periodic_table"),
+        _manifest("reference.compare_elements", "Compare explicitly selected elements using one versioned reference property and its units.",
+                  ["reference.compare_elements"], [], [CapabilityOutputSlot(name="reference", result_type="reference.compare_elements")], "reference.compare_elements"),
         _manifest("structure.rdf", "Compute a radial distribution function.", ["structure.compute_rdf"], [structure], [CapabilityOutputSlot(name="rdf", result_type="structure.rdf")], "structure.rdf"),
         _manifest("diffraction.theoretical_xrd", "Generate a theoretical XRD pattern.", ["diffraction.generate_theoretical_pattern"], [structure], [CapabilityOutputSlot(name="theoretical_xrd", result_type="diffraction.xrd.theoretical", scientific_object_type="diffraction.xrd.theoretical")], "structure.xrd", viewer_bindings=["scientific.xrd"], artifact_port_support=CapabilitySurfaceSupport.SUPPORTED),
         _manifest("diffraction.experimental_theoretical_comparison", "Compare experimental and theoretical XRD patterns.", ["diffraction.compare_experimental_theoretical"], [CapabilityInputSlot(name="experimental", accepted_object_types=["diffraction.xrd.experimental"]), CapabilityInputSlot(name="theoretical", accepted_object_types=["diffraction.xrd.theoretical"])], [CapabilityOutputSlot(name="comparison", result_type="diffraction.xrd.comparison")], "structure.experimental_xrd_comparison", artifact_port_support=CapabilitySurfaceSupport.REQUIRED),
@@ -214,12 +228,8 @@ def build_default_capability_registry() -> InMemoryCapabilityRegistry:
             ["structure.inspect"],
             [structure],
             [CapabilityOutputSlot(name="summary", result_type="structure.summary")],
-            [
-                "structure.lattice_summary",
-                "structure.preview_metadata",
-                "structure.spacegroup_summary",
-                "structure.summary",
-            ],
+            ["structure.summary"],
+            version="1.1",
         ),
         _suite_manifest(
             "structure.viewer_scene",
@@ -232,11 +242,8 @@ def build_default_capability_registry() -> InMemoryCapabilityRegistry:
                 )
             ],
             [CapabilityOutputSlot(name="scene", result_type="structure.viewer_scene")],
-            [
-                "structure.structure_3d",
-                "structure.viewer_3d",
-                "structure.viewer_scene",
-            ],
+            ["structure.viewer_3d"],
+            version="1.1",
             viewer_bindings=["scientific.structure-3d"],
         ),
         _manifest(
@@ -301,6 +308,21 @@ def build_default_capability_registry() -> InMemoryCapabilityRegistry:
             ],
             priority=20,
         ),
+        *[
+            _suite_manifest(
+                f"structure.local_environment_{method}",
+                f"Build local-environment geometry and coordination polyhedra from exact persisted {label} neighbors.",
+                [f"structure.inspect_local_environment_{method}"],
+                [structure],
+                [CapabilityOutputSlot(name="local_environment", result_type="structure.local_environment.polyhedra")],
+                [producer, "structure.local_environment_polyhedra"],
+                dependency_from_tool={"structure.local_environment_polyhedra": producer},
+            )
+            for method, label, producer in (
+                ("crystalnn", "CrystalNN", "structure.coordination_crystalnn"),
+                ("voronoi", "VoronoiNN", "structure.coordination_voronoinn"),
+            )
+        ],
         _suite_manifest(
             "structure.coordination_analysis",
             "Compare CrystalNN and VoronoiNN coordination, summarize coordination distributions, and build bounded local-environment polyhedra.",

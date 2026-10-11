@@ -5,6 +5,8 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
+from .parameter_values import ParameterValue
+
 
 class ArtifactType(str, Enum):
     plotly_json = "plotly_json"
@@ -73,6 +75,7 @@ class ToolCategory(str, Enum):
 
 
 class ToolDomain(str, Enum):
+    reference = "reference"
     dataset = "dataset"
     table = "table"
     viz = "viz"
@@ -205,7 +208,7 @@ class ParameterProvenance(BaseModel):
     """Inspectable provenance for one already validated Plan parameter."""
 
     parameter: str
-    resolvedValue: str | int | float | bool | list[str]
+    resolvedValue: ParameterValue
     unit: str | None = None
     origin: Literal[
         "SOURCE_FACT",

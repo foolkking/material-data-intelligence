@@ -1,4 +1,79 @@
 tools:
+  - tool_id: reference.convert_units
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: UnitConversionAdapter
+    execution_scope: project
+    display_target: overview
+    notes: "Convert explicit numeric values using versioned SI definitions. Reject incompatible dimensions and negative absolute Kelvin; temperature differences never use the Celsius offset."
+    reference_sources:
+      - referenceId: si-conversions
+        version: "1.0.0"
+        contentHash: 119a4093938d18b2a9e026f06b50a442f442d2651dc0466a6090d4df6d33f4db
+    artifact_types: [table_json, summary_md, recipe_json]
+
+  - tool_id: generation.function_curve
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: FunctionCurveAdapter
+    execution_scope: project
+    display_target: overview
+    notes: "Draw bounded registered mathematical functions from numeric coefficients on an explicit interval. Trigonometric arguments use radians. No expression evaluation, fitting, sample inference or code execution."
+    artifact_types: [plotly_json, table_json, summary_md, recipe_json]
+
+  - tool_id: composition.from_formula
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: FormulaCompositionAdapter
+    execution_scope: project
+    display_target: composition
+    notes: "Calculate stoichiometric counts and atomic fractions from an explicit formula. No molar mass, mass fraction, hydrate separator, isotope or charge inference."
+    artifact_types: [plotly_json, table_json, summary_md, recipe_json]
+
+  - tool_id: viz.inline_xy
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: InlineXYAdapter
+    execution_scope: project
+    display_target: overview
+    notes: "Plot a verbatim user-supplied CSV, TSV or Markdown numeric table with 2–4 columns and 2–128 rows. Preserve original row order and reject missing or nonnumeric cells. No fitting or fabricated sample data."
+    artifact_types: [plotly_json, table_json, summary_md, recipe_json]
+
+  - tool_id: generation.ideal_crystal
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: IdealCrystalAdapter
+    execution_scope: project
+    display_target: structure
+    notes: "Create an inert ideal-crystal scene from bounded prototype, element, lattice and supercell parameters. Connections are first-shell periodic distance neighbors, never certified chemical bonds or sample measurements."
+    artifact_types: [structure_json, table_json, summary_md, recipe_json]
+
+  - tool_id: reference.periodic_table
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: ReferencePeriodicTableAdapter
+    execution_scope: project
+    display_target: composition
+    notes: "Draw a complete periodic-table reference, optionally selecting/highlighting elements. Values are atomic numbers or versioned Cordero covalent radii, not sample composition or measured bonds. No uploaded material is required."
+    reference_sources:
+      - referenceId: elements
+        version: "1.0.0"
+        contentHash: fde671808a294589ff8d420ed79262fbc60b4bd1fe206a7f4540c2c66e67d245
+    artifact_types: [plotly_json, table_json, summary_md, recipe_json]
+
+  - tool_id: reference.compare_elements
+    implementation_source: platform_builtin
+    stage: mvp
+    adapter: ReferenceElementComparisonAdapter
+    execution_scope: project
+    display_target: composition
+    notes: "Compare 2–20 explicitly selected elements using a versioned reference property. Missing values stay missing; no uploaded material or measured sample is implied."
+    reference_sources:
+      - referenceId: elements
+        version: "1.0.0"
+        contentHash: fde671808a294589ff8d420ed79262fbc60b4bd1fe206a7f4540c2c66e67d245
+    artifact_types: [plotly_json, table_json, summary_md, recipe_json]
+
   - tool_id: dataset.composition_space
     implementation_source: platform_builtin
     stage: mvp
@@ -294,6 +369,8 @@ tools:
 
   - tool_id: ml.error_distribution
     implementation_source: plotly_custom
+    source_function: numpy.histogram
+    notes: Backend residual histogram with saved bin edges, counts, and prediction-minus-target residuals.
     stage: mvp
     adapter: ErrorDistributionAdapter
     display_target: ml

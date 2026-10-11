@@ -10,8 +10,94 @@ import {
   normalizeResultArtifactForViewer,
 } from "./ScientificViewerAdapter";
 import { validateVolumetricArtifacts } from "./volumetric-viewer/volumetricValidation";
+import { buildElectrostaticPotentialProduct, potentialGaugeView, planarProfiles } from "../../scientific-viewers/volumetric-viewer/electrostaticPotentialProduct";
+
+function sourcePreviewFixture() {
+  const resource = { objectId: "preview-source", objectType: "Structure", datasetId: "dataset", versionId: "v1", objectHash: "a".repeat(64), payload: {
+    lattice: { matrix: [[4, 0, 0], [0, 4, 0], [0, 0, 4]] },
+    sites: [
+      { species: [{ element: "Si", occu: 1 }], xyz: [0, 0, 0], abc: [0, 0, 0] },
+      { species: [{ element: "Si", occu: 1 }], xyz: [1, 0, 0], abc: [0.25, 0, 0] },
+    ],
+  } };
+  const original = sourceResourceArtifact(resource).content as Record<string, unknown> & { scene: Record<string, unknown> };
+  const scene = { ...original, provenance: { projection: "source_structure_preview/1.0", source_hash: resource.objectHash,
+    source_object_id: resource.objectId, source_dataset_id: resource.datasetId, source_version_id: resource.versionId } as Record<string, string>,
+    scene: { ...original.scene, bonds: [{ id: "bond:0:0,0,0->1:0,0,0", from: { site_index: 0, image_offset: [0, 0, 0] },
+      to: { site_index: 1, image_offset: [0, 0, 0] }, displacement_cartesian: [1, 0, 0], distance_angstrom: 1,
+      source: "distance_cutoff", authoritative: false }] },
+  };
+  return { resource, scene };
+}
 
 describe("sourceResourceArtifact", () => {
+  it("uses a validated server preview only for its exact source identity", () => {
+    const { resource, scene } = sourcePreviewFixture();
+    const before = JSON.stringify(resource.payload);
+    const artifact = sourceResourceArtifact({ ...resource, viewerScene: scene });
+    expect(artifact.content).toBe(scene);
+    expect(artifact).toMatchObject({ artifactId: "source:preview-source", sha256: resource.objectHash, metadata: { sourceVersionId: "v1" } });
+    expect(JSON.stringify(resource.payload)).toBe(before);
+    expect(validateViewerSceneForRenderer(artifact.content).valid).toBe(true);
+  });
+
+  it.each(["source_hash", "source_object_id", "source_dataset_id", "source_version_id", "projection"])(
+    "does not adopt a connection preview with a conflicting %s", field => {
+      const { resource, scene } = sourcePreviewFixture();
+      scene.provenance[field] = "different";
+      const artifact = sourceResourceArtifact({ ...resource, viewerScene: scene });
+      expect(artifact.content).not.toBe(scene);
+      expect(artifact.content).toMatchObject({ scene: { bonds: [] } });
+    },
+  );
+
+  it("rejects invalid connection geometry even when source identifiers match", () => {
+    const { resource, scene } = sourcePreviewFixture();
+    scene.scene.bonds[0].distance_angstrom = 5;
+    const artifact = sourceResourceArtifact({ ...resource, viewerScene: scene });
+    expect(artifact.content).toMatchObject({ scene: { bonds: [] } });
+  });
+
+  it("retains the original atom preview and a readable reason when the connection search is bounded out", () => {
+    const { resource } = sourcePreviewFixture();
+    const artifact = sourceResourceArtifact({ ...resource, viewerSceneIssue: "VIEWER_NEIGHBOR_WORK_LIMIT" });
+    expect(artifact.content).toMatchObject({
+      scene: { sites: expect.arrayContaining([expect.objectContaining({ xyz: [1, 0, 0] })]), bonds: [] },
+      warnings: expect.arrayContaining([expect.objectContaining({ code: "VIEWER_PREVIEW_CONNECTIONS_UNAVAILABLE", message: expect.stringContaining("近邻搜索超出快速预览范围") })]),
+    });
+  });
+
+  it("keeps the explicitly selected source version authoritative over a refreshed inventory", () => {
+    const selected = { objectId: "table", objectType: "DataFrame", datasetId: "dataset", versionId: "v1", objectHash: "a".repeat(64), payload: [{ measured: 1 }] };
+    const newer = { ...selected, versionId: "v2", objectHash: "b".repeat(64), payload: [{ measured: 2 }] };
+    const artifacts = sourceResourceArtifacts(selected, [newer]);
+    expect(artifacts).toHaveLength(1);
+    expect(artifacts[0]).toMatchObject({ sha256: selected.objectHash, content: { rows: [{ measured: 1 }] }, metadata: { sourceVersionId: "v1" } });
+  });
+
+  it("renders the selected volume's field values when an earlier volume exists in the dataset", () => {
+    const volume = (objectId: string, value: number) => ({ objectId, objectType: "VolumetricData", datasetId: "dataset", payload: {
+      source_format: "gaussian_cube", source_name: `${objectId}.cube`, shape: [2, 2, 2], origin_cartesian: [0, 0, 0], step_matrix: [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+      boundary_conditions: ["non_periodic", "non_periodic", "non_periodic"], endpoint_policy: "not_applicable", sample_location: "node",
+      channels: [{ name: objectId, quantity: "generic_scalar", canonical_unit: "dimensionless", values: Array(8).fill(value) }],
+    } });
+    const first = volume("first", 1), selected = volume("second", 2);
+    const artifacts = sourceResourceArtifacts(selected, [first, selected]);
+    const result = validateVolumetricArtifacts(artifacts.find(item => item.type === "volumetric_dataset_json")?.content,
+      artifacts.find(item => item.type === "volumetric_manifest_json")?.content);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.bundle.fields[0].field).toMatchObject({ fieldName: "second", minimum: 2, maximum: 2 });
+    expect(artifacts.every(item => item.metadata?.sourceObjectId === "second")).toBe(true);
+  });
+
+  it("keeps ambiguous companion resources individually accessible instead of choosing the first", () => {
+    const selected = { objectId: "band", objectType: "PhononBand", datasetId: "dataset", payload: {} };
+    const dos = { objectId: "dos", objectType: "PhononDos", datasetId: "dataset", payload: {} };
+    expect(sourceResourceArtifacts(selected, [selected, dos, { ...dos, objectId: "other-dos" }]).map(item => item.artifactId)).toEqual(["source:band"]);
+    expect(sourceResourceArtifacts(dos, [selected, dos, { ...dos, objectId: "other-dos" }]).map(item => item.artifactId)).toEqual(["source:dos", "source:band"]);
+  });
+
   it("keeps structure summaries in the structured preview instead of the 3D scene renderer", () => {
     const normalized = normalizeResultArtifactForViewer({
       artifactId: "summary-1",
@@ -142,7 +228,7 @@ describe("sourceResourceArtifact", () => {
     const structure = { objectId: "structure", objectType: "Structure", datasetId: "dataset-3", payload: { lattice: { matrix: [[4, 0, 0], [0, 4, 0], [0, 0, 4]] }, sites: [{ label: "Si1", species: [{ element: "Si" }], xyz: [0, 0, 0], abc: [0, 0, 0] }] } };
 
     expect(sourceResourceArtifacts(xrd, [xrd, structure]).map((artifact) => artifact.type)).toEqual(["plotly_json", "structure_json"]);
-    expect(sourceResourceArtifacts(structure, [xrd, structure]).map((artifact) => artifact.type)).toEqual(["plotly_json", "structure_json"]);
+    expect(sourceResourceArtifacts(structure, [xrd, structure]).map((artifact) => artifact.type)).toEqual(["structure_json", "plotly_json"]);
   });
 
   it("provides a truthful structured source preview for raw volumetric fields", () => {
@@ -177,6 +263,39 @@ describe("sourceResourceArtifact", () => {
     const dataset = artifacts?.find((item) => item.type === "volumetric_dataset_json")?.content as Record<string, unknown>;
     expect((dataset.grid as Record<string, unknown>).structure_binding).toBeNull();
     expect(validateVolumetricArtifacts(dataset, artifacts?.find((item) => item.type === "volumetric_manifest_json")?.content)).toMatchObject({ ok: true });
+  });
+
+  it("retains the source potential zero and uses affine voxel volume for profiles and shifted integrals", () => {
+    const values = [0, 1, 2, 3, 4, 5, 6, 7];
+    const artifacts = projectVolumetricSourceArtifacts({ objectId: "potential", objectType: "VolumetricData", datasetId: "dataset-potential", payload: {
+      source_format: "vasp_volumetric", source_name: "LOCPOT", source_sha256: "a".repeat(64), shape: [2, 2, 2], origin_cartesian: [0, 0, 0],
+      step_matrix: [[0.5, 0, 0], [0.2, 1, 0], [0, 0, -0.5]], boundary_conditions: ["periodic", "periodic", "periodic"], endpoint_policy: "excluded", sample_location: "node",
+      structure_sha256: "b".repeat(64), lattice_matrix: [[1, 0, 0], [0.4, 2, 0], [0, 0, -1]],
+      channels: [{ name: "local_potential", quantity: "local_potential", canonical_unit: "electronvolt", source_unit: "electronvolt", normalization_semantics: "source_native", integral_semantics: "cell_average", values }],
+    } })!;
+    const result = validateVolumetricArtifacts(artifacts[0].content, artifacts[1].content);
+    expect(result.ok, JSON.stringify(result)).toBe(true);
+    if (!result.ok) return;
+    const field = result.bundle.fields[0].field;
+    expect(buildElectrostaticPotentialProduct(result.bundle)).toMatchObject({ status: "ready", quantity: "local_potential", unit: "electronvolt", sourceReference: { kind: "source_defined", shiftApplied: false, shiftAmount: 0 } });
+    expect(field).toMatchObject({ minimum: 0, maximum: 7, mean: 3.5, integral: 7 });
+    expect(potentialGaugeView(field, result.bundle.grid, "cell_average_zero", null)).toMatchObject({ shift: -3.5, displayedMean: 0, displayedVolumeIntegral: 0 });
+    const profile = planarProfiles(new Float64Array(values), result.bundle.grid, field, "source_native", 0)[0];
+    expect(profile.points.map(point => point.sourceValue)).toEqual([1.5, 5.5]);
+    expect(values).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
+  });
+
+  it("retains distinct source channels with identical numeric payloads", () => {
+    const artifacts = projectVolumetricSourceArtifacts({ objectId: "equal-channels", objectType: "VolumetricData", datasetId: "dataset-cube", payload: {
+      source_format: "gaussian_cube", shape: [2, 2, 2], origin_cartesian: [0, 0, 0], step_matrix: [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+      boundary_conditions: ["non_periodic", "non_periodic", "non_periodic"], sample_location: "node",
+      channels: ["first", "second"].map(name => ({ name, quantity: "generic_scalar", canonical_unit: "dimensionless", values: Array(8).fill(0) })),
+    } })!;
+    const result = validateVolumetricArtifacts(artifacts[0].content, artifacts[1].content);
+    expect(result.ok, JSON.stringify(result)).toBe(true);
+    if (!result.ok) return;
+    expect(result.bundle.fields.map(item => item.field.fieldName).sort()).toEqual(["first", "second"]);
+    expect(new Set(result.bundle.fields.map(item => item.payload.payloadId)).size).toBe(1);
   });
 
   it("rejects non-finite or oversized source volumetric fields instead of projecting them", () => {

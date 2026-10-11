@@ -45,6 +45,7 @@ where = [
 ]
 
 [tool.pytest.ini_options]
+cache_dir = "../mdi-b0-5a1.local/tmp/pytest-cache"
 testpaths = ["tests"]
 pythonpath = [
   "apps/api",

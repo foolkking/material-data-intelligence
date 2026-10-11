@@ -37,6 +37,7 @@ export const WORKSPACE_SELECTION_KINDS = [
   "ELECTRONIC_DOS_PROJECTION",
   "ELECTRONIC_DOS_POINT",
   "PHONON_Q_POINT",
+  "PHONON_DOS_POINT",
   "PHONON_BRANCH",
   "RECIPROCAL_POINT",
   "VOLUMETRIC_FIELD",
@@ -47,6 +48,11 @@ export const WORKSPACE_SELECTION_KINDS = [
 
 const KIND_SET = new Set<string>(WORKSPACE_SELECTION_KINDS);
 const ID = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,95}$/;
+// Dataset adapters use the durable dataset-version sample identity
+// `${datasetId}@${datasetVersion}:${objectHash}:${rowIndex}`. Keep this
+// allowance scoped to sampleRef; other identities must retain the stricter ID
+// grammar above.
+const SAMPLE_REF = /^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,95}$/;
 const HASH = /^[0-9a-f]{64}$/;
 const CONTRACT = /^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$/;
 const LOCATOR = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,159}$/;
@@ -55,7 +61,7 @@ const FORBIDDEN_KEYS = new Set(["__proto__", "prototype", "constructor"]);
 const VALUE_FIELDS = [
   "datasetId", "datasetVersion", "jobId", "objectId", "sampleRef", "structureId",
   "siteId", "trajectoryId", "atomId", "frameId", "phononArtifactId", "qPointId",
-  "branchId", "reciprocalArtifactId", "reciprocalPointId", "segmentId", "fieldId",
+  "branchId", "frequencyPointId", "reciprocalArtifactId", "reciprocalPointId", "segmentId", "fieldId",
   "regionId", "artifactId", "artifactChecksum", "artifactContract", "artifactVersion",
   "toolCallId", "bundleId", "bundleHash", "evidenceItemId", "sourceArtifactId",
   "sourceArtifactChecksum", "fieldLocator", "interpretationId", "interpretationHash",
@@ -97,6 +103,7 @@ const REQUIRED: Record<WorkspaceSelectionKind, readonly SelectionValueField[]> =
   ELECTRONIC_DOS_PROJECTION: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "projectionId"],
   ELECTRONIC_DOS_POINT: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "energyPointId"],
   PHONON_Q_POINT: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId"],
+  PHONON_DOS_POINT: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "frequencyPointId", "dosChannelId"],
   PHONON_BRANCH: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "branchId"],
   RECIPROCAL_POINT: ["datasetId", "datasetVersion", "reciprocalArtifactId", "artifactChecksum", "reciprocalPointId"],
   VOLUMETRIC_FIELD: ["datasetId", "datasetVersion", "fieldId", "artifactId", "artifactChecksum"],
@@ -117,7 +124,7 @@ const ALLOWED: Record<WorkspaceSelectionKind, readonly SelectionValueField[]> = 
   EXPERIMENTAL_XRD_PEAK: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "peakId"],
   THEORETICAL_XRD_PEAK: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "peakId"],
   XRD_MATCH: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "experimentalResourceId", "theoreticalArtifactId", "peakId", "matchId"],
-  TRAJECTORY_ATOM: ["datasetId", "datasetVersion", "trajectoryId", "atomId", "artifactId", "artifactChecksum"],
+  TRAJECTORY_ATOM: ["datasetId", "datasetVersion", "trajectoryId", "atomId", "frameId", "artifactId", "artifactChecksum"],
   TRAJECTORY_FRAME: ["datasetId", "datasetVersion", "trajectoryId", "frameId", "artifactId", "artifactChecksum"],
   TRAJECTORY_RDF_PAIR: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "speciesPairId"],
   TRAJECTORY_RDF_BIN: ["datasetId", "datasetVersion", "jobId", "trajectoryId", "artifactId", "artifactChecksum", "speciesPairId", "rdfBinId"],
@@ -134,6 +141,7 @@ const ALLOWED: Record<WorkspaceSelectionKind, readonly SelectionValueField[]> = 
   ELECTRONIC_DOS_PROJECTION: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "projectionId"],
   ELECTRONIC_DOS_POINT: ["datasetId", "datasetVersion", "jobId", "artifactId", "artifactChecksum", "electronicResourceId", "spinChannelId", "dosChannelId", "projectionId", "energyPointId"],
   PHONON_Q_POINT: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "qPointId", "branchId"],
+  PHONON_DOS_POINT: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "frequencyPointId", "dosChannelId"],
   PHONON_BRANCH: ["datasetId", "datasetVersion", "phononArtifactId", "artifactChecksum", "branchId", "qPointId"],
   RECIPROCAL_POINT: ["datasetId", "datasetVersion", "reciprocalArtifactId", "artifactChecksum", "reciprocalPointId", "segmentId"],
   VOLUMETRIC_FIELD: ["datasetId", "datasetVersion", "fieldId", "artifactId", "artifactChecksum", "regionId"],
@@ -143,8 +151,8 @@ const ALLOWED: Record<WorkspaceSelectionKind, readonly SelectionValueField[]> = 
 };
 
 const ID_FIELDS = new Set<SelectionValueField>([
-  "datasetId", "jobId", "objectId", "sampleRef", "structureId", "siteId", "trajectoryId",
-  "atomId", "frameId", "phononArtifactId", "qPointId", "branchId", "reciprocalArtifactId",
+  "datasetId", "jobId", "objectId", "structureId", "siteId", "trajectoryId",
+  "atomId", "frameId", "phononArtifactId", "qPointId", "branchId", "frequencyPointId", "reciprocalArtifactId",
   "reciprocalPointId", "segmentId", "fieldId", "regionId", "artifactId", "toolCallId",
   "bundleId", "evidenceItemId", "sourceArtifactId", "interpretationId", "claimId",
   "environmentId", "polyhedronId", "geometryReferenceId",
@@ -195,7 +203,9 @@ export function validateWorkspaceSelectionRef(value: unknown): WorkspaceSelectio
     const current = normalized[field];
     if (current !== null && !allowed.has(field)) invalid(`${kind} cannot contain ${field}.`);
     if (current === null) continue;
-    if (ID_FIELDS.has(field)) normalized[field] = exactId(current, field, field === "datasetId" || field === "jobId" || field === "toolCallId" ? 64 : 96);
+    if (field === "sampleRef") {
+      if (typeof current !== "string" || !SAMPLE_REF.test(current)) invalid(`${field} is not an exact sample identity.`);
+    } else if (ID_FIELDS.has(field)) normalized[field] = exactId(current, field, field === "datasetId" || field === "jobId" || field === "toolCallId" ? 64 : 96);
     if (N2_ID_FIELDS.has(field) && !/^[A-Za-z0-9][A-Za-z0-9_.:,|@/-]*$/u.test(String(current))) invalid(`${field} is not an exact N2 identity.`);
     if (HASH_FIELDS.has(field)) normalized[field] = exactHash(current, field);
   }
@@ -260,9 +270,10 @@ export function selectionsEqual(left: WorkspaceSelectionContext | null, right: W
 export function encodeWorkspaceSelectionUrl(value: WorkspaceSelectionContext): string {
   const context = validateWorkspaceSelectionContext(value);
   const compact = JSON.parse(canonicalSelectionJson(context)) as Record<string, unknown>;
-  const electronicFields = ["electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId", "bandEdgeId", "dosChannelId", "projectionId", "energyPointId"];
   for (const ref of [compact.primary, ...((compact.secondary as unknown[]) ?? [])]) {
-    if (ref && typeof ref === "object" && !Array.isArray(ref)) for (const field of electronicFields) if ((ref as Record<string, unknown>)[field] === null) delete (ref as Record<string, unknown>)[field];
+    // Optional absent identities are restored by validation. Encoding them as
+    // null made real imported structure selections exceed the unchanged cap.
+    if (ref && typeof ref === "object" && !Array.isArray(ref)) for (const [field, value] of Object.entries(ref)) if (value === null) delete (ref as Record<string, unknown>)[field];
   }
   const bytes = utf8(canonicalSelectionJson(compact as unknown as WorkspaceSelectionContext));
   let binary = "";
@@ -283,7 +294,8 @@ export function decodeWorkspaceSelectionUrl(token: string): WorkspaceSelectionCo
     assertNoDuplicateJsonKeys(raw);
     const parsed = JSON.parse(raw) as unknown;
     const context = validateWorkspaceSelectionContext(parsed);
-    if (encodeWorkspaceSelectionUrl(context) !== token && canonicalSelectionJson(parsed as WorkspaceSelectionContext) !== raw) throw new Error("non-canonical");
+    const canonicalBytes = btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/u, "");
+    if (canonicalBytes !== token || (encodeWorkspaceSelectionUrl(context) !== token && canonicalSelectionJson(parsed as WorkspaceSelectionContext) !== raw)) throw new Error("non-canonical");
     return context;
   } catch (error) {
     if (error instanceof WorkspaceSelectionError) throw error;

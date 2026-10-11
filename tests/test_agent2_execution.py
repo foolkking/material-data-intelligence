@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from dataclasses import replace
 from uuid import uuid4
 
 import pytest
@@ -18,7 +19,9 @@ from mdi_api.research_agent.execution.schemas import ExecutionOutcome, Execution
 from mdi_api.research_agent.execution.supervisor import ExecutionOutcomeClassifier, ResearchExecutionSupervisor
 from mdi_api.research_agent.schemas import ResearchTurnStatus
 from mdi_api.research_agent.turns.state_machine import ensure_transition
-from mdi_api.agent2_errors import InvalidResearchTurnTransition
+from mdi_api.agent2_errors import CapabilityNotRegistered, InvalidResearchTurnTransition
+from mdi_api.research_agent.capabilities.registry import InMemoryCapabilityRegistry
+from mdi_api.research_agent.registry_validation import DEFAULT_AGENT2_REGISTRIES
 from mdi_api.unit_of_work import RepositoryFactory
 from mdi_api.repositories import compute_plan_hash
 from mdi_schemas import AnalysisPlanV02
@@ -47,11 +50,11 @@ class FailOnceQueue(CaptureQueue):
         return {"job_id": job_id, "enqueued": True, "backend": "test", "message": "recovered"}
 
 
-def _factory():
+def _factory(tool_id="structure.xrd"):
     engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
     metadata.create_all(engine)
     now = datetime.now(timezone.utc)
-    plan_payload = {"schemaVersion": "0.2", "goal": "Run test", "datasetId": "dataset", "profileId": "profile", "toolRegistryVersion": "test", "graphHash": compute_dependency_graph_hash([]), "assumptions": [], "warnings": [], "steps": [{"stepId": "step_1", "purpose": "生成理论 XRD", "reason": "test", "toolId": "structure.xrd", "inputRefs": [], "params": {}, "output": {}}], "dependencyBindings": [], "expectedArtifacts": [{"name": "step_1.theoretical_xrd", "type": "table_json", "fromStepId": "step_1"}]}
+    plan_payload = {"schemaVersion": "0.2", "goal": "Run test", "datasetId": "dataset", "profileId": "profile", "toolRegistryVersion": "test", "graphHash": compute_dependency_graph_hash([]), "assumptions": [], "warnings": [], "steps": [{"stepId": "step_1", "purpose": "执行科学分析", "reason": "test", "toolId": tool_id, "inputRefs": [], "params": {}, "output": {}}], "dependencyBindings": [], "expectedArtifacts": [{"name": "step_1.theoretical_xrd", "type": "table_json", "fromStepId": "step_1"}]}
     with engine.begin() as connection:
         connection.execute(insert(users), {"id": "owner", "email": "owner@local.invalid", "display_name": "Owner", "is_active": True})
         connection.execute(insert(organizations), {"id": "org", "name": "Org"})
@@ -148,9 +151,13 @@ def test_supervisor_reprojects_existing_summary_after_terminal_final_message():
                 "params": {},
             }
         )
-    supervisor = ResearchExecutionSupervisor(factory)
+    supervisor = ResearchExecutionSupervisor(factory, projector_version="agent2_execution_1.0")
     first = supervisor.sync_for_job(result.job_id)
     assert first.status == ResearchTurnStatus.RESULT_PENDING
+    with factory.session() as session:
+        preserved = session.agent2.research_execution_summaries.get_for_turn(turn_id)
+    supervisor = ResearchExecutionSupervisor(factory)
+    assert supervisor.sync_for_job(result.job_id).status == ResearchTurnStatus.RESULT_PENDING
     with engine.begin() as connection:
         connection.execute(
             update(research_turns)
@@ -160,8 +167,76 @@ def test_supervisor_reprojects_existing_summary_after_terminal_final_message():
     second = supervisor.sync_for_job(result.job_id)
     assert second.status == ResearchTurnStatus.COMPLETED
     assert second.execution_outcome == ExecutionOutcome.SUCCESS
+    with factory.session() as session:
+        assert session.agent2.research_execution_summaries.get_for_turn(turn_id) == preserved
     with engine.connect() as connection:
         assert connection.execute(select(research_execution_summaries)).fetchall().__len__() == 1
+
+
+def _retired_capability_execution(status="FAILED"):
+    engine, factory, turn_id = _factory()
+    dispatch = ResearchExecutionDispatcher(factory, queue=CaptureQueue()).dispatch_turn(turn_id)
+    with factory.unit_of_work() as unit:
+        unit.repositories.jobs.set_status(dispatch.job_id, "running")
+        unit.repositories.jobs.set_status(dispatch.job_id, "completed")
+        unit.repositories.tool_calls.save({"id": "saved-call", "jobId": dispatch.job_id, "stepId": "step_1", "toolId": "structure.xrd", "status": "completed", "idempotencyKey": f"{dispatch.job_id}:step_1", "params": {}})
+    with engine.begin() as connection:
+        connection.execute(insert(artifacts), {"id": "saved-output", "project_id": "project", "dataset_id": "dataset", "job_id": dispatch.job_id, "tool_call_id": "saved-call", "type": "table_json", "name": "Saved XRD", "version": "1", "storage_key": "saved/output.json", "storage_provider": "local", "size_bytes": 42, "content_type": "application/json", "content_hash": "saved-hash", "sha256": "saved-hash", "metadata_json": {}})
+    ResearchExecutionSupervisor(factory).sync_for_job(dispatch.job_id)
+    with engine.begin() as connection:
+        connection.execute(update(research_turns).where(research_turns.c.id == turn_id).values(status=status))
+    capabilities = InMemoryCapabilityRegistry()
+    capabilities.register(DEFAULT_AGENT2_REGISTRIES.capabilities.require("diffraction.theoretical_xrd", "1.0").model_copy(update={"version": "2.0", "display_name": "New method, not the saved execution"}))
+    return factory, turn_id, dispatch.job_id, replace(DEFAULT_AGENT2_REGISTRIES, capabilities=capabilities)
+
+
+@pytest.mark.parametrize("status", ["FAILED", "CANCELED", "COMPLETED", "PARTIAL"])
+def test_retired_capability_keeps_exact_terminal_progress_without_rewriting_history(status):
+    factory, turn_id, job_id, registries = _retired_capability_execution(status)
+    def saved():
+        with factory.session() as session:
+            return (
+                session.agent2.research_turns.get(turn_id),
+                session.agent2.research_execution_summaries.get_for_turn(turn_id),
+                session.agent2.research_turn_events.list_for_turn(turn_id),
+                session.repositories.jobs.get(job_id),
+                session.repositories.artifacts.list_for_job(job_id),
+            )
+    original = saved()
+    supervisor = ResearchExecutionSupervisor(factory, registries=registries)
+    for _ in range(2):
+        progress = supervisor.sync_for_job(job_id)
+        assert progress.status.value == status
+        # A failed interpretation/canceled Turn does not change saved scientific success.
+        assert progress.execution_outcome == ExecutionOutcome.SUCCESS
+        assert progress.steps[0].display_name == "生成理论 XRD 图谱"
+        assert progress.steps[0].status == ExecutionStepStatus.SUCCEEDED
+        assert [item.artifact_id for item in progress.incremental_outputs] == ["saved-output"]
+        assert progress.warnings[-1].code == "HISTORICAL_CAPABILITY_VERSION_UNAVAILABLE"
+        assert saved() == original
+
+
+@pytest.mark.parametrize("status", ["QUEUED", "RUNNING", "CANCELING", "RESULT_PENDING", "INTERPRETING"])
+def test_retired_capability_cannot_authorize_incomplete_work(status):
+    factory, _turn_id, job_id, registries = _retired_capability_execution(status)
+    with pytest.raises(CapabilityNotRegistered):
+        ResearchExecutionSupervisor(factory, registries=registries).sync_for_job(job_id)
+
+
+@pytest.mark.parametrize("fault", ["missing-summary", "wrong-summary-plan", "wrong-summary-job", "running-job"])
+def test_retired_capability_fallback_requires_an_exact_completed_execution(fault):
+    factory, turn_id, job_id, registries = _retired_capability_execution()
+    with factory.engine.begin() as connection:
+        if fault == "missing-summary":
+            connection.execute(research_execution_summaries.delete())
+        elif fault == "running-job":
+            connection.execute(update(jobs).where(jobs.c.id == job_id).values(status="running"))
+        else:
+            summary = connection.execute(select(research_execution_summaries.c.summary_json)).scalar_one()
+            summary["analysis_plan_id" if fault == "wrong-summary-plan" else "job_id"] = "different-record"
+            connection.execute(update(research_execution_summaries).values(summary_json=summary))
+    with pytest.raises(CapabilityNotRegistered):
+        ResearchExecutionSupervisor(factory, registries=registries).sync_for_job(job_id)
 
 
 def test_incremental_output_is_projected_before_job_terminal_and_deduplicated():
@@ -254,3 +329,152 @@ def test_execution_outcome_classifier_uses_runtime_steps_and_outputs():
             tool_calls=[{**call, "stepId": f"step_{index}"} for index, call in enumerate(calls, 1)],
             artifacts=output_rows,
         ) == expected
+
+
+def _preflight_failure(code="ROOT_RESOURCE_HASH_MISMATCH"):
+    engine, factory, turn_id = _factory()
+    job_id = ResearchExecutionDispatcher(factory, queue=CaptureQueue()).dispatch_turn(turn_id).job_id
+    with engine.begin() as connection:
+        connection.execute(update(jobs).where(jobs.c.id == job_id).values(execution_attempt=1))
+    with factory.unit_of_work() as unit:
+        unit.repositories.job_events.append_event(job_id, event_type="job.claimed", status="running", message="claimed", payload={"executionAttempt": 1})
+        unit.repositories.job_events.append_event(job_id, event_type="dependency.validation_aborted", status="error", message="private-credential /local/path hidden reasoning", payload={"errorCode": code, "secret": "private-credential"})
+        unit.repositories.jobs.set_status(job_id, "failed")
+    return engine, factory, turn_id, job_id
+
+
+@pytest.mark.parametrize("code,expected", [
+    ("ROOT_RESOURCE_HASH_MISMATCH", "ROOT_RESOURCE_HASH_MISMATCH"),
+    ("private-unknown-error", "EXECUTION_FAILED"),
+])
+def test_preflight_failure_has_safe_reason_without_inventing_tool_execution(code, expected):
+    engine, factory, turn_id, job_id = _preflight_failure(code)
+    view = ResearchExecutionSupervisor(factory).sync_for_job(job_id)
+    assert view.status == ResearchTurnStatus.FAILED
+    assert view.steps[0].status == ExecutionStepStatus.SKIPPED
+    assert view.active_step_ids == [] and view.completed_step_count == 0
+    assert view.incremental_outputs == []
+    assert [warning.code for warning in view.warnings] == [expected]
+    assert "private" not in view.model_dump_json() and "hidden reasoning" not in view.model_dump_json()
+    with factory.session() as session:
+        turn = session.agent2.research_turns.get(turn_id)
+        assert turn["error_code"] == expected
+        assert turn["error_summary"] == view.warnings[0].message
+        summary = session.agent2.research_execution_summaries.get_for_turn(turn_id)["summary_json"]
+        assert summary["skipped_step_ids"] == ["step_1"]
+        assert summary["failed_step_ids"] == []
+        assert summary["steps"][0]["tool_call_ids"] == []
+        assert session.repositories.tool_calls.list_for_job(job_id) == []
+
+
+@pytest.mark.parametrize("error_code,reason,expected", [
+    ("TOOL_PARAM_INVALID", None, "CORRELATION_PARAMS_INVALID"),
+    ("TOOL_INPUT_INVALID", "CORRELATION_COLUMN_LIMIT_EXCEEDED", "CORRELATION_COLUMN_LIMIT_EXCEEDED"),
+    ("TOOL_INPUT_INVALID", "CORRELATION_COLUMN_IDENTITY_INVALID", "CORRELATION_COLUMN_IDENTITY_INVALID"),
+    ("TOOL_INPUT_INVALID", "CORRELATION_NO_VALID_PAIRS", "CORRELATION_NO_VALID_PAIRS"),
+    ("TOOL_INPUT_INVALID", ["private-reason"], "EXECUTION_FAILED"),
+])
+@pytest.mark.parametrize("tool_id", ["viz.correlation", "viz.histogram", "viz.scatter"])
+def test_table_plot_failure_has_reviewed_terminal_feedback(error_code, reason, expected, tool_id):
+    if tool_id == "viz.histogram":
+        histogram_reasons = {"CORRELATION_PARAMS_INVALID": "HISTOGRAM_PARAMS_INVALID", "CORRELATION_COLUMN_LIMIT_EXCEEDED": "HISTOGRAM_GROUP_LIMIT",
+                             "CORRELATION_COLUMN_IDENTITY_INVALID": "HISTOGRAM_COLUMN_INVALID", "CORRELATION_NO_VALID_PAIRS": "HISTOGRAM_VALUES_INVALID"}
+        reason = histogram_reasons.get(reason, reason) if isinstance(reason, str) else reason
+        expected = histogram_reasons.get(expected, expected)
+    if tool_id == "viz.scatter":
+        scatter_reasons = {"CORRELATION_PARAMS_INVALID": "SCATTER_PARAMS_INVALID", "CORRELATION_COLUMN_LIMIT_EXCEEDED": "SCATTER_GROUP_LIMIT",
+                           "CORRELATION_COLUMN_IDENTITY_INVALID": "SCATTER_COLUMN_INVALID", "CORRELATION_NO_VALID_PAIRS": "SCATTER_VALUES_INVALID"}
+        reason = scatter_reasons.get(reason, reason) if isinstance(reason, str) else reason
+        expected = scatter_reasons.get(expected, expected)
+    _engine, factory, turn_id = _factory(tool_id)
+    job_id = ResearchExecutionDispatcher(factory, queue=CaptureQueue()).dispatch_turn(turn_id).job_id
+    error = {"code": error_code, "message": "private-credential /local/path hidden reasoning", "details": {"errorType": reason}}
+    with factory.unit_of_work() as unit:
+        unit.repositories.tool_calls.save({"id": "correlation-call", "jobId": job_id, "stepId": "step_1", "toolId": tool_id, "status": "failed", "params": {}, "error": error})
+        unit.repositories.job_events.append_event(job_id, event_type="tool.failed", status="error", message="private-message",
+            payload={"toolCallId": "correlation-call", "toolId": tool_id, "error": error})
+        unit.repositories.jobs.set_status(job_id, "failed")
+    view = ResearchExecutionSupervisor(factory).sync_for_job(job_id)
+    assert view.status == ResearchTurnStatus.FAILED
+    failure = next(warning for warning in view.warnings if warning.code == expected)
+    assert view.steps[0].status == ExecutionStepStatus.FAILED
+    assert not view.active_step_ids and not view.incremental_outputs
+    assert "private" not in view.model_dump_json() and "hidden reasoning" not in view.model_dump_json()
+    with factory.session() as session:
+        turn = session.agent2.research_turns.get(turn_id)
+        assert turn["error_code"] == expected
+        assert turn["error_summary"] == failure.message
+
+
+def test_historical_failure_is_enriched_without_rewriting_summary_or_turn():
+    engine, factory, turn_id, job_id = _preflight_failure()
+    supervisor = ResearchExecutionSupervisor(factory)
+    supervisor.sync_for_job(job_id)
+    with engine.begin() as connection:
+        old = connection.execute(select(research_execution_summaries.c.summary_json)).scalar_one()
+        old.update(warnings=[], skipped_step_ids=[], projector_version="agent2_execution_1.0")
+        old["steps"][0]["status"] = "PENDING"
+        connection.execute(update(research_execution_summaries).values(summary_json=old, projector_version="agent2_execution_1.0"))
+        connection.execute(update(research_turns).values(error_code=None, error_summary=None))
+    with factory.session() as session:
+        before = session.agent2.research_execution_summaries.get_for_turn(turn_id)
+        turn_before = session.agent2.research_turns.get(turn_id)
+    for _ in range(2):
+        view = supervisor.sync_for_job(job_id)
+        assert view.warnings[0].code == "ROOT_RESOURCE_HASH_MISMATCH"
+        assert view.steps[0].status == ExecutionStepStatus.SKIPPED
+    with factory.session() as session:
+        assert session.agent2.research_execution_summaries.get_for_turn(turn_id) == before
+        assert session.agent2.research_turns.get(turn_id) == turn_before
+
+
+@pytest.mark.parametrize("job_status,step_status", [("running", "PENDING"), ("failed", "SKIPPED"), ("cancelled", "CANCELED")])
+def test_unstarted_steps_reflect_job_terminal_state(job_status, step_status):
+    _engine, factory, turn_id = _factory()
+    job_id = ResearchExecutionDispatcher(factory, queue=CaptureQueue()).dispatch_turn(turn_id).job_id
+    with factory.unit_of_work() as unit:
+        if job_status == "cancelled":
+            unit.repositories.jobs.request_cancel(job_id)
+        unit.repositories.jobs.set_status(job_id, job_status)
+    view = ResearchExecutionSupervisor(factory).sync_for_job(job_id)
+    assert view.steps[0].status.value == step_status
+    assert not view.active_step_ids
+    if job_status == "cancelled":
+        assert not view.warnings
+
+
+@pytest.mark.parametrize("final_status", ["running", "completed", "failed"])
+def test_current_attempt_does_not_inherit_old_preflight_failure(final_status):
+    engine, factory, _turn_id, job_id = _preflight_failure()
+    with engine.begin() as connection:
+        connection.execute(update(jobs).where(jobs.c.id == job_id).values(execution_attempt=2, status=final_status))
+    with factory.unit_of_work() as unit:
+        unit.repositories.job_events.append_event(job_id, event_type="job.reclaimed", status="running", message="reclaimed", payload={"executionAttempt": 2})
+        unit.repositories.job_events.append_event(job_id, event_type="dependency.validation_aborted", status="error", message="stale owner", payload={"executionAttempt": 1, "errorCode": "ROOT_RESOURCE_HASH_MISMATCH"})
+        if final_status == "completed":
+            unit.repositories.tool_calls.save({"id": "retry-call", "jobId": job_id, "stepId": "step_1", "toolId": "structure.xrd", "status": "completed", "attempt": 2, "params": {}})
+    view = ResearchExecutionSupervisor(factory).sync_for_job(job_id)
+    assert all(warning.code != "ROOT_RESOURCE_HASH_MISMATCH" for warning in view.warnings)
+    if final_status == "failed":
+        assert [warning.code for warning in view.warnings] == ["EXECUTION_FAILED"]
+    else:
+        assert not view.warnings
+
+
+def test_partial_execution_keeps_successful_outputs_and_skips_unstarted_steps():
+    engine, factory, turn_id = _factory()
+    job_id = ResearchExecutionDispatcher(factory, queue=CaptureQueue()).dispatch_turn(turn_id).job_id
+    with engine.begin() as connection:
+        plan = connection.execute(select(analysis_plans.c.analysis_plan_json)).scalar_one()
+        plan["steps"].append({**plan["steps"][0], "stepId": "step_2"})
+        connection.execute(update(analysis_plans).values(analysis_plan_json=plan, plan_hash=compute_plan_hash(AnalysisPlanV02.model_validate(plan))))
+        connection.execute(insert(artifacts), {"id": "partial-output", "project_id": "project", "dataset_id": "dataset", "job_id": job_id, "tool_call_id": "partial-call", "type": "table_json", "name": "XRD", "version": "1", "storage_key": "test.json", "storage_provider": "local", "size_bytes": 2, "content_hash": "test-hash", "metadata_json": {}})
+    with factory.unit_of_work() as unit:
+        unit.repositories.tool_calls.save({"id": "partial-call", "jobId": job_id, "stepId": "step_1", "toolId": "structure.xrd", "status": "completed", "params": {}})
+        unit.repositories.jobs.set_status(job_id, "running")
+        unit.repositories.jobs.set_status(job_id, "partial_success")
+    view = ResearchExecutionSupervisor(factory).sync_for_job(job_id)
+    assert view.execution_outcome == ExecutionOutcome.PARTIAL
+    assert [step.status.value for step in view.steps] == ["SUCCEEDED", "SKIPPED"]
+    assert [item.artifact_id for item in view.incremental_outputs] == ["partial-output"]
+    assert view.completed_step_count == 1 and not view.active_step_ids

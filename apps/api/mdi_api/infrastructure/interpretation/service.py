@@ -7,6 +7,8 @@ from typing import Any
 from uuid import UUID, uuid4
 
 from pydantic import ValidationError
+from mdi_llm.http_transport import ProviderStreamCancelled
+from mdi_llm.providers import PROVIDER_TIMEOUT_CODES
 
 from mdi_api.agent2_errors import ScientificResultSnapshotNotFound
 from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus
@@ -18,6 +20,7 @@ from mdi_api.unit_of_work import RepositoryFactory
 
 from mdi_api.application.interpretation.assembler import InterpreterInputAssembler, effective_relevance
 from mdi_api.infrastructure.interpretation.client import DeepSeekInterpreterClient, PROMPT_VERSION, StructuredInterpreterClient
+from mdi_api.infrastructure.interpretation.streaming import InterpretationStreamPublisher
 from mdi_api.application.interpretation.grounding import (
     build_grounding_repair_context,
     project_grounded_answer_lead,
@@ -26,7 +29,7 @@ from mdi_api.application.interpretation.grounding import (
     validate_interpretation,
 )
 from mdi_api.application.interpretation.projector import AssistantResponseProjector
-from mdi_api.domain.interpretation.contracts import ScientificInterpretationOutput
+from mdi_api.domain.interpretation.contracts import ScientificInterpretationOutput, ScientificInterpretationProposal
 
 
 logger = logging.getLogger(__name__)
@@ -48,6 +51,7 @@ class ScientificInterpretationService:
         claimed = self._claim(turn_id)
         if claimed.get("existing") is not None:
             return claimed["existing"]
+        claim_version = int(claimed["turn"]["row_version"])
         try:
             bundle, snapshot, question, relevance, envelope, fingerprint = self._load_input(turn_id)
             self._record_interpreter_manifest(
@@ -62,10 +66,13 @@ class ScientificInterpretationService:
                 envelope,
                 bundle,
                 turn_id=turn_id,
+                claim_version=claim_version,
+                relevance=relevance,
             )
-            content = self.response_projector.project(result, bundle, effective_relevance=relevance)
+            content = self.response_projector.project(result, bundle, effective_relevance=relevance, markdown=True)
             return self._persist(
                 turn_id,
+                claim_version=claim_version,
                 snapshot_id=snapshot["id"],
                 project_id=str(snapshot["project_id"]),
                 fingerprint=fingerprint,
@@ -76,10 +83,10 @@ class ScientificInterpretationService:
                 bundle=bundle,
             )
         except InterpretationFailure as exc:
-            self._fail(turn_id, exc.code, str(exc))
+            self._fail(turn_id, exc.code, str(exc), claim_version=claim_version)
             raise
         except Exception:
-            self._fail(turn_id, "INTERPRETATION_PROVIDER_FAILED", "科学结果已生成，但自动解释未完成。")
+            self._fail(turn_id, "INTERPRETATION_PROVIDER_FAILED", "科学结果已生成，但自动解释未完成。", claim_version=claim_version)
             raise
 
     def _generate_with_one_repair(
@@ -88,35 +95,64 @@ class ScientificInterpretationService:
         bundle: ScientificResultBundle,
         *,
         turn_id: UUID | None = None,
+        claim_version: int | None = None,
+        relevance: str | None = None,
     ) -> tuple[ScientificInterpretationOutput, bool, dict[str, Any]]:
         repair_errors: list[str] | None = None
         for attempt in range(2):
+            # Every attempt and public update retains the exact worker claim.
+            if turn_id is not None and claim_version is not None:
+                with self.repository_factory.session() as session:
+                    current = session.agent2.research_turns.get(turn_id)
+                    if str(current["status"]) != ResearchTurnStatus.INTERPRETING.value or int(current["row_version"]) != claim_version:
+                        raise InterpretationFailure("INTERPRETATION_CLAIM_LOST", "interpretation claim is no longer current")
+            publisher = None
             try:
+                if turn_id is not None and claim_version is not None:
+                    publisher = InterpretationStreamPublisher(
+                        self.repository_factory, turn_id=turn_id, claim_version=claim_version,
+                        bundle=bundle, relevance=relevance or bundle.relevance_status.value,
+                        normalize=lambda value: self._resolve_provider_reference_aliases(
+                            self._strip_legacy_finding_fields(value), envelope,
+                        ),
+                    )
                 result, _, provider_meta = self._generate(
                     envelope,
                     bundle=bundle,
                     repair_errors=repair_errors,
                     repair_attempted=attempt == 1,
                     turn_id=turn_id,
+                    on_content=publisher.feed if publisher else None,
                 )
+            except ProviderStreamCancelled:
+                raise InterpretationFailure("INTERPRETATION_CLAIM_LOST", "interpretation claim is no longer current") from None
             except ValidationError as exc:
+                if publisher:
+                    publisher.discard()
                 if attempt == 0:
-                    repair_errors = [str(error) for error in exc.errors()][:16]
+                    repair_errors = self._schema_repair_context(exc)
                     continue
                 raise InterpretationFailure("INTERPRETATION_SCHEMA_INVALID", "解释输出未通过结构化 schema 校验。") from exc
             except Exception as exc:
+                if publisher:
+                    publisher.discard()
                 if attempt == 0 and self._is_repairable_provider_output_error(exc):
                     repair_errors = [
-                        f"{getattr(exc, 'code', type(exc).__name__)}: {exc}"
+                        "模型未返回有效的结构化内容。请只返回符合所给 schema 的 JSON 对象。"
                     ]
                     continue
-                raise InterpretationFailure("INTERPRETATION_PROVIDER_FAILED", "科学结果已生成，但自动解释未完成。") from exc
+                raise self._provider_failure(exc) from None
             result = project_grounded_answer_lead(result, bundle)
             result = project_claim_support_assessments(result, bundle)
-            result = project_grounded_communication(result, bundle)
+            # New proposals must pass the repair/failure gate. Historical read
+            # projection may omit unsupported suggestions, but cannot turn a
+            # failed provider proposal into a successful generation here.
+            result = project_grounded_communication(result, bundle, project_suggestions=False)
             validation = validate_interpretation(result, bundle)
             if validation.valid:
                 return result, attempt == 1, provider_meta
+            if publisher:
+                publisher.discard()
             if attempt == 0:
                 repair_errors = build_grounding_repair_context(
                     result,
@@ -128,6 +164,73 @@ class ScientificInterpretationService:
         raise InterpretationFailure("INTERPRETATION_SCHEMA_INVALID", "解释输出未通过结构化 schema 校验。")
 
     @staticmethod
+    def _provider_failure(error: Exception) -> InterpretationFailure:
+        # Upstream text may contain credentials or unvalidated model output.
+        # Persist only reviewed codes and messages, including after repair.
+        code = str(getattr(error, "code", "")).upper()
+        if code in PROVIDER_TIMEOUT_CODES or isinstance(error, TimeoutError):
+            code = "PROVIDER_TIMEOUT"
+        if code in {"DEEPSEEK_RESPONSE_INVALID", "OPENAI_RESPONSE_INVALID", "PROVIDER_RESPONSE_INVALID"}:
+            code = "PROVIDER_INVALID_RESPONSE"
+        reasons = {
+            "PROVIDER_TIMEOUT": ("TIMEOUT", "模型响应超时。科学结果已保留，可以重新解读或更换模型。"),
+            "EXTERNAL_UNAVAILABLE": ("UNAVAILABLE", "暂时无法连接模型服务。科学结果已保留，可以稍后重新解读或更换模型。"),
+            "PROVIDER_RATE_LIMITED": ("RATE_LIMITED", "模型服务返回限流或额度不足。科学结果已保留，可以稍后重新解读或更换模型。"),
+            "PROVIDER_AUTH_FAILED": ("AUTH_FAILED", "模型连接认证失败。科学结果已保留，请检查密钥和使用权限。"),
+            "PROVIDER_REQUEST_REJECTED": ("REQUEST_REJECTED", "模型服务拒绝了本次解读请求。科学结果已保留，请检查所选模型和请求协议。"),
+            "PROVIDER_OUTPUT_TRUNCATED": ("OUTPUT_TRUNCATED", "模型响应达到输出长度上限，解读内容不完整。科学结果已保留，可以调整问题后重新解读。"),
+            "PROVIDER_INVALID_RESPONSE": ("INVALID_RESPONSE", "模型未返回有效的结构化解读。科学结果已保留，可以重新解读或更换模型。"),
+        }
+        suffix, message = reasons.get(code, ("FAILED", "科学结果已生成，但自动解释未完成。"))
+        return InterpretationFailure(f"INTERPRETATION_PROVIDER_{suffix}", message)
+
+    @staticmethod
+    def _schema_repair_context(error: ValidationError) -> list[str]:
+        """Describe bounded repairs without echoing the invalid provider payload."""
+
+        feedback = []
+        for detail in error.errors(include_input=False, include_url=False)[:16]:
+            location = detail["loc"]
+            path = ".".join(str(part)[:80] for part in location)[:240] or "$"
+            kind = str(detail["type"])[:80]
+            message = f"{path}: {kind}. Match the supplied output_schema."
+            context = detail.get("ctx") or {}
+            if kind == "too_long":
+                message += (
+                    f" Maximum length: {context.get('max_length')};"
+                    f" actual length: {context.get('actual_length')}."
+                )
+                if location and location[-1] in {
+                    "fact_refs", "evidence_refs", "result_item_refs",
+                }:
+                    message += (
+                        " Split this finding by scientific subject, keeping each"
+                        " subject's statement and complete relevant references together."
+                        " For peak data, use one finding per peak. Do not truncate"
+                        " references or retain claims after removing their evidence."
+                        " Put secondary findings in supporting_findings within its limit."
+                    )
+                elif location == ("primary_findings",):
+                    message += (
+                        " Keep the central findings here and move complete secondary"
+                        " findings into supporting_findings within its limit. Combine"
+                        " related global parameters, but keep individual peaks separate."
+                        " Recheck every citation-list limit; do not merge all references"
+                        " into an oversized finding or omit requested subjects."
+                    )
+                elif location == ("supporting_findings",):
+                    message += (
+                        " Consolidate redundant findings without dropping requested"
+                        " scientific subjects. Keep each citation list within its limit."
+                    )
+            elif kind == "extra_forbidden":
+                message += " Remove this unsupported field."
+            elif kind == "missing":
+                message += " Supply this required field."
+            feedback.append(message)
+        return feedback
+
+    @staticmethod
     def _is_repairable_provider_output_error(error: Exception) -> bool:
         """Retry only malformed structured output, not transport failures."""
 
@@ -135,6 +238,7 @@ class ScientificInterpretationService:
             "DEEPSEEK_RESPONSE_INVALID",
             "OPENAI_RESPONSE_INVALID",
             "PROVIDER_RESPONSE_INVALID",
+            "PROVIDER_INVALID_RESPONSE",
         }
 
     def _claim(self, turn_id: UUID) -> dict[str, Any]:
@@ -355,8 +459,11 @@ class ScientificInterpretationService:
         repair_errors: list[str] | None = None,
         repair_attempted: bool = False,
         turn_id: UUID | None = None,
+        on_content: Any = None,
     ) -> tuple[ScientificInterpretationOutput, bool, dict[str, Any]]:
         context = {
+            "turn_id": str(turn_id) if turn_id else None,
+            "on_interpretation_delta": on_content,
             "repair_attempted": repair_attempted,
             "repair": {"validation_errors": repair_errors[:16]}
             if repair_errors
@@ -367,7 +474,16 @@ class ScientificInterpretationService:
                 else None
             ),
         }
-        result = asyncio.run(self.client.generate_structured(input_payload=envelope.model_dump(mode="json"), output_schema=ScientificInterpretationOutput.model_json_schema(), timeout_seconds=self.timeout_seconds, request_context=context))
+        output_schema = ScientificInterpretationProposal.model_json_schema()
+        policy = envelope.result.get("follow_up_policy")
+        if policy is not None:
+            suggestions = output_schema["properties"]["follow_up_suggestions"]
+            choices = [item["text"] for item in policy["options"]]
+            if choices:
+                suggestions["items"]["enum"] = choices
+            else:
+                suggestions["maxItems"] = 0
+        result = asyncio.run(self.client.generate_structured(input_payload=envelope.model_dump(mode="json"), output_schema=output_schema, timeout_seconds=self.timeout_seconds, request_context=context))
         # Some server-side provider deployments still return retired finding
         # presentation / assessment fields.  They are not part of the current
         # provider contract and never carry authority: support, limitations,
@@ -466,6 +582,7 @@ class ScientificInterpretationService:
     @staticmethod
     def _strip_legacy_finding_fields(parsed: Any) -> Any:
         retired_fields = {
+            "reasoning_assessment",
             "outcome",
             "accepted",
             "limitations",
@@ -496,13 +613,17 @@ class ScientificInterpretationService:
             ]
         return cleaned
 
-    def _persist(self, turn_id: UUID, *, snapshot_id: Any, project_id: str, fingerprint: str, result: ScientificInterpretationOutput, content: str, provider_meta: dict[str, Any], repair_attempted: bool, bundle: ScientificResultBundle) -> dict[str, Any]:
+    def _persist(self, turn_id: UUID, *, claim_version: int, snapshot_id: Any, project_id: str, fingerprint: str, result: ScientificInterpretationOutput, content: str, provider_meta: dict[str, Any], repair_attempted: bool, bundle: ScientificResultBundle) -> dict[str, Any]:
         interpretation_id = uuid4()
         with self.repository_factory.unit_of_work() as unit:
             turn = unit.agent2.research_turns.get_for_update(turn_id)
             existing = unit.agent2.interpretations.get_for_turn(turn_id)
             if existing is not None:
                 return existing
+            # A stale worker may finish after another worker reclaims the same
+            # INTERPRETING stage. Check its claim before publishing any answer.
+            if str(turn["status"]) != ResearchTurnStatus.INTERPRETING.value or int(turn["row_version"]) != claim_version:
+                raise InterpretationFailure("INTERPRETATION_CLAIM_LOST", "interpretation claim is no longer current")
             row = unit.agent2.interpretations.add({
                 "id": interpretation_id,
                 "research_turn_id": turn_id,
@@ -520,7 +641,7 @@ class ScientificInterpretationService:
                 "created_at": datetime.now(timezone.utc),
             })
             message_id = f"message_{uuid4().hex}"
-            unit.agent2.research_turns.add_message({"id": message_id, "session_id": turn["research_session_id"], "role": "agent", "content_summary": content, "payload_json": {"source": "agent2_scientific_interpreter", "messageKind": "ASSISTANT_FINAL", "turnId": str(turn_id), "interpretationId": str(interpretation_id), "sourceResultSnapshotId": str(snapshot_id), "groundingStatus": "VALID", "factRefs": sorted({ref for item in [*result.primary_findings, *result.supporting_findings] for ref in item.fact_refs}), "evidenceRefs": sorted({ref for item in [*result.primary_findings, *result.supporting_findings] for ref in item.evidence_refs})}, "created_at": datetime.now(timezone.utc)})
+            unit.agent2.research_turns.add_message({"id": message_id, "session_id": turn["research_session_id"], "role": "agent", "content_summary": content, "payload_json": {"source": "agent2_scientific_interpreter", "messageKind": "ASSISTANT_FINAL", "responseFormat": "markdown", "turnId": str(turn_id), "interpretationId": str(interpretation_id), "sourceResultSnapshotId": str(snapshot_id), "groundingStatus": "VALID", "factRefs": sorted({ref for item in [*result.primary_findings, *result.supporting_findings] for ref in item.fact_refs}), "evidenceRefs": sorted({ref for item in [*result.primary_findings, *result.supporting_findings] for ref in item.evidence_refs})}, "created_at": datetime.now(timezone.utc)})
             attached = unit.agent2.research_turns.attach_message_refs(turn_id, assistant_final_message_id=message_id)
             target = ResearchTurnStatus.PARTIAL if bundle.execution_status.value == "PARTIAL" else ResearchTurnStatus.COMPLETED
             unit.agent2.research_turns.compare_and_set_status(turn_id, expected_status=ResearchTurnStatus.INTERPRETING.value, expected_version=int(attached["row_version"]), target_status=target.value, completed_at=datetime.now(timezone.utc))
@@ -528,11 +649,11 @@ class ScientificInterpretationService:
             self._event(unit, turn_id, ResearchTurnEventType.TURN_PARTIAL if target == ResearchTurnStatus.PARTIAL else ResearchTurnEventType.TURN_COMPLETED, {"status": target.value})
             return row
 
-    def _fail(self, turn_id: UUID, code: str, summary: str) -> None:
+    def _fail(self, turn_id: UUID, code: str, summary: str, *, claim_version: int) -> None:
         try:
             with self.repository_factory.unit_of_work() as unit:
                 turn = unit.agent2.research_turns.get_for_update(turn_id)
-                if str(turn["status"]) != ResearchTurnStatus.INTERPRETING.value:
+                if str(turn["status"]) != ResearchTurnStatus.INTERPRETING.value or int(turn["row_version"]) != claim_version:
                     return
                 updated = unit.agent2.research_turns.compare_and_set_status(turn_id, expected_status=ResearchTurnStatus.INTERPRETING.value, expected_version=int(turn["row_version"]), target_status=ResearchTurnStatus.FAILED.value, completed_at=datetime.now(timezone.utc), error_code=code, error_summary=summary[:1000])
                 self._event(unit, turn_id, ResearchTurnEventType.TURN_FAILED, {"status": updated["status"], "error_code": code})

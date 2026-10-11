@@ -22,6 +22,41 @@ function artifacts(payload: unknown = stable) {
 }
 
 describe("PhononBandPreviewPanel", () => {
+  it("selects an original q point and branch from the keyboard without remounting the plot", async () => {
+    const newPlot = vi.fn().mockResolvedValue(undefined), select = vi.fn();
+    const source = artifacts(), loader = async () => ({newPlot, purge: vi.fn()});
+    const view = render(<PhononBandPreviewPanel artifacts={source} onPointSelection={select} plotlyLoader={loader} />);
+    await waitFor(() => expect(newPlot).toHaveBeenCalledTimes(1));
+    fireEvent.click(screen.getByText("能带数值", {selector: "summary"}));
+    fireEvent.click(screen.getByRole("button", {name: "选择 q 点 1、分支 2"}));
+    expect(select).toHaveBeenLastCalledWith({qpointIndex: 1, branchIndex: 2});
+    view.rerender(<PhononBandPreviewPanel artifacts={source} selectedPoint={{qpointIndex: 1, branchIndex: 2}} onPointSelection={select} plotlyLoader={loader} />);
+    expect(screen.getByRole("button", {name: "选择 q 点 1、分支 2"})).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText("已选 q 点 1 · 分支 2")).toBeVisible();
+    expect(newPlot).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole("button", {name: "清除选择"}));
+    expect(select).toHaveBeenLastCalledWith(null);
+  });
+  it("retains both labels at a disconnected path boundary without joining curves", () => {
+    const discontinuous = JSON.parse(readFileSync(resolve(root, "tests/fixtures/phonon_contract/discontinuous_band.json"), "utf8"));
+    const mapped = mapPhononBandPlot(discontinuous);
+    expect(mapped.ok).toBe(true);
+    if (!mapped.ok) return;
+    expect(mapped.layout.xaxis).toMatchObject({ ticktext: ["Γ", "X", "L｜Γ", "M"] });
+    expect(mapped.data).toHaveLength(12);
+    expect(mapped.data[0]).toMatchObject({ x: discontinuous.qpoints.slice(0, 3).map((point: { distance: number }) => point.distance), y: discontinuous.branches[0].frequencies.slice(0, 3) });
+    expect(mapped.data[1]).toMatchObject({ x: discontinuous.qpoints.slice(3).map((point: { distance: number }) => point.distance), y: discontinuous.branches[0].frequencies.slice(3) });
+  });
+  it("renders the explicitly selected band instead of the first same-type sibling", async () => {
+    const selectedPayload = structuredClone(stable);
+    selectedPayload.branches[0].frequencies[1] = 1.125;
+    const selected = { id: "selected-band", type: "phonon_band_json", content: selectedPayload };
+    const newPlot = vi.fn().mockResolvedValue(undefined);
+    render(<PhononBandPreviewPanel artifacts={[...artifacts(), selected]} selected={selected} plotlyLoader={async () => ({ newPlot, purge: vi.fn() })} />);
+    await waitFor(() => expect(newPlot).toHaveBeenCalledTimes(1));
+    expect(newPlot.mock.calls[0][1][0].y).toEqual([0, 1.125, 1.5]);
+    expect(screen.queryByTestId("phonon-band-animation-handoff")).not.toBeInTheDocument();
+  });
   it("validates canonical data, renders local Plotly traces, and purges on unmount", async () => {
     const newPlot = vi.fn().mockResolvedValue(undefined);
     const purge = vi.fn();
@@ -32,21 +67,28 @@ describe("PhononBandPreviewPanel", () => {
     const traces = newPlot.mock.calls[0][1] as Array<{ y: number[] }>;
     expect(traces).toHaveLength(6);
     expect(traces[0].y).toEqual([0, 1, 1.5]);
-    expect(screen.getByTestId("phonon-band-live-status")).toHaveTextContent("Rendered 6 branches");
+    expect(screen.getByTestId("phonon-band-live-status")).toHaveTextContent("已显示 6 条分支");
     view.unmount();
     expect(purge).toHaveBeenCalledTimes(1);
   });
 
   it("keeps accessible table and canonical JSON alongside the plot", async () => {
-    render(<PhononBandPreviewPanel artifacts={artifacts()} plotlyLoader={async () => ({ newPlot: vi.fn().mockResolvedValue(undefined), purge: vi.fn() })} />);
-    fireEvent.click(screen.getByRole("tab", { name: "Band table" }));
-    expect(screen.getByRole("table", { name: "Phonon band q-point and branch frequencies" })).toBeInTheDocument();
+    const newPlot = vi.fn().mockResolvedValue(undefined);
+    render(<PhononBandPreviewPanel artifacts={artifacts()} plotlyLoader={async () => ({ newPlot, purge: vi.fn() })} />);
+    await waitFor(() => expect(newPlot).toHaveBeenCalledTimes(1));
+    const target = newPlot.mock.calls[0][0];
+    expect(screen.getByText("能带数值").closest("details")).not.toHaveAttribute("open");
+    expect(screen.getByTestId("phonon-band-schema")).not.toBeVisible();
+    fireEvent.click(screen.getByText("能带数值"));
+    expect(screen.getByRole("table", { name: "声子能带采样数值" })).toBeVisible();
     expect(screen.getAllByRole("row")).toHaveLength(19);
-    expect(screen.getByRole("columnheader", { name: "q coordinates" })).toBeInTheDocument();
-    expect(screen.getByRole("columnheader", { name: "Classification" })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("tab", { name: "Canonical JSON" }));
+    expect(screen.getByRole("columnheader", { name: "q 坐标" })).toBeInTheDocument();
+    expect(screen.getByRole("columnheader", { name: "类型" })).toBeInTheDocument();
+    fireEvent.click(screen.getByText("数据与来源"));
     expect(screen.getByText("phonon_band.json")).toBeInTheDocument();
     expect(screen.getByText("phonon_manifest.json")).toBeInTheDocument();
+    expect(newPlot).toHaveBeenCalledTimes(1);
+    expect(target.isConnected).toBe(true);
   });
 
   it("rejects invalid or executable metadata before loading Plotly", () => {
@@ -60,8 +102,10 @@ describe("PhononBandPreviewPanel", () => {
 
   it("reports chunk-load failure without losing the canonical preview tabs", async () => {
     render(<PhononBandPreviewPanel artifacts={artifacts()} plotlyLoader={async () => { throw new Error("chunk missing"); }} />);
-    await waitFor(() => expect(screen.getByTestId("phonon-band-plot-fallback")).toHaveTextContent("PHONON_BAND_PLOT_LOAD_FAILED"));
-    expect(screen.getByRole("tab", { name: "Canonical JSON" })).toBeEnabled();
+    await waitFor(() => expect(screen.getByTestId("phonon-band-plot-fallback")).toHaveTextContent("图表暂时无法显示"));
+    expect(screen.getByRole("button", { name: "重新绘制图表" })).toBeEnabled();
+    fireEvent.click(screen.getByText("数据与来源"));
+    expect(screen.getByText("phonon_band.json")).toBeVisible();
   });
 
   it("refuses mappings that exceed the application-owned trace budget", () => {
@@ -72,5 +116,5 @@ describe("PhononBandPreviewPanel", () => {
 
   it("enables handoff only for the exact band hash and mode identity",()=>{const animation=phononAnimationFixture();const hash=animation.source.band_sha256;const linked={id:"band",type:"phonon_band_json",name:"phonon_band.json",content:stable,sha256:hash};expect(phononAnimationHandoff(stable,linked,animation)).toMatchObject({ok:true,qpointIndex:1,branchIndex:3,modeId:animation.mode.mode.mode_id});expect(phononAnimationHandoff(stable,{...linked,sha256:"f".repeat(64)},animation)).toEqual({ok:false,code:"PHONON_ANIMATION_BAND_HASH_MISMATCH"});expect(phononAnimationHandoff(stable,linked,null)).toEqual({ok:false,code:"PHONON_ANIMATION_EIGENVECTOR_UNAVAILABLE"});});
 
-  it("shows an enabled exact-mode handoff without frequency search",()=>{const animation=phononAnimationFixture();render(<><div data-testid="phonon-animation-preview-panel"/><PhononBandPreviewPanel artifacts={[...artifacts(),{id:"animation",type:"phonon_animation_json",name:"phonon_animation.json",content:animation}] .map((artifact)=>artifact.name==="phonon_band.json"?{...artifact,sha256:animation.source.band_sha256}:artifact)} plotlyLoader={async()=>({newPlot:vi.fn().mockResolvedValue(undefined),purge:vi.fn()})}/></>);expect(screen.getByTestId("phonon-band-animation-handoff")).toHaveTextContent("canonical mode ID");expect(screen.getByRole("button",{name:"Open mode animation"})).toBeEnabled();});
+  it("shows an enabled exact-mode handoff without frequency search",()=>{const animation=phononAnimationFixture();render(<><div data-testid="phonon-animation-preview-panel"/><PhononBandPreviewPanel artifacts={[...artifacts(),{id:"animation",type:"phonon_animation_json",name:"phonon_animation.json",content:animation}] .map((artifact)=>artifact.name==="phonon_band.json"?{...artifact,sha256:animation.source.band_sha256}:artifact)} plotlyLoader={async()=>({newPlot:vi.fn().mockResolvedValue(undefined),purge:vi.fn()})}/></>);expect(screen.getByTestId("phonon-band-animation-handoff")).toHaveTextContent("已关联 q 点");expect(screen.getByRole("button",{name:"查看振动动画"})).toBeEnabled();});
 });

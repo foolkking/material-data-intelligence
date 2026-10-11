@@ -5,9 +5,49 @@ import multiSpeciesScene from "../../../../../tests/fixtures/viewer_scene_v1/val
 import optionalBondsScene from "../../../../../tests/fixtures/viewer_scene_v1/valid_optional_bonds.viewer_scene.v1.json";
 import { bondMetrics, cameraFrame, latticeEdges, sceneBounds } from "./viewerSceneRendererGeometry";
 import { mapViewerSceneForRenderer } from "./viewerSceneRendererMapper";
-import { periodicBoundaryScene } from "./viewerScenePeriodicBondTestFixture";
+import { idealCrystalScene, periodicBoundaryScene } from "./viewerScenePeriodicBondTestFixture";
 
 describe("viewer scene renderer mapper", () => {
+  it("uses conventional Cu color for an owned ideal model while preserving its saved geometry and bytes", () => {
+    const payload = idealCrystalScene(), before = JSON.stringify(payload);
+    const mapped = mapViewerSceneForRenderer(payload);
+    expect(mapped.ok).toBe(true);
+    if (!mapped.ok) return;
+    expect(mapped.scene.connectivity).toEqual({ method: "ideal_first_shell" });
+    expect(mapped.scene.sourcePreview).toBeUndefined();
+    expect(mapped.scene.atoms.map(atom => [atom.color, atom.radius])).toEqual([["#c88033", 1], ["#c88033", 1]]);
+    expect(mapped.scene.atoms.map(atom => atom.position)).toEqual(payload.scene.sites.map((site: any) => site.xyz));
+    expect(mapped.scene.bonds[0]).toMatchObject({ distanceAngstrom: 0.4, authoritative: false, toRef: { siteIndex: 1, imageOffset: [1, 0, 0] } });
+    expect(JSON.stringify(payload)).toBe(before);
+  });
+
+  it("retains explicit colors outside the ideal generator's default preset", () => {
+    const custom = idealCrystalScene();
+    custom.scene.style.style_preset = "custom";
+    custom.scene.sites[0].style.color = "#123456";
+    const ordinary = idealCrystalScene();
+    ordinary.source.tool_id = "structure.build_viewer_scene";
+    for (const [payload, expected] of [[custom, "#123456"], [ordinary, "#888888"]] as const) {
+      const mapped = mapViewerSceneForRenderer(payload);
+      expect(mapped.ok).toBe(true);
+      if (mapped.ok) expect(mapped.scene.atoms[0].color).toBe(expected);
+    }
+  });
+
+  it.each([
+    (payload: any) => { payload.provenance.sample_analysis = true; },
+    (payload: any) => { payload.source.resource_id = `parameters:${"b".repeat(64)}`; },
+    (payload: any) => { payload.metadata.connectivity.chemical_bond_claim = true; },
+    (payload: any) => { payload.scene.bonds[0].authoritative = true; payload.scene.bonds[0].source = "explicit_input"; },
+  ])("does not label conflicting provenance as ideal-model neighbors", mutate => {
+    const payload = idealCrystalScene(); mutate(payload);
+    const mapped = mapViewerSceneForRenderer(payload);
+    expect(mapped.ok).toBe(true);
+    if (!mapped.ok) return;
+    expect(mapped.scene.connectivity).toBeUndefined();
+    expect(mapped.scene.atoms[0].color).toBe("#888888");
+  });
+
   it("maps canonical sites, lattice, species colors, and bounded bonds deterministically", () => {
     const first = mapViewerSceneForRenderer(optionalBondsScene);
     const second = mapViewerSceneForRenderer(optionalBondsScene);

@@ -4,6 +4,8 @@ from typing import Any
 
 from mdi_schemas import (
     AnalysisPlanV02,
+    AnalysisPlanV03,
+    AnalysisPlanV04,
     AnalysisStep,
     ArtifactType,
     ExpectedArtifact,
@@ -11,12 +13,14 @@ from mdi_schemas import (
     PlannerBindingSource,
 )
 from mdi_schemas.dependency_planning import DependencyBinding, compute_dependency_graph_hash, deterministic_binding_id
+from mdi_schemas.multi_source_planning import SCIENTIFIC_OBJECT_EXECUTION_TYPES as _OBJECT_TYPE_TO_EXEC
 from mdi_tool_registry import (
     build_tool_artifact_port_metadata,
     build_tool_planner_metadata,
     validate_dependency_plan,
 )
 from mdi_tool_registry.plan_validator import validate_plan
+from mdi_tool_registry.project_tools import project_reference_inventory
 
 from mdi_api.agent2_errors import CapabilityBindingFailed
 from mdi_api.repositories import compute_plan_hash
@@ -29,22 +33,8 @@ from mdi_api.research_agent.planning.parameter_authority import (
 )
 
 
-_OBJECT_TYPE_TO_EXEC = {
-    "structure.crystal": "Structure",
-    "structure.atomic": "Atoms",
-    "trajectory.atomic": "Trajectory",
-    "materials.dataset": "DataFrame",
-    "materials.table": "DataFrame",
-    "electronic.band_structure": "ElectronicBand",
-    "electronic.dos": "ElectronicDos",
-    "volumetric.field": "VolumetricData",
-    "volumetric.charge_density": "VolumetricData",
-    "phonon.band_structure": "PhononBand",
-    "phonon.dos": "PhononDos",
-    "diffraction.xrd.experimental": "DataFrame",
-    "diffraction.xrd.theoretical": "Structure",
-}
 _RESULT_TO_ARTIFACT = {
+    "generation.ideal_crystal": ArtifactType.structure_json,
     "structure.summary": ArtifactType.structure_json,
     "structure.rdf": ArtifactType.table_json, "diffraction.xrd.theoretical": ArtifactType.table_json,
     "diffraction.xrd.comparison": ArtifactType.table_json, "ml.regression.evaluation": ArtifactType.table_json,
@@ -98,10 +88,35 @@ class CapabilityBinder:
         step_to_tool: dict[str, tuple[Any, Any]] = {}
         suite_tool_steps: dict[tuple[str, str], str] = {}
         suite_dependencies: list[tuple[str, str]] = []
+        source_keys_by_step: dict[str, list[str]] = {}
+        source_contexts = context.get("source_contexts") or {}
+        source_versions = context.get("source_versions") or {}
+        multi_source_context = len(source_contexts) > 1
         for step in capability_plan.steps:
             candidate = candidates.get(step.capability_ref_key)
             if candidate is None:
                 raise CapabilityBindingFailed(f"unknown capability ref: {step.capability_ref_key}", code="CAPABILITY_PLAN_UNKNOWN_REFERENCE")
+            source_keys: list[str] = []
+            for slot_name, values in step.input_bindings.items():
+                for item in values:
+                    if item.kind == CapabilityBindingKind.SOURCE_OBJECT and item.source_ref_key:
+                        source_keys.append(item.source_ref_key)
+                    elif item.kind == CapabilityBindingKind.PLANNED_OUTPUT:
+                        source_keys.extend(source_keys_by_step.get(item.producer_step_id or "", []))
+                    elif item.kind == CapabilityBindingKind.PREVIOUS_RESULT:
+                        source_keys.extend(candidate.reusable_result_source_ref_keys.get(slot_name, {}).get(item.result_ref_key or "", []))
+            source_keys_by_step[step.step_id] = list(dict.fromkeys(source_keys))
+            step_datasets = {source_versions[key]["datasetId"] for key in source_keys if key in source_versions}
+            step_context = {**context,
+                "resource_facts": {key: value for key, value in (context.get("resource_facts") or {}).items() if key in source_keys},
+                "object_refs": {key: value for key, value in (context.get("object_refs") or {}).items() if key in source_keys},
+            }
+            if len(step_datasets) == 1:
+                step_context.update(source_contexts[next(iter(step_datasets))])
+            elif multi_source_context:
+                # A tool that combines multiple materials has no single
+                # authoritative profile from which to infer columns or groups.
+                step_context.update(profile=None, profile_id=None, dataset_id=None)
             manifest = registry.require(candidate.capability_id, candidate.capability_version)
             selected_bindings = self._select_bindings(manifest)
             if len(selected_bindings) > 1 and any(
@@ -145,8 +160,10 @@ class CapabilityBinder:
                 # Profile-backed dataset adapters consume the exact persisted
                 # DataProfile in addition to their source table/structure refs.
                 if tool.toolId in _PROFILE_BACKED_DATA_TOOLS:
+                    if multi_source_context and len(step_datasets) != 1:
+                        raise CapabilityBindingFailed("this profile-backed Tool requires one exact source dataset per invocation", code="CAPABILITY_PROFILE_BINDING_MISSING")
                     input_refs.append(
-                        InputRef(refType="profile", ref="profile", fieldRole="profile")
+                        InputRef(refType="profile", ref=f"profile:{step_context['profile_id']}" if multi_source_context else "profile", fieldRole="profile")
                     )
                 for slot_name, slot_bindings in step.input_bindings.items():
                     for item in slot_bindings:
@@ -166,7 +183,7 @@ class CapabilityBinder:
                                     ref=exact_ref,
                                     fieldRole=slot_name,
                                     objectType=_OBJECT_TYPE_TO_EXEC.get(
-                                        next(
+                                        source_ref.object_type if source_ref is not None else next(
                                             slot
                                             for slot in manifest.input_slots
                                             if slot.name == slot_name
@@ -285,13 +302,12 @@ class CapabilityBinder:
                 resource_params, resource_sources = self._resource_fact_parameters(
                     tool=tool,
                     step=step,
-                    candidate=candidate,
                     context=context,
-                    decision=decision,
+                    source_ref_keys=source_keys_by_step[step.step_id],
                 )
                 profile_params, profile_sources = self._profile_parameters(
                     tool=tool,
-                    context=context,
+                    context=step_context,
                 )
                 executable_params = {
                     **default_params,
@@ -299,6 +315,11 @@ class CapabilityBinder:
                     **profile_params,
                     **dict(step.parameters),
                 }
+                if (candidate.capability_id in {"structure.local_environment_crystalnn", "structure.local_environment_voronoi"}
+                        and tool.toolId in {"structure.coordination_crystalnn", "structure.coordination_voronoinn"}):
+                    # N1 records the bounded structure's neighbors; only its N2
+                    # consumer accepts an explicit subset of sites to describe.
+                    executable_params.pop("site_indices", None)
                 parameter_sources: dict[str, tuple[str, str]] = {
                     key: (
                         "TOOL_DEFAULT",
@@ -339,6 +360,12 @@ class CapabilityBinder:
                         if key in allowed_params
                         or key not in _DATASET_SEMANTIC_ONLY_CONSTRAINTS
                     }
+                if tool.toolId == "viz.inline_xy":
+                    raw_table = executable_params.get("data_text")
+                    user_message = context.get("user_message")
+                    if (not isinstance(raw_table, str) or not raw_table.strip() or not isinstance(user_message, str)
+                            or raw_table.replace("\r\n", "\n") not in user_message.replace("\r\n", "\n")):
+                        raise CapabilityBindingFailed("表格内容与本条消息不一致，请直接粘贴原始小表格。", code="INLINE_DATA_SOURCE_MISMATCH")
                 parameter_provenance = [
                     resolved_parameter_provenance(
                         tool_id=tool.toolId,
@@ -377,6 +404,11 @@ class CapabilityBinder:
                             "capabilityId": candidate.capability_id,
                             "capabilityVersion": candidate.capability_version,
                             "capabilityPlanStepId": step.step_id,
+                            "sourceObjectVersionIds": [
+                                str(context["object_refs"][key].version_id)
+                                for key in source_keys_by_step[step.step_id]
+                                if key in (context.get("object_refs") or {})
+                            ],
                             "mandatoryCoverage": len(selected_bindings) > 1,
                         },
                         constraints={},
@@ -487,10 +519,37 @@ class CapabilityBinder:
                     semantic = {"producerStepId": producer.step_id, "producerOutputPort": producer_port.portId, "consumerStepId": consumer.step_id, "consumerInputPort": consumer_port.portId, "artifactKind": common_kind.value, "artifactContractVersion": common_version, "mediaType": common_media, "cardinality": producer_port.cardinality.value}
                     dep_bindings.append(DependencyBinding(bindingId=deterministic_binding_id(semantic), **semantic))
         graph_hash = compute_dependency_graph_hash(dep_bindings)
-        plan = AnalysisPlanV02(goal=capability_plan.objective, datasetId=str(context.get("dataset_id") or "agent2_dataset"), profileId=str(context.get("profile_id") or "agent2_profile"), toolRegistryVersion=self.tool_registry.version, graphHash=graph_hash, assumptions=[], warnings=[], steps=steps, dependencyBindings=dep_bindings, expectedArtifacts=expected)
-        dependency_result = validate_dependency_plan(plan.model_dump(mode="json"), registry=self.tool_registry, selected_tool_ids=sorted({step.toolId for step in steps}))
+        plan_fields = dict(goal=capability_plan.objective, datasetId=str(context.get("dataset_id") or "agent2_dataset"), profileId=str(context.get("profile_id") or "agent2_profile"), toolRegistryVersion=self.tool_registry.version, graphHash=graph_hash, assumptions=[], warnings=[], steps=steps, dependencyBindings=dep_bindings, expectedArtifacts=expected)
+        if multi_source_context:
+            used_versions = {value for item in steps for value in item.output.get("sourceObjectVersionIds", [])}
+            inventory = {source["versionId"]: {**source, "objectType": _OBJECT_TYPE_TO_EXEC.get(source["objectType"], "RawUnsupported")}
+                         for source in source_versions.values() if source["versionId"] in used_versions}
+            used_datasets = sorted({item["datasetId"] for item in inventory.values()})
+            if not used_datasets or set(inventory) != used_versions:
+                raise CapabilityBindingFailed("exact source inventory is missing from the plan context")
+            route = source_contexts[used_datasets[0]]
+            plan_fields.update(datasetId=route["dataset_id"], profileId=route["profile_id"])
+            if len(used_datasets) > 1:
+                plan = AnalysisPlanV03.model_validate({
+                    **plan_fields, "schemaVersion": "0.3",
+                    "steps": [item.model_dump(mode="json") for item in steps],
+                    "sourceContexts": [{"datasetId": key, "profileId": source_contexts[key]["profile_id"]} for key in used_datasets],
+                    "sourceVersions": [inventory[key] for key in sorted(inventory)],
+                })
+            else:
+                # Unused context does not make a single-dataset plan multi-source.
+                for item in steps:
+                    item.inputRefs = [ref.model_copy(update={"ref": "profile"}) if ref.refType == "profile" else ref for ref in item.inputRefs]
+                plan = AnalysisPlanV02(**plan_fields)
+        elif context.get("execution_scope") == "project":
+            plan_fields.update(datasetId=None, profileId=None)
+            plan = AnalysisPlanV04(**plan_fields, projectId=context["project_id"],
+                                  referenceSources=project_reference_inventory(self.tool_registry.get_tool_by_id(step.toolId) for step in steps))
+        else:
+            plan = AnalysisPlanV02(**plan_fields)
+        dependency_result = validate_dependency_plan(plan.model_dump(mode="json"), registry=self.tool_registry, selected_tool_ids=sorted(step.toolId for step in steps))
         if not dependency_result.ok:
-            raise CapabilityBindingFailed("AnalysisPlan dependency validation failed", code="ANALYSIS_PLAN_VALIDATION_FAILED")
+            raise CapabilityBindingFailed("AnalysisPlan dependency validation failed: " + "; ".join(item.message for item in dependency_result.errors), code="ANALYSIS_PLAN_VALIDATION_FAILED")
         plan_result = validate_plan(plan.model_dump(mode="json"), registry=self.tool_registry)
         if not plan_result.ok:
             raise CapabilityBindingFailed("AnalysisPlan validation failed: " + "; ".join(item.message for item in plan_result.errors), code="ANALYSIS_PLAN_VALIDATION_FAILED")
@@ -536,9 +595,8 @@ class CapabilityBinder:
         *,
         tool: Any,
         step: Any,
-        candidate: Any,
         context: dict[str, Any],
-        decision: ResearchTurnDecision | None,
+        source_ref_keys: list[str],
     ) -> tuple[dict[str, Any], dict[str, tuple[str, str]]]:
         metadata = build_tool_planner_metadata(tool)
         bindings = [
@@ -549,21 +607,7 @@ class CapabilityBinder:
         if not bindings:
             return {}, {}
 
-        ref_keys: list[str] = []
-        if decision is not None:
-            for requirement in decision.scientific_requirements:
-                if requirement.requirement_id in candidate.satisfies_requirement_ids:
-                    ref_keys.extend(requirement.subject_ref_keys)
-        for values in candidate.bound_source_ref_keys.values():
-            ref_keys.extend(values)
-        for values in step.input_bindings.values():
-            ref_keys.extend(
-                item.source_ref_key
-                for item in values
-                if item.kind == CapabilityBindingKind.SOURCE_OBJECT
-                and item.source_ref_key
-            )
-        ordered_ref_keys = list(dict.fromkeys(ref_keys))
+        ordered_ref_keys = list(dict.fromkeys(source_ref_keys))
         facts_by_ref = context.get("resource_facts") or {}
         resolved: dict[str, Any] = {}
         sources: dict[str, tuple[str, str]] = {}
@@ -651,6 +695,17 @@ class CapabilityBinder:
             for item in profile.get("semanticGroups") or []
             if isinstance(item, dict)
         ]
+        if len({str(item.get("objectId")) for item in semantic_columns}) > 1:
+            # A profile can contain several tables. Resolve column/group
+            # parameters only from the resource bound to this invocation.
+            resource_ids = {str(item.get("resource_id") or item.get("object_id"))
+                            for item in (context.get("resource_facts") or {}).values() if isinstance(item, dict)}
+            semantic_columns = [item for item in semantic_columns if str(item.get("objectId")) in resource_ids]
+            if not semantic_columns:
+                raise CapabilityBindingFailed("profile columns cannot be bound to the exact step source", code="CAPABILITY_PROFILE_BINDING_MISSING")
+            group_ids = {str(role.get("groupId")) for item in semantic_columns for role in item.get("roles") or []
+                         if isinstance(role, dict) and role.get("groupId")}
+            semantic_groups = [item for item in semantic_groups if item.get("groupId") in group_ids]
         resolved: dict[str, Any] = {}
         sources: dict[str, tuple[str, str]] = {}
         already_selected_columns: set[str] = set()

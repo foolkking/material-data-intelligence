@@ -96,7 +96,9 @@ def phase8_service_pipeline():
                 cwd=ROOT, env=environment, capture_output=True, text=True, timeout=240,
             )
             assert worker.returncode == 0, worker.stderr[-6000:]
-            task = Queue(queue_name, connection=Redis.from_url(redis_url)).fetch_job(f"agent2-report-{request['generation_id']}")
+            task = Queue(queue_name, connection=Redis.from_url(redis_url)).fetch_job(
+                f"agent2-report-{request['generation_id']}-{request['attempt_count'] + 1}"
+            )
             assert task is not None and task.is_finished
             result = task.return_value()
             reopen = subprocess.run([sys.executable, "-c", _REOPEN_PROCESS, result["report_id"]], cwd=ROOT, env=environment, capture_output=True, text=True, timeout=60)

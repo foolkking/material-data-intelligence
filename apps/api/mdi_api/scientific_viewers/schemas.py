@@ -53,6 +53,8 @@ class ScientificViewerProjection(BaseModel):
     viewer: ScientificViewerDescriptor
     payload_status: ViewerPayloadStatus
     payload: Any | None
+    viewer_scene: dict[str, Any] | None = None
+    viewer_scene_issue: str | None = None
     canonical_metadata: dict[str, Any]
     source_resource_refs: list[dict[str, Any]]
     content_hash: str

@@ -1,73 +1,125 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import type { Artifact } from "../../app/lib/planner-api";
 import type { ScientificWorkspace, WorkspaceSelectionContext, WorkspaceSelectionKind } from "../../app/lib/workspace-api";
 import { artifactChecksum, artifactIdentity } from "../../shared/workspace/workspace-renderer-registry";
+import { ElectronicPlot } from "./ElectronicPlot";
+import { ELECTRONIC_POINT_LIMIT, electronicNumber, electronicPlotData, electronicSpinLabel, type ElectronicPlotData } from "./electronic-plot";
 
 type Payload = Record<string, unknown> & { artifactType: "electronic.band_structure" | "electronic.dos"; schemaVersion: string; sourceResource: Record<string, unknown>; warnings: string[]; limitations: string[] };
-const MAX_PLOT_POINTS = 2_400;
-const MAX_BAND_PLOT_SERIES = 48;
-const MAX_DOS_PLOT_CHANNELS = 24;
 const MAX_TABLE_ROWS = 500;
 
 export function ElectronicStructurePanel({ artifacts, selected, workspace, onSelection }: Readonly<{ artifacts: Artifact[]; selected: Artifact; workspace: ScientificWorkspace; onSelection: (selection: WorkspaceSelectionContext) => void }>) {
   const current = parse(selected);
-  if (!current) return <section className="workspace-generic-renderer" role="alert"><h5>电子结构结果不可用</h5><p>N5_ELECTRONIC_CONTRACT_INVALID</p></section>;
+  if (!current) return <section className="workspace-generic-renderer" role="alert"><h5>电子结构数据暂时无法显示</h5><p>数据格式或数值未通过检查，请查看来源文件。</p><details><summary>技术详情</summary><code>N5_ELECTRONIC_CONTRACT_INVALID</code></details></section>;
   const parsed = artifacts.map((artifact) => ({ artifact, payload: parse(artifact) })).filter((item): item is { artifact: Artifact; payload: Payload } => item.payload !== null);
-  const band = parsed.find((item) => item.payload.artifactType === "electronic.band_structure") ?? (current.artifactType === "electronic.band_structure" ? { artifact: selected, payload: current } : null);
-  const dos = parsed.find((item) => item.payload.artifactType === "electronic.dos") ?? (current.artifactType === "electronic.dos" ? { artifact: selected, payload: current } : null);
+  const band = (current.artifactType === "electronic.band_structure" ? { artifact: selected, payload: current } : parsed.find(item => item.payload.artifactType === "electronic.band_structure")) ?? null;
+  const dos = (current.artifactType === "electronic.dos" ? { artifact: selected, payload: current } : parsed.find(item => item.payload.artifactType === "electronic.dos")) ?? null;
   const compatible = band && dos ? compatibility(band.payload, dos.payload) : null;
-  return <section className="workspace-generic-renderer" aria-label="电子结构" data-testid="electronic-structure-panel">
-    <header><h5>电子结构</h5><p>基于已保存供应方输出的分析结果。平台不会执行 DFT 或 GW 计算。</p></header>
-    {band ? <BandView artifact={band.artifact} payload={band.payload} workspace={workspace} onSelection={onSelection} /> : <p role="status">能带结构结果不可用。</p>}
-    {dos ? <DosView artifact={dos.artifact} payload={dos.payload} workspace={workspace} onSelection={onSelection} /> : <p role="status">态密度结果不可用。</p>}
-    <section aria-label="能带与态密度组合一致性" data-testid="electronic-combined-status">
-      <h6>能带 + 态密度</h6>
-      <p role="status">{compatible === null ? "组合视图需要同时存在已保存的能带和态密度结果。" : compatible ? "数据源、能量参考、费米能级和自旋语义完全兼容。" : "DO_NOT_COMBINE：电子结构来源语义不兼容。"}</p>
-    </section>
-    <h6>检查器来源</h6>
-    <dl><dt>工具</dt><dd>{String(record(current.tool)?.toolId)}@{String(record(current.tool)?.toolVersion)}</dd><dt>资源</dt><dd><code>{String(current.sourceResource.resourceHash)}</code></dd><dt>计算</dt><dd>{String(current.sourceResource.calculationIdentity)}</dd><dt>契约</dt><dd>{current.schemaVersion}</dd></dl>
-    {current.warnings.length > 0 && <p role="status">警告：{current.warnings.join(", ")}</p>}
-    <ul>{current.limitations.map((item) => <li key={item}>{item}</li>)}</ul>
+  const sources = (current.artifactType === "electronic.dos" ? [dos, band] : [band, dos]).filter((item): item is { artifact: Artifact; payload: Payload } => item !== null);
+  return <section className="workspace-generic-renderer electronic-structure-panel" aria-label="电子结构" data-testid="electronic-structure-panel">
+    {compatible === false ? <p className="electronic-data-note" role="status">这两份数据的来源或能量参考不同，曲线分别显示，请勿直接合并比较。</p> : null}
+    {sources.map(({ artifact, payload }) => payload.artifactType === "electronic.band_structure" ? <BandView key={`${artifactIdentity(artifact)}:${artifactChecksum(artifact)}`} artifact={artifact} payload={payload} workspace={workspace} onSelection={onSelection} /> : <DosView key={`${artifactIdentity(artifact)}:${artifactChecksum(artifact)}`} artifact={artifact} payload={payload} workspace={workspace} onSelection={onSelection} />)}
+    {sources.some(item => item.payload.warnings.length) ? <p className="electronic-data-note" role="status">源数据附带提示，详见“数据与来源”。</p> : null}
+    <details className="electronic-source-details"><summary>数据与来源</summary>
+      {compatible !== null ? <p data-testid="electronic-combined-status">{compatible ? "数据源、能量参考、费米能级和自旋语义完全兼容。" : "DO_NOT_COMBINE：电子结构来源语义不兼容。"}</p> : null}
+      {sources.map(({ artifact, payload }) => <section key={artifactIdentity(artifact)}><h6>{payload.artifactType === "electronic.band_structure" ? "能带来源" : "态密度来源"}</h6>
+        <dl><div><dt>工具</dt><dd>{String(record(payload.tool)?.toolId ?? "未提供")}@{String(record(payload.tool)?.toolVersion ?? "未提供")}</dd></div><div><dt>资源</dt><dd><code>{String(payload.sourceResource.resourceHash ?? "未提供")}</code></dd></div><div><dt>计算标识</dt><dd>{String(payload.sourceResource.calculationIdentity ?? "未提供")}</dd></div><div><dt>能量参考</dt><dd>{String(record(payload.energy)?.reference ?? "未提供")}</dd></div><div><dt>契约</dt><dd>{payload.schemaVersion}</dd></div></dl>
+        {payload.warnings.length ? <p>数据提示：{payload.warnings.join(" · ")}</p> : null}<ul>{payload.limitations.map(item => <li key={item}>{item}</li>)}</ul>
+      </section>)}
+    </details>
   </section>;
 }
 
 function BandView({ artifact, payload, workspace, onSelection }: PanelItemProps) {
-  const gap = record(payload.gap), bands = records(payload.bands), kpoints = records(payload.kpoints), states = records(payload.states);
-  const plotBands = bands.slice(0, MAX_BAND_PLOT_SERIES).map((band) => boundedNumbers(band.energiesEv));
-  const plotDomain = numericDomain(plotBands);
-  const hasPlotData = plotBands.some((values) => values.length > 0);
-  const visibleStates = states.slice(0, MAX_TABLE_ROWS);
-  return <section aria-label="电子能带结构" data-testid="electronic-band-view"><h6>电子能带</h6>
-    <p><strong>采样带隙：</strong> {gap?.valueEv === null || gap?.valueEv === undefined ? "不可用" : `${String(gap.valueEv)} eV`} · {String(gap?.directness)} · {String(gap?.classification)} <button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_BAND_GAP", {}, onSelection)}>选择带隙</button></p>
-    {hasPlotData ? <svg viewBox="0 0 640 220" role="img" aria-label="供应方能带曲线；数值可在表格中查看" data-testid="electronic-band-plot"><title>供应方能带曲线（有界显示）</title>{plotBands.map((values, index) => <polyline key={String(bands[index].bandIdentity)} fill="none" stroke={String(bands[index].spinChannel) === "down" ? "#b42318" : "#176b87"} strokeDasharray={String(bands[index].spinChannel) === "down" ? "6 4" : undefined} strokeWidth="2" points={polyline(values, plotDomain)} />)}</svg> : <p role="status">当前能带结果没有可绘制的有限数值；完整原始表仍可供检查。</p>}
-    {bands.length > plotBands.length || plotBands.some((values, index) => numbers(bands[index].energiesEv).length > values.length) ? <p className="notice" role="status">能带图为有界预览：显示 {plotBands.length} / {bands.length} 条能带，每条最多 {MAX_PLOT_POINTS.toLocaleString("zh-CN")} 个显示采样点；完整供应方结果未被修改。</p> : null}
-    <p className="notice" role="status">能带状态表显示 {visibleStates.length} / {states.length} 行；完整状态仍保留在权威结果中。</p>
-    <div className="workspace-table-scroll"><table><caption>能带状态数值表</caption><thead><tr><th scope="col">选择</th><th scope="col">自旋</th><th scope="col">能带</th><th scope="col">k 点</th><th scope="col">坐标</th><th scope="col">能量（eV）</th></tr></thead><tbody>{visibleStates.map((state) => { const point = kpoints.find((item) => item.kpointId === state.kpointId); return <tr key={String(state.stateId)}><td><button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_BAND_STATE", { spinChannelId: state.spinChannel, bandId: state.bandId, kpointId: state.kpointId, bandStateId: state.stateId }, onSelection)}>选择</button></td><td>{String(state.spinChannel)}</td><td>{String(state.bandId)}</td><td>{String(state.kpointId)}</td><td>{Array.isArray(point?.fractionalCoordinates) ? point.fractionalCoordinates.join(", ") : ""}</td><td>{String(state.energyEv)}</td></tr>; })}</tbody></table></div>
+  const gap = record(payload.gap), kpoints = records(payload.kpoints), states = records(payload.states);
+  const plot = useMemo(() => electronicPlotData(payload, "band"), [payload]);
+  const pagination = useTablePage(states.length);
+  const visibleStates = states.slice(pagination.start, pagination.end);
+  const points = new Map(kpoints.map(point => [point.kpointId, point]));
+  const gapValue = gap?.valueEv;
+  const hasGap = typeof gapValue === "number" && Number.isFinite(gapValue);
+  return <section className="electronic-result-section" aria-label="电子能带结构" data-testid="electronic-band-view">
+    <header className="electronic-section-heading"><h6>电子能带</h6><span>{plot.totalSeries} 条能带 · {kpoints.length} 个 k 点</span></header>
+    <div className="electronic-gap-summary">{hasGap ? <><span>采样带隙</span><strong>{electronicNumber(gapValue)} eV</strong><span>{gap?.directness === "DIRECT" ? "直接带隙" : gap?.directness === "INDIRECT" ? "间接带隙" : "类型未确定"}</span><button type="button" className="product-secondary-action" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_BAND_GAP", {}, onSelection)}>选择带隙</button></> : <span>源数据未提供带隙结果。</span>}</div>
+    {plot.curves.length ? <ElectronicPlot data={plot} kind="band" /> : <p role="status">当前能带结果没有可绘制的有限数值或完整坐标；原始数值仍可查看。</p>}
+    <PlotNotice plot={plot} kind="band" />
+    <details className="electronic-numeric-details"><summary>能带数值 · {states.length.toLocaleString("zh-CN")} 条</summary>
+      <TablePager label="能带" {...pagination} />
+      <div className="workspace-table-scroll" role="region" aria-label="能带数值表，可横向滚动" tabIndex={0}><table><caption>能带状态数值表</caption><thead><tr><th scope="col">选择</th><th scope="col">自旋</th><th scope="col">能带</th><th scope="col">k 点</th><th scope="col">坐标</th><th scope="col">能量（eV）</th></tr></thead><tbody>{visibleStates.map(state => { const point = points.get(state.kpointId); return <tr key={String(state.stateId)}><td><button type="button" className="product-secondary-action" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_BAND_STATE", { spinChannelId: state.spinChannel, bandId: state.bandId, kpointId: state.kpointId, bandStateId: state.stateId }, onSelection)}>选择</button></td><td>{electronicSpinLabel(String(state.spinChannel))}</td><td>{String(state.bandId)}</td><td>{String(point?.label || state.kpointId)}</td><td>{Array.isArray(point?.fractionalCoordinates) ? point.fractionalCoordinates.join(", ") : "—"}</td><td>{String(state.energyEv)}</td></tr>; })}</tbody></table></div>
+    </details>
   </section>;
 }
 
 function DosView({ artifact, payload, workspace, onSelection }: PanelItemProps) {
-  const energies = numbers(payload.energiesEv), points = strings(payload.energyPointIds), total = records(payload.totalDos), projections = records(payload.projections), channels = [...total, ...projections];
-  const plotChannels = channels.slice(0, MAX_DOS_PLOT_CHANNELS).map((channel) => boundedNumbers(channel.values));
-  const plotDomain = numericDomain(plotChannels);
-  const hasPlotData = plotChannels.some((values) => values.length > 0);
-  const allRows = channels.flatMap((channel) => energies.map((energy, index) => ({ channel, energy, index })));
-  const visibleRows = allRows.slice(0, MAX_TABLE_ROWS);
-  return <section aria-label="电子态密度" data-testid="electronic-dos-view"><h6>电子态密度（DOS）</h6><p><strong>投影覆盖：</strong> {String(payload.projectionCompleteness)} · <strong>单位：</strong> {String(payload.dosUnitSemantic)}</p>
-    {hasPlotData ? <svg viewBox="0 0 640 220" role="img" aria-label="供应方态密度通道；数值可在表格中查看" data-testid="electronic-dos-plot"><title>供应方电子态密度（有界显示）</title>{plotChannels.map((values, index) => <polyline key={String(channels[index].channelIdentity)} fill="none" stroke={String(channels[index].spinChannel) === "down" ? "#b42318" : index === 0 ? "#176b87" : "#627d32"} strokeDasharray={String(channels[index].spinChannel) === "down" ? "6 4" : undefined} strokeWidth="2" points={polyline(values, plotDomain)} />)}</svg> : <p role="status">当前 DOS 结果没有可绘制的有限数值；完整原始表仍可供检查。</p>}
-    {channels.length > plotChannels.length || plotChannels.some((values, index) => numbers(channels[index].values).length > values.length) ? <p className="notice" role="status">DOS 图为有界预览：显示 {plotChannels.length} / {channels.length} 个通道，每个通道最多 {MAX_PLOT_POINTS.toLocaleString("zh-CN")} 个显示采样点；完整供应方结果未被修改。</p> : null}
-    <p className="notice" role="status">态密度表显示 {visibleRows.length} / {allRows.length} 个通道-能量数值；完整数值仍保留在权威结果中。</p>
-    <div className="workspace-table-scroll"><table><caption>态密度数值表</caption><thead><tr><th scope="col">选择</th><th scope="col">通道</th><th scope="col">自旋</th><th scope="col">能量（eV）</th><th scope="col">DOS</th></tr></thead><tbody>{visibleRows.map(({ channel, energy, index }) => <tr key={`${String(channel.channelIdentity)}:${points[index]}`}><td><button type="button" onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_DOS_POINT", { spinChannelId: channel.spinChannel, dosChannelId: channel.channelId, projectionId: channel.projectionKind ? channel.channelIdentity : undefined, energyPointId: points[index] }, onSelection)}>选择</button></td><td>{String(channel.label ?? channel.channelId)}</td><td>{String(channel.spinChannel)}</td><td>{energy}</td><td>{numbers(channel.values)[index]}</td></tr>)}</tbody></table></div>
+  const energies = Array.isArray(payload.energiesEv) ? payload.energiesEv : [], points = Array.isArray(payload.energyPointIds) ? payload.energyPointIds : [], channels = [...records(payload.totalDos), ...records(payload.projections)];
+  const plot = useMemo(() => electronicPlotData(payload, "dos"), [payload]);
+  const totalRows = channels.length * energies.length;
+  const pagination = useTablePage(totalRows);
+  const visibleRows = Array.from({ length: pagination.end - pagination.start }, (_, offset) => {
+    const ordinal = pagination.start + offset;
+    const channel = channels[Math.floor(ordinal / energies.length)];
+    const index = ordinal % energies.length;
+    const values = Array.isArray(channel.values) ? channel.values : [];
+    return { channel, energy: energies[index], value: values[index], index };
+  });
+  const unit = ({ states_per_ev: "态密度（states/eV）", states_per_ev_cell: "态密度（states/eV/cell）", states_per_ev_formula_unit: "态密度（states/eV/f.u.）", source_relative: "态密度（相对单位）" } as Record<string, string>)[String(payload.dosUnitSemantic)] || "态密度（单位未提供）";
+  return <section className="electronic-result-section" aria-label="电子态密度" data-testid="electronic-dos-view">
+    <header className="electronic-section-heading"><h6>电子态密度</h6><span>{energies.length.toLocaleString("zh-CN")} 个能量点</span></header>
+    {records(payload.projections).length ? <p className="electronic-data-note">{payload.projectionCompleteness === "COMPLETE" ? "包含完整投影通道。" : "仅展示已提供的投影通道，不代表全部贡献。"}</p> : null}
+    {plot.curves.length ? <ElectronicPlot data={plot} kind="dos" dosUnit={unit} /> : <p role="status">当前态密度结果没有可绘制的有限数值或完整坐标；原始数值仍可查看。</p>}
+    <PlotNotice plot={plot} kind="dos" />
+    <details className="electronic-numeric-details"><summary>态密度数值 · {totalRows.toLocaleString("zh-CN")} 条</summary>
+      <TablePager label="态密度" {...pagination} />
+      <div className="workspace-table-scroll" role="region" aria-label="态密度数值表，可横向滚动" tabIndex={0}><table><caption>态密度数值表</caption><thead><tr><th scope="col">选择</th><th scope="col">通道</th><th scope="col">自旋</th><th scope="col">能量（eV）</th><th scope="col">DOS</th></tr></thead><tbody>{visibleRows.map(({ channel, energy, value, index }) => <tr key={String(channel.channelIdentity) + ":" + index}><td><button type="button" className="product-secondary-action" disabled={typeof points[index] !== "string" || typeof value !== "number"} onClick={() => emit(workspace, artifact, payload, "ELECTRONIC_DOS_POINT", { spinChannelId: channel.spinChannel, dosChannelId: channel.channelId, projectionId: channel.projectionKind ? channel.channelIdentity : undefined, energyPointId: points[index] }, onSelection)}>选择</button></td><td>{String(channel.label ?? channel.channelId)}</td><td>{electronicSpinLabel(String(channel.spinChannel))}</td><td>{String(energy)}</td><td>{value === undefined ? "—" : String(value)}</td></tr>)}</tbody></table></div>
+    </details>
   </section>;
+}
+
+function useTablePage(total: number) {
+  const [requestedPage, setPage] = useState(1);
+  const pages = Math.max(1, Math.ceil(total / MAX_TABLE_ROWS));
+  const page = Math.min(requestedPage, pages);
+  const start = (page - 1) * MAX_TABLE_ROWS;
+  return { total, page, pages, start, end: Math.min(start + MAX_TABLE_ROWS, total), setPage };
+}
+
+function TablePager({ label, total, page, pages, start, end, setPage }: ReturnType<typeof useTablePage> & { label: string }) {
+  return <div className="electronic-table-pagination" aria-label={`${label}表格分页`}>
+    <span role="status">{total ? `${start + 1}–${end} / ${total} 行` : "暂无数值"}</span>
+    {pages > 1 ? <div>
+      <button type="button" className="product-secondary-action" disabled={page === 1} onClick={() => setPage(page - 1)}>上一页</button>
+      <label>第 <input aria-label={`${label}页码`} type="number" min={1} max={pages} value={page} onChange={event => {
+        const value = event.currentTarget.valueAsNumber;
+        if (Number.isFinite(value)) setPage(Math.max(1, Math.min(pages, Math.trunc(value))));
+      }} /> / {pages} 页</label>
+      <button type="button" className="product-secondary-action" disabled={page === pages} onClick={() => setPage(page + 1)}>下一页</button>
+    </div> : null}
+  </div>;
+}
+
+function PlotNotice({ plot, kind }: { plot: ElectronicPlotData; kind: "band" | "dos" }) {
+  const count = plot.curves.length;
+  return <>{plot.invalidSeries ? <p className="electronic-data-note" role="status">{plot.invalidSeries} 条曲线的数值与坐标不匹配，未绘制；请在数值表中检查来源。</p> : null}
+    {plot.totalSeries > count || plot.curves.some(curve => curve.sampled) ? <details className="electronic-preview-details"><summary>{plot.totalSeries > count ? "图中仅显示部分曲线" : "密集曲线已抽样显示"}，原始数据未修改</summary><p className="electronic-data-note">{kind === "band" ? "能带图" : "态密度图"}为有界预览：显示 {count} / {plot.totalSeries} {kind === "band" ? "条能带" : "个通道"}，每条最多 {ELECTRONIC_POINT_LIMIT.toLocaleString("zh-CN")} 个原始采样点，保留端点与区间极值。完整数值未修改。</p></details> : null}</>;
 }
 
 type PanelItemProps = Readonly<{ artifact: Artifact; payload: Payload; workspace: ScientificWorkspace; onSelection: (selection: WorkspaceSelectionContext) => void }>;
 function emit(workspace: ScientificWorkspace, artifact: Artifact, payload: Payload, kind: WorkspaceSelectionKind, identity: Record<string, unknown>, onSelection: (selection: WorkspaceSelectionContext) => void) {
   const artifactId = artifactIdentity(artifact), checksum = artifactChecksum(artifact), electronicResourceId = String(payload.sourceResource.resourceId ?? "");
   if (!artifactId || !checksum || !workspace.datasetId || !workspace.datasetVersion || !electronicResourceId) return;
-  const primary = { selectionSchemaVersion: "1.0", kind, sourceScopeHash: workspace.sourceReferenceHash, projectId: workspace.projectId, datasetId: workspace.datasetId, datasetVersion: workspace.datasetVersion, jobId: workspace.sourceJobId, artifactId, artifactChecksum: checksum, electronicResourceId, ...identity } as never;
-  onSelection({ schemaVersion: "1.0", sourceScopeHash: workspace.sourceReferenceHash, primary, secondary: [], propagation: "EXACT_COMPATIBLE_ONLY", compatibility: "EXACT", cleared: false });
+  let sourceScopeHash = workspace.sourceReferenceHash, datasetVersion = workspace.datasetVersion;
+  if (workspace.sourceJobId === "source-view") {
+    // A companion source owns its immutable scope, even when another resource
+    // is the active tab. Generated results retain their shared Job scope.
+    const metadata = artifact.metadata;
+    if (artifact.jobId !== "source-view" || !metadata?.sourceObjectId || artifactId !== `source:${metadata.sourceObjectId}` || metadata.sourceDatasetId !== workspace.datasetId) return;
+    sourceScopeHash = checksum;
+    datasetVersion = typeof metadata.sourceVersionId === "string" && metadata.sourceVersionId ? metadata.sourceVersionId : checksum;
+  }
+  const primary = { selectionSchemaVersion: "1.0", kind, sourceScopeHash, projectId: workspace.projectId, datasetId: workspace.datasetId, datasetVersion, jobId: workspace.sourceJobId, artifactId, artifactChecksum: checksum, electronicResourceId, ...identity } as never;
+  onSelection({ schemaVersion: "1.0", sourceScopeHash, primary, secondary: [], propagation: "EXACT_COMPATIBLE_ONLY", compatibility: "EXACT", cleared: false });
 }
 
 function compatibility(band: Payload, dos: Payload): boolean {
@@ -84,24 +136,8 @@ function parse(artifact: Artifact): Payload | null {
   if (type === "electronic.dos" && (!Array.isArray(payload.energiesEv) || !Array.isArray(payload.energyPointIds) || !Array.isArray(payload.totalDos) || !Array.isArray(payload.projections))) return null;
   return payload as Payload;
 }
-function polyline(values: number[], domain: readonly [number, number]): string { const [min, max] = domain, range = max - min || 1; return values.map((value, index) => `${20 + index * (600 / Math.max(1, values.length - 1))},${200 - ((value - min) / range) * 180}`).join(" "); }
 function record(value: unknown): Record<string, unknown> | null { return value !== null && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null; }
 function records(value: unknown): Array<Record<string, unknown>> { return Array.isArray(value) ? value.filter((item): item is Record<string, unknown> => record(item) !== null) : []; }
-function numbers(value: unknown): number[] { return Array.isArray(value) ? value.filter((item): item is number => typeof item === "number" && Number.isFinite(item)) : []; }
-function boundedNumbers(value: unknown): number[] {
-  const values = numbers(value);
-  if (values.length <= MAX_PLOT_POINTS) return values;
-  return Array.from({ length: MAX_PLOT_POINTS }, (_, index) => values[Math.round(index * (values.length - 1) / (MAX_PLOT_POINTS - 1))]);
-}
-function numericDomain(series: readonly number[][]): [number, number] {
-  let min = 0, max = 1;
-  for (const values of series) for (const value of values) {
-    if (value < min) min = value;
-    if (value > max) max = value;
-  }
-  return [min, max];
-}
-function strings(value: unknown): string[] { return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : []; }
 function boundedJson(value: unknown, depth = 0): boolean {
   if (depth > 12) return false;
   if (value === null || typeof value === "string" || typeof value === "boolean") return true;

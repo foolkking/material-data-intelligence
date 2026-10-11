@@ -126,7 +126,7 @@ def test_phase5_queue_worker_submit_and_retry_are_idempotent(tmp_path: Path) -> 
     assert repos.artifacts.list_for_job("job_phase5")[0]["storageProvider"] == "s3"
 
 
-def test_phase5_queue_worker_crash_retry_preserves_one_tool_call_and_artifact(tmp_path: Path) -> None:
+def test_phase5_queue_worker_explicit_retry_preserves_one_tool_call_and_artifact(tmp_path: Path) -> None:
     repos = _seed_in_memory_repos()
     attempts = {"count": 0}
 
@@ -143,10 +143,19 @@ def test_phase5_queue_worker_crash_retry_preserves_one_tool_call_and_artifact(tm
     )
 
     failed = runtime.handle_job("job_phase5", plan=_plan())
-    recovered = runtime.handle_job("job_phase5", plan=_plan())
+    replay = runtime.handle_job("job_phase5", plan=_plan())
 
     assert failed.status == "failed"
+    assert replay.status == "failed"
+    assert attempts["count"] == 1
+    assert repos.artifacts.list_for_job("job_phase5") == []
+    # Terminal failures require an explicit requeue; delayed wakeups cannot
+    # silently resume scientific work after the user has seen a failure.
+    repos.jobs.set_status("job_phase5", "queued")
+    recovered = runtime.handle_job("job_phase5", plan=_plan())
+
     assert recovered.status == "completed"
+    assert attempts["count"] == 2
     assert recovered.tool_call_count == 1
     assert recovered.artifact_count == 1
     assert repos.tool_calls.list_for_job("job_phase5")[0]["status"] == "completed"

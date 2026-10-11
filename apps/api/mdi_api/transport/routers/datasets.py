@@ -8,6 +8,7 @@ from starlette.requests import Request
 
 from mdi_api.input_transport import CreateUploadSessionRequest, input_transport_capability_contract
 from mdi_material_parsers import stable_sample_reference
+from mdi_api.scientific_viewers.structure_preview import source_structure_preview
 
 
 _DEFAULT_JSON_LIST_LIMIT = 100_000
@@ -104,12 +105,18 @@ def get_dataset_object_store(dataset_id: str) -> dict[str, object]:
                 object_id=canonical_id,
                 object_hash=object_hash,
             )
+        preview = source_structure_preview(
+            payload, object_type=str(identity.get("objectType") or ""), object_id=canonical_id,
+            source_hash=object_hash, dataset_id=str(identity.get("datasetId") or dataset_id),
+        )
         resources.append({
             "objectId": canonical_id,
             "objectType": identity.get("objectType"),
             "objectHash": object_hash,
             "datasetId": identity.get("datasetId") or dataset_id,
             "payload": payload,
+            **({"viewerScene": preview.scene} if preview.scene is not None else {}),
+            **({"viewerSceneIssue": preview.issue} if preview.issue else {}),
         })
         seen.add(canonical_id)
     return {"datasetId": dataset_id, "resources": resources}

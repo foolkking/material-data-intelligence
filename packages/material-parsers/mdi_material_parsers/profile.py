@@ -97,7 +97,7 @@ def build_data_profile(
         phononSummary=_phonon_summary(objects),
         trajectorySummary=_trajectory_summary(objects),
         qualityIssues=quality_issues,
-        recommendedTasks=_recommended_tasks(structure_objects, dataframe_objects),
+        recommendedTasks=_recommended_tasks(structure_objects, readiness, platform_tool_ids),
         profileContractVersion=profile_contract_version,
         semanticRulesVersion=SEMANTIC_RULES_VERSION,
         semanticHash=semantic_hash,
@@ -495,7 +495,61 @@ def _quality_issues(parse_results: list[ParseResult]) -> list[dict[str, Any]]:
     return issues
 
 
-def _recommended_tasks(structures: list[NormalizedObjectDraft], dataframes: list[NormalizedObjectDraft]) -> list[dict[str, Any]]:
+REGRESSION_RECOMMENDATION_TOOLS = (
+    "ml.basic_metrics", "ml.density_scatter", "ml.error_distribution",
+    "ml.outlier_table", "ml.regression_evaluation",
+)
+
+
+def project_profile_recommendations(profile: dict[str, Any], platform_tool_ids: set[str] | None) -> dict[str, Any]:
+    """Refresh advisory availability without changing saved semantics or hashes.
+
+    Execution continues to use the immutable profile and validated Tool Registry;
+    recommendations are not scientific authority or permission to execute.
+    """
+    tasks = list(profile.get("recommendedTasks") or [])
+    old_recommendation = any(item.get("taskId") == "ml.evaluation" for item in tasks)
+    recommendation = _regression_recommendation(
+        profile.get("analysisReadiness") or [], platform_tool_ids, include_unassessed=old_recommendation,
+    )
+    return {**profile, "recommendedTasks": [
+        *(item for item in tasks if item.get("taskId") != "ml.evaluation"),
+        *([recommendation] if recommendation else []),
+    ]}
+
+
+def _regression_recommendation(
+    readiness: list[dict[str, Any]], platform_tool_ids: set[str] | None, *, include_unassessed: bool = False,
+) -> dict[str, Any] | None:
+    matches = [item for item in readiness if item.get("capability") == "regression_evaluation"]
+    assessed = matches[0] if len(matches) == 1 else {}
+    if not assessed.get("matchingGroups") and not include_unassessed:
+        return None
+    data_status = assessed.get("dataStatus", "NOT_EVALUATED")
+    platform_status = "NOT_EVALUATED" if platform_tool_ids is None else (
+        "AVAILABLE" if set(REGRESSION_RECOMMENDATION_TOOLS) <= platform_tool_ids else "UNAVAILABLE"
+    )
+    if data_status == "AMBIGUOUS":
+        reason = "目标值与预测值的对应关系不明确，请先确认列分组。"
+    elif data_status != "READY":
+        reason = "现有数据档案尚未确认完整的目标值与预测值分组。"
+    elif platform_status == "NOT_EVALUATED":
+        reason = "已识别目标值与预测值；当前工具可用性尚未检查。"
+    elif platform_status != "AVAILABLE":
+        reason = "已识别目标值与预测值，但当前工具注册表未提供完整的回归评估工具。"
+    else:
+        reason = "可评估已有预测的误差、对比散点和高误差样本；不训练模型。"
+    return {
+        "taskId": "ml.evaluation", "label": "回归预测评估", "stage": "mvp", "taskType": "ml_evaluation",
+        "availableNow": data_status == "READY" and platform_status == "AVAILABLE",
+        "requiredTools": list(REGRESSION_RECOMMENDATION_TOOLS), "reason": reason,
+        "dataStatus": data_status, "platformStatus": platform_status,
+    }
+
+
+def _recommended_tasks(
+    structures: list[NormalizedObjectDraft], readiness: list[dict[str, Any]], platform_tool_ids: set[str] | None,
+) -> list[dict[str, Any]]:
     tasks: list[dict[str, Any]] = []
     if structures:
         tasks.extend(
@@ -520,18 +574,8 @@ def _recommended_tasks(structures: list[NormalizedObjectDraft], dataframes: list
                 },
             ]
         )
-    if dataframes and _has_roles(dataframes[0], {"target", "prediction"}):
-        tasks.append(
-            {
-                "taskId": "ml.evaluation",
-                "label": "ML prediction evaluation",
-                "stage": "mvp",
-                "taskType": "ml_evaluation",
-                "availableNow": False,
-                "requiredTools": ["ml.basic_metrics", "ml.error_distribution", "ml.outlier_table"],
-                "reason": "Target and prediction columns were detected; the product capability remains planned until its bounded adapter and artifact contract are implemented.",
-            }
-        )
+    if recommendation := _regression_recommendation(readiness, platform_tool_ids):
+        tasks.append(recommendation)
     return tasks
 
 

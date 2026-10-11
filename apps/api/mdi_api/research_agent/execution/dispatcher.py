@@ -4,9 +4,11 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Protocol
 from uuid import UUID, uuid4
+from mdi_schemas import AnalysisPlanV04
+from mdi_api.application.research.planning.integrity import compute_plan_hash
 
 from mdi_api.application.research.ports import ResearchRepositoryFactoryPort
-from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus
+from mdi_api.research_agent.schemas import ResearchAction, ResearchTurnEventType, ResearchTurnStatus, TERMINAL_TURN_STATUSES
 from mdi_api.research_agent.turns.state_machine import ensure_transition
 from mdi_api.research_agent.execution.errors import ExecutionPlanNotReady, ExecutionQueuePublishFailed, ExecutionSourceUnavailable
 
@@ -52,6 +54,8 @@ class ResearchExecutionDispatcher:
             if action not in {ResearchAction.ANALYZE.value, ResearchAction.CONTINUE_ANALYSIS.value}:
                 raise ExecutionPlanNotReady("only ANALYZE and CONTINUE_ANALYSIS turns can execute")
             status = ResearchTurnStatus(str(turn["status"]))
+            if status in TERMINAL_TURN_STATUSES or status == ResearchTurnStatus.CANCELING:
+                raise ExecutionPlanNotReady("本次研究已结束或正在取消，无法重新排队。请创建新的研究执行。")
             if status not in {ResearchTurnStatus.PLAN_READY, ResearchTurnStatus.QUEUED}:
                 if turn.get("job_id"):
                     job_id = str(turn["job_id"])
@@ -65,7 +69,15 @@ class ResearchExecutionDispatcher:
                 snapshot = unit.agent2.research_context_snapshots.get_for_turn(turn_id)
                 if snapshot is None:
                     raise ExecutionPlanNotReady("PLAN_READY turn has no immutable ResearchContextSnapshot")
-                self._verify_exact_sources(unit, turn, snapshot)
+                plan = unit.repositories.analysis_plans.get_plan(str(turn["analysis_plan_id"]))
+                if (plan.get("analysisPlan") or {}).get("schemaVersion") == "0.4":
+                    project_plan = AnalysisPlanV04.model_validate(plan["analysisPlan"])
+                    if (project_plan.projectId != str(turn["project_id"]) or plan.get("projectId") != project_plan.projectId
+                        or plan.get("planHash") != compute_plan_hash(project_plan)
+                        or plan.get("datasetId") is not None or plan.get("profileId") is not None):
+                        raise ExecutionSourceUnavailable("Project Plan ownership or content is invalid")
+                else:
+                    self._verify_exact_sources(unit, turn, snapshot)
                 # The Turn is the durable idempotency key; retrying after a
                 # commit/publish split must address the same Job identity.
                 job_id = str(turn.get("job_id") or f"job_agent2_{str(turn_id).replace('-', '')}")
@@ -75,7 +87,6 @@ class ResearchExecutionDispatcher:
                 except Exception:
                     existing_job = None
                 if existing_job is None:
-                    plan = unit.repositories.analysis_plans.get_plan(str(turn["analysis_plan_id"]))
                     research_session = unit.agent2.research_turns.get_session(str(turn["research_session_id"]))
                     if research_session is None:
                         raise ExecutionPlanNotReady("Research Session no longer exists")
@@ -112,11 +123,13 @@ class ResearchExecutionDispatcher:
             raise ExecutionQueuePublishFailed("execution queue publish failed; the same Job remains recoverable") from exc
         backend = str(getattr(queued, "backend", None) or (queued.get("backend") if isinstance(queued, dict) else "unknown"))
         enqueued = bool(getattr(queued, "enqueued", None) if not isinstance(queued, dict) else queued.get("enqueued"))
+        already_queued = (getattr(queued, "already_queued", False) if not isinstance(queued, dict) else queued.get("already_queued")) is True
+        confirmed = enqueued or already_queued
         message = str(getattr(queued, "message", None) or (queued.get("message") if isinstance(queued, dict) else "queued"))
-        if enqueued:
+        if confirmed:
             with self.repository_factory.unit_of_work() as unit:
                 self._event(unit, turn_id, ResearchTurnEventType.JOB_QUEUE_PUBLISHED, {"status": ResearchTurnStatus.QUEUED.value})
-        return DispatchResult(turn_id=turn_id, job_id=job_id, queued=enqueued, queue_backend=backend, message=message)
+        return DispatchResult(turn_id=turn_id, job_id=job_id, queued=confirmed, queue_backend=backend, message=message)
 
     @staticmethod
     def _verify_exact_sources(unit: Any, turn: dict[str, Any], snapshot: dict[str, Any]) -> None:

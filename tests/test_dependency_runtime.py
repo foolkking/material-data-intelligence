@@ -8,7 +8,7 @@ import pytest
 
 from mdi_api.repositories import InMemoryRepositoryBundle, compute_plan_hash
 from mdi_api.routers.planner import get_planner_job, get_planner_job_dependencies
-from mdi_schemas import AnalysisPlanV02, compute_dependency_graph_hash, make_dependency_binding
+from mdi_schemas import AnalysisPlanV02, AnalysisPlanV03, DataProfile, compute_dependency_graph_hash, make_dependency_binding
 from mdi_tool_registry import load_manifests, validate_dependency_plan
 from mdi_workers import QueueWorkerRuntime
 
@@ -164,6 +164,115 @@ def _object_store(*, bad_band: bool = False) -> dict[str, Any]:
         "source_dos": _source("projected_dos.json"),
         "formulas": ["Si", "Fe2O3"],
     }
+
+
+def _multi_plan_and_store():
+    from mdi_workers.source_resources import register_runtime_source_resource
+    from mdi_schemas import dependency_semantic_hash
+    band_id, dos_id = "11111111-1111-4111-8111-111111111111", "22222222-2222-4222-8222-222222222222"
+    draft = _plan().model_dump(mode="json")
+    draft.update(schemaVersion="0.3", datasetId="dataset_band", profileId="profile_band",
+        sourceContexts=[{"datasetId": "dataset_band", "profileId": "profile_band"}, {"datasetId": "dataset_dos", "profileId": "profile_dos"}],
+        sourceVersions=[{"objectId": band_id, "versionId": band_id, "datasetId": "dataset_band", "objectType": "PhononBand"},
+                        {"objectId": dos_id, "versionId": dos_id, "datasetId": "dataset_dos", "objectType": "PhononDos"}])
+    store = {}
+    for suffix, source_id, object_type, fixture in [("band", band_id, "PhononBand", "stable_band.json"), ("dos", dos_id, "PhononDos", "projected_dos.json")]:
+        data = _source(fixture)
+        register_runtime_source_resource(store, object_id=source_id, object_type=object_type,
+            object_hash=dependency_semantic_hash(data), dataset_id=f"dataset_{suffix}", value=data)
+        profile = DataProfile(profileId=f"profile_{suffix}", datasetId=f"dataset_{suffix}", datasetType="structure", version="1.0", createdAt="2026-10-06T00:00:00Z")
+        register_runtime_source_resource(store, object_id=f"profile:profile_{suffix}", object_type="DataProfile",
+            object_hash=f"profile_{suffix}", dataset_id=f"dataset_{suffix}", value=profile)
+    for step in draft["steps"]:
+        ids = []
+        for input_ref in step["inputRefs"]:
+            input_ref["ref"] = band_id if input_ref["ref"] == "source_band" else dos_id
+            ids.append(input_ref["ref"])
+        step["output"]["sourceObjectVersionIds"] = ids or [band_id, dos_id]
+    return AnalysisPlanV03.model_validate(draft), store
+
+
+def test_cross_dataset_dependency_outputs_keep_all_sources_without_false_dataset_ownership(tmp_path):
+    plan, store = _multi_plan_and_store()
+    repos, job_id, plan_hash = _seed(plan)
+    runtime = QueueWorkerRuntime(repositories=repos, registry=load_manifests(), artifact_root=tmp_path / "adapter")
+    result = runtime.handle_job(job_id, object_store=store)
+    assert result.status == "completed", repos.job_events.list_for_job(job_id)
+    assert result.plan_hash == plan_hash
+    artifacts = repos.artifacts.list_for_job(job_id)
+    lineages = repos.dependency_execution.list_lineage_for_job(job_id)
+    combined = next(item for item in lineages if item["producerToolId"] == "phonon.band_dos")
+    assert combined["datasetId"] is None and combined["profileId"] is None
+    assert len(combined["sourceVersions"]) == 2 and len(combined["upstreamArtifactIds"]) == 2
+    assert next(item for item in artifacts if item["type"] == "phonon_band_dos_json")["datasetId"] is None
+    assert {item["datasetId"] for item in lineages if item["producerStepId"] != "step_combined"} == {"dataset_band", "dataset_dos"}
+    details = get_planner_job_dependencies(job_id, repositories=repos)
+    assert details["planSchemaVersion"] == "0.3"
+    assert details["execution"]["outcome"] == "ALL_SUCCEEDED"
+    assert len(details["bindingResolutions"]) == 2
+    assert len(details["plannedBindingRecords"]) == 2
+    assert runtime.handle_job(job_id, object_store=store).status == "completed"
+    assert len(repos.tool_calls.list_for_job(job_id)) == 3
+    assert len(repos.artifacts.list_for_job(job_id)) == 3
+
+
+@pytest.mark.parametrize("wrong_source", [False, True])
+def test_cross_dataset_msd_reuse_verifies_persisted_sources_before_diffusion(tmp_path, wrong_source):
+    from mdi_tool_registry import build_artifact_port_inventory
+    plan, store = _multi_plan_and_store()
+    draft = plan.model_dump(mode="json")
+    for source in draft["sourceVersions"]:
+        source["objectType"] = "Trajectory"
+    ids = [item["versionId"] for item in draft["sourceVersions"]]
+    draft.update(dependencyBindings=[], graphHash=compute_dependency_graph_hash([]), expectedArtifacts=[], steps=[
+        {**_step(f"diffuse_{i}", "trajectory.diffusion", refs=[{"refType": "artifact", "ref": f"prior_msd_{i}", "fieldRole": "msd_artifact", "objectType": "Trajectory"}], artifacts=["table_json"]),
+         "params": {"fit_start_time_ps": 1.0, "fit_end_time_ps": 8.0, "minimum_fit_points": 5, "minimum_fit_duration_ps": 1.0, "minimum_r_squared": 0.9},
+         "output": {"artifactTypes": ["table_json"], "sourceObjectVersionIds": [ids[1-i] if wrong_source else source_id]}}
+        for i, source_id in enumerate(ids)])
+    plan = AnalysisPlanV03.model_validate(draft)
+    repos, job_id, _ = _seed(plan)
+    runtime = QueueWorkerRuntime(repositories=repos, registry=load_manifests(), artifact_root=tmp_path / "adapter")
+    for i, source in enumerate(plan.sourceVersions):
+        source_context = next(item for item in plan.sourceContexts if item.datasetId == source.datasetId)
+        producer = AnalysisPlanV02.model_validate({"schemaVersion": "0.2", "goal": "Saved MSD", "datasetId": source.datasetId,
+            "profileId": source_context.profileId, "toolRegistryVersion": runtime.registry.version, "graphHash": compute_dependency_graph_hash([]),
+            "steps": [{**_step("msd", "trajectory.msd", refs=[{"refType": "normalized_object", "ref": str(source.versionId), "objectType": "Trajectory"}], artifacts=["table_json"]),
+                       "output": {"sourceObjectVersionIds": [str(source.versionId)]}}]})
+        producer_record = repos.analysis_plans.save_plan({"id": f"prior_plan_{i}", "projectId": "project_l3_runtime", "analysisPlan": producer.model_dump(mode="json")})
+        producer_job = {"id": f"prior_job_{i}", "projectId": "project_l3_runtime", "datasetId": source.datasetId}
+        payload = {"artifactType": "trajectory.msd", "schema_version": "phase10n4.trajectory_msd.v1",
+            "trajectory": {"resourceId": "sha256:" + str(i+1)*64, "trajectoryHash": "sha256:" + str(i+1)*64,
+                           "contractVersion": "phase10g.trajectory.v1", "frameCount": 20, "atomCount": 4},
+            "parameterHash": "2"*64, "lagTimesPs": [float(v) for v in range(1, 9)],
+            "totalMsdAngstrom2": [0.6*(i+1)*v for v in range(1, 9)],
+            "directionalMsdAngstrom2": {axis: [0.2*(i+1)*v for v in range(1, 9)] for axis in ["x", "y", "z"]},
+            "originCounts": list(range(20, 12, -1))}
+        stored = runtime.artifact_storage.put_bytes(f"prior/msd_{i}.json", json.dumps(payload).encode(), content_type="application/json")
+        artifact = repos.artifacts.save({"id": f"prior_msd_{i}", "projectId": "project_l3_runtime", "datasetId": source.datasetId,
+            "jobId": producer_job["id"], "toolCallId": f"prior_call_{i}", "type": "table_json", "name": "MSD",
+            "storageKey": stored.storage_key, "sizeBytes": stored.size_bytes, "contentType": stored.content_type,
+            "contentHash": stored.sha256, "sha256": stored.sha256,
+            "metadata": {"provenance": {"schemaVersion": "phase10n4.trajectory_msd.v1"}}})
+        lineage = runtime._artifact_lineage(repos, job=producer_job, plan=producer, plan_record=producer_record,
+            step=producer.steps[0], artifact=artifact, upstream=[], ports=build_artifact_port_inventory(runtime.registry))
+        repos.dependency_execution.save_lineage(lineage)
+    # Only profiles are needed; the stored MSD values are the scientific inputs.
+    store = {key: value for key, value in store.items() if key.startswith("profile:") or key == "__mdi_source_resources__"}
+    result = runtime.handle_job(job_id, object_store=store)
+    if wrong_source:
+        assert result.status == "failed"
+        assert repos.tool_calls.list_for_job(job_id) == []
+        return
+    assert result.status == "completed", repos.job_events.list_for_job(job_id)
+    assert [item["toolId"] for item in repos.tool_calls.list_for_job(job_id)] == ["trajectory.diffusion"]*2
+    produced = repos.artifacts.list_for_job(job_id)
+    assert len(produced) == 2
+    for i, artifact in enumerate(produced):
+        output = runtime.artifact_storage.get_json(artifact["storageKey"])
+        assert output["sourceMsd"]["artifactId"] == f"prior_msd_{i}"
+        assert output["runtimeDiagnostics"]["msdRecomputation"] is False
+        lineage = repos.dependency_execution.get_lineage_for_artifact(artifact["id"])
+        assert lineage["upstreamArtifactIds"] == [f"prior_msd_{i}"]
 
 
 def test_real_registered_dependency_chain_executes_topologically_and_replays_idempotently(tmp_path: Path) -> None:

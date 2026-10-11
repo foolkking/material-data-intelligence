@@ -34,8 +34,10 @@ class InMemoryScientificResultProjectorRegistry:
 
 def build_default_result_projector_registry() -> InMemoryScientificResultProjectorRegistry:
     from mdi_api.application.scientific_results.projectors.canonical import build_canonical_result_projectors
+    from mdi_api.application.scientific_results.projectors.reference import build_reference_result_projectors
+    from mdi_api.application.scientific_results.projectors.parameters import build_parameter_result_projectors
 
     registry = InMemoryScientificResultProjectorRegistry()
-    for projector in build_canonical_result_projectors():
+    for projector in [*build_canonical_result_projectors(), *build_reference_result_projectors(), *build_parameter_result_projectors()]:
         registry.register(projector.projector_id, projector)
     return registry

@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { supportsManagedWebGL } from "../viewer-scene/viewerWebglCapability";
+import styles from "./BrillouinZoneSurface.module.css";
+import { BrillouinZoneLabels } from "./BrillouinZoneLabels";
 import { BZ_RENDERER_CAPS, mapBrillouinZoneArtifacts, type BZArtifactBundle } from "./brillouinZoneMapper";
 import type { BZCameraPreset, BZExportRequest, BZProjection, BZRendererEngine, BZRendererEngineFactory, BZRendererSnapshot, BZRendererState, BZSelection, BZVisibility } from "./brillouinZoneTypes";
 
@@ -47,15 +49,18 @@ export function BrillouinZoneSurface({bundle,capabilityOverride,engineFactory=de
   const [selection,setSelection]=useState<BZSelection|null>(null);
   const [snapshot,setSnapshot]=useState<BZRendererSnapshot|null>(null);
   const [exportRequest,setExportRequest]=useState<BZExportRequest>(DEFAULT_EXPORT);
-  const [exportState,setExportState]=useState("尚未生成图片。");
+  const [exportState,setExportState]=useState("");
+  const [exporting,setExporting]=useState(false);
+  const exportingRef=useRef<BZRendererEngine|null>(null);
   const [announcement,setAnnouncement]=useState("布里渊区查看器已就绪。");
   const selectionRef=useRef(selection);selectionRef.current=selection;
 
   const refreshSnapshot=useCallback(()=>{const engine=engineRef.current;if(engine)setSnapshot(engine.snapshot());},[]);
   const onSelection=useCallback((next:BZSelection|null)=>{setSelection(next);setAnnouncement(next?`已选择${next.kind === "point" ? "点" : next.kind === "face" ? "面" : next.kind === "vertex" ? "顶点" : "路径段"} ${next.id}。`:"已清除选择。");selectionListener?.(next);},[selectionListener]);
-  const onViewChange=useCallback(()=>{setExportState("视图已改变，请重新导出当前图片。");queueMicrotask(refreshSnapshot);},[refreshSnapshot]);
+  const onViewChange=useCallback(()=>{setExportState("");queueMicrotask(refreshSnapshot);},[refreshSnapshot]);
 
   useEffect(()=>{
+    exportingRef.current=null;setExporting(false);setExportState("");
     setSelection(null);setSnapshot(null);setVisibility(DEFAULT_VISIBILITY);setOpacity(.28);setProjection("perspective");setPreset("isometric");setVariantId(mapping.ok?mapping.scene.selectedVariantId:null);setState(mapping.ok?"ready":mapping.code==="BZ_RENDERER_RESOURCE_LIMIT"?"over_cap":"invalid");
   },[bundle,mapping]);
 
@@ -79,12 +84,33 @@ export function BrillouinZoneSurface({bundle,capabilityOverride,engineFactory=de
   const updatePreset=(next:BZCameraPreset)=>{setPreset(next);engineRef.current?.setCameraPreset(next);refreshSnapshot();};
   const updateVariant=(next:string)=>{setVariantId(next||null);setSelection(null);engineRef.current?.setVariant(next||null);refreshSnapshot();};
   const reset=()=>{setPreset("isometric");engineRef.current?.resetCamera();refreshSnapshot();};
-  const exportPng=async()=>{const engine=engineRef.current;if(!engine)return;try{setExportState("正在准备确定性图片…");engine.setCameraPreset("isometric");setPreset("isometric");const blob=await engine.exportPng(exportRequest);downloadBlob(blob,safeFilename(`${mapping.ok?mapping.scene.packageId:"brillouin-zone"}-brillouin-zone.png`));setExportState(`图片已在本地导出（${blob.size} 字节）。`);refreshSnapshot();}catch{setExportState("图片导出失败，当前查看器仍可继续使用。");}};
+  const exportPng=async()=>{
+    const engine=engineRef.current;if(!engine||exportingRef.current===engine)return;
+    exportingRef.current=engine;setExporting(true);setExportState("");
+    try {
+      const blob=await engine.exportPng(exportRequest);
+      if(engineRef.current!==engine)return;
+      downloadBlob(blob,safeFilename(`${mapping.ok?mapping.scene.packageId:"brillouin-zone"}-brillouin-zone.png`));
+      setExportState("图片已生成，下载已开始。");
+    } catch(error) {
+      if(engineRef.current!==engine)return;
+      setExportState(error instanceof Error&&error.message==="BZ_EXPORT_LABELS_DO_NOT_FIT"?"标签过密，请调整视角或隐藏标签后重试。":"图片导出失败，请重试。");
+    } finally {
+      if(exportingRef.current===engine){exportingRef.current=null;setExporting(false);}
+    }
+  };
   const selected=mapping.ok&&selection?selectionDetails(mapping.scene,selection):null;
   const labels=mapping.ok&&visibility.labels&&snapshot?snapshot.pointScreenPositions.slice(0,BZ_RENDERER_CAPS.visibleLabels):[];
-  const onKeyDown=(event:React.KeyboardEvent<HTMLElement>)=>{const actions:Record<string,Parameters<BZRendererEngine["keyboardCamera"]>[0]>={ArrowLeft:"rotate_left",ArrowRight:"rotate_right",ArrowUp:"rotate_up",ArrowDown:"rotate_down","+":"zoom_in","=":"zoom_in","-":"zoom_out"};if(actions[event.key]){event.preventDefault();engineRef.current?.keyboardCamera(actions[event.key]);refreshSnapshot();}if(event.key.toLowerCase()==="r"){event.preventDefault();reset();}};
+  const onKeyDown=(event:React.KeyboardEvent<HTMLElement>)=>{
+    if(event.defaultPrevented||event.altKey||event.ctrlKey||event.metaKey)return;
+    const target=event.target;
+    if(target instanceof HTMLElement&&target.closest("input, select, textarea, button, a, summary, [contenteditable]:not([contenteditable='false'])"))return;
+    const actions:Record<string,Parameters<BZRendererEngine["keyboardCamera"]>[0]>={ArrowLeft:"rotate_left",ArrowRight:"rotate_right",ArrowUp:"rotate_up",ArrowDown:"rotate_down","+":"zoom_in","=":"zoom_in","-":"zoom_out"};
+    if(actions[event.key]){event.preventDefault();engineRef.current?.keyboardCamera(actions[event.key]);refreshSnapshot();}
+    if(event.key.toLowerCase()==="r"){event.preventDefault();reset();}
+  };
 
-  return <section className="brillouin-zone-surface" data-testid="brillouin-zone-renderer-surface" aria-label="第一布里渊区查看器" tabIndex={0} onKeyDown={onKeyDown}>
+  return <section className={`brillouin-zone-surface ${styles.surface}`} data-testid="brillouin-zone-renderer-surface" aria-label="第一布里渊区查看器" tabIndex={0} onKeyDown={onKeyDown}>
     <output className="sr-only" aria-live="polite" data-testid="brillouin-zone-live-region">{announcement}</output>
     <div className="brillouin-zone-heading"><div><h3>三维布里渊区</h3><p>已验证的倒易笛卡尔几何（Å⁻¹），采用物理学 2π 约定</p></div><code data-testid="brillouin-zone-renderer-state">{state}</code></div>
     {!mapping.ok?<Fallback code={mapping.code} text="规范化倒易空间数据在 WebGL 初始化前未通过校验。" errors={mapping.errors}/>:null}
@@ -94,23 +120,25 @@ export function BrillouinZoneSurface({bundle,capabilityOverride,engineFactory=de
     {mapping.ok&&state==="renderer_failed"?<Fallback code="BZ_RENDERER_INITIALIZATION_FAILED" text="本地查看器无法初始化；结构化数据和文本视图仍可查看。" action="重试查看器" onAction={()=>setAttempt((value)=>value+1)}/>:null}
     {mapping.ok&&(state==="ready"||state==="initializing")?<div className="viewer-renderer-loading" role="status">正在加载本地三维查看器…</div>:null}
     {mapping.ok?<>
-      <div className="brillouin-zone-controls" aria-label="布里渊区显示控制">
+      <div className={`brillouin-zone-controls ${styles.controls}`} aria-label="布里渊区显示控制">
+        <div className={styles.visibility} role="group" aria-label="显示内容">
         {(["faces","edges","vertices","axes","points","labels","path"] as const).map((key)=><button key={key} type="button" aria-pressed={visibility[key]} className={visibility[key]?"active":"secondary"} onClick={()=>updateVisibility(key)}>{({faces:"面",edges:"边",vertices:"顶点",axes:"坐标轴",points:"高对称点",labels:"标签",path:"路径"} as const)[key]}</button>)}
+        </div>
         <label>面透明度 <input data-testid="brillouin-zone-opacity" type="range" min="0.08" max="0.65" step="0.01" value={opacity} aria-valuetext={`${Math.round(opacity*100)}%`} onChange={(event)=>{const value=Number(event.target.value);setOpacity(value);engineRef.current?.setOpacity(value);refreshSnapshot();}}/></label>
         <label>投影 <select data-testid="brillouin-zone-projection" value={projection} onChange={(event)=>updateProjection(event.target.value as BZProjection)}><option value="perspective">透视</option><option value="orthographic">正交</option></select></label>
         <label>视角 <select data-testid="brillouin-zone-camera-preset" value={preset} onChange={(event)=>updatePreset(event.target.value as BZCameraPreset)}><option value="isometric">等轴测</option><option value="b1">+b1</option><option value="b2">+b2</option><option value="b3">+b3</option></select></label>
         {mapping.scene.variants.length?<label>路径变体 <select data-testid="brillouin-zone-path-variant" value={variantId??""} onChange={(event)=>updateVariant(event.target.value)}>{mapping.scene.variants.map((item)=><option key={item.id} value={item.id}>{item.description}</option>)}</select></label>:null}
-        <button type="button" onClick={()=>engineRef.current?.fit()}>适配视图</button><button type="button" data-testid="brillouin-zone-reset" onClick={reset}>重置</button>
+        <button type="button" className="product-secondary-action" data-testid="brillouin-zone-reset" onClick={reset}>适配视图</button>
       </div>
       <div className="brillouin-zone-stage">
         <div className="viewer-renderer-canvas-host" ref={containerRef} data-testid="brillouin-zone-canvas-host"/>
-        {labels.map((position)=>{const point=mapping.scene.points.find((item)=>item.id===position.id);return point?<button type="button" className="brillouin-zone-label" key={point.id} style={{left:position.x,top:position.y}} onClick={()=>onSelection({kind:"point",id:point.id})}>{point.displayLabel}</button>:null;})}
+        <BrillouinZoneLabels points={labels.filter(position => position.visible !== false).flatMap(position => { const point = mapping.scene.points.find(item => item.id === position.id); return point ? [{ ...position, text: point.displayLabel }] : []; })} selectedId={selection?.kind === "point" ? selection.id : undefined} onSelect={id => onSelection({kind:"point",id})} />
       </div>
       <div className="brillouin-zone-export-controls" aria-label="本地图片导出控制">
         <label>背景 <select value={exportRequest.background} onChange={(event)=>setExportRequest(Object.freeze({...exportRequest,background:event.target.value as BZExportRequest["background"]}))}><option value="light">浅色</option><option value="dark">深色</option><option value="transparent">透明</option></select></label>
         <label>分辨率 <select value={`${exportRequest.width}x${exportRequest.height}`} onChange={(event)=>{const [width,height]=event.target.value.split("x").map(Number);setExportRequest(Object.freeze({...exportRequest,width,height}));}}><option value="1600x1200">1600 × 1200</option><option value="2400x1800">2400 × 1800</option></select></label>
         <label>像素倍率 <select value={exportRequest.pixelRatio} onChange={(event)=>setExportRequest(Object.freeze({...exportRequest,pixelRatio:Number(event.target.value) as 1|2}))}><option value="1">1×</option><option value="2">2×</option></select></label>
-        <button type="button" data-testid="brillouin-zone-export-png" disabled={state!=="rendered"} onClick={()=>void exportPng()}>导出固定视角图片</button><output data-testid="brillouin-zone-export-status">{exportState}</output>
+        <button type="button" data-testid="brillouin-zone-export-png" disabled={state!=="rendered"||exporting} onClick={()=>void exportPng()}>{exporting?"正在导出…":"导出当前视图"}</button><output data-testid="brillouin-zone-export-status">{exportState}</output>
       </div>
       <dl className="mini-grid brillouin-zone-summary" data-testid="brillouin-zone-summary"><div><dt>顶点</dt><dd>{mapping.scene.vertices.length}</dd></div><div><dt>边</dt><dd>{mapping.scene.edges.length}</dd></div><div><dt>面</dt><dd>{mapping.scene.faces.length}</dd></div><div><dt>三角形</dt><dd>{mapping.scene.faces.reduce((sum,item)=>sum+item.triangleVertexIndices.length/3,0)}</dd></div><div><dt>高对称点</dt><dd>{mapping.scene.points.length}</dd></div><div><dt>路径段</dt><dd>{mapping.scene.segments.length}</dd></div><div><dt>体积</dt><dd>{mapping.scene.volume.toFixed(6)} Å⁻³</dd></div><div><dt>视觉比例</dt><dd>{mapping.scene.visualScale.toFixed(6)}（统一）</dd></div></dl>
       {mapping.warnings.length?<ul className="warning-list">{mapping.warnings.map((warning)=><li key={warning}>{warning}</li>)}</ul>:null}

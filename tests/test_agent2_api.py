@@ -9,10 +9,10 @@ from uuid import UUID, uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, insert
+from sqlalchemy import create_engine, insert, update
 from sqlalchemy.pool import StaticPool
 
-from mdi_api.db import metadata, organizations, project_members, projects, sessions, users
+from mdi_api.db import metadata, organizations, project_members, projects, research_turns, sessions, users
 from mdi_api.agent2_errors import ScientificResultSnapshotNotFound
 from mdi_api.artifact_storage import LocalFileArtifactStorage
 from mdi_api.main import create_app
@@ -127,6 +127,45 @@ def test_create_get_list_and_cancel_turn(api):
     assert canceled.status_code == 200 and canceled.json()["status"] == "CANCELED"
     terminal = client.post(f"/api/research/turns/{turn_id}/cancel")
     assert terminal.status_code == 409 and terminal.json()["detail"]["code"] == "TURN_TERMINAL"
+
+
+@pytest.mark.parametrize("status", ["INTERPRETING", "RESULT_PENDING", "RESULT_READY"])
+def test_cancel_interpretation_authorizes_writer_and_keeps_result_stages(api, status):
+    from mdi_api.routers.agent2 import get_research_turn_service
+
+    client, active, owner, viewer, _stranger, _objects = api
+    created = client.post("/api/projects/project/research/sessions/session/turns", json={"message": "Explain"}).json()
+    turn_id = UUID(created["turn_id"])
+    factory = get_research_turn_service().repository_factory
+    with factory.unit_of_work() as unit:
+        unit.connection.execute(update(research_turns).where(research_turns.c.id == turn_id).values(status=status))
+    active["value"] = viewer
+    assert client.post(f"/api/research/turns/{turn_id}/cancel").status_code == 403
+    active["value"] = owner
+    response = client.post(f"/api/research/turns/{turn_id}/cancel")
+    assert response.status_code == (200 if status == "INTERPRETING" else 409)
+    with factory.session() as session:
+        assert session.agent2.research_turns.get(turn_id)["status"] == ("CANCELED" if status == "INTERPRETING" else status)
+
+
+@pytest.mark.parametrize("provider", ["personal", "platform:shared"])
+def test_autonomous_child_inherits_parent_model_identity(api, provider):
+    from sqlalchemy import update
+    from mdi_api.db import messages
+    from mdi_api.routers.agent2 import get_research_turn_service
+    from mdi_api.research_agent.schemas import ResearchTurnUIContext
+    client, *_ = api
+    created = client.post("/api/projects/project/research/sessions/session/turns", json={"message": "Analyze"}).json()
+    assert client.post(f"/api/research/turns/{created['turn_id']}/cancel").status_code == 200
+    service = get_research_turn_service()
+    choice = {"user_id": "owner", "provider": provider, "model": "Vendor/Exact-ID", "thinking_mode": "standard"}
+    with service.repository_factory.unit_of_work() as unit:
+        unit.connection.execute(update(messages).where(messages.c.id == created["user_message"]["id"]).values(payload_json={"_model_selection": choice}))
+    child = service.receive_autonomous_turn(project_id="project", session_id="session", parent_turn_id=UUID(created["turn_id"]), message="Continue analysis", ui_context=ResearchTurnUIContext(), autonomy={"assessment_signature": "model-lineage-test", "cycle_index": 2})
+    with service.repository_factory.session() as unit:
+        message = unit.agent2.research_turns.get_message(child.user_message.id)
+    assert message["payload_json"]["_model_selection"] == choice
+    assert "api_key" not in str(message["payload_json"])
 
 
 def test_research_turn_correlation_is_bounded_authorized_and_secret_free(api):
@@ -317,6 +356,172 @@ def test_context_manifest_endpoint_returns_bounded_manifest_and_enforces_project
     assert client.get(f"/api/research/turns/{turn_id}/context-manifest").status_code == 403
 
 
+def _context_result_link_fixture(api, *, source_project="project", source_session="session", item_patch=None, manifest_patch=None, bundle_patch=None):
+    client, _active, _owner, _viewer, _stranger, objects = api
+    source = client.post(f"/api/projects/{source_project}/research/sessions/{source_session}/turns", json={"message": "Original saved scientific result"}).json()
+    source_id = UUID(source["turn_id"])
+    snapshot_id = uuid4()
+    with objects.repository_factory.unit_of_work() as unit:
+        snapshot = unit.agent2.scientific_result_snapshots.add({
+            "id": snapshot_id, "project_id": source_project, "research_turn_id": source_id, "job_id": None,
+            "schema_version": "1.0", "projection_version": "agent2.result/1.0", "execution_status": "SUCCESS",
+            "relevance_status": "CURRENT", "source_fingerprint": str(snapshot_id),
+            "bundle_json": {"result_id": str(uuid4()), "project_id": source_project, "research_turn_id": str(source_id),
+                "private_fixture_value": "not-navigation-data", **(bundle_patch or {})},
+        })
+    current = client.post("/api/projects/project/research/sessions/session/turns", json={"message": "Explain the saved result without recomputing"}).json()
+    turn_id = UUID(current["turn_id"])
+    manifest = {
+        "context_manifest_id": str(uuid4()), "operation": "ORCHESTRATOR", "project_id": "project",
+        "research_session_id": "session", "research_turn_id": str(turn_id), "input_state": "ACTUAL",
+        "included_items": [{"item_id": "result_1", "kind": "SCIENTIFIC_RESULT", "authorization_checked": True,
+            "server_side_source_identity": str(snapshot_id), "result_ref": str(snapshot_id), "provider_opaque_ref": "result_1",
+            **(item_patch or {})}],
+        "excluded_items": [], "serialized_input": {"research_context": {"results": [{"ref_key": "result_1", "summary": "Saved RDF"}]}},
+        **(manifest_patch or {}),
+    }
+    with objects.repository_factory.unit_of_work() as unit:
+        unit.agent2.research_turn_events.append_turn_event({
+            "id": uuid4(), "turn_id": turn_id,
+            "sequence_no": unit.agent2.research_turn_events.next_sequence_no(turn_id),
+            "event_type": "CONTEXT_RESOLVED", "payload_json": {"context_manifest": manifest},
+        })
+    return turn_id, snapshot, manifest
+
+
+def test_context_result_link_uses_the_saved_source_session_and_preserves_the_model_input(api):
+    client, active, _owner, viewer, stranger, objects = api
+    with objects.repository_factory.unit_of_work() as unit:
+        unit.connection.execute(insert(sessions), {"id": "source-session", "project_id": "project", "mode": "project", "status": "active", "created_by": "owner"})
+    turn_id, snapshot, manifest = _context_result_link_fixture(api, source_session="source-session")
+    path = f"/api/research/turns/{turn_id}/context-manifest"
+    active["value"] = viewer
+    response = client.get(path)
+    assert response.status_code == 200, response.text
+    assert response.json()["result_sources"] == [{
+        "result_snapshot_id": str(snapshot["id"]), "project_id": "project",
+        "research_session_id": "source-session", "research_turn_id": str(snapshot["research_turn_id"]),
+    }]
+    assert response.json()["manifest"] == manifest
+    assert response.json()["manifests"][0]["manifest"] == manifest
+    assert "not-navigation-data" not in response.text
+    with objects.repository_factory.session() as unit:
+        event = next(item for item in unit.agent2.research_turn_events.list_for_turn(turn_id) if item["event_type"] == "CONTEXT_RESOLVED")
+        assert event["payload_json"]["context_manifest"] == manifest
+        assert unit.agent2.scientific_result_snapshots.get(snapshot["id"]) == snapshot
+    active["value"] = stranger
+    assert client.get(path).status_code == 403
+
+
+def _context_navigation_item(item_id, ref):
+    return {
+        "id": item_id, "result_type": "structure.rdf", "role": "PRIMARY", "title": "structure.rdf result",
+        "artifact_ids": [f"private-artifact-{item_id}"], "scientific_object_refs": [ref.model_dump(mode="json")],
+        "fact_refs": [f"private-fact-{item_id}"], "evidence_refs": [f"private-evidence-{item_id}"],
+    }
+
+
+def test_context_navigation_metadata_keeps_exact_material_items_without_changing_or_expanding_model_input(api):
+    client, _active, _owner, _viewer, _stranger, objects = api
+    refs = {name: create_ref(objects, "project").model_copy(update={"display_name": f"{name}.cif"}) for name in ("Si", "Cu", "NaCl")}
+    items = [_context_navigation_item(name, refs[name]) for name in ("NaCl", "Cu", "Si")]
+    turn_id, snapshot, manifest = _context_result_link_fixture(api,
+        item_patch={"serialized_representation": {"result_item_ids": ["Si", "Cu", "NaCl"]}},
+        manifest_patch={"operation": "INTERPRETER", "serialized_input": {"result": {"result_items": [
+            {"id": name, "result_type": "structure.rdf"} for name in ("Si", "Cu", "NaCl")
+        ]}}},
+        bundle_patch={"result_items": items, "facts": [{"value": "private-numeric-data"}]},
+    )
+    response = client.get(f"/api/research/turns/{turn_id}/context-manifest")
+    assert response.status_code == 200, response.text
+    payload = response.json()
+    location = payload["result_sources"][0]
+    assert location["result_snapshot_id"] == str(snapshot["id"])
+    assert location["research_turn_id"] == str(snapshot["research_turn_id"])
+    assert {item["id"]: item["scientific_object_refs"] for item in location["result_items"]} == {
+        name: [ref.model_dump(mode="json")] for name, ref in refs.items()
+    }
+    assert all(set(item) == {"id", "title", "result_type", "scientific_object_refs"} for item in location["result_items"])
+    assert "private-" not in response.text
+    assert "not-navigation-data" not in response.text
+    assert payload["manifest"] == manifest
+    assert payload["manifests"][0]["manifest"] == manifest
+    with objects.repository_factory.session() as unit:
+        event = next(item for item in unit.agent2.research_turn_events.list_for_turn(turn_id) if item["event_type"] == "CONTEXT_RESOLVED")
+        assert event["payload_json"]["context_manifest"] == manifest
+        assert unit.agent2.scientific_result_snapshots.get(snapshot["id"]) == snapshot
+
+
+@pytest.mark.parametrize("invalid", ["duplicate", "foreign-source", "malformed", "extra-field"])
+def test_context_navigation_omits_invalid_materials_without_guessing_or_discarding_other_items(api, invalid):
+    objects = api[-1]
+    valid = _context_navigation_item("Si", create_ref(objects, "project"))
+    bad = _context_navigation_item("Cu", create_ref(objects, "project"))
+    items = [bad, valid]
+    if invalid == "duplicate":
+        items.append({**bad, "result_type": "electronic.band"})
+    elif invalid == "foreign-source":
+        bad["scientific_object_refs"][0]["project_id"] = "other"
+    elif invalid == "malformed":
+        bad["scientific_object_refs"][0]["version_id"] = "missing-version"
+    else:
+        bad["untrusted_value"] = "private-extra-data"
+    turn_id, _snapshot, manifest = _context_result_link_fixture(api, bundle_patch={"result_items": items})
+    response = api[0].get(f"/api/research/turns/{turn_id}/context-manifest")
+    assert response.status_code == 200, response.text
+    assert [item["id"] for item in response.json()["result_sources"][0]["result_items"]] == ["Si"]
+    assert response.json()["manifest"] == manifest
+    assert "private-" not in response.text
+
+
+@pytest.mark.parametrize("mismatch", [{"project_id": "other"}, {"research_turn_id": str(UUID(int=1))}])
+def test_context_navigation_does_not_use_items_from_a_misbound_bundle(api, mismatch):
+    item = _context_navigation_item("Si", create_ref(api[-1], "project"))
+    turn_id, _snapshot, manifest = _context_result_link_fixture(api, bundle_patch={"result_items": [item], **mismatch})
+    response = api[0].get(f"/api/research/turns/{turn_id}/context-manifest")
+    assert response.status_code == 200, response.text
+    assert "result_items" not in response.json()["result_sources"][0]
+    assert response.json()["manifest"] == manifest
+
+
+@pytest.mark.parametrize("item_patch", [
+    {"authorization_checked": False}, {"kind": "SCIENTIFIC_FINDING"},
+    {"server_side_source_identity": "another-result"}, {"result_ref": "not-a-snapshot-id"},
+    {"result_ref": "11111111-1111-4111-8111-111111111111", "server_side_source_identity": "11111111-1111-4111-8111-111111111111"},
+])
+def test_context_result_links_do_not_guess_missing_or_unverified_sources(api, item_patch):
+    turn_id, _snapshot, manifest = _context_result_link_fixture(api, item_patch=item_patch)
+    response = api[0].get(f"/api/research/turns/{turn_id}/context-manifest")
+    assert response.status_code == 200
+    assert response.json()["result_sources"] == []
+    assert response.json()["manifest"] == manifest
+
+
+@pytest.mark.parametrize("manifest_patch", [{"project_id": "other"}, {"research_session_id": "other-session"}, {"research_turn_id": str(UUID(int=1))}])
+def test_context_result_links_reject_foreign_manifest_identity(api, manifest_patch):
+    turn_id, _snapshot, _manifest = _context_result_link_fixture(api, manifest_patch=manifest_patch)
+    assert api[0].get(f"/api/research/turns/{turn_id}/context-manifest").json()["result_sources"] == []
+
+
+def test_context_result_links_never_cross_the_current_project(api):
+    turn_id, _snapshot, _manifest = _context_result_link_fixture(api, source_project="other", source_session="other-session")
+    assert api[0].get(f"/api/research/turns/{turn_id}/context-manifest").json()["result_sources"] == []
+
+
+def test_context_result_links_do_not_open_a_newer_snapshot_for_an_older_citation(api):
+    from datetime import timedelta
+    turn_id, snapshot, manifest = _context_result_link_fixture(api)
+    with api[-1].repository_factory.unit_of_work() as unit:
+        unit.agent2.scientific_result_snapshots.add({
+            **snapshot, "id": uuid4(), "source_fingerprint": "newer-projection",
+            "created_at": snapshot["created_at"] + timedelta(seconds=1),
+        })
+    response = api[0].get(f"/api/research/turns/{turn_id}/context-manifest")
+    assert response.status_code == 200
+    assert response.json()["result_sources"] == []
+    assert response.json()["manifest"] == manifest
+
+
 def test_context_manifest_endpoint_projects_legacy_context_snapshot(api):
     client, _active, _owner, _viewer, _stranger, objects = api
     created = client.post(
@@ -383,6 +588,36 @@ def test_context_manifest_endpoint_projects_legacy_context_snapshot(api):
     assert all("provider_prompt" not in item for item in manifest["included_items"])
 
 
+def test_explicit_result_action_exposes_only_actual_interpreter_context(api):
+    client, active, _owner, _viewer, stranger, objects = api
+    created = client.post("/api/projects/project/research/sessions/session/turns", json={
+        "message": "重新解释", "requested_action": "INTERPRET_RESULT",
+        "ui_context": {"explicit_result_ids": [str(uuid4())]},
+    }).json()
+    turn_id = UUID(created["turn_id"])
+    with objects.repository_factory.unit_of_work() as unit:
+        unit.agent2.research_turn_events.append_turn_event({
+            "id": uuid4(), "turn_id": turn_id,
+            "sequence_no": unit.agent2.research_turn_events.next_sequence_no(turn_id),
+            "event_type": "CONTEXT_RESOLVED", "payload_json": {"requested_action": "INTERPRET_RESULT"},
+        })
+    path = f"/api/research/turns/{turn_id}/context-manifest"
+    assert client.get(path).status_code == 409
+    actual = {"context_manifest_id": str(uuid4()), "operation": "INTERPRETER", "input_state": "ACTUAL", "serialized_input": {"user_question": "重新解释"}}
+    with objects.repository_factory.unit_of_work() as unit:
+        unit.agent2.research_turn_events.append_turn_event({
+            "id": uuid4(), "turn_id": turn_id,
+            "sequence_no": unit.agent2.research_turn_events.next_sequence_no(turn_id),
+            "event_type": "CONTEXT_MANIFEST_RECORDED", "payload_json": {"context_manifest": actual},
+        })
+    response = client.get(path)
+    assert response.status_code == 200
+    assert response.json()["manifest"] == actual
+    assert [item["operation"] for item in response.json()["manifests"]] == ["INTERPRETER"]
+    active["value"] = stranger
+    assert client.get(path).status_code == 403
+
+
 def test_concurrent_create_turn_api_allocates_unique_ordered_sequences(api):
     client, _active, _owner, _viewer, _stranger, _objects = api
 
@@ -440,6 +675,48 @@ def test_create_turn_rejects_empty_session_mismatch_and_read_only_user(api):
     active["value"] = viewer
     assert client.post("/api/projects/project/research/sessions/session/turns", json={"message": "Read only"}).status_code == 403
     active["value"] = owner
+
+
+@pytest.mark.parametrize("context,action,mode", [
+    (None, "INTERPRET_RESULT", "STANDARD"),
+    ({"explicit_result_ids": []}, "INTERPRET_RESULT", "STANDARD"),
+    ({"explicit_result_ids": [str(uuid4()), str(uuid4())]}, "INTERPRET_RESULT", "STANDARD"),
+    ({"explicit_result_ids": [str(uuid4())]}, "ANALYZE", "STANDARD"),
+    ({"explicit_result_ids": [str(uuid4())]}, "INTERPRET_RESULT", "BOUNDED_AUTONOMOUS"),
+])
+def test_explicit_action_requires_one_result_and_cannot_start_analysis(api, context, action, mode):
+    client, *_ = api
+    response = client.post("/api/projects/project/research/sessions/session/turns", json={
+        "message": "重新解释", "requested_action": action, "ui_context": context, "autonomy_mode": mode,
+    })
+    assert response.status_code == 422
+    assert client.get("/api/projects/project/research/sessions/session/turns").json()["items"] == []
+
+
+def test_explicit_action_is_durable_and_has_distinct_admission_identity(api, monkeypatch):
+    client, _active, owner, _viewer, _stranger, objects = api
+    from mdi_api import user_models
+    choice = {"provider": "personal", "model": "qwen3.8-27b", "thinking_mode": "standard"}
+    monkeypatch.setattr(user_models, "validate_user_selection", lambda user_id, value: value if user_id == owner.id else None)
+    payload = {
+        "message": "重新解释", "admission_key": "explicit-action", "requested_action": "INTERPRET_RESULT",
+        "ui_context": {"explicit_result_ids": [str(uuid4())]}, "model_selection": choice,
+    }
+    path = "/api/projects/project/research/sessions/session/turns"
+    first = client.post(path, json=payload)
+    replay = client.post(path, json=payload)
+    assert first.status_code == replay.status_code == 202
+    assert first.json()["turn_id"] == replay.json()["turn_id"] and replay.json()["idempotent_replay"]
+    assert client.post(path, json={**payload, "requested_action": None}).status_code == 409
+    with objects.repository_factory.session() as session:
+        message = session.agent2.research_turns.get_message(first.json()["user_message"]["id"])
+        assert message["payload_json"]["requested_action"] == "INTERPRET_RESULT"
+        assert message["payload_json"]["_model_selection"] == choice
+    # Omission and explicit null preserve pre-existing request fingerprints.
+    ordinary = {**payload, "requested_action": None, "admission_key": "ordinary-action"}
+    assert client.post(path, json=ordinary).status_code == 202
+    ordinary.pop("requested_action")
+    assert client.post(path, json=ordinary).json()["idempotent_replay"]
 
 
 def test_ui_context_is_reauthorized_and_historical_version_is_not_upgraded(api):
@@ -1153,6 +1430,183 @@ def test_sse_orders_events_reconnects_without_duplicates_and_checks_authority(ap
     active["value"] = owner
 
 
+def test_answer_stream_reconnects_by_sequence_and_hides_canceled_drafts(api):
+    from mdi_api.routers.agent2 import get_research_turn_service
+    from mdi_api.research_agent.orchestration.answer_stream import ResearchAnswerPublisher
+
+    client, active, owner, _viewer, stranger, _objects = api
+    turn = client.post("/api/projects/project/research/sessions/session/turns", json={"message": "解释材料。"}).json()
+    turn_id = UUID(turn["turn_id"])
+    factory = get_research_turn_service().repository_factory
+    with factory.unit_of_work() as unit:
+        unit.connection.execute(update(research_turns).where(research_turns.c.id == turn_id).values(status="ORCHESTRATING"))
+        row = unit.agent2.research_turns.get(turn_id)
+    publisher = ResearchAnswerPublisher(factory, row)
+    publisher.feed('{"action":"ANSWER","assistant_message":"这是一条正在生成的公开回答，尚未完成。')
+    stream_url = f"/api/research/turns/{turn_id}/answer-stream"
+    response = client.get(stream_url, params={"follow": "false"})
+    assert response.status_code == 200 and "event: answer.delta" in response.text
+    assert "no-store" in response.headers["cache-control"]
+    assert "no-transform" in response.headers["cache-control"]
+    sequence = response.text.split("id: ", 1)[1].split("\n", 1)[0]
+    replay = client.get(stream_url, params={"follow": "false"}, headers={"Last-Event-ID": sequence})
+    assert "answer.delta" not in replay.text
+    active["value"] = stranger
+    assert client.get(stream_url).status_code == 403
+    active["value"] = owner
+    assert client.get(stream_url, headers={"Last-Event-ID": "-1"}).status_code == 422
+    assert client.post(f"/api/research/turns/{turn_id}/cancel").status_code == 200
+    stopped = client.get(stream_url)
+    assert "event: answer.stopped" in stopped.text and "answer.delta" not in stopped.text
+    assert "公开回答" not in stopped.text
+
+
+def test_completed_answer_stream_returns_only_the_saved_authoritative_message(api):
+    from mdi_api.routers.agent2 import get_research_turn_service
+    from mdi_api.research_agent.llm.schemas import StructuredLLMResult
+    from mdi_api.research_agent.orchestration.processor import AgentTurnProcessor
+    from mdi_api.research_agent.registry_validation import build_default_agent2_registries
+
+    client, _active, _owner, _viewer, _stranger, _objects = api
+    turn = client.post("/api/projects/project/research/sessions/session/turns", json={"message": "解释 RDF。"}).json()
+    turn_id = UUID(turn["turn_id"])
+
+    class Provider:
+        async def generate_structured(self, **kwargs):
+            kwargs["request_context"]["on_answer_delta"]('{"action":"ANSWER","assistant_message":"这是一条在提交之前的草稿回答。')
+            return StructuredLLMResult(provider="fake", model="fixture", latency_ms=1, repair_attempted=False, prompt_version="test", parsed={
+                "contract_version": "1.0", "action": "ANSWER", "assistant_message": "**RDF** 描述原子对距离的分布。", "research_objective": None,
+                "selected_scope_ref_keys": [], "scientific_requirements": [], "reusable_result_ref_keys": [], "clarification": None, "confidence": "HIGH",
+            })
+
+    target = AgentTurnProcessor(repository_factory=get_research_turn_service().repository_factory, registries=build_default_agent2_registries(), llm_client=Provider())
+    assert asyncio.run(target.process(turn_id)).status == "ANSWERED"
+    response = client.get(f"/api/research/turns/{turn_id}/answer-stream")
+    assert "event: answer.completed" in response.text and "answer.delta" not in response.text
+    frame = __import__("json").loads(response.text.split("data: ", 1)[1])
+    assert frame["text"] == "**RDF** 描述原子对距离的分布。" and frame["message_id"]
+    assert frame["status"] == "ANSWERED" and "草稿回答" not in response.text
+
+    other = client.post("/api/projects/project/research/sessions/session/turns", json={"message": "同一会话的另一个问题。"}).json()
+    with get_research_turn_service().repository_factory.unit_of_work() as unit:
+        unit.connection.execute(update(research_turns).where(research_turns.c.id == UUID(other["turn_id"])).values(
+            status="ANSWERED", assistant_final_message_id=frame["message_id"],
+        ))
+    mismatched = client.get(f"/api/research/turns/{other['turn_id']}/answer-stream")
+    assert "answer.completed" not in mismatched.text and "RDF" not in mismatched.text
+
+
+@pytest.mark.parametrize("markdown", [False, True])
+@pytest.mark.parametrize("case", [
+    "valid", "reused-source", "ungrounded", "missing-interpretation",
+    "wrong-turn", "wrong-snapshot", "other-project", "invalid-bundle",
+    "legacy-binding", "invalid-snapshot-id", "missing-snapshot",
+    "snapshot-other-project", "invalid-output", "partial",
+])
+def test_scientific_answer_stream_and_session_share_grounded_markdown(api, monkeypatch, markdown, case):
+    from datetime import datetime, timezone
+    import json
+
+    client, active, _owner, viewer, stranger, objects = api
+    factory = objects.repository_factory
+    monkeypatch.setattr("mdi_api.routers.research.create_engine_from_settings", lambda _settings: factory.engine)
+    ref = create_ref(objects, "project")
+    turn = client.post("/api/projects/project/research/sessions/session/turns", json={"message": "解释保存的 RDF。"}).json()
+    turn_id = UUID(turn["turn_id"])
+    source_turn_id = turn_id
+    if case in {"reused-source", "wrong-turn"}:
+        other = client.post("/api/projects/project/research/sessions/session/turns", json={"message": "独立来源问题。"}).json()
+        source_turn_id = UUID(other["turn_id"])
+    snapshot_id, interpretation_id = uuid4(), uuid4()
+    bundle = ScientificResultBundle(
+        schema_version="1.0", result_id=uuid4(), project_id="project", research_session_id="session",
+        research_turn_id=source_turn_id, research_question="解释 RDF", source_object_refs=[ref],
+        execution_status="PARTIAL" if case == "partial" else "SUCCESS",
+        relevance_status="CURRENT", projection_version="agent2.result/1.0",
+        result_items=[{"id": "rdf.item", "result_type": "rdf_curve", "role": "PRIMARY", "title": "RDF",
+                       "artifact_ids": ["artifact-rdf"], "scientific_object_refs": [ref],
+                       "fact_refs": ["rdf.first_peak"], "evidence_refs": ["evidence.rdf"]}],
+        facts=[{"fact_id": "rdf.first_peak", "predicate": "rdf.first_peak_position", "subject_ref": "structure:v1",
+                "value": 2.5, "unit": "angstrom", "source": {"artifact_id": "artifact-rdf", "artifact_locator": "/firstPeak"}}],
+        evidence=[{"evidence_id": "evidence.rdf", "evidence_type": "structured_summary",
+                   "artifact_id": "artifact-rdf", "artifact_locator": "/summary"}],
+        figures=[], tables=[], output_object_refs=[], methods=[], limitations=[], warnings=[],
+        provenance={"artifact_ids": ["artifact-rdf"]},
+    )
+    interpretation = {
+        "contract_version": "1.0", "title": "RDF 解释", "answer_lead": "该方法非常准确，但结果没有这种证据。",
+        "primary_findings": [{"finding_id": "finding-1", "statement": "第一峰位于 9.9 angstrom。" if case == "ungrounded" else "第一峰位于 2.5 angstrom。",
+                              "importance": "HIGH", "confidence": "HIGH", "fact_refs": ["rdf.first_peak"],
+                              "evidence_refs": ["evidence.rdf"], "result_item_refs": ["rdf.item"]}],
+        "supporting_findings": [], "limitations": ["未来源的方法常识。"], "primary_result_refs": ["rdf.item"],
+        "supporting_result_refs": [], "follow_up_suggestions": [],
+    }
+    message_id = f"scientific-message-{turn_id}"
+    with factory.unit_of_work() as unit:
+        snapshot = unit.agent2.scientific_result_snapshots.add({
+            "id": snapshot_id, "project_id": "other" if case == "snapshot-other-project" else "project",
+            "research_turn_id": source_turn_id, "job_id": None,
+            "schema_version": "1.0", "projection_version": bundle.projection_version,
+            "execution_status": bundle.execution_status.value,
+            "relevance_status": "CURRENT", "source_fingerprint": str(snapshot_id),
+            "bundle_json": {"invalid": True} if case == "invalid-bundle" else bundle.model_dump(mode="json"),
+        })
+        record = None
+        if case != "missing-interpretation":
+            record = unit.agent2.interpretations.add({
+                "id": interpretation_id, "research_turn_id": source_turn_id if case == "wrong-turn" else turn_id,
+                "project_id": "other" if case == "other-project" else "project",
+                "result_snapshot_id": uuid4() if case == "missing-snapshot" else snapshot_id,
+                "contract_version": "1.0", "prompt_version": "fixture", "provider": "fixture", "model": "fixture",
+                "repair_attempted": False, "input_fingerprint": str(interpretation_id), "grounding_status": "VALID",
+                "output_json": ["invalid"] if case == "invalid-output" else {"interpretation": interpretation},
+            })
+        saved = unit.agent2.research_turns.add_message({
+            "id": message_id, "session_id": "session", "role": "agent",
+            "content_summary": "未经当前校验的旧原文：绝对准确，峰位为 9.9 angstrom。",
+            "payload_json": {"source": "agent2_scientific_interpreter", "messageKind": "ASSISTANT_FINAL",
+                             "turnId": str(turn_id), "interpretationId": str(interpretation_id),
+                             **({} if case == "legacy-binding" else {
+                                 "sourceResultSnapshotId": "" if case == "invalid-snapshot-id" else str(
+                                     uuid4() if case == "wrong-snapshot" else snapshot_id
+                                 ),
+                             }),
+                             **({"responseFormat": "markdown"} if markdown else {})},
+            "created_at": datetime.now(timezone.utc),
+        })
+        unit.connection.execute(update(research_turns).where(research_turns.c.id == turn_id).values(
+            status="PARTIAL" if case == "partial" else "COMPLETED", assistant_final_message_id=message_id,
+        ))
+
+    active["value"] = viewer
+    response = client.get(f"/api/research/turns/{turn_id}/answer-stream")
+    assert response.status_code == 200 and "event: answer.completed" in response.text
+    frame = json.loads(response.text.split("data: ", 1)[1])
+    session_response = client.get("/research-sessions/session")
+    assert session_response.status_code == 200
+    projected = next(item for item in session_response.json()["messages"] if item["id"] == message_id)
+    assert frame["text"] == projected["content"]
+    assert projected["payload"]["responseFormat"] == "markdown"
+    assert frame["response_kind"] == "SCIENTIFIC_INTERPRETATION"
+    assert "9.9" not in frame["text"] and "绝对准确" not in frame["text"]
+    assert "非常准确" not in frame["text"] and "未来源的方法常识" not in frame["text"]
+    if case in {"valid", "reused-source", "legacy-binding", "partial"}:
+        assert frame["text"].startswith("## RDF 解释\n\n")
+        assert frame["text"].count("第一峰位于 2.5 angstrom。") == 1
+        if case == "partial":
+            assert "部分完成的分析" in frame["text"]
+    else:
+        assert "核验" in frame["text"] or "未通过当前事实校验" in frame["text"]
+    with factory.session() as session:
+        assert session.agent2.research_turns.get_message(message_id) == saved
+        assert session.agent2.scientific_result_snapshots.get(snapshot_id) == snapshot
+        if record is not None:
+            assert session.agent2.interpretations.get(interpretation_id) == record
+    active["value"] = stranger
+    assert client.get(f"/api/research/turns/{turn_id}/answer-stream").status_code == 403
+    assert client.get("/research-sessions/session").status_code == 403
+
+
 def test_phase2_sse_projects_product_events_without_internal_provider_details(api):
     client, _active, _owner, _viewer, _stranger, objects = api
     ref = create_ref(objects, "project")
@@ -1276,6 +1730,206 @@ def test_phase4_progress_and_dispatch_are_project_authorized(api):
     assert client.get(f"/api/research/turns/{turn['turn_id']}/progress").status_code == 403
     assert client.post(f"/api/research/turns/{turn['turn_id']}/dispatch").status_code == 403
     active["value"] = owner
+
+
+@pytest.mark.parametrize("error_code, expected_code, expected_message", [
+    ("ORCHESTRATOR_PROVIDER_UNAVAILABLE", "ORCHESTRATOR_PROVIDER_UNAVAILABLE", "模型连接暂时不可用"),
+    ("ORCHESTRATOR_TIMEOUT", "ORCHESTRATOR_TIMEOUT", "模型响应超时"),
+    ("ORCHESTRATOR_PROVIDER_RATE_LIMITED", "ORCHESTRATOR_PROVIDER_RATE_LIMITED", "限流或额度不足"),
+    ("ORCHESTRATOR_PROVIDER_AUTH_FAILED", "ORCHESTRATOR_PROVIDER_AUTH_FAILED", "拒绝了认证"),
+    ("ORCHESTRATOR_PROVIDER_REQUEST_REJECTED", "ORCHESTRATOR_PROVIDER_REQUEST_REJECTED", "拒绝了当前请求"),
+    ("ORCHESTRATOR_OUTPUT_TRUNCATED", "ORCHESTRATOR_OUTPUT_TRUNCATED", "输出长度上限"),
+    ("ORCHESTRATOR_INVALID_OUTPUT", "ORCHESTRATOR_INVALID_OUTPUT", "返回内容未通过"),
+    ("INTERPRETATION_GROUNDING_FAILED", "INTERPRETATION_GROUNDING_FAILED", "自动解读未通过证据校验"),
+    ("INTERPRETATION_SCHEMA_INVALID", "INTERPRETATION_SCHEMA_INVALID", "自动解读格式不完整"),
+    ("INTERPRETATION_PROVIDER_FAILED", "INTERPRETATION_PROVIDER_FAILED", "模型未能完成自动解读"),
+    ("INTERPRETATION_PROVIDER_TIMEOUT", "INTERPRETATION_PROVIDER_TIMEOUT", "模型响应超时"),
+    ("INTERPRETATION_PROVIDER_UNAVAILABLE", "INTERPRETATION_PROVIDER_UNAVAILABLE", "暂时无法连接模型服务"),
+    ("INTERPRETATION_PROVIDER_RATE_LIMITED", "INTERPRETATION_PROVIDER_RATE_LIMITED", "限流或额度不足"),
+    ("INTERPRETATION_PROVIDER_AUTH_FAILED", "INTERPRETATION_PROVIDER_AUTH_FAILED", "认证失败"),
+    ("INTERPRETATION_PROVIDER_REQUEST_REJECTED", "INTERPRETATION_PROVIDER_REQUEST_REJECTED", "拒绝了本次解读请求"),
+    ("INTERPRETATION_PROVIDER_OUTPUT_TRUNCATED", "INTERPRETATION_PROVIDER_OUTPUT_TRUNCATED", "输出长度上限"),
+    ("INTERPRETATION_PROVIDER_INVALID_RESPONSE", "INTERPRETATION_PROVIDER_INVALID_RESPONSE", "有效的结构化解读"),
+    ("CONTEXT_ASSEMBLY_FAILED", "CONTEXT_ASSEMBLY_FAILED", "数据上下文未能准备完成"),
+    ("RESEARCH_STAGE_TIMEOUT", "RESEARCH_STAGE_TIMEOUT", "原问题已保留，可以重试"),
+    ("RESEARCH_QUEUE_TIMEOUT", "RESEARCH_QUEUE_TIMEOUT", "研究排队等待超时"),
+    ("EXECUTION_WORKER_LOST", "EXECUTION_WORKER_LOST", "原问题和已生成的文件已保留"),
+    ("EXECUTION_QUEUE_TIMEOUT", "EXECUTION_QUEUE_TIMEOUT", "科学任务排队等待超时"),
+    ("RESULT_PROJECTION_TIMEOUT", "RESULT_PROJECTION_TIMEOUT", "科学结果整理长时间未完成"),
+    ("INTERPRETATION_STAGE_TIMEOUT", "INTERPRETATION_STAGE_TIMEOUT", "已有科学结果仍可查看"),
+    ("private-unknown-error", "RESEARCH_FAILED", "本次研究未能完成"),
+])
+def test_failed_turn_without_a_job_has_safe_actionable_progress(api, error_code, expected_code, expected_message):
+    client, active, _owner, _viewer, stranger, objects = api
+    created = client.post("/api/projects/project/research/sessions/session/turns", json={"message": "Evaluate my uploaded data"}).json()
+    turn_id = UUID(created["turn_id"])
+    with objects.repository_factory.unit_of_work() as unit:
+        current = unit.agent2.research_turns.get(turn_id)
+        unit.agent2.research_turns.compare_and_set_status(
+            turn_id, expected_status=current["status"], expected_version=current["row_version"],
+            target_status="FAILED", error_code=error_code,
+            error_summary="private-test-credential and hidden model reasoning must not appear",
+        )
+    response = client.get(f"/api/research/turns/{turn_id}/progress")
+    assert response.status_code == 200
+    progress = response.json()
+    assert progress["status"] == "FAILED"
+    assert progress["steps"] == []
+    assert progress["warnings"][0]["code"] == expected_code
+    assert expected_message in progress["warnings"][0]["message"]
+    assert "private-" not in response.text
+    assert "hidden model reasoning" not in response.text
+    active["value"] = stranger
+    assert client.get(f"/api/research/turns/{turn_id}/progress").status_code == 403
+
+
+@pytest.mark.parametrize("historical", [False, True])
+def test_preflight_failure_progress_replaces_generic_message_and_is_read_stable(api, monkeypatch, historical):
+    from tests.test_agent2_execution import _preflight_failure
+    from mdi_api.db import research_execution_summaries
+    from mdi_api.research_agent.execution.supervisor import ResearchExecutionSupervisor
+
+    client, active, _owner, _viewer, stranger, _objects = api
+    engine, factory, turn_id, job_id = _preflight_failure()
+    monkeypatch.setattr("mdi_api.routers.agent2.create_repository_factory", lambda: factory)
+    if historical:
+        ResearchExecutionSupervisor(factory).sync_for_job(job_id)
+        with engine.begin() as connection:
+            from sqlalchemy import select
+            saved = connection.execute(select(research_execution_summaries.c.summary_json)).scalar_one()
+            saved["warnings"] = []
+            connection.execute(update(research_execution_summaries).values(summary_json=saved))
+            connection.execute(update(research_turns).values(error_code=None, error_summary=None))
+    responses = [client.get(f"/api/research/turns/{turn_id}/progress") for _ in range(2)]
+    assert all(response.status_code == 200 for response in responses)
+    assert responses[0].json() == responses[1].json()
+    view = responses[0].json()
+    assert view["status"] == "FAILED" and view["steps"][0]["status"] == "SKIPPED"
+    assert [warning["code"] for warning in view["warnings"]] == ["ROOT_RESOURCE_HASH_MISMATCH"]
+    assert "一致性校验" in view["warnings"][0]["message"]
+    assert "模型设置" not in responses[0].text and "private" not in responses[0].text
+    active["value"] = stranger
+    assert client.get(f"/api/research/turns/{turn_id}/progress").status_code == 403
+
+
+@pytest.mark.parametrize("terminal,target", [("completed", "RESULT_PENDING"), ("failed", "FAILED"), ("cancelled", "CANCELED")])
+def test_committed_execution_handoff_recovers_api_progress(api, monkeypatch, terminal, target):
+    from tests.test_research_execution_handoff_recovery import _finished_execution
+    from mdi_api.research_agent.recovery import StaleResearchRecoveryService
+    from mdi_api.config import ApiSettings
+
+    client, active, _owner, _viewer, stranger, _objects = api
+    factory, turn_id, _ = _finished_execution(terminal)
+    monkeypatch.setattr("mdi_api.routers.agent2.create_repository_factory", lambda: factory)
+    assert StaleResearchRecoveryService(factory, settings=ApiSettings()).reconcile_finished_execution() == 1
+    response = client.get(f"/api/research/turns/{turn_id}/progress")
+    assert response.status_code == 200
+    progress = response.json()
+    assert progress["status"] == target and progress["active_step_ids"] == []
+    assert progress["result_projection_pending"] == (target == "RESULT_PENDING")
+    assert progress["execution_dispatch_pending"] is False
+    active["value"] = stranger
+    assert client.get(f"/api/research/turns/{turn_id}/progress").status_code == 403
+
+
+def test_expired_execution_queue_has_terminal_progress_and_cannot_redispatch(api, monkeypatch):
+    from tests.test_research_execution_queue_recovery import _queued_execution
+    from tests.test_agent2_execution import CaptureQueue
+    from mdi_api.research_agent.recovery import StaleResearchRecoveryService
+    from mdi_api.config import ApiSettings
+
+    client, active, _owner, _viewer, stranger, _objects = api
+    factory, turn_id, job_id = _queued_execution()
+    monkeypatch.setattr("mdi_api.routers.agent2.create_repository_factory", lambda: factory)
+    queue = CaptureQueue()
+    monkeypatch.setattr("mdi_api.routers.agent2._research_execution_queue", lambda: queue)
+    assert StaleResearchRecoveryService(factory, settings=ApiSettings()).expire_stalled_execution() == 1
+    response = client.get(f"/api/research/turns/{turn_id}/progress")
+    assert response.status_code == 200
+    progress = response.json()
+    assert progress["status"] == "FAILED" and progress["active_step_ids"] == []
+    assert progress["execution_dispatch_pending"] is False
+    assert any(w["code"] == "EXECUTION_QUEUE_TIMEOUT" and "科学任务排队等待超时" in w["message"] for w in progress["warnings"])
+    with factory.session() as session:
+        assert session.repositories.jobs.get(job_id)["executionAttempt"] == 0
+    redispatch = client.post(f"/api/research/turns/{turn_id}/dispatch")
+    assert redispatch.status_code == 409
+    assert redispatch.json()["detail"]["code"] == "EXECUTION_PLAN_NOT_READY"
+    assert queue.ids == []
+    active["value"] = stranger
+    assert client.get(f"/api/research/turns/{turn_id}/progress").status_code == 403
+
+
+def test_failed_projection_progress_keeps_authorized_output_links_without_a_snapshot(api, monkeypatch):
+    from tests.test_research_result_loss_recovery import _completed_execution
+    from mdi_api.research_agent.recovery import StaleResearchRecoveryService
+    from mdi_api.config import ApiSettings
+    from datetime import datetime, timedelta, timezone
+
+    client, active, _owner, _viewer, stranger, _objects = api
+    factory, turn_id, job_id = _completed_execution()
+    monkeypatch.setattr("mdi_api.routers.agent2.create_repository_factory", lambda: factory)
+    with factory.engine.begin() as connection:
+        connection.execute(update(research_turns).where(research_turns.c.id == turn_id).values(
+            updated_at=datetime.now(timezone.utc) - timedelta(minutes=16),
+        ))
+    assert StaleResearchRecoveryService(factory, settings=ApiSettings()).expire_stalled_results() == 1
+    response = client.get(f"/api/research/turns/{turn_id}/progress")
+    assert response.status_code == 200
+    progress = response.json()
+    assert progress["status"] == "FAILED"
+    assert progress["incremental_outputs"][0]["content_url"] == f"/api/planner/jobs/{job_id}/artifacts/saved-output/content"
+    assert any(warning["code"] == "RESULT_PROJECTION_TIMEOUT" for warning in progress["warnings"])
+    assert client.get(f"/api/research/turns/{turn_id}/result").status_code == 404
+    active["value"] = stranger
+    assert client.get(f"/api/research/turns/{turn_id}/progress").status_code == 403
+
+
+def test_result_execution_records_exclude_other_attempts_before_output_limit(api, monkeypatch):
+    from datetime import datetime, timedelta, timezone
+    from mdi_api.db import artifacts, research_execution_summaries
+    from tests.test_agent2_results import _persisted_projection
+
+    client, active, _owner, _viewer, stranger, _objects = api
+    factory, turn_id, job_id, service = _persisted_projection()
+    monkeypatch.setattr(service, "_enqueue_interpretation", lambda _: None)
+    monkeypatch.setattr("mdi_api.routers.agent2.create_repository_factory", lambda: factory)
+    with factory.engine.begin() as connection:
+        connection.execute(insert(artifacts), {
+            "id": "saved-recipe", "project_id": "project", "dataset_id": "dataset", "job_id": job_id,
+            "tool_call_id": "call-output", "type": "recipe_json", "name": "recipe.json", "version": "1",
+            "storage_key": "test/recipe.json", "size_bytes": 42, "content_type": "application/json", "content_hash": "recipe",
+        })
+    # Freeze the fixture before introducing unrelated same-call output rows.
+    with factory.session() as session:
+        summary = session.agent2.research_execution_summaries.get_for_turn(turn_id)
+    summary["summary_json"]["artifact_refs"].append({"artifact_id": "saved-recipe", "step_id": "step_1", "display_label": "recipe.json"})
+    with factory.engine.begin() as connection:
+        connection.execute(update(research_execution_summaries).where(
+            research_execution_summaries.c.id == summary["id"],
+        ).values(summary_json=summary["summary_json"]))
+    original_loader = service.artifact_loader
+    service.artifact_loader = lambda row: {} if row["id"] == "saved-recipe" else original_loader(row)
+    snapshot = service.project_turn(turn_id)
+    with factory.engine.begin() as connection:
+        for index in range(70):
+            connection.execute(insert(artifacts), {
+                "id": f"old-output-{index:02}", "project_id": "project", "dataset_id": "dataset",
+                "job_id": job_id, "tool_call_id": "call-output", "type": "table_json", "name": "Old retry output",
+                "version": "1", "storage_key": f"test/old-{index}.json", "size_bytes": 42, "content_hash": "old",
+                "content_type": "application/json", "created_at": datetime.now(timezone.utc) - timedelta(days=1),
+            })
+    with factory.session() as session:
+        old_page = session.repositories.artifacts.list_for_job(job_id)[:64]
+        assert all(item["id"].startswith("old-output-") for item in old_page)
+    response = client.get(f"/api/research/turns/{turn_id}/result")
+    assert response.status_code == 200, response.text
+    assert {item["id"] for item in response.json()["artifacts"]} == {"saved-output", "saved-recipe"}
+    assert response.json()["tool_call_ids"] == ["call-output"]
+    with factory.session() as session:
+        assert session.agent2.scientific_result_snapshots.get(snapshot["id"])["bundle_json"] == snapshot["bundle_json"]
+    active["value"] = stranger
+    assert client.get(f"/api/research/turns/{turn_id}/result").status_code == 403
 
 
 def test_progress_projects_interpretation_retry_without_hiding_preserved_result(api):
@@ -1482,24 +2136,89 @@ def test_terminal_history_progress_uses_read_only_fallback_when_legacy_plan_payl
     )
     response = client.get(f"/api/research/turns/{turn_id}/progress")
     assert response.status_code == 200
+    from mdi_api.research_agent.execution.schemas import ResearchProgressView
+    ResearchProgressView.model_validate(response.json())
     assert response.json() == {
         "contract_version": "1.0",
         "turn_id": str(turn_id),
         "status": "COMPLETED",
         "response_kind": "SCIENTIFIC_EXECUTION",
-        "plan_title": "Historical completed analysis",
+        "plan_title": "历史分析",
         "steps": [],
         "active_step_ids": [],
         "completed_step_count": 0,
         "total_step_count": 0,
         "incremental_outputs": [],
-        "warnings": ["HISTORICAL_ANALYSIS_PLAN_PAYLOAD_UNAVAILABLE"],
-        "execution_outcome": "SUCCESS",
+        "warnings": [{"code": "HISTORICAL_ANALYSIS_PLAN_PAYLOAD_UNAVAILABLE", "message": "历史分析的执行计划详情不可用；这里只显示已保存的研究状态。"}],
+        "execution_outcome": None,
         "result_projection_pending": False,
     }
 
 
-def test_agent2_result_projection_exposes_bounded_facts_and_exact_sources(api):
+@pytest.mark.parametrize("status,outcome,has_result", [
+    ("FAILED", "SUCCESS", True),
+    ("CANCELED", "SUCCESS", True),
+    ("CANCELED", "CANCELED", False),
+    ("COMPLETED", None, True),
+    ("FAILED", None, False),
+])
+def test_missing_plan_history_preserves_saved_outcome_and_result_access(api, monkeypatch, status, outcome, has_result):
+    from sqlalchemy import select
+    from mdi_api.db import analysis_plans, research_execution_summaries
+    from tests.test_agent2_execution import _retired_capability_execution
+    from tests.test_research_result_loss_recovery import _saved_result
+
+    client, active, _owner, _viewer, stranger, _objects = api
+    factory, turn_id, job_id, _registries = _retired_capability_execution(status)
+    snapshot = _saved_result(factory, turn_id) if has_result else None
+    with factory.engine.begin() as connection:
+        connection.execute(update(analysis_plans).values(analysis_plan_json={}))
+        if outcome is None:
+            connection.execute(research_execution_summaries.delete())
+        else:
+            connection.execute(update(research_execution_summaries).values(execution_outcome=outcome))
+        if status == "FAILED":
+            connection.execute(update(research_turns).values(error_code="INTERPRETATION_GROUNDING_FAILED"))
+    monkeypatch.setattr("mdi_api.routers.agent2.create_repository_factory", lambda: factory)
+
+    def saved():
+        with factory.session() as session:
+            return (
+                session.agent2.research_turns.get(turn_id),
+                session.agent2.research_execution_summaries.get_for_turn(turn_id),
+                session.agent2.research_turn_events.list_for_turn(turn_id),
+                session.connection.execute(select(analysis_plans)).mappings().all(),
+                session.agent2.scientific_result_snapshots.get(snapshot["id"]) if snapshot else None,
+            )
+    original = saved()
+    for _ in range(2):
+        response = client.get(f"/api/research/turns/{turn_id}/progress")
+        assert response.status_code == 200
+        progress = response.json()
+        assert progress["status"] == status and progress["execution_outcome"] == outcome
+        assert progress.get("preserved_result_available", False) is has_result
+        assert progress["steps"] == [] and progress["incremental_outputs"] == []
+        assert all(isinstance(item["code"], str) and isinstance(item["message"], str) for item in progress["warnings"])
+        assert saved() == original
+    if snapshot:
+        response = client.get(f"/api/research/turns/{turn_id}/result")
+        assert response.status_code == 200
+        assert response.json()["result_snapshot_id"] == str(snapshot["id"])
+    active["value"] = stranger
+    assert client.get(f"/api/research/turns/{turn_id}/progress").status_code == 403
+
+
+@pytest.mark.parametrize("field,value", [("job_id", "different-job"), ("research_turn_id", "different-turn"), ("execution_outcome", "UNKNOWN")])
+def test_missing_plan_history_does_not_guess_from_a_mismatched_execution_summary(field, value):
+    from mdi_api.routers.agent2 import _historical_terminal_progress
+
+    turn = {"id": "turn", "job_id": "job", "status": "FAILED"}
+    summary = {"research_turn_id": "turn", "job_id": "job", "execution_outcome": "SUCCESS", field: value}
+    assert _historical_terminal_progress(turn, summary)["execution_outcome"] is None
+
+
+@pytest.mark.parametrize("reuse_status", [None, "INTERPRETING", "FAILED", "CANCELED", "COMPLETED"])
+def test_agent2_result_projection_exposes_bounded_facts_and_exact_sources(api, reuse_status):
     client, active, _owner, _viewer, stranger, objects = api
     ref = create_ref(objects, "project")
     scientific_selection = {
@@ -1570,7 +2289,7 @@ def test_agent2_result_projection_exposes_bounded_facts_and_exact_sources(api):
             expected_version=int(current["row_version"]),
             target_status="COMPLETED",
         )
-        unit.agent2.scientific_result_snapshots.add({
+        result_row = unit.agent2.scientific_result_snapshots.add({
             "id": uuid4(),
             "project_id": "project",
             "research_turn_id": turn_id,
@@ -1583,23 +2302,249 @@ def test_agent2_result_projection_exposes_bounded_facts_and_exact_sources(api):
             "bundle_json": bundle.model_dump(mode="json"),
         })
 
+    source_turn_id = turn_id
+    if reuse_status:
+        reused = client.post(
+            "/api/projects/project/research/sessions/session/turns",
+            json={"message": "Only reinterpret the saved result"},
+        ).json()
+        turn_id = UUID(reused["turn_id"])
+        with objects.repository_factory.unit_of_work() as unit:
+            source_context = unit.agent2.research_context_snapshots.get_for_turn(source_turn_id)
+            unit.agent2.research_context_snapshots.add({
+                **source_context, "id": uuid4(), "research_turn_id": turn_id,
+                "context_fingerprint": f"reused-{turn_id}",
+                "referenced_result_refs_json": [{"candidate_key": "result_1", "result_id": str(result_row["id"])}],
+            })
+            unit.connection.execute(update(research_turns).where(research_turns.c.id == turn_id).values(
+                status=reuse_status, action_type="INTERPRET_RESULT",
+            ))
+
     response = client.get(f"/api/research/turns/{turn_id}/result")
     assert response.status_code == 200
     payload = response.json()
     assert payload["result_id"] == str(bundle.result_id)
+    assert payload["research_turn_id"] == str(turn_id)
+    assert payload["source_research_turn_id"] == str(source_turn_id)
     assert payload["result_snapshot_id"]
     assert payload["result_snapshot_id"] != str(bundle.result_id)
+    if reuse_status in {"FAILED", "CANCELED"}:
+        progress = client.get(f"/api/research/turns/{turn_id}/progress")
+        assert progress.json()["preserved_result_available"] is True
     assert payload["source_object_refs"][0] == {
         **ref.model_dump(mode="json"),
         "version_no": 1,
     }
     assert payload["facts"] == [bundle.facts[0].model_dump(mode="json")]
+    assert payload["input_provenance"] is None
     assert payload["evidence"] == []
     assert payload["artifacts"] == []
     assert payload["scientific_selections"][0]["semantic_locator"] == {"sample_ref": "mat-2"}
+    with objects.repository_factory.session() as session:
+        assert session.agent2.scientific_result_snapshots.get(result_row["id"])["bundle_json"] == bundle.model_dump(mode="json")
 
     active["value"] = stranger
     assert client.get(f"/api/research/turns/{turn_id}/result").status_code == 403
+
+
+@pytest.mark.parametrize("tool_id", ["generation.function_curve", "viz.inline_xy", "generation.ideal_crystal"])
+def test_result_api_exposes_only_the_saved_public_parameter_provenance(api, tmp_path, monkeypatch, tool_id):
+    from tests.test_project_parameters import _context
+    from mdi_api.application.scientific_results.projectors.parameters import ParameterResultProjector
+    from mdi_api.domain.scientific_results.reference_sources import project_reference_context
+    client, active, _owner, _viewer, stranger, objects = api
+    turn = client.post("/api/projects/project/research/sessions/session/turns", json={"message": "查看参数结果"}).json()
+    turn_id = UUID(turn["turn_id"])
+    bundle = ParameterResultProjector(tool_id).project(_context(tmp_path, tool_id, monkeypatch)).bundle
+    bundle.research_turn_id = turn_id
+    bundle.research_session_id = "session"
+    bundle.provenance.internal_diagnostic = {"private": "must-not-be-public"}
+    with objects.repository_factory.unit_of_work() as unit:
+        current = unit.agent2.research_turns.get(turn_id)
+        unit.agent2.research_turns.compare_and_set_status(turn_id, expected_status=str(current["status"]),
+            expected_version=int(current["row_version"]), target_status="COMPLETED")
+        unit.agent2.scientific_result_snapshots.add({
+            "id": uuid4(), "project_id": "project", "research_turn_id": turn_id, "job_id": None,
+            "schema_version": bundle.schema_version, "projection_version": bundle.projection_version,
+            "execution_status": bundle.execution_status.value, "relevance_status": bundle.relevance_status.value,
+            "source_fingerprint": "parameter-api-test", "bundle_json": bundle.model_dump(mode="json"),
+        })
+    response = client.get(f"/api/research/turns/{turn_id}/result")
+    assert response.status_code == 200, response.text
+    payload = response.json()
+    assert payload["source_object_refs"] == []
+    assert payload["input_provenance"] == project_reference_context(bundle)
+    assert "must-not-be-public" not in response.text
+    assert isinstance(payload["input_provenance"]["parameter_inputs"][0]["resolved_parameters"], dict)
+    active["value"] = stranger
+    assert client.get(f"/api/research/turns/{turn_id}/result").status_code == 403
+
+
+@pytest.mark.parametrize("reference_case", [
+    "exact", "absent", "no_context", "multiple", "missing", "invalid", "foreign", "running",
+    "missing_event", "missing_context", "incomplete_context", "interpreting",
+])
+@pytest.mark.parametrize("terminal_status", ["FAILED", "CANCELED"])
+def test_preplanning_terminal_can_read_only_one_explicit_owned_result(api, reference_case, terminal_status):
+    from tests.test_research_result_loss_recovery import _saved_result
+
+    client, active, _owner, _viewer, stranger, objects = api
+    source_project, source_session = ("other", "other-session") if reference_case == "foreign" else ("project", "session")
+    source = client.post(f"/api/projects/{source_project}/research/sessions/{source_session}/turns", json={"message": "Original science"}).json()
+    source_turn_id = UUID(source["turn_id"])
+    snapshot = _saved_result(objects.repository_factory, source_turn_id)
+    references = [str(snapshot["id"])]
+    if reference_case in {"absent", "no_context", "missing_event", "missing_context", "incomplete_context", "interpreting"}:
+        references = []
+    elif reference_case == "multiple":
+        references.append(str(uuid4()))
+    elif reference_case == "missing":
+        references = [str(uuid4())]
+    elif reference_case == "invalid":
+        references = ["invalid-snapshot"]
+    created = client.post("/api/projects/project/research/sessions/session/turns", json={
+        "message": "Explain the attached result",
+        "ui_context": None if reference_case == "no_context" else {"explicit_result_ids": references},
+    })
+    if reference_case == "invalid":
+        assert created.status_code == 422
+        return
+    assert created.status_code == 202
+    turn_id = UUID(created.json()["turn_id"])
+    with objects.repository_factory.unit_of_work() as unit:
+        unit.connection.execute(update(research_turns).where(research_turns.c.id == turn_id).values(
+            status="ORCHESTRATING" if reference_case == "running" else terminal_status,
+            action_type="INTERPRET_RESULT" if reference_case == "interpreting" else None,
+            error_code="ORCHESTRATOR_TIMEOUT",
+        ))
+        if reference_case in {"missing_event", "missing_context", "incomplete_context"}:
+            from mdi_api.db import research_turn_events
+
+            received = next(event for event in unit.agent2.research_turn_events.list_for_turn(turn_id)
+                            if event["event_type"] == "TURN_RECEIVED")
+            if reference_case == "missing_event":
+                unit.connection.execute(research_turn_events.delete().where(research_turn_events.c.id == received["id"]))
+            else:
+                payload = dict(received["payload_json"])
+                if reference_case == "missing_context":
+                    payload.pop("ui_context")
+                else:
+                    payload["ui_context"] = {}
+                unit.connection.execute(update(research_turn_events).where(research_turn_events.c.id == received["id"]).values(payload_json=payload))
+    response = client.get(f"/api/research/turns/{turn_id}/result")
+    if reference_case == "exact":
+        assert response.status_code == 200
+        assert response.json()["research_turn_id"] == str(turn_id)
+        assert response.json()["source_research_turn_id"] == str(source_turn_id)
+        assert response.json()["result_snapshot_id"] == str(snapshot["id"])
+        assert response.json()["facts"] == snapshot["bundle_json"]["facts"]
+    elif reference_case == "foreign":
+        assert response.status_code == 403
+    else:
+        assert response.status_code == (404 if reference_case in {"absent", "no_context", "missing"} else 409)
+        if response.status_code == 409:
+            assert response.json()["detail"]["code"] == "SCIENTIFIC_RESULT_NOT_READY"
+        assert "facts" not in response.json()
+    progress = client.get(f"/api/research/turns/{turn_id}/progress")
+    assert progress.status_code == 200
+    assert progress.json().get("preserved_result_available", False) is (reference_case == "exact")
+    assert progress.json()["execution_outcome"] is None
+    assert progress.json()["incremental_outputs"] == []
+    with objects.repository_factory.session() as session:
+        turn = session.agent2.research_turns.get(turn_id)
+        assert turn["status"] == ("ORCHESTRATING" if reference_case == "running" else terminal_status)
+        assert turn["job_id"] is None
+        assert not session.agent2.scientific_result_snapshots.list_for_turn(turn_id)
+        assert session.agent2.scientific_result_snapshots.get(snapshot["id"])["bundle_json"] == snapshot["bundle_json"]
+    active["value"] = stranger
+    assert client.get(f"/api/research/turns/{turn_id}/result").status_code == 403
+
+
+@pytest.mark.parametrize("terminal_status", ["FAILED", "CANCELED"])
+@pytest.mark.parametrize("context_ready", [False, True])
+def test_preexecution_terminal_retains_exact_context_for_follow_up(api, terminal_status, context_ready):
+    client, _active, _owner, _viewer, _stranger, objects = api
+    ref = create_ref(objects, "project").model_dump(mode="json")
+    original = client.post("/api/projects/project/research/sessions/session/turns", json={
+        "message": "Analyze this exact structure", "ui_context": {
+            "active_object_refs": [ref], "selection_refs": [ref], "explicit_object_refs": [ref],
+        },
+    }).json()
+    turn_id = UUID(original["turn_id"])
+    if context_ready:
+        ResearchTurnService(objects.repository_factory).resolve_turn_context_stub(turn_id)
+    if terminal_status == "CANCELED":
+        assert client.post(f"/api/research/turns/{turn_id}/cancel").status_code == 200
+    else:
+        with objects.repository_factory.unit_of_work() as unit:
+            unit.connection.execute(update(research_turns).where(research_turns.c.id == turn_id).values(
+                status=terminal_status, error_code="ORCHESTRATOR_PROVIDER_UNAVAILABLE",
+            ))
+    detail = client.get(f"/api/research/turns/{turn_id}")
+    assert detail.status_code == 200
+    before = detail.json()
+    assert next(message for message in before["messages"] if message["role"] == "USER")["content"] == "Analyze this exact structure"
+    assert before["context"]["scope"] == [ref]
+    assert before["context"]["selection"] == [ref]
+    assert before["context_source"] == ("RESOLVED" if context_ready else "SUBMITTED")
+    assert (before["context_snapshot_summary"] is not None) is context_ready
+    assert client.get(f"/api/research/turns/{turn_id}/result").status_code == 404
+    continued = client.post("/api/projects/project/research/sessions/session/turns", json={
+        "message": "Explain which analyses are available", "reply_to_turn_id": str(turn_id),
+        "ui_context": {"active_object_refs": before["context"]["scope"], "explicit_object_refs": [ref]},
+    })
+    assert continued.status_code == 202
+    assert continued.json()["turn_id"] != str(turn_id)
+    follow_up = client.get(f"/api/research/turns/{continued.json()['turn_id']}")
+    assert follow_up.status_code == 200
+    assert follow_up.json()["parent_turn_id"] == str(turn_id)
+    assert client.get(f"/api/research/turns/{turn_id}").json() == before
+    with objects.repository_factory.session() as session:
+        assert (session.agent2.research_context_snapshots.get_for_turn(turn_id) is not None) is context_ready
+        events = session.agent2.research_turn_events.list_for_turn(UUID(continued.json()["turn_id"]))
+        received = next(event for event in events if event["event_type"] == "TURN_RECEIVED")
+        assert received["payload_json"]["ui_context"]["active_object_refs"] == [ref]
+        assert received["payload_json"]["ui_context"]["explicit_result_ids"] == []
+
+
+def test_submitted_sources_keep_explicit_objects_and_semantic_selection_without_a_snapshot(api):
+    client, active, _owner, _viewer, stranger, objects = api
+    refs = [create_ref(objects, "project").model_dump(mode="json") for _ in range(2)]
+    selection = {
+        "contract_version": "1.0", "object_ref": refs[1], "viewer_id": "structure",
+        "selection_type": "ATOM", "semantic_locator": {"atom_index": 2}, "display_label": "Atom 2",
+        "evidence_locator": None,
+    }
+    created = client.post("/api/projects/project/research/sessions/session/turns", json={
+        "message": "Inspect the selected atom", "ui_context": {
+            "active_object_refs": [refs[0]], "explicit_object_refs": refs,
+            "selection_refs": [refs[1]], "scientific_selections": [selection],
+        },
+    })
+    assert created.status_code == 202
+    turn_id = UUID(created.json()["turn_id"])
+    with objects.repository_factory.session() as session:
+        before_turn = session.agent2.research_turns.get(turn_id)
+        before_events = session.agent2.research_turn_events.list_for_turn(turn_id)
+        before_message = session.agent2.research_turns.get_message(before_turn["user_message_id"])
+    detail = client.get(f"/api/research/turns/{turn_id}")
+    assert detail.status_code == 200
+    assert detail.json()["context"] == {"scope": refs, "selection": [refs[1]], "scientific_selection": [selection]}
+    assert detail.json()["context_source"] == "SUBMITTED"
+    assert detail.json()["context_snapshot_summary"] is None
+    assert client.get(f"/api/research/turns/{turn_id}/context-manifest").status_code == 409
+    with objects.repository_factory.session() as session:
+        assert session.agent2.research_turns.get(turn_id) == before_turn
+        assert session.agent2.research_turn_events.list_for_turn(turn_id) == before_events
+        assert session.agent2.research_turns.get_message(before_turn["user_message_id"]) == before_message
+        assert session.agent2.research_context_snapshots.get_for_turn(turn_id) is None
+    ResearchTurnService(objects.repository_factory).resolve_turn_context_stub(turn_id)
+    resolved = client.get(f"/api/research/turns/{turn_id}").json()
+    assert resolved["context_source"] == "RESOLVED"
+    assert resolved["context"]["scope"] == [refs[0]]
+    assert resolved["context"]["scientific_selection"] == [selection]
+    active["value"] = stranger
+    assert client.get(f"/api/research/turns/{turn_id}").status_code == 403
 
 
 def test_phase4_sse_reconnect_does_not_repeat_execution_events(api):

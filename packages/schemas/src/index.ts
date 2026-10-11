@@ -52,6 +52,7 @@ export type DisplayTarget =
 export type ToolCategory = "visualization" | "analysis" | "parser" | "report" | "utility";
 
 export type ToolDomain =
+  | "reference"
   | "dataset"
   | "table"
   | "viz"
@@ -217,6 +218,14 @@ export type Artifact = {
   metadata: ArtifactMetadata;
 };
 
+// Server-validated JSON: at most four container levels, 512 values / 64 KiB.
+type ParameterScalar = string | number | boolean | null;
+type ParameterContainer<T> = T[] | { [key: string]: T };
+type ParameterLevel1 = ParameterScalar | ParameterContainer<ParameterScalar>;
+type ParameterLevel2 = ParameterScalar | ParameterContainer<ParameterLevel1>;
+type ParameterLevel3 = ParameterScalar | ParameterContainer<ParameterLevel2>;
+export type ParameterValue = ParameterScalar | ParameterContainer<ParameterLevel3>;
+
 export type AnalysisStep = {
   stepId: string;
   toolId: string;
@@ -226,7 +235,7 @@ export type AnalysisStep = {
   params: Record<string, unknown>;
   parameterProvenance?: Array<{
     parameter: string;
-    resolvedValue: string | number | boolean | string[];
+    resolvedValue: ParameterValue;
     unit?: string | null;
     origin: "SOURCE_FACT" | "DETERMINISTIC_DERIVATION" | "TOOL_DEFAULT" | "USER_SPECIFIED" | "SCIENTIFIC_PRESET" | "SYSTEM_POLICY";
     authority: "SOURCE_LOCKED" | "AUTO_DERIVED" | "USER_EDITABLE" | "ADVANCED_EDITABLE" | "SYSTEM_ONLY";
@@ -770,6 +779,7 @@ export type ToolPlannerMetadata = {
   toolName: string;
   toolVersion: string;
   availability: PlannerAvailability;
+  executionScope?: "MATERIAL" | "PROJECT";
   scientificIntents: ScientificIntent[];
   capabilityNeeds: AnalysisIntentCapabilityNeed[];
   desiredOutputs: AnalysisIntentDesiredOutput[];

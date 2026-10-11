@@ -7,7 +7,7 @@ import math
 from typing import Any
 from uuid import UUID, uuid4
 
-from mdi_llm.providers import LLMProviderError
+from mdi_llm.providers import LLMProviderError, PROVIDER_TIMEOUT_CODES
 from mdi_schemas import PlannerBindingSource
 
 from mdi_api.agent2_errors import CapabilityBindingFailed, CapabilityPlanInvalid
@@ -33,6 +33,7 @@ from mdi_api.research_agent.context.policy import ContextOperation
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 from mdi_api.domain.scientific_results.contracts import ScientificResultBundle
 from mdi_tool_registry import build_tool_planner_metadata, load_manifests
+from mdi_tool_registry.project_tools import project_reference_descriptions
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +66,7 @@ class CapabilityPlanningProcessor:
             planner = ScientificCapabilityPlanner(registry=registries.capabilities, llm_client=self.llm_client)
             planner_input = self._planner_input(
                 prepared["decision"], prepared["resolution"], prepared["snapshot"],
-                prepared["reusable_results"], registries,
+                prepared["reusable_results"], registries, self.tool_registry,
             )
             planner_manifest = build_operation_manifest(
                 operation=ContextOperation.PLANNER,
@@ -115,11 +116,17 @@ class CapabilityPlanningProcessor:
                     for key, value in reusable_results.items()
                     if value.get("usable") and value.get("artifact_metadata_by_id")
                 }
-                context = self._plan_context(
-                    unit,
-                    str(turn["project_id"]),
-                    {**object_refs, **result_object_refs},
-                )
+                if prepared.get("project_scoped"):
+                    context = {"execution_scope": "project", "project_id": str(turn["project_id"]),
+                               "dataset_id": None, "profile_id": None, "profile": None,
+                               "source_contexts": {}, "source_versions": {}, "resource_facts": {},
+                               "user_message": str(unit.agent2.research_turns.get_message(str(turn["user_message_id"]))["content_summary"])}
+                else:
+                    context = self._plan_context(
+                        unit,
+                        str(turn["project_id"]),
+                        {**object_refs, **result_object_refs},
+                    )
                 context["object_refs"] = object_refs
                 context["result_object_refs"] = result_object_refs
                 context["result_artifact_refs"] = result_artifact_refs
@@ -136,7 +143,7 @@ class CapabilityPlanningProcessor:
                 unit.agent2.research_capability_plans.add({"id": capability_plan_id, "research_turn_id": turn_id, "capability_resolution_id": prepared["resolution_id"], "contract_version": plan.contract_version, "plan_json": plan.model_dump(mode="json"), "input_fingerprint": plan_fp, "planner_mode": planner_mode, "prompt_version": None if provider_result is None else provider_result.prompt_version, "provider": None if provider_result is None else provider_result.provider, "model": None if provider_result is None else provider_result.model, "provider_request_id": None if provider_result is None else provider_result.provider_request_id, "repair_attempted": False if provider_result is None else provider_result.repair_attempted, "validation_status": "VALIDATED"})
                 self._event(unit, turn_id, ResearchTurnEventType.CAPABILITY_PLAN_CREATED, {"capability_plan_id": str(capability_plan_id), "planner_mode": planner_mode})
                 plan_id = f"plan_{uuid4().hex[:24]}"
-                unit.repositories.analysis_plans.save_plan({"id": plan_id, "projectId": str(turn["project_id"]), "datasetId": context["dataset_id"], "profileId": context["profile_id"], "planSource": "agent2_capability_binder", "plannerProvider": None, "analysisPlan": analysis_plan.model_dump(mode="json"), "planHash": plan_hash, "validationStatus": "validated", "createdBy": "user_local"})
+                unit.repositories.analysis_plans.save_plan({"id": plan_id, "projectId": str(turn["project_id"]), "datasetId": analysis_plan.datasetId, "profileId": analysis_plan.profileId, "planSource": "agent2_capability_binder", "plannerProvider": None, "analysisPlan": analysis_plan.model_dump(mode="json"), "planHash": plan_hash, "validationStatus": "validated", "createdBy": "user_local"})
                 current = unit.agent2.research_turns.get_for_update(turn_id)
                 updated = unit.agent2.research_turns.compare_and_set_status(turn_id, expected_status=ResearchTurnStatus.PLANNING.value, expected_version=int(current["row_version"]), target_status=ResearchTurnStatus.PLAN_READY.value)
                 unit.agent2.research_turns.attach_analysis_plan(turn_id, plan_id)
@@ -149,8 +156,9 @@ class CapabilityPlanningProcessor:
             self._fail(turn_id, "CAPABILITY_PLANNER_TIMEOUT", "Capability planner timed out", target=ResearchTurnStatus.FAILED)
             raise
         except LLMProviderError as exc:
-            logger.warning("Agent2 capability planner provider unavailable", extra={"turn_id": str(turn_id)})
-            self._fail(turn_id, "CAPABILITY_PLANNER_UNAVAILABLE", exc.safe_message, target=ResearchTurnStatus.FAILED)
+            code = "CAPABILITY_PLANNER_TIMEOUT" if exc.code in PROVIDER_TIMEOUT_CODES else "CAPABILITY_PLANNER_UNAVAILABLE"
+            logger.warning("Agent2 capability planner provider failed", extra={"turn_id": str(turn_id), "error_code": code})
+            self._fail(turn_id, code, exc.safe_message, target=ResearchTurnStatus.FAILED)
             raise
         except CapabilityPlanInvalid as exc:
             logger.warning("Agent2 capability plan rejected", extra={"turn_id": str(turn_id), "error_code": exc.code})
@@ -173,6 +181,17 @@ class CapabilityPlanningProcessor:
             if decision_row is None or snapshot is None:
                 raise CapabilityPlanInvalid("decision or context snapshot missing")
             decision = ResearchTurnDecision.model_validate(decision_row["decision_json"])
+            project_scoped = bool(decision.scientific_requirements) and all(
+                not registries.requirements.require(item.requirement_id).requires_material
+                for item in decision.scientific_requirements
+            )
+            if project_scoped:
+                if decision.selected_scope_ref_keys or any(item.subject_ref_keys for item in decision.scientific_requirements):
+                    raise CapabilityPlanInvalid("Project-scoped scientific work cannot acquire a material binding")
+                # Keep the saved conversation context intact. Only the inputs
+                # exposed to this source-free planner exclude unused material.
+                snapshot = {**snapshot, "selection_refs_json": [], "active_scope_refs_json": [],
+                            "scientific_selections_json": [], "referenced_result_refs_json": [], "resolved_references_json": []}
             self._reauthorize_snapshot(unit, turn, snapshot)
             reusable_results = self._load_reusable_results(unit, turn, decision, snapshot)
             self._event(unit, turn_id, ResearchTurnEventType.CAPABILITY_RESOLUTION_STARTED, {"status": turn["status"]})
@@ -196,6 +215,7 @@ class CapabilityPlanningProcessor:
             self._event(unit, turn_id, ResearchTurnEventType.CAPABILITY_RESOLUTION_COMPLETED, {"candidate_count": len(resolution.candidates), "registry_fingerprint": resolution.registry_fingerprint})
             return {
                 "terminal": False,
+                "project_scoped": project_scoped,
                 "turn": {
                     **turn,
                     "_autonomy": self._turn_autonomy(unit, turn_id),
@@ -208,7 +228,7 @@ class CapabilityPlanningProcessor:
             }
 
     @staticmethod
-    def _planner_input(decision: ResearchTurnDecision, resolution: Any, snapshot: dict[str, Any], reusable_results: dict[str, dict[str, Any]], registries: Any) -> CapabilityPlannerInput:
+    def _planner_input(decision: ResearchTurnDecision, resolution: Any, snapshot: dict[str, Any], reusable_results: dict[str, dict[str, Any]], registries: Any, tool_registry: Any | None = None) -> CapabilityPlannerInput:
         refs = CapabilityPlanningProcessor._snapshot_refs(snapshot)
         candidates = []
         ordered_candidates = sorted(resolution.candidates, key=lambda item: (item.planning_priority, item.capability_id, item.capability_version))
@@ -220,6 +240,8 @@ class CapabilityPlanningProcessor:
             if item.eligibility not in {CapabilityEligibility.ELIGIBLE, CapabilityEligibility.CONDITIONAL}:
                 continue
             manifest = registries.capabilities.require(item.capability_id, item.capability_version)
+            project_tools = [(tool_registry or load_manifests()).get_tool_by_id(binding.tool_id)
+                             for binding in manifest.tool_bindings] if not manifest.input_slots else []
             candidates.append(PlannerCapabilityView(
                 ref_key=f"cap_{index}", capability_id=item.capability_id, version=item.capability_version,
                 eligibility=item.eligibility, satisfies_requirement_ids=item.satisfies_requirement_ids,
@@ -239,6 +261,7 @@ class CapabilityPlanningProcessor:
                 ) for slot in manifest.output_slots],
                 bound_source_ref_keys=item.bound_source_ref_keys,
                 reusable_result_bindings=item.reusable_result_bindings,
+                reusable_result_source_ref_keys=item.reusable_result_source_ref_keys,
                 missing_input_slots=item.missing_input_slots,
                 possible_producer_ref_keys={
                     slot: [capability_keys[value] for value in values if value in capability_keys]
@@ -254,6 +277,7 @@ class CapabilityPlanningProcessor:
                 known_limitations=list(
                     manifest.qualification.known_limitations[:3]
                 ),
+                reference_sources=project_reference_descriptions(project_tools) if project_tools else [],
             ))
         results = []
         for key, item in sorted(reusable_results.items()):
@@ -365,13 +389,22 @@ class CapabilityPlanningProcessor:
             for fact_key in binding.factKeys
         }
         resource_facts: dict[str, dict[str, Any]] = {}
+        source_versions: dict[str, dict[str, Any]] = {}
         for ref_key, ref in refs.items():
             version = unit.agent2.scientific_objects.get_version(ref.version_id)
+            version_datasets: set[str] = set()
             for source in version.get("source_resource_refs_json") or []:
                 if source.get("project_id") not in {None, project_id}:
                     raise CapabilityBindingFailed("source resource belongs to another project")
                 if source.get("dataset_id"):
                     source_dataset_ids.add(str(source["dataset_id"]))
+                    version_datasets.add(str(source["dataset_id"]))
+            if len(version_datasets) > 1:
+                raise CapabilityBindingFailed("a normalized source version requires one exact owning dataset")
+            source_versions[ref_key] = {
+                "objectId": str(ref.object_id), "versionId": str(ref.version_id),
+                "datasetId": next(iter(version_datasets), None), "objectType": ref.object_type,
+            }
             canonical_metadata = dict(version.get("canonical_metadata_json") or {})
             source_resource_id = str(
                 canonical_metadata.get("source_resource_id")
@@ -401,27 +434,32 @@ class CapabilityPlanningProcessor:
         allowed = {str(item.get("id") or item.get("datasetId")) for item in datasets}
         if source_dataset_ids and not source_dataset_ids.issubset(allowed):
             raise CapabilityBindingFailed("scientific source dataset is not authorized")
-        if len(source_dataset_ids) > 1:
-            raise CapabilityBindingFailed("AnalysisPlan 0.2 requires one exact root dataset")
         if source_dataset_ids:
-            dataset_id = next(iter(source_dataset_ids))
+            dataset_id = sorted(source_dataset_ids)[0]
         elif datasets:
             dataset_id = str(datasets[0]["id"] if "id" in datasets[0] else datasets[0].get("datasetId"))
         else:
             raise CapabilityBindingFailed("an executable AnalysisPlan requires a project dataset")
-        profiles = unit.repositories.data_profiles.list_for_dataset(dataset_id)
-        if not profiles:
-            raise CapabilityBindingFailed("an executable AnalysisPlan requires a persisted DataProfile")
-        profile_record = profiles[0]
-        profile_id = str(
-            profile_record.get("profileId")
-            or profile_record.get("id")
-        )
+        source_contexts: dict[str, dict[str, Any]] = {}
+        for source_dataset in sorted(source_dataset_ids or {dataset_id}):
+            profiles = unit.repositories.data_profiles.list_for_dataset(source_dataset)
+            if not profiles:
+                raise CapabilityBindingFailed("an executable AnalysisPlan requires a persisted DataProfile for every source dataset")
+            profile_record = profiles[0]
+            profile_id = str(profile_record.get("profileId") or profile_record.get("id") or "")
+            if not profile_id or str(profile_record.get("datasetId")) != source_dataset:
+                raise CapabilityBindingFailed("source DataProfile does not match its dataset")
+            source_contexts[source_dataset] = {"dataset_id": source_dataset, "profile_id": profile_id, "profile": profile_record}
+        for source in source_versions.values():
+            if source["datasetId"] is None:
+                if len(source_contexts) > 1:
+                    raise CapabilityBindingFailed("cross-dataset execution requires explicit ownership for every source version")
+                source["datasetId"] = dataset_id
         return {
-            "dataset_id": dataset_id,
-            "profile_id": profile_id,
-            "profile": profile_record,
+            **source_contexts[dataset_id],
             "resource_facts": resource_facts,
+            "source_contexts": source_contexts,
+            "source_versions": source_versions,
         }
 
     @staticmethod
@@ -542,6 +580,11 @@ class CapabilityPlanningProcessor:
                 "snapshot_id": row["id"],
                 "relevance_status": relevance,
                 "output_object_refs": output_refs,
+                "source_object_refs_by_result_type": {
+                    result_type: [ref for item in bundle.result_items if item.result_type == result_type
+                                  for ref in item.scientific_object_refs]
+                    for result_type in artifact_ids_by_result_type
+                },
                 "result_types": sorted(artifact_ids_by_result_type),
                 "artifact_ids_by_result_type": artifact_ids_by_result_type,
                 "artifact_metadata_by_id": artifact_metadata_by_id,

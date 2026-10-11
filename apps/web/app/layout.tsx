@@ -1,4 +1,5 @@
 import "./globals.css";
+import "../scientific-viewers/volumetric-viewer/VolumetricSurface.module.css";
 import type { ReactNode } from "react";
 import type { Viewport } from "next";
 import { ProductNavigationProvider } from "../shared/layout/ProductNavigation";

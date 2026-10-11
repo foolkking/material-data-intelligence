@@ -8,7 +8,7 @@ from sqlalchemy import and_, delete, func, insert, or_, select, text, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.engine import Connection, Engine
 
-from mdi_schemas import JobEvent, JobEventStatus, JobStatus, ToolCall
+from mdi_schemas import AnalysisPlanV03, JobEvent, JobEventStatus, JobStatus, ToolCall
 from mdi_api.db import (
     analysis_intent_executions,
     analysis_intents,
@@ -134,7 +134,7 @@ class SqlAlchemyJobRepository(_SqlAlchemyRepository):
             status = str(current["status"])
             server_now = connection.execute(select(func.now())).scalar_one()
             expires_at = current.get("lease_expires_at")
-            if status in _JOB_TERMINAL or status == "cancel_requested":
+            if status in _JOB_TERMINAL or status in {"failed", "cancel_requested"}:
                 return None
             if (
                 status == "running"
@@ -289,6 +289,44 @@ class SqlAlchemyJobRepository(_SqlAlchemyRepository):
         self._with_connection(run)
         return self.get(job_id)
 
+    def expire_abandoned_execution(
+        self, job_id: str, *, stale_after_seconds: int, cancel_requested: bool = False
+    ) -> dict[str, Any] | None:
+        """End an inactive queue wait or execution with no current database lease.
+
+        Reclaim/renewal/completion and expiry serialize on the Job row. Failed
+        Jobs require an explicit transition to queued before a new claim.
+        """
+        if stale_after_seconds < 1:
+            raise ValueError("stale_after_seconds must be positive")
+
+        def run(connection: Connection) -> dict[str, Any] | None:
+            current = connection.execute(
+                select(jobs).where(jobs.c.id == job_id).with_for_update()
+            ).mappings().one()
+            server_now = connection.execute(select(func.now())).scalar_one()
+            if (
+                current["status"] not in {"created", "queued", "running", "cancel_requested"}
+                or current["updated_at"] > server_now - timedelta(seconds=stale_after_seconds)
+                or (current["lease_expires_at"] is not None and current["lease_expires_at"] > server_now)
+            ):
+                return None
+            cancelled = cancel_requested or current["status"] == "cancel_requested"
+            values = dict(
+                status="cancelled" if cancelled else "failed",
+                execution_owner=None, lease_expires_at=None,
+                terminal_at=server_now, updated_at=server_now,
+            )
+            if cancelled:
+                values.update(
+                    cancel_requested_at=current["cancel_requested_at"] or server_now,
+                    cancel_acknowledged_at=server_now,
+                )
+            connection.execute(update(jobs).where(jobs.c.id == job_id).values(**values))
+            return _job_from_row(connection.execute(select(jobs).where(jobs.c.id == job_id)).mappings().one())
+
+        return self._with_connection(run)
+
     def request_cancel(self, job_id: str) -> dict[str, Any]:
         def run(connection: Connection) -> None:
             row = connection.execute(
@@ -407,7 +445,7 @@ class SqlAlchemyJobRepository(_SqlAlchemyRepository):
         self,
         job_ids: Sequence[str],
     ) -> list[dict[str, Any]]:
-        """Load the bounded task-feed source projection in one SQL statement."""
+        """Load page metadata, batching additional multi-dataset source names."""
 
         normalized_ids = tuple(dict.fromkeys(str(job_id) for job_id in job_ids if job_id))
         if not normalized_ids:
@@ -466,8 +504,14 @@ class SqlAlchemyJobRepository(_SqlAlchemyRepository):
                 dependency_execution_records,
                 dependency_execution_records.c.job_id == jobs.c.id,
             )
-            .outerjoin(research_turns, research_turns.c.job_id == jobs.c.id)
-            .outerjoin(messages, messages.c.id == research_turns.c.user_message_id)
+            .outerjoin(research_turns, and_(
+                research_turns.c.job_id == jobs.c.id,
+                research_turns.c.project_id == jobs.c.project_id,
+            ))
+            .outerjoin(messages, and_(
+                messages.c.id == research_turns.c.user_message_id,
+                messages.c.session_id == research_turns.c.research_session_id,
+            ))
             .outerjoin(
                 scientific_workspaces,
                 and_(
@@ -480,7 +524,10 @@ class SqlAlchemyJobRepository(_SqlAlchemyRepository):
             select(
                 jobs.c.id.label("job_id"),
                 datasets.c.id.label("dataset_exists_id"),
+                datasets.c.project_id.label("dataset_project_id"),
+                datasets.c.name.label("dataset_name"),
                 analysis_plans.c.id.label("plan_id"),
+                analysis_plans.c.project_id.label("plan_project_id"),
                 analysis_plans.c.dataset_id.label("plan_dataset_id"),
                 analysis_plans.c.profile_id.label("plan_profile_id"),
                 analysis_plans.c.analysis_plan_json.label("plan_json"),
@@ -498,6 +545,7 @@ class SqlAlchemyJobRepository(_SqlAlchemyRepository):
                 dependency_execution_records.c.record_json.label("dependency_json"),
                 dependency_execution_records.c.outcome.label("dependency_outcome"),
                 research_turns.c.id.label("research_turn_id"),
+                research_turns.c.research_session_id.label("research_session_id"),
                 messages.c.content_summary.label("research_question"),
                 scientific_workspaces.c.workspace_id.label("workspace_id"),
                 artifact_count.label("artifact_count"),
@@ -506,7 +554,36 @@ class SqlAlchemyJobRepository(_SqlAlchemyRepository):
             .select_from(source)
             .where(jobs.c.id.in_(normalized_ids))
         )
-        return self._fetch_all_dicts(statement)
+        records = self._fetch_all_dicts(statement)
+        multi_source_ids: dict[str, list[str]] = {}
+        for record in records:
+            try:
+                plan = AnalysisPlanV03.model_validate(record.get("plan_json"))
+            except (TypeError, ValueError):
+                continue
+            multi_source_ids[record["job_id"]] = [item.datasetId for item in plan.sourceContexts]
+        dataset_ids = {dataset_id for ids in multi_source_ids.values() for dataset_id in ids}
+        sources = self._fetch_all_dicts(
+            select(datasets.c.id, datasets.c.project_id, datasets.c.name)
+            .where(datasets.c.id.in_(dataset_ids))
+        ) if dataset_ids else []
+        sources_by_id = {
+            item["id"]: {"datasetId": item["id"], "projectId": item["project_id"], "name": item["name"]}
+            for item in sources
+        }
+        for record in records:
+            if record["job_id"] in multi_source_ids:
+                record["source_datasets"] = [
+                    sources_by_id[dataset_id] for dataset_id in multi_source_ids[record["job_id"]]
+                    if dataset_id in sources_by_id
+                ]
+            else:
+                record["source_datasets"] = [{
+                    "datasetId": record["dataset_exists_id"],
+                    "projectId": record["dataset_project_id"],
+                    "name": record["dataset_name"],
+                }] if record["dataset_exists_id"] else []
+        return records
 
 class SqlAlchemyJobEventRepository(_SqlAlchemyRepository):
     POSTGRES_ADVISORY_LOCK_SQL = "SELECT pg_advisory_xact_lock(hashtext('mdi_job_events'), hashtext(:job_id))"

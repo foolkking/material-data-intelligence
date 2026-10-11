@@ -1,5 +1,8 @@
 """Shared schema types for Material Data Intelligence."""
 
+from .analysis_plans import ExecutableAnalysisPlan, parse_analysis_plan, parse_dependency_plan
+from .project_planning import AnalysisPlanV04, PlatformReferenceSource, ProjectArtifactLineageRecord
+
 from .data_profile_compatibility import (
     CURRENT_DATAPROFILE_CONTRACT_VERSION,
     SUPPORTED_DATAPROFILE_CONTRACT_VERSIONS,
@@ -128,6 +131,7 @@ from .dependency_planning import (
     topological_order,
     validate_dependency_json_bounds,
 )
+from .multi_source_planning import AnalysisPlanV03, AnalysisSourceContext, AnalysisSourceVersion
 from .interpretation import (
     GROUNDED_INTERPRETATION_SCHEMA_VERSION,
     INTERPRETATION_EXECUTION_SCHEMA_VERSION,
@@ -324,6 +328,9 @@ from .models import (
 )
 
 __all__ = [
+    "ExecutableAnalysisPlan",
+    "parse_analysis_plan",
+    "parse_dependency_plan",
     "WORKSPACE_SCHEMA_VERSION",
     "WORKSPACE_PANEL_SCHEMA_VERSION",
     "WORKSPACE_RENDERER_CONTRACTS",
@@ -476,6 +483,12 @@ __all__ = [
     "AnalysisIntentProvenance",
     "AnalysisPlan",
     "AnalysisPlanV02",
+    "AnalysisPlanV03",
+    "AnalysisPlanV04",
+    "PlatformReferenceSource",
+    "ProjectArtifactLineageRecord",
+    "AnalysisSourceContext",
+    "AnalysisSourceVersion",
     "AnalysisStep",
     "ParameterProvenance",
     "Artifact",

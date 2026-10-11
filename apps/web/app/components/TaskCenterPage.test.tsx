@@ -1,6 +1,6 @@
 import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 const mocks = vi.hoisted(() => ({
@@ -10,18 +10,11 @@ const mocks = vi.hoisted(() => ({
   cancelAgent2Execution: vi.fn(),
 }));
 
-vi.mock("../lib/task-center-data", () => ({
+vi.mock("../lib/task-center-data", async (importOriginal) => ({
+  ...await importOriginal<typeof import("../lib/task-center-data")>(),
   getProductTaskFeed: mocks.getProductTaskFeed,
   getProductTaskFeedPage: mocks.getProductTaskFeedPage,
   invalidateProductTaskFeed: mocks.invalidateProductTaskFeed,
-  productTaskSearchText: (task: { projectName?: string; researchQuestion?: string | null; jobId?: string; jobStatus?: string | null; workspaceProjectionStatus?: string }) =>
-    [task.projectName, task.researchQuestion, task.jobId, task.jobStatus, task.workspaceProjectionStatus].filter(Boolean).join(" ").toLocaleLowerCase("zh-CN"),
-  sortProductTaskRows: (rows: Array<{ updatedAt?: string; createdAt?: string }>, order = "recent") =>
-    [...rows].sort((left, right) => {
-      const leftTime = Date.parse(String(left.updatedAt || left.createdAt || "")) || 0;
-      const rightTime = Date.parse(String(right.updatedAt || right.createdAt || "")) || 0;
-      return order === "oldest" ? leftTime - rightTime : rightTime - leftTime;
-    }),
 }));
 vi.mock("../lib/agent2-execution-api", () => ({ cancelAgent2Execution: mocks.cancelAgent2Execution }));
 vi.mock("../../shared/layout/ProductShell", () => ({
@@ -31,12 +24,36 @@ vi.mock("../../shared/layout/ProductShell", () => ({
 
 import { TaskCenterPage } from "./TaskCenterPage";
 import { NotificationCenterPage } from "./NotificationCenterPage";
+import type { ProductTaskFeed, ProductTaskRow } from "../lib/task-center-data";
+
+function sampleTask(overrides: Partial<ProductTaskRow> = {}): ProductTaskRow {
+  return {
+    jobId: "job-current", projectId: "project-a", projectName: "材料研究",
+    datasetId: "dataset-source", researchTurnId: "turn-current", researchQuestion: "比较材料结构",
+    jobStatus: "completed", workspaceProjectionStatus: "COMPLETE", analysisPlanSchemaVersion: "0.2",
+    dependencyOutcome: "ALL_SUCCEEDED", artifactCount: 1, interpretationCount: 0,
+    workspaceId: null, workspaceExists: false,
+    createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), ...overrides,
+  };
+}
+function sampleFeed(rows = [sampleTask()], nextCursor: string | null = null): ProductTaskFeed {
+  return { rows, nextCursor, projectCount: 1, unavailableProjectCount: 0, truncated: Boolean(nextCursor), loadedAt: new Date().toISOString() };
+}
 
 describe("TaskCenterPage", () => {
   beforeEach(() => {
     mocks.getProductTaskFeed.mockReset();
+    mocks.getProductTaskFeedPage.mockReset();
     mocks.invalidateProductTaskFeed.mockReset();
     mocks.cancelAgent2Execution.mockReset();
+  });
+
+  it("opens an analysis in the persisted conversation and Turn", async () => {
+    mocks.getProductTaskFeed.mockResolvedValue(sampleFeed([sampleTask({ researchSessionId: "session-owned" })]));
+    render(<TaskCenterPage />);
+    expect(await screen.findByRole("link", { name: "查看结果" })).toHaveAttribute(
+      "href", "/projects/project-a/research/session-owned?turn=turn-current",
+    );
   });
 
   it("shares one feed request and refresh transition with the notification surface", async () => {
@@ -140,34 +157,35 @@ describe("TaskCenterPage", () => {
     render(<TaskCenterPage />);
     await waitFor(() => expect(screen.getByText("任务中心")).toBeInTheDocument());
     expect(screen.getByText("比较 CrystalNN 与 VoronoiNN")).toBeInTheDocument();
-    expect(screen.getAllByText("可恢复研究").length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/的研究$/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/更新于/).length).toBeGreaterThan(0);
     expect(screen.getAllByText("需要关注").length).toBeGreaterThan(0);
-    expect(screen.getByText(/持久化状态仍为运行中，但已超过 15 分钟没有更新/)).toBeInTheDocument();
-    expect(screen.getByText("历史研究")).toBeInTheDocument();
+    expect(screen.getAllByText(/超过 15 分钟没有更新/)).toHaveLength(2);
     expect(screen.getByText("已取消")).toBeInTheDocument();
-    expect(screen.getAllByText("技术身份").length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/可恢复研究会话/).length).toBeGreaterThan(0);
-    expect(screen.getByText(/历史运行 · 仅查看/)).toBeInTheDocument();
-    expect(screen.getByRole("region", { name: "任务概览" })).toHaveTextContent("1");
-    expect(screen.getByRole("link", { name: "打开并检查" })).toHaveAttribute("href", "/projects/project-a/research?run=job-running&turn=turn-running");
-    expect(screen.getAllByRole("link", { name: "打开" }).map((link) => link.getAttribute("href"))).toContain("/projects/project-b/research?run=job-complete&turn=turn-complete");
-    expect(screen.getAllByRole("link", { name: "打开" }).map((link) => link.getAttribute("href"))).toContain("/projects/project-b/research?run=job-failed&turn=turn-failed");
-    expect(screen.getAllByRole("link", { name: "打开并重试（新运行）" }).map((link) => link.getAttribute("href"))).toEqual(expect.arrayContaining([
+    expect(screen.getAllByText("任务详情")).toHaveLength(5);
+    expect(screen.getByText("历史研究记录")).toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "任务概览" })).not.toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /进行中/ })).toHaveTextContent("2");
+    expect(screen.getAllByRole("link", { name: "检查进度" }).map((link) => link.getAttribute("href"))).toContain("/projects/project-a/research?run=job-running&turn=turn-running");
+    expect(screen.getByRole("link", { name: "查看结果" })).toHaveAttribute("href", "/projects/project-b/research?run=job-complete&turn=turn-complete");
+    expect(screen.getAllByRole("link", { name: "查看详情" }).map((link) => link.getAttribute("href"))).toContain("/projects/project-b/research?run=job-failed&turn=turn-failed");
+    expect(screen.getAllByRole("link", { name: "调整后重试" }).map((link) => link.getAttribute("href"))).toEqual(expect.arrayContaining([
       "/projects/project-b/research?run=job-failed&turn=turn-failed&retry=1",
       "/projects/project-b/research?run=job-canceled&turn=turn-canceled&retry=1",
     ]));
-    expect(screen.getAllByRole("link", { name: "打开" }).every((link) => !link.getAttribute("href")?.includes("retry=1"))).toBe(true);
-    expect(screen.getAllByRole("link", { name: "打开并重试（新运行）" }).every((link) => link.getAttribute("title") === "创建新的 ResearchTurn；原失败运行及其证据保留")).toBe(true);
+    expect(screen.getAllByRole("link", { name: /^查看/ }).every((link) => !link.getAttribute("href")?.includes("retry=1"))).toBe(true);
+    expect(screen.getAllByRole("link", { name: "调整后重试" }).every((link) => link.getAttribute("title") === "准备新的研究，原记录和结果会保留")).toBe(true);
     expect(screen.getAllByRole("button", { name: "停止研究" })).toHaveLength(1);
     expect(screen.getByRole("tab", { name: /全部/ })).toHaveAttribute("aria-selected", "true");
     mocks.cancelAgent2Execution.mockResolvedValue({ turn_id: "turn-running", status: "CANCELING" });
     fireEvent.click(screen.getAllByRole("button", { name: "停止研究" })[0]);
     expect(await screen.findByRole("dialog", { name: "停止这项研究？" })).toBeInTheDocument();
-    expect(screen.getByText(/尚未完成的分支不会被伪装成成功/)).toBeInTheDocument();
+    expect(screen.getByText(/停止后将保留已完成的结果/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "确认停止" }));
     await waitFor(() => expect(mocks.cancelAgent2Execution).toHaveBeenCalledWith("turn-running"));
     await waitFor(() => expect(mocks.getProductTaskFeed).toHaveBeenCalledTimes(2));
+    const cancelNotice = await screen.findByText("停止请求已记录；任务中心会继续同步这项研究的最终状态。");
+    expect(cancelNotice).toHaveAttribute("role", "status");
     mocks.getProductTaskFeed.mockClear();
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "重新加载" })).toBeEnabled(),
@@ -231,7 +249,7 @@ describe("TaskCenterPage", () => {
       .mockResolvedValue(feed);
 
     render(<TaskCenterPage />);
-    await screen.findByText("可恢复研究");
+    await screen.findByText(/的研究$/);
     mocks.getProductTaskFeed.mockClear();
     window.dispatchEvent(new Event("online"));
     await waitFor(() => expect(refreshSignal).toBeDefined());
@@ -308,14 +326,14 @@ describe("TaskCenterPage", () => {
     expect(screen.getAllByText("需要关注").length).toBeGreaterThan(0);
     expect(
       screen.getByText(
-        "持久化状态仍为运行中，但已超过 15 分钟没有更新；打开研究核对最新状态。",
+        "超过 15 分钟没有更新，请打开研究检查进度。",
       ),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "打开并检查" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "检查进度" })).toHaveAttribute(
       "href",
       "/projects/project-a/research?run=job-stale-running&turn=turn-stale-running",
     );
-    expect(screen.queryByRole("link", { name: "打开并重试" })).toBeNull();
+    expect(screen.queryByRole("link", { name: "调整后重试" })).toBeNull();
     expect(screen.getByRole("button", { name: "停止研究" })).toBeInTheDocument();
   });
 
@@ -331,7 +349,7 @@ describe("TaskCenterPage", () => {
 
     render(<TaskCenterPage />);
     expect(await screen.findByRole("alert")).toHaveTextContent("1 个项目暂未同步");
-    expect(screen.getByRole("link", { name: "打开" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "查看结果" })).toHaveAttribute(
       "href",
       "/projects/project-a/research?run=job-a&turn=turn-a",
     );
@@ -370,9 +388,9 @@ describe("TaskCenterPage", () => {
     render(<TaskCenterPage />);
 
     expect(await screen.findByText("正在停止的结构研究")).toBeInTheDocument();
-    expect(screen.getByText("正在取消研究")).toBeInTheDocument();
+    expect(screen.getAllByText("正在取消研究")).toHaveLength(2);
     const stop = screen.getByRole("button", {
-      name: "正在取消研究，等待服务端确认",
+      name: "正在取消研究",
     });
     expect(stop).toBeDisabled();
     expect(screen.queryByRole("button", { name: "停止研究" })).toBeNull();
@@ -432,11 +450,11 @@ describe("TaskCenterPage", () => {
       .mockImplementationOnce(() => new Promise((resolve) => { resolveRefresh = resolve; }));
 
     render(<TaskCenterPage />);
-    expect(await screen.findByText("可恢复研究")).toBeInTheDocument();
+    expect(await screen.findByText(/的研究$/)).toBeInTheDocument();
     window.dispatchEvent(new Event("online"));
     expect(await screen.findByText("正在同步最新状态…")).toBeInTheDocument();
     expect(screen.queryByText("正在加载后台任务…")).toBeNull();
-    expect(screen.getByText("可恢复研究")).toBeInTheDocument();
+    expect(screen.getByText(/的研究$/)).toBeInTheDocument();
     resolveRefresh?.(feed);
     await waitFor(() => expect(screen.getByText(/最近同步/)).toBeInTheDocument());
   });
@@ -453,10 +471,10 @@ describe("TaskCenterPage", () => {
     };
     mocks.getProductTaskFeed.mockResolvedValueOnce(feed).mockRejectedValueOnce(new Error("offline"));
     render(<TaskCenterPage />);
-    expect(await screen.findByText("可恢复研究")).toBeInTheDocument();
+    expect(await screen.findByText(/的研究$/)).toBeInTheDocument();
     window.dispatchEvent(new Event("online"));
     expect(await screen.findByText(/同步失败，当前显示上次结果/)).toBeInTheDocument();
-    expect(screen.getByText("可恢复研究")).toBeInTheDocument();
+    expect(screen.getByText(/的研究$/)).toBeInTheDocument();
   });
 
   it("discloses the bounded recent-task window instead of implying the feed is complete", async () => {
@@ -484,8 +502,8 @@ describe("TaskCenterPage", () => {
       loadedAt: "2026-08-30T01:00:00Z",
     });
     render(<TaskCenterPage />);
-    expect(await screen.findByText("当前筛选显示最近 30 项；更早任务仍保留在项目历史中。")).toBeInTheDocument();
-    expect(screen.getAllByRole("link", { name: "打开" })).toHaveLength(30);
+    expect(await screen.findByText("当前显示 30 项，已加载 31 项。可继续显示其余已加载任务。")).toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: "查看结果" })).toHaveLength(30);
   });
 
   it("filters long task feeds by project or status without changing exact navigation", async () => {
@@ -511,7 +529,7 @@ describe("TaskCenterPage", () => {
     await user.type(search, "failed");
     expect(screen.queryByText("Silicon study")).toBeNull();
     expect(screen.getByText("Polymer study")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "打开" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "查看详情" })).toHaveAttribute(
       "href",
       "/projects/project-b/research?run=job-failed&turn=turn-failed",
     );
@@ -568,7 +586,7 @@ describe("TaskCenterPage", () => {
 
     expect(await screen.findByText("旧页面的结构研究")).toBeInTheDocument();
     expect(
-      screen.getAllByRole("link", { name: "打开" }).some(
+      screen.getAllByRole("link", { name: "查看结果" }).some(
         (link) =>
           link.getAttribute("href") ===
           "/projects/project-a/research?run=job-older&turn=turn-older",
@@ -576,6 +594,131 @@ describe("TaskCenterPage", () => {
     ).toBe(true);
     expect(mocks.getProductTaskFeedPage).toHaveBeenCalledWith({
       cursor: "cursor-older",
+      signal: expect.any(AbortSignal),
     });
+  });
+
+  it("searches displayed Chinese states and preserves the selected filter when clearing an empty search", async () => {
+    mocks.getProductTaskFeed.mockResolvedValue(sampleFeed([
+      sampleTask(), sampleTask({ jobId: "job-failed", researchQuestion: "检查结构失败原因", jobStatus: "failed" }),
+    ]));
+    render(<TaskCenterPage />);
+    const user = userEvent.setup();
+    await screen.findByText("比较材料结构");
+    const search = screen.getByRole("searchbox", { name: "查找任务" });
+    await user.type(search, "失败");
+    expect(screen.getByText("检查结构失败原因")).toBeInTheDocument();
+    expect(screen.queryByText("比较材料结构")).toBeNull();
+    await user.click(screen.getByRole("tab", { name: "需要关注 1" }));
+    await user.clear(search);
+    await user.type(search, "不存在的研究");
+    await user.click(screen.getByRole("button", { name: "清除搜索" }));
+    expect(search).toHaveFocus();
+    expect(search).toHaveValue("");
+    expect(screen.getByRole("tab", { name: "需要关注 1" })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByText("检查结构失败原因")).toBeInTheDocument();
+    expect(screen.queryByText("比较材料结构")).toBeNull();
+    await user.type(search, "job-failed");
+    expect(screen.getByText("检查结构失败原因")).toBeInTheDocument();
+  });
+
+  it("searches every joint-analysis source and opens each exact dataset from task details", async () => {
+    const sourceDatasets = ["Si", "Cu", "NaCl"].map((name) => ({ datasetId: `dataset-${name}`, name: `${name} 晶体` }));
+    mocks.getProductTaskFeed.mockResolvedValue(sampleFeed([
+      sampleTask({ jobId: "joint", researchQuestion: "比较三种材料", sourceDatasets }),
+      sampleTask({ jobId: "other", researchQuestion: "另一项研究" }),
+    ]));
+    render(<TaskCenterPage />);
+    await screen.findByText("比较三种材料");
+    const user = userEvent.setup();
+    const search = screen.getByRole("searchbox", { name: "查找任务" });
+    for (const source of sourceDatasets) {
+      await user.clear(search);
+      await user.type(search, source.name);
+      expect(screen.getByText("比较三种材料")).toBeInTheDocument();
+      expect(screen.queryByText("另一项研究")).not.toBeInTheDocument();
+    }
+    await user.click(screen.getByText("任务详情"));
+    for (const source of sourceDatasets) {
+      expect(screen.getByRole("link", { name: source.name })).toHaveAttribute("href", `/projects/project-a/data?dataset=${source.datasetId}`);
+    }
+    expect(screen.queryByRole("link", { name: "查看源数据" })).not.toBeInTheDocument();
+  });
+
+  it("keeps an explicit empty source inventory from exposing the routing dataset as provenance", async () => {
+    mocks.getProductTaskFeed.mockResolvedValue(sampleFeed([sampleTask({ sourceDatasets: [] })]));
+    render(<TaskCenterPage />);
+    await userEvent.click(await screen.findByText("任务详情"));
+    expect(screen.getByText("来源待核实")).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "查看源数据" })).not.toBeInTheDocument();
+  });
+
+  it("keeps queued, stopping and legacy active states out of ended tasks and supports keyboard tab navigation", async () => {
+    const statuses = ["created", "queued", "running", "canceling", "cancel_requested", "completed", "unknown"];
+    mocks.getProductTaskFeed.mockResolvedValue(sampleFeed(statuses.map((status) => sampleTask({
+      jobId: `job-${status}`, researchQuestion: `研究 ${status}`, jobStatus: status,
+      ...(status === "created" ? { researchTurnId: null, workspaceProjectionStatus: "LEGACY_READ_ONLY" } : {}),
+    }))));
+    render(<TaskCenterPage />);
+    const user = userEvent.setup();
+    const all = await screen.findByRole("tab", { name: "全部 7" });
+    all.focus();
+    await user.keyboard("{ArrowRight}");
+    const active = screen.getByRole("tab", { name: "进行中 5" });
+    expect(active).toHaveFocus();
+    expect(active).toHaveAttribute("tabindex", "0");
+    expect(all).toHaveAttribute("tabindex", "-1");
+    expect(screen.getByRole("tabpanel", { name: "进行中 5" }).querySelectorAll("article")).toHaveLength(5);
+    expect(screen.getAllByRole("button", { name: "停止研究" })).toHaveLength(2);
+    await user.keyboard("{End}");
+    expect(screen.getByRole("tab", { name: "已结束 1" })).toHaveFocus();
+    const ended = screen.getByRole("tabpanel", { name: "已结束 1" });
+    expect(within(ended).getByText("研究 completed")).toBeInTheDocument();
+    expect(ended.querySelectorAll("article")).toHaveLength(1);
+    await user.keyboard("{Home}{ArrowLeft}");
+    expect(screen.getByRole("tab", { name: "已结束 1" })).toHaveFocus();
+    fireEvent.click(screen.getByText("任务详情"));
+    expect(screen.getByRole("link", { name: "查看源数据" })).toHaveAttribute("href", "/projects/project-a/data?dataset=dataset-source");
+  });
+
+  it("preserves the list on older-page timeout, retries the same cursor and ignores its late result", async () => {
+    mocks.getProductTaskFeed.mockResolvedValue(sampleFeed([sampleTask()], "older-cursor"));
+    let resolveOld!: (feed: ProductTaskFeed) => void;
+    mocks.getProductTaskFeedPage.mockImplementationOnce(() => new Promise((resolve) => { resolveOld = resolve; }))
+      .mockResolvedValueOnce(sampleFeed([sampleTask({ jobId: "older", researchQuestion: "较早的研究" })]));
+    render(<TaskCenterPage />);
+    await screen.findByRole("button", { name: "读取更早任务" });
+    vi.useFakeTimers();
+    try {
+      fireEvent.click(screen.getByRole("button", { name: "读取更早任务" }));
+      const signal = mocks.getProductTaskFeedPage.mock.calls[0][0].signal;
+      await act(async () => { await vi.advanceTimersByTimeAsync(10_000); });
+      expect(signal.aborted).toBe(true);
+      expect(screen.getByText(/更早任务读取超时/)).toBeInTheDocument();
+      expect(screen.getByText("比较材料结构")).toBeInTheDocument();
+      await act(async () => { fireEvent.click(screen.getByRole("button", { name: "重试读取更早任务" })); });
+      expect(screen.getByText("较早的研究")).toBeInTheDocument();
+      await act(async () => { resolveOld(sampleFeed([sampleTask({ jobId: "obsolete", researchQuestion: "迟到的旧结果" })])); });
+      expect(screen.queryByText("迟到的旧结果")).toBeNull();
+      expect(mocks.getProductTaskFeedPage.mock.calls.map(([options]) => options.cursor)).toEqual(["older-cursor", "older-cursor"]);
+    } finally { vi.useRealTimers(); }
+  });
+
+  it("aborts older-page reads on feed replacement so obsolete pages cannot enter the refreshed list", async () => {
+    mocks.getProductTaskFeed.mockResolvedValueOnce(sampleFeed([sampleTask()], "older-cursor"))
+      .mockResolvedValue(sampleFeed([sampleTask({ researchQuestion: "已刷新的研究" })], "new-cursor"));
+    let resolveOld!: (feed: ProductTaskFeed) => void;
+    mocks.getProductTaskFeedPage.mockImplementation(() => new Promise((resolve) => { resolveOld = resolve; }));
+    render(<TaskCenterPage />);
+    const user = userEvent.setup();
+    await user.click(await screen.findByRole("button", { name: "读取更早任务" }));
+    const signal = mocks.getProductTaskFeedPage.mock.calls[0][0].signal;
+    await user.click(screen.getByRole("button", { name: "重新加载" }));
+    await screen.findByText("已刷新的研究");
+    expect(signal.aborted).toBe(true);
+    await act(async () => { resolveOld(sampleFeed([sampleTask({ jobId: "obsolete", researchQuestion: "过期研究" })])); });
+    expect(screen.queryByText("过期研究")).toBeNull();
+    await user.click(screen.getByRole("button", { name: "读取更早任务" }));
+    expect(mocks.getProductTaskFeedPage).toHaveBeenLastCalledWith({ cursor: "new-cursor", signal: expect.any(AbortSignal) });
   });
 });

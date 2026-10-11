@@ -120,6 +120,7 @@
           "ELECTRONIC_DOS_PROJECTION",
           "ELECTRONIC_DOS_POINT",
           "PHONON_Q_POINT",
+          "PHONON_DOS_POINT",
           "PHONON_BRANCH",
           "RECIPROCAL_POINT",
           "VOLUMETRIC_FIELD",
@@ -606,6 +607,19 @@
             ],
             "default": null,
             "title": "Phononartifactid"
+          },
+          "frequencyPointId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Frequencypointid"
           },
           "qPointId": {
             "anyOf": [
@@ -1504,6 +1518,7 @@
           "ELECTRONIC_DOS_PROJECTION",
           "ELECTRONIC_DOS_POINT",
           "PHONON_Q_POINT",
+          "PHONON_DOS_POINT",
           "PHONON_BRANCH",
           "RECIPROCAL_POINT",
           "VOLUMETRIC_FIELD",
@@ -1990,6 +2005,19 @@
             ],
             "default": null,
             "title": "Phononartifactid"
+          },
+          "frequencyPointId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Frequencypointid"
           },
           "qPointId": {
             "anyOf": [
@@ -2579,6 +2607,7 @@
           "ELECTRONIC_DOS_PROJECTION",
           "ELECTRONIC_DOS_POINT",
           "PHONON_Q_POINT",
+          "PHONON_DOS_POINT",
           "PHONON_BRANCH",
           "RECIPROCAL_POINT",
           "VOLUMETRIC_FIELD",
@@ -3024,6 +3053,7 @@
           "ELECTRONIC_DOS_PROJECTION",
           "ELECTRONIC_DOS_POINT",
           "PHONON_Q_POINT",
+          "PHONON_DOS_POINT",
           "PHONON_BRANCH",
           "RECIPROCAL_POINT",
           "VOLUMETRIC_FIELD",
@@ -3511,6 +3541,19 @@
             "default": null,
             "title": "Phononartifactid"
           },
+          "frequencyPointId": {
+            "anyOf": [
+              {
+                "maxLength": 96,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Frequencypointid"
+          },
           "qPointId": {
             "anyOf": [
               {
@@ -3882,6 +3925,7 @@
           "ELECTRONIC_DOS_PROJECTION",
           "ELECTRONIC_DOS_POINT",
           "PHONON_Q_POINT",
+          "PHONON_DOS_POINT",
           "PHONON_BRANCH",
           "RECIPROCAL_POINT",
           "VOLUMETRIC_FIELD",
@@ -4368,6 +4412,19 @@
         ],
         "default": null,
         "title": "Phononartifactid"
+      },
+      "frequencyPointId": {
+        "anyOf": [
+          {
+            "maxLength": 96,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Frequencypointid"
       },
       "qPointId": {
         "anyOf": [

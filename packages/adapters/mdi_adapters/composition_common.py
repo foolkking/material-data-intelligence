@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass
 from typing import Any
@@ -260,7 +261,9 @@ def formula_list(parsed: list[ParsedFormula]) -> list[str]:
 
 
 def plotly_metadata(figure: Any) -> dict[str, Any]:
-    return figure.to_plotly_json()
+    # Plotly's dict still contains NumPy category arrays. Its JSON encoder
+    # preserves them as arrays instead of stable_json_dumps' string fallback.
+    return json.loads(figure.to_json())
 
 
 def simple_bar_figure(labels: list[str], values: list[float], *, title: str, x_title: str, y_title: str) -> go.Figure:

@@ -1,6 +1,7 @@
 "use client";
 
 import { ProductLink as Link } from "../../shared/layout/ProductNavigation";
+import { buildResearchHref } from "../../app/lib/research-navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
@@ -452,20 +453,18 @@ export function ScientificWorkspaceShell({ workspaceId }: { workspaceId: string 
   if (loadState === "ERROR" || !snapshot) return <WorkspaceLoadState title="Workspace unavailable" message={loadMessage} actionLabel="Retry" onAction={load} />;
 
   const workspace = snapshot.workspace;
-  const researchHref = new URL(
-    "/projects/" + encodeURIComponent(workspace.projectId) + "/research",
-    window.location.origin,
-  );
-  researchHref.searchParams.set("run", workspace.sourceJobId);
-  if (snapshot.sourceSummary.researchTurnId) {
-    researchHref.searchParams.set("turn", snapshot.sourceSummary.researchTurnId);
-  }
+  const researchHref = buildResearchHref({
+    projectId: workspace.projectId,
+    jobId: workspace.sourceJobId,
+    researchTurnId: snapshot.sourceSummary.researchTurnId,
+    researchSessionId: snapshot.sourceSummary.researchSessionId,
+  });
   return (
     <main className="scientific-workspace" data-testid="scientific-workspace-shell">
       <a className="skip-link" href="#workspace-primary-content">Skip to active scientific result</a>
       <header className="workspace-header">
         <div className="workspace-header-title">
-          <Link className="workspace-back-link" href={researchHref.pathname + researchHref.search} aria-label="返回项目研究" onClick={(event) => {
+          <Link className="workspace-back-link" href={researchHref} aria-label="返回项目研究" onClick={(event) => {
             if ((workspaceDirty || reportDraftDirty) && !window.confirm("Leave Workspace and discard unsaved changes?")) event.preventDefault();
           }}>← 返回项目研究</Link>
           <span className="eyebrow">Scientific Workspace 1.0</span>

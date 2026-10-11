@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID
 
+from mdi_api.research_agent.execution.diagnostics import execution_step_status
 from mdi_api.research_agent.execution.schemas import (
     ExecutionOutcome, ExecutionStepStatus, ProgressOutput, ProgressWarning,
     ResearchProgressStep, ResearchProgressView,
@@ -39,8 +40,7 @@ class GenericScientificProgressProjector:
             step_id = str(_value(step, "stepId", "step_id", default="step"))
             call = calls_by_step.get(step_id)
             raw_status = str(_value(call, "status", default="planned")) if call else "planned"
-            status_map = {"planned": ExecutionStepStatus.PENDING, "pending": ExecutionStepStatus.PENDING, "running": ExecutionStepStatus.RUNNING, "succeeded": ExecutionStepStatus.SUCCEEDED, "completed": ExecutionStepStatus.SUCCEEDED, "failed": ExecutionStepStatus.FAILED, "skipped": ExecutionStepStatus.SKIPPED, "canceled": ExecutionStepStatus.CANCELED}
-            status = status_map.get(raw_status, ExecutionStepStatus.PENDING)
+            status = execution_step_status(raw_status, str(job.get("status") or ""))
             call_id = str(_value(call, "id", default="")) if call else ""
             step_artifacts = artifacts_by_call.get(call_id, [])
             metadata = step_metadata.get(step_id) or {}

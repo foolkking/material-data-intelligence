@@ -2,8 +2,28 @@ import { describe, expect, it } from "vitest";
 import type { Artifact, GroundedScientificInterpretation, ScientificEvidenceItem } from "./planner-api";
 import { compileReportPresentation, compileScientificPresentation, formatPresentationMetricValue, formatScientificNarrativeNumbers, isSafePresentationBlock, presentationLimitationText, presentationMetricTitle, presentationScientificText } from "./scientific-presentation";
 import type { ScientificReportView } from "./scientific-report-api";
+import { scientificNarrativeText } from "./scientific-narrative-text";
+import { presentationMetricUnit } from "./scientific-presentation";
+
+it("displays trajectory quantities without changing their saved values or identifiers", () => {
+  expect(presentationMetricTitle("trajectory.diffusion_fit_duration")).toBe("拟合窗口时长");
+  expect(presentationMetricUnit("picosecond")).toBe("ps");
+  expect(presentationMetricUnit("angstrom^2/picosecond")).toBe("Å²/ps");
+  expect(presentationMetricUnit("unknown/unit")).toBe("unknown/unit");
+  expect(scientificNarrativeText("INSUFFICIENT_DURATION")).toBe("拟合窗口时长不足");
+  expect(scientificNarrativeText("`INSUFFICIENT_DURATION`；/result/INSUFFICIENT_DURATION")).toBe("`INSUFFICIENT_DURATION`；/result/INSUFFICIENT_DURATION");
+});
 
 const source = { objectId: "structure-a", versionId: "version-v1", objectType: "Structure", displayName: "NaCl" };
+
+it("keeps same-named figures separately addressable across ordering changes", () => {
+  const artifacts = [1, 2].map(i => ({ id: `call-${"x".repeat(90)}-${i}`, jobId: "job", type: "plotly_json", name: "figure.json" }));
+  const compile = (items: Artifact[]) => compileScientificPresentation({ resultId: "result", artifacts: items }).blocks.filter(block => block.type === "figure");
+  const first = compile(artifacts), reversed = compile([...artifacts].reverse());
+  expect(new Set(first.map(block => block.id)).size).toBe(2);
+  expect(first.map(block => block.id)).toEqual(reversed.map(block => block.id).reverse());
+  expect(first.every(isSafePresentationBlock)).toBe(true);
+});
 const evidence: ScientificEvidenceItem = {
   schemaVersion: "1.0",
   evidenceItemId: "fact-band-gap",
@@ -41,6 +61,20 @@ const interpretation = {
 } as unknown as GroundedScientificInterpretation;
 
 describe("scientific presentation compiler", () => {
+  it("translates narrative terms without expanding scientific claims or altering precision and provenance", () => {
+    const prose = "统计量由保存的网格值计算得出（statistics_authority = computed_from_payload）。积分语义为 electron_count，数值 3.1000000000000005 electron。量类型为 orbital_density，归一化语义为 source_native，端点策略为 excluded；不是拓扑分析。";
+    const readable = scientificNarrativeText(prose);
+    expect(readable).toBe("统计量由保存的网格值计算得出。积分表示电子数，数值 3.1000000000000005 electron。物理量为轨道密度，归一化沿用源数据，网格不包含终点；不是拓扑分析。");
+    expect(scientificNarrativeText(readable)).toBe(readable);
+    expect(scientificNarrativeText("轨道密度（orbital_density）；未被赋予物理意义（not_physically_interpreted），不能解释为电子数。")).toBe("轨道密度；未被赋予物理意义，不能解释为电子数。");
+    expect(presentationScientificText("积分语义为 electron_count，数值 18 electron；不是拓扑分析。")).toBe("积分表示电子数，数值 18 electron；不是拓扑分析。");
+    expect(presentationScientificText("结果投影仪不推断 RDF 曲线中的峰位或配位壳层。")).toBe("不据 RDF 曲线推断峰位或配位壳层。");
+    expect(presentationScientificText("本次 RDF 已保存 3 个峰位，但未推断配位壳层。")).toBe("本次 RDF 已保存 3 个峰位，但未推断配位壳层。");
+    const identifiers = String.raw`electron_count.json result:electron_count unknown_semantics https://example.org/?kind=electron_count ../source_native C:\data\orbital_density source_declared/field exact source versions.csv invalidated Interpretation`;
+    expect(scientificNarrativeText(identifiers)).toBe(identifiers);
+    expect(scientificNarrativeText("`electron_count`；`statistics_authority = computed_from_payload`；excluded；included；1.25000000000001e-9 electron/Å³")).toBe("`electron_count`；`statistics_authority = computed_from_payload`；excluded；included；1.25000000000001e-9 electron/Å³");
+  });
+
   it("preserves authoritative numeric values, units, evidence, and exact sources", () => {
     const presentation = compileScientificPresentation({
       interpretation,
@@ -116,7 +150,8 @@ describe("scientific presentation compiler", () => {
       expect.objectContaining({
         text: "声子能带包含 6 条分支。",
         confidence: "DIRECT",
-        evidenceIds: ["fact-branch-count", "evidence-band"],
+        factIds: ["fact-branch-count"],
+        evidenceIds: ["evidence-band"],
         source: expect.objectContaining({ factId: "fact-branch-count", evidenceId: "evidence-band" }),
       }),
       expect.objectContaining({
@@ -147,6 +182,12 @@ describe("scientific presentation compiler", () => {
   });
 
   it("formats long scientific values for display without mutating the authoritative contract value", () => {
+    expect(formatScientificNarrativeNumbers("参考版本 1.0.0；版本 1.0；version: 2.0；1.2.3-beta；192.168.0.1")).toBe(
+      "参考版本 1.0.0；版本 1.0；version: 2.0；1.2.3-beta；192.168.0.1",
+    );
+    expect(formatScientificNarrativeNumbers("Value 0.20000000000000004. Uncertainty 1.23456789e-12.")).toBe(
+      "Value 0.2. Uncertainty 1.2346e-12.",
+    );
     expect(formatPresentationMetricValue("0.20000000000000004")).toBe("0.2");
     expect(formatPresentationMetricValue("0.21602468994692867")).toBe("0.2160247");
     expect(formatPresentationMetricValue("-1.4802973661668753e-16")).toBe("-1.4803e-16");
@@ -467,7 +508,7 @@ describe("scientific presentation compiler", () => {
     const presentation = compileReportPresentation(view);
     expect(presentation.historicalNotice).toContain("不会静默替换");
     expect(presentation.exactSourceRefs[0].versionId).toBe("version-v1");
-    expect(presentation.blocks).toContainEqual(expect.objectContaining({ type: "finding", evidenceIds: expect.arrayContaining(["evidence-1"]) }));
+    expect(presentation.blocks).toContainEqual(expect.objectContaining({ type: "finding", factIds: ["fact-1"], evidenceIds: ["evidence-1"] }));
     expect(presentation.blocks).toContainEqual(expect.objectContaining({
       type: "evidence_reference",
       source: expect.objectContaining({ interpretationId: "interpretation-1" }),
@@ -491,6 +532,32 @@ describe("scientific presentation compiler", () => {
       type: "metric",
       source: expect.objectContaining({ toolCallId: "tool-call-crystalnn" }),
     }));
+  });
+
+  it("labels repeated figures and metrics by their exact material rather than array position", () => {
+    const sources = ["Si", "Cu", "NaCl"].map((name) => ({ objectId: name, versionId: `${name}-v1`, displayName: `${name}.cif` }));
+    const artifactSources = [sources[2], sources[0], sources[1]];
+    const presentation = compileScientificPresentation({
+      sourceObjectRefs: sources,
+      artifactSourceRefs: Object.fromEntries(artifactSources.map((source, i) => [`a${i}`, [source]])),
+      artifacts: artifactSources.map((_, i) => ({ id: `a${i}`, jobId: "job", type: "plotly_json", name: "rdf_plot.json" } as Artifact)),
+      facts: artifactSources.map((_, i) => ({ factId: `f${i}`, predicate: "rdf.number_density", subjectRef: `a${i}`, value: i + 0.1, unit: "angstrom^-3", source: { artifactId: `a${i}` } })),
+    });
+    expect(presentation.blocks.flatMap((block) => block.type === "figure" ? [block.title] : [])).toEqual([
+      "NaCl.cif · 径向分布函数（RDF）", "Si.cif · 径向分布函数（RDF）", "Cu.cif · 径向分布函数（RDF）",
+    ]);
+    expect(presentation.blocks.filter((block) => block.type === "metric").map((block) => [block.title, block.source.versionId])).toEqual([
+      ["NaCl.cif · 数密度", "NaCl-v1"], ["Si.cif · 数密度", "Si-v1"], ["Cu.cif · 数密度", "Cu-v1"],
+    ]);
+  });
+
+  it("validates bounded fact references independently of provenance references", () => {
+    const finding = { id: "finding", type: "finding", title: "发现", text: "结论", confidence: "DIRECT", source: {}, evidenceIds: ["evidence"], factIds: ["fact"] };
+    expect(isSafePresentationBlock(finding)).toBe(true);
+    expect(isSafePresentationBlock({ ...finding, factIds: undefined })).toBe(true);
+    expect(isSafePresentationBlock({ ...finding, factIds: "fact" })).toBe(false);
+    expect(isSafePresentationBlock({ ...finding, factIds: ["<script>run()</script>"] })).toBe(false);
+    expect(isSafePresentationBlock({ ...finding, factIds: Array.from({ length: 13 }, (_, i) => `fact-${i}`) })).toBe(false);
   });
 
   it("binds report figures to their declared exact source type", () => {
@@ -547,6 +614,8 @@ describe("scientific presentation compiler", () => {
       },
     });
     const figures = presentation.blocks.filter((block) => block.type === "figure");
+    expect(figures).toHaveLength(2);
+    expect(figures.every(isSafePresentationBlock)).toBe(true);
     expect(figures[0]?.source).toEqual(expect.objectContaining({ objectId: "band-object", versionId: "band-version" }));
     expect(figures[1]?.source).toEqual(expect.objectContaining({ objectId: "dos-object", versionId: "dos-version" }));
   });

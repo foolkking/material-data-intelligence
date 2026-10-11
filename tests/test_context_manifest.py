@@ -151,7 +151,9 @@ def test_context_budget_policy_is_operation_specific_and_reserves_output_space()
     assert data.effective_input_budget == 8_000
     assert planner.effective_input_budget < orchestrator.effective_input_budget
     assert data.effective_input_budget < planner.effective_input_budget
-    assert report.effective_input_budget == planner.effective_input_budget
+    assert report.effective_input_budget == 9_728
+    assert report.reserved_output_tokens == 6_144
+    assert report.effective_input_budget + report.reserved_output_tokens + report.repair_margin <= report.provider_context_limit
     assert orchestrator.reserved_output_tokens > 0
     assert orchestrator.repair_margin > 0
 
@@ -390,6 +392,36 @@ def test_context_compiler_compacts_conversation_before_exact_scientific_identity
     assert compact.objects[0].ref_key == "obj_1"
     assert compact.current_user_message == candidates.current_user_message
     assert len(compact.recent_conversation) < len(candidates.recent_messages)
+
+
+@pytest.mark.parametrize("source", [ReferenceCandidateSource.EXPLICIT_REFERENCE, ReferenceCandidateSource.PINNED_CONTEXT])
+def test_context_compaction_keeps_required_results_and_rejects_an_impossible_budget(source) -> None:
+    results = [ReferenceCandidate(
+        candidate_key=f"result_{index}", ref_type="SCIENTIFIC_RESULT", result_id=uuid4(),
+        source=source, display_label=f"Saved result {index}",
+        semantic_summary="已保存的科学结果。" * 90, recency_rank=index,
+    ) for index in (1, 2)]
+    bundle = ResearchContextCandidateBundle(
+        project_id="project", research_session_id="session", research_turn_id=uuid4(),
+        active_object_candidates=[], result_candidates=results + [ReferenceCandidate(
+            candidate_key="result_3", ref_type="SCIENTIFIC_RESULT", result_id=uuid4(),
+            source=ReferenceCandidateSource.RECENT_CONTEXT, display_label="Earlier unrelated result",
+            semantic_summary="其他历史结果。" * 200, recency_rank=3,
+        )],
+        finding_candidates=[], explicit_constraints=[], current_research_goal=None,
+        unresolved_questions=[], recent_messages=[], current_user_message="解释明确选择的两个结果。",
+        pinned_result_ids=[item.result_id for item in results] if source == ReferenceCandidateSource.PINNED_CONTEXT else [],
+    )
+    before = bundle.model_dump(mode="json")
+    compiler = ResearchContextCompiler()
+    # Pinned results also appear in the dedicated pinned-results projection.
+    fitting_budget = 6000 if bundle.pinned_result_ids else 3200
+    insufficient_budget = 4200 if bundle.pinned_result_ids else 2048
+    compact = compiler.compile(turn={}, candidates=bundle, token_budget=fitting_budget)
+    assert {item.ref_key for item in compact.results} == {"result_1", "result_2"}
+    with pytest.raises(ValueError, match="Selected scientific context cannot fit"):
+        compiler.compile(turn={}, candidates=bundle, token_budget=insufficient_budget)
+    assert bundle.model_dump(mode="json") == before
 
 
 def test_scientific_object_summary_projects_bounded_metadata_without_raw_payload() -> None:

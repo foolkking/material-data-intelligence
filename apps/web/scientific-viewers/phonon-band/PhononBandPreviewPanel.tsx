@@ -1,29 +1,23 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
+import { loadPhononPlotly as loadPlotly, usePhononPlot, type PhononPlotlyLoader as PlotlyLoader } from "../phonon-shared/use-phonon-plot";
 
 import { validatePhononBandReference } from "../../app/lib/phononContract";
 import type { Artifact } from "../../app/lib/planner-api";
+import type { PhononBandPoint } from "../phonon-shared/phonon-selection";
 
 type JsonRecord = Record<string, unknown>;
-type PlotlyApi = {
-  newPlot: (target: HTMLElement, data: unknown[], layout: JsonRecord, config: JsonRecord) => Promise<unknown>;
-  purge: (target: HTMLElement) => void;
-  register?: (modules: unknown[]) => void;
-  Plots?: { resize: (target: HTMLElement) => void };
-};
-type PlotlyLoader = () => Promise<PlotlyApi>;
 
 const MAX_PREVIEW_VALUES = 500_000;
 const MAX_PREVIEW_TRACES = 4_096;
 const MAX_TABLE_ROWS = 200;
 
-export function PhononBandPreviewPanel({ artifacts, plotlyLoader = loadPlotly }: { artifacts: Artifact[]; plotlyLoader?: PlotlyLoader }) {
-  const bandArtifact = artifacts.find((artifact) => artifact.type === "phonon_band_json");
+export function PhononBandPreviewPanel({ artifacts, selected, selectedPoint = null, onPointSelection, plotlyLoader = loadPlotly }: { artifacts: Artifact[]; selected?: Artifact; selectedPoint?: PhononBandPoint | null; onPointSelection?: (point: PhononBandPoint | null) => void; plotlyLoader?: PlotlyLoader }) {
+  const bandArtifact = selected?.type === "phonon_band_json" ? selected : artifacts.find((artifact) => artifact.type === "phonon_band_json");
   const summaryArtifact = artifacts.find((artifact) => artifact.type === "phonon_summary_json");
   const manifestArtifact = artifacts.find((artifact) => artifact.type === "phonon_manifest_json");
   const animationArtifact = artifacts.find((artifact) => artifact.type === "phonon_animation_json");
-  const [tab, setTab] = useState<"plot" | "table" | "json">("plot");
   if (!bandArtifact) return null;
   const payload = artifactPayload(bandArtifact);
   const validation = validatePhononBandReference(payload);
@@ -35,60 +29,34 @@ export function PhononBandPreviewPanel({ artifacts, plotlyLoader = loadPlotly }:
   const manifest = artifactPayload(manifestArtifact);
   const handoff = phononAnimationHandoff(band, bandArtifact, artifactPayload(animationArtifact));
   return (
-    <section className="panel phonon-band-preview" data-testid="phonon-band-preview" aria-label="Phonon band preview">
+    <section className="phonon-band-preview phonon-result" data-testid="phonon-band-preview" aria-label="声子能带">
       <header className="phonon-band-heading">
-        <div><h2>Phonon Bands</h2><p>Validated static band artifact</p></div>
-        <span data-testid="phonon-band-schema">{String(band.schema_version)}</span>
+        <h2>声子能带</h2><p>{records(band.branches).length} 条分支 · {records(band.qpoints).length} 个 q 点</p>
       </header>
-      <PhononBandSummary band={band} summary={summary} />
-      <div className="phonon-band-handoff" data-testid="phonon-band-animation-handoff"><span>{handoff.ok?`Mode q${handoff.qpointIndex} / branch ${handoff.branchIndex} is bound by canonical mode ID.`:handoff.code}</span><button type="button" disabled={!handoff.ok} onClick={()=>document.querySelector('[data-testid="phonon-animation-preview-panel"]')?.scrollIntoView({behavior:"smooth",block:"start"})}>Open mode animation</button></div>
-      <p className="notice" data-testid="phonon-band-scope">Source branch order is preserved. Negative plotted values represent imaginary phonon modes under the contract&apos;s negative-real encoding. DOS, eigenvectors, animation, and phonon calculation are not included.</p>
-      <div className="viewer-preview-tabs" role="tablist" aria-label="Phonon band preview modes">
-        {(["plot", "table", "json"] as const).map((value) => <button key={value} type="button" role="tab" aria-selected={tab === value} className={tab === value ? "active" : "secondary"} onClick={() => setTab(value)}>{value === "plot" ? "Band plot" : value === "table" ? "Band table" : "Canonical JSON"}</button>)}
-      </div>
-      <div role="tabpanel" className="phonon-band-tab-panel">
-        {tab === "plot" ? <PhononBandPlot band={band} plotlyLoader={plotlyLoader} /> : null}
-        {tab === "table" ? <PhononBandTable band={band} /> : null}
-        {tab === "json" ? <div className="phonon-band-json-grid"><JsonDetails title="phonon_band.json" payload={band} /><JsonDetails title="phonon_summary.json" payload={summary} /><JsonDetails title="phonon_manifest.json" payload={manifest} /></div> : null}
-      </div>
+      {records(band.branches).some(branch => numbers(branch.frequencies).some(value => value < -Number(band.frequency_zero_tolerance))) ? <p className="phonon-reading-note">负频率表示虚频模式，已按源数据保留。</p> : null}
+      <PhononBandPlot band={band} plotlyLoader={plotlyLoader} />
+      {selectedPoint && onPointSelection ? <div className="phonon-point-selection" role="status"><span>已选 q 点 {selectedPoint.qpointIndex} · 分支 {selectedPoint.branchIndex}</span><button type="button" className="product-secondary-action" onClick={() => onPointSelection(null)}>清除选择</button></div> : null}
+      <details className="phonon-details"><summary>能带数值</summary><PhononBandTable band={band} selectedPoint={selectedPoint} onPointSelection={onPointSelection} /></details>
+      {animationArtifact ? <div className="phonon-band-handoff" data-testid="phonon-band-animation-handoff"><span>{handoff.ok ? `已关联 q 点 ${handoff.qpointIndex}、分支 ${handoff.branchIndex} 的振动模式。` : "振动模式与当前能带无法对应。"}</span>{handoff.ok ? <button type="button" className="product-secondary-action" onClick={()=>document.querySelector('[data-testid="phonon-animation-preview-panel"]')?.scrollIntoView({behavior:"auto",block:"start"})}>查看振动动画</button> : <details><summary>技术详情</summary><code>{handoff.code}</code></details>}</div> : null}
+      <details className="phonon-details"><summary>数据与来源</summary>
+        <PhononBandSummary band={band} summary={summary} />
+        <p className="phonon-reading-note" data-testid="phonon-band-scope">保留源文件的分支顺序与负频率；这里未执行插值或新的声子计算。</p>
+        <p data-testid="phonon-band-schema">数据格式：{String(band.schema_version)}</p>
+        <div className="phonon-band-json-grid"><JsonDetails title="phonon_band.json" payload={band} />{summary ? <JsonDetails title="phonon_summary.json" payload={summary} /> : null}{manifest ? <JsonDetails title="phonon_manifest.json" payload={manifest} /> : null}</div>
+      </details>
     </section>
   );
 }
 
 function PhononBandPlot({ band, plotlyLoader }: { band: JsonRecord; plotlyLoader: PlotlyLoader }) {
-  const hostRef = useRef<HTMLDivElement>(null);
-  const [state, setState] = useState<"loading" | "rendered" | "refused" | "error">("loading");
-  const [message, setMessage] = useState("Loading local Plotly renderer.");
   const mapped = useMemo(() => mapPhononBandPlot(band), [band]);
-  useEffect(() => {
-    const host = hostRef.current;
-    if (!host) return;
-    if (!mapped.ok) {
-      setState("refused");
-      setMessage(mapped.message);
-      return;
-    }
-    let active = true;
-    let plotly: PlotlyApi | null = null;
-    setState("loading");
-    setMessage("Loading local Plotly renderer.");
-    plotlyLoader().then(async (api) => {
-      if (!active) return;
-      plotly = api;
-      await api.newPlot(host, mapped.data, mapped.layout, { responsive: true, displaylogo: false, scrollZoom: false });
-      if (!active) { api.purge(host); return; }
-      setState("rendered");
-      setMessage(`Rendered ${mapped.branchCount} branches across ${mapped.segmentCount} path segments.`);
-    }).catch(() => {
-      if (active) { setState("error"); setMessage("PHONON_BAND_PLOT_LOAD_FAILED: canonical JSON and table remain available."); }
-    });
-    const resize = () => plotly?.Plots?.resize(host);
-    window.addEventListener("resize", resize);
-    return () => { active = false; window.removeEventListener("resize", resize); if (plotly) plotly.purge(host); };
-  }, [mapped, plotlyLoader]);
+  const { hostRef, phase: state, retry } = usePhononPlot(mapped, plotlyLoader);
+  const message = state === "rendered" && mapped.ok ? `已显示 ${mapped.branchCount} 条分支、${mapped.segmentCount} 段路径。`
+    : state === "timeout" ? "绘图已等待超过 10 秒，数值与来源仍可查看。" : state === "error" ? "图表未能完成绘制，数值与来源仍可查看。"
+    : state === "refused" ? "数据超过交互绘图上限，请查看数值与来源。" : "正在绘制声子能带…";
   return <div className="phonon-band-plot-wrap">
-    <div ref={hostRef} className="phonon-band-plot" data-testid="phonon-band-plot" aria-label="Phonon frequency by wave vector path" />
-    {state !== "rendered" ? <div className="phonon-band-plot-fallback" data-testid="phonon-band-plot-fallback"><strong>{state === "refused" ? "Plot budget exceeded" : state === "error" ? "Plot unavailable" : "Loading plot"}</strong><p>{message}</p></div> : null}
+    <div ref={hostRef} className="phonon-band-plot" data-testid="phonon-band-plot" aria-label="声子频率与波矢路径" />
+    {state !== "rendered" ? <div className="phonon-band-plot-fallback" data-testid="phonon-band-plot-fallback" role={state === "loading" ? "status" : "alert"}><strong>{state === "timeout" ? "图表绘制超时" : state === "refused" ? "图表超出显示范围" : state === "error" ? "图表暂时无法显示" : "正在绘制图表"}</strong><p>{message}</p>{state === "error" || state === "timeout" ? <button type="button" className="product-secondary-action" onClick={retry}>重新绘制图表</button> : null}</div> : null}
     <p className="sr-only" aria-live="polite" data-testid="phonon-band-live-status">{message}</p>
     <pre hidden data-testid="phonon-band-plot-metrics">{JSON.stringify({ state, branchCount: mapped.ok ? mapped.branchCount : 0, segmentCount: mapped.ok ? mapped.segmentCount : 0, traceCount: mapped.ok ? mapped.data.length : 0, numericValues: mapped.ok ? mapped.numericValues : 0, negativePreserved: true, externalRequests: 0 })}</pre>
   </div>;
@@ -102,16 +70,16 @@ function PhononBandSummary({ band, summary }: { band: JsonRecord; summary: JsonR
   const frequencyRange = numericRange(frequencies);
   const species = Array.isArray(band.species) ? band.species.map(String) : [];
   return <dl className="phonon-band-summary" data-testid="phonon-band-summary">
-    <div><dt>Atoms</dt><dd>{String(band.atom_count)}</dd></div>
-    <div><dt>Species order</dt><dd>{species.join(", ")}</dd></div>
-    <div><dt>Branches</dt><dd>{branches.length}</dd></div>
-    <div><dt>Q-points</dt><dd>{qpoints.length}</dd></div>
-    <div><dt>Segments</dt><dd>{segments.length}</dd></div>
-    <div><dt>Frequency range</dt><dd>{finite(summary?.frequency_min) ? summary?.frequency_min : frequencyRange?.[0] ?? "unavailable"} to {finite(summary?.frequency_max) ? summary?.frequency_max : frequencyRange?.[1] ?? "unavailable"} THz</dd></div>
+    <div><dt>原子数</dt><dd>{String(band.atom_count)}</dd></div>
+    <div><dt>元素顺序</dt><dd>{species.join(", ")}</dd></div>
+    <div><dt>分支数</dt><dd>{branches.length}</dd></div>
+    <div><dt>q 点数</dt><dd>{qpoints.length}</dd></div>
+    <div><dt>路径段数</dt><dd>{segments.length}</dd></div>
+    <div><dt>频率范围</dt><dd>{finite(summary?.frequency_min) ? summary?.frequency_min : frequencyRange?.[0] ?? "未提供"} 至 {finite(summary?.frequency_max) ? summary?.frequency_max : frequencyRange?.[1] ?? "未提供"} THz</dd></div>
   </dl>;
 }
 
-function PhononBandTable({ band }: { band: JsonRecord }) {
+function PhononBandTable({ band, selectedPoint, onPointSelection }: { band: JsonRecord; selectedPoint: PhononBandPoint | null; onPointSelection?: (point: PhononBandPoint | null) => void }) {
   const rows = useMemo(() => {
     const qpoints = records(band.qpoints);
     const branches = records(band.branches);
@@ -129,20 +97,22 @@ function PhononBandTable({ band }: { band: JsonRecord }) {
         distance: Number(point.distance),
         branch: Number(branch.branch_index),
         frequency,
-        classification: frequency < -zeroTolerance ? "imaginary" : Math.abs(frequency) <= zeroTolerance ? "near zero" : "real",
+        classification: frequency < -zeroTolerance ? "虚频" : Math.abs(frequency) <= zeroTolerance ? "近零" : "实频",
       });
     }
     return result;
   }, [band]);
   const total = records(band.qpoints).length * records(band.branches).length;
-  return <div className="phonon-band-table-wrap"><p>{rows.length < total ? `Showing first ${rows.length} of ${total} rows. Canonical JSON is complete.` : `${total} rows.`}</p><table data-testid="phonon-band-table"><caption>Phonon band q-point and branch frequencies</caption><thead><tr><th scope="col">Q-point</th><th scope="col">Segment</th><th scope="col">q coordinates</th><th scope="col">Label</th><th scope="col">Path distance (rad/angstrom)</th><th scope="col">Branch</th><th scope="col">Frequency (THz)</th><th scope="col">Classification</th></tr></thead><tbody>{rows.map((row) => <tr key={`${row.qpoint}:${row.branch}`}><td>{row.qpoint}</td><td>{row.segment}</td><td>[{row.coordinates.map(format).join(", ")}]</td><td>{row.label || "-"}</td><td>{format(row.distance)}</td><td>{row.branch}</td><td>{format(row.frequency)}</td><td>{row.classification}</td></tr>)}</tbody></table></div>;
+  return <div className="phonon-band-table-wrap" role="region" aria-label="声子能带数值，可横向滚动" tabIndex={0}><p>{rows.length < total ? `显示前 ${rows.length} / ${total} 行，完整数据可在来源中查看。` : `共 ${total} 行。`}</p><table data-testid="phonon-band-table"><caption>声子能带采样数值</caption><thead><tr>{onPointSelection ? <th scope="col">选择</th> : null}<th scope="col">q 点</th><th scope="col">路径段</th><th scope="col">q 坐标</th><th scope="col">标签</th><th scope="col">路径距离（rad/Å）</th><th scope="col">分支</th><th scope="col">频率（THz）</th><th scope="col">类型</th></tr></thead><tbody>{rows.map((row) => <tr key={`${row.qpoint}:${row.branch}`}>
+    {onPointSelection ? <td><button type="button" className="product-secondary-action" aria-label={`选择 q 点 ${row.qpoint}、分支 ${row.branch}`} aria-pressed={selectedPoint?.qpointIndex === row.qpoint && selectedPoint.branchIndex === row.branch} onClick={() => onPointSelection({qpointIndex: row.qpoint, branchIndex: row.branch})}>选择</button></td> : null}
+    <td>{row.qpoint}</td><td>{row.segment}</td><td>[{row.coordinates.map(format).join(", ")}]</td><td>{row.label || "-"}</td><td>{format(row.distance)}</td><td>{row.branch}</td><td>{format(row.frequency)}</td><td>{row.classification}</td></tr>)}</tbody></table></div>;
 }
 
 function PhononBandFallback({ payload, errors }: { payload: unknown; errors: readonly string[] }) {
-  return <section className="panel phonon-band-preview" data-testid="phonon-band-preview-invalid" role="status"><h2>Phonon band preview unavailable</h2><code>{errors[0] || "PHONON_SCHEMA_UNSUPPORTED"}</code><p>The artifact was rejected before Plotly initialization. Inert JSON remains available for inspection.</p><details><summary>Artifact JSON</summary><pre>{JSON.stringify(payload, null, 2)}</pre></details></section>;
+  return <section className="phonon-result" data-testid="phonon-band-preview-invalid" role="alert"><h2>声子能带暂时无法显示</h2><p>数据格式或数值未通过检查，请核对来源文件。</p><details><summary>技术详情与原始数据</summary><code>{errors[0] || "PHONON_SCHEMA_UNSUPPORTED"}</code><pre>{JSON.stringify(payload, null, 2)}</pre></details></section>;
 }
 
-function JsonDetails({ title, payload }: { title: string; payload: unknown }) { return <details open><summary>{title}</summary><pre>{JSON.stringify(payload, null, 2)}</pre></details>; }
+function JsonDetails({ title, payload }: { title: string; payload: unknown }) { return <details><summary>{title}</summary><pre>{JSON.stringify(payload, null, 2)}</pre></details>; }
 
 export function mapPhononBandPlot(band: JsonRecord): { ok: true; data: unknown[]; layout: JsonRecord; branchCount: number; segmentCount: number; numericValues: number } | { ok: false; message: string } {
   const qpoints = records(band.qpoints);
@@ -155,18 +125,17 @@ export function mapPhononBandPlot(band: JsonRecord): { ok: true; data: unknown[]
   for (const branch of branches) for (const segment of segments) {
     const start = Number(segment.start_qpoint_index);
     const end = Number(segment.end_qpoint_index) + 1;
-    data.push({ type: "scatter", mode: "lines", name: `Branch ${Number(branch.branch_index) + 1}`, legendgroup: `branch-${String(branch.branch_index)}`, showlegend: false, x: qpoints.slice(start, end).map((point) => Number(point.distance)), y: numbers(branch.frequencies).slice(start, end), hovertemplate: "Path %{x:.5f}<br>Frequency %{y:.5f} THz<extra></extra>" });
+    data.push({ type: "scatter", mode: "lines", name: `分支 ${Number(branch.branch_index) + 1}`, legendgroup: `branch-${String(branch.branch_index)}`, showlegend: false, line: { color: "#176b87", width: 1.6 }, x: qpoints.slice(start, end).map((point) => Number(point.distance)), y: numbers(branch.frequencies).slice(start, end), hovertemplate: "路径 %{x:.5f}<br>频率 %{y:.5f} THz<extra></extra>" });
   }
-  const labeled = qpoints.filter((point) => typeof point.label === "string");
-  return { ok: true, data, layout: { autosize: true, margin: { l: 72, r: 20, t: 24, b: 64 }, xaxis: { title: { text: "Wave vector path" }, tickmode: "array", tickvals: labeled.map((point) => Number(point.distance)), ticktext: labeled.map((point) => String(point.label)) }, yaxis: { title: { text: "Frequency (THz)" }, zeroline: true }, showlegend: false, hovermode: "x unified", paper_bgcolor: "#ffffff", plot_bgcolor: "#ffffff" }, branchCount: branches.length, segmentCount: segments.length, numericValues };
-}
-
-async function loadPlotly(): Promise<PlotlyApi> {
-  const [coreModule, scatterModule] = await Promise.all([import("plotly.js/lib/core"), import("plotly.js/lib/scatter")]);
-  const plotly = ("default" in coreModule ? coreModule.default : coreModule) as unknown as PlotlyApi;
-  const scatter = "default" in scatterModule ? scatterModule.default : scatterModule;
-  plotly.register?.([scatter]);
-  return plotly;
+  const labels = new Map<number, string[]>();
+  for (const point of qpoints) {
+    if (typeof point.label !== "string" || !point.label) continue;
+    const distance = Number(point.distance);
+    const names = labels.get(distance) ?? [];
+    if (!names.includes(point.label)) names.push(point.label);
+    labels.set(distance, names);
+  }
+  return { ok: true, data, layout: { autosize: true, margin: { l: 72, r: 20, t: 24, b: 64 }, xaxis: { title: { text: "波矢路径" }, tickmode: "array", tickvals: [...labels.keys()], ticktext: [...labels.values()].map(names => names.join("｜")) }, yaxis: { title: { text: "频率（THz）" }, zeroline: true }, showlegend: false, hovermode: "x unified", paper_bgcolor: "#ffffff", plot_bgcolor: "#ffffff" }, branchCount: branches.length, segmentCount: segments.length, numericValues };
 }
 
 function artifactPayload(artifact?: Artifact): JsonRecord | null {

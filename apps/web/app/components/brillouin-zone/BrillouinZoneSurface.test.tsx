@@ -20,6 +20,25 @@ function fakeEngine(dispose=vi.fn()) {
 }
 
 describe("BrillouinZoneSurface",()=>{
+  it("leaves native controls and browser shortcuts alone while retaining canvas camera keys", async () => {
+    const engine = fakeEngine();
+    render(<BrillouinZoneSurface bundle={bundle} capabilityOverride engineFactory={async () => engine}/>);
+    await waitFor(() => expect(screen.getByTestId("brillouin-zone-renderer-state")).toHaveTextContent("rendered"));
+    for (const control of [screen.getByTestId("brillouin-zone-opacity"), screen.getByTestId("brillouin-zone-projection"), screen.getByRole("button", {name: "面"})]) {
+      expect(fireEvent.keyDown(control, {key: "ArrowRight"})).toBe(true);
+      expect(fireEvent.keyDown(control, {key: "r"})).toBe(true);
+    }
+    const surface = screen.getByTestId("brillouin-zone-renderer-surface");
+    expect(fireEvent.keyDown(surface, {key: "+", ctrlKey: true})).toBe(true);
+    expect(fireEvent.keyDown(surface, {key: "r", metaKey: true})).toBe(true);
+    expect(engine.keyboardCamera).not.toHaveBeenCalled();
+    expect(engine.resetCamera).not.toHaveBeenCalled();
+    expect(fireEvent.keyDown(surface, {key: "ArrowRight"})).toBe(false);
+    expect(engine.keyboardCamera).toHaveBeenLastCalledWith("rotate_right");
+    fireEvent.keyDown(surface, {key: "r"});
+    expect(engine.resetCamera).toHaveBeenCalledOnce();
+  });
+
   it("initializes only after validation and drives layers, opacity, projection, camera, selection and inspector by canonical IDs",async()=>{
     const engine=fakeEngine();let args:Parameters<BZRendererEngineFactory>[0]|undefined;
     render(<BrillouinZoneSurface bundle={bundle} capabilityOverride engineFactory={async(value)=>{args=value;return engine;}}/>);
@@ -53,7 +72,38 @@ describe("BrillouinZoneSurface",()=>{
 
   it("exports a bounded local PNG, sanitizes the filename, and revokes its object URL",async()=>{
     vi.useFakeTimers({shouldAdvanceTime:true});const engine=fakeEngine();const create=vi.fn(()=>"blob:bz");const revoke=vi.fn();Object.defineProperty(URL,"createObjectURL",{configurable:true,value:create});Object.defineProperty(URL,"revokeObjectURL",{configurable:true,value:revoke});const click=vi.spyOn(HTMLAnchorElement.prototype,"click").mockImplementation(()=>undefined);
-    render(<BrillouinZoneSurface bundle={bundle} capabilityOverride engineFactory={async()=>engine}/>);await waitFor(()=>expect(screen.getByTestId("brillouin-zone-renderer-state")).toHaveTextContent("rendered"));await userEvent.click(screen.getByTestId("brillouin-zone-export-png"));await waitFor(()=>expect(engine.exportPng).toHaveBeenCalled());expect(engine.setCameraPreset).toHaveBeenCalledWith("isometric");expect(create).toHaveBeenCalledOnce();vi.runAllTimers();expect(revoke).toHaveBeenCalledWith("blob:bz");click.mockRestore();vi.useRealTimers();
+    render(<BrillouinZoneSurface bundle={bundle} capabilityOverride engineFactory={async()=>engine}/>);await waitFor(()=>expect(screen.getByTestId("brillouin-zone-renderer-state")).toHaveTextContent("rendered"));await userEvent.click(screen.getByTestId("brillouin-zone-export-png"));await waitFor(()=>expect(engine.exportPng).toHaveBeenCalled());expect(engine.setCameraPreset).not.toHaveBeenCalled();expect(create).toHaveBeenCalledOnce();vi.runAllTimers();expect(revoke).toHaveBeenCalledWith("blob:bz");click.mockRestore();vi.useRealTimers();
+  });
+
+  it("prevents repeated exports and does not download a stale image after switching scientific data", async () => {
+    const engine=fakeEngine();
+    let finish!: (blob:Blob)=>void;
+    vi.mocked(engine.exportPng).mockImplementation(()=>new Promise(resolve=>{finish=resolve;}));
+    const create=vi.fn(()=>"blob:bz");
+    Object.defineProperty(URL,"createObjectURL",{configurable:true,value:create});
+    const factory=vi.fn(async()=>engine);
+    const view=render(<BrillouinZoneSurface bundle={bundle} capabilityOverride engineFactory={factory}/>);
+    await waitFor(()=>expect(screen.getByTestId("brillouin-zone-renderer-state")).toHaveTextContent("rendered"));
+    await userEvent.click(screen.getByRole("button",{name:"导出当前视图"}));
+    expect(screen.getByRole("button",{name:"正在导出…"})).toBeDisabled();
+    fireEvent.click(screen.getByTestId("brillouin-zone-export-png"));
+    expect(engine.exportPng).toHaveBeenCalledOnce();
+    factory.mockResolvedValue(fakeEngine());
+    view.rerender(<BrillouinZoneSurface bundle={{...bundle,zone:structuredClone(zone)}} capabilityOverride engineFactory={factory}/>);
+    await waitFor(()=>expect(factory).toHaveBeenCalledTimes(2));
+    await act(async()=>finish(new Blob(["old image"])));
+    expect(create).not.toHaveBeenCalled();
+    expect(screen.getByRole("button",{name:"导出当前视图"})).toBeEnabled();
+  });
+
+  it("keeps label-overflow errors actionable and allows an export retry",async()=>{
+    const engine=fakeEngine();
+    vi.mocked(engine.exportPng).mockRejectedValue(new Error("BZ_EXPORT_LABELS_DO_NOT_FIT"));
+    render(<BrillouinZoneSurface bundle={bundle} capabilityOverride engineFactory={async()=>engine}/>);
+    await waitFor(()=>expect(screen.getByTestId("brillouin-zone-renderer-state")).toHaveTextContent("rendered"));
+    await userEvent.click(screen.getByRole("button",{name:"导出当前视图"}));
+    expect(screen.getByTestId("brillouin-zone-export-status")).toHaveTextContent("标签过密，请调整视角或隐藏标签后重试");
+    expect(screen.getByRole("button",{name:"导出当前视图"})).toBeEnabled();
   });
 
   it("provides semantic controls, live status and non-canvas scientific tables",async()=>{

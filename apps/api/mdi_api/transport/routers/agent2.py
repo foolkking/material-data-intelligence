@@ -1,18 +1,26 @@
 from __future__ import annotations
 
 import hashlib
+import asyncio
 import json
 import logging
 from datetime import datetime, timezone
 from typing import Any, Iterator
+from time import monotonic
+from urllib.parse import quote
 from uuid import UUID, NAMESPACE_URL, uuid5
 
-from fastapi import Body, Depends, Header, HTTPException, Query
+from fastapi import Body, Depends, Header, HTTPException, Query, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from mdi_api.access import require_project_access
+from mdi_api.application.interpretation.grounding import (
+    HISTORICAL_GROUNDING_NOTICE, project_grounded_communication, validate_interpretation,
+)
+from mdi_api.domain.interpretation.contracts import ScientificInterpretationOutput
+from mdi_api.domain.scientific_results.reference_sources import project_reference_context as _public_project_input_provenance
 from mdi_api.application.research.ports import (
     ProjectAccessDenied,
     ProjectAccessNotFound,
@@ -90,10 +98,13 @@ from mdi_api.scientific_viewers import (
 from mdi_api.domain.scientific_results.contracts import ScientificResultBundle
 from mdi_api.domain.scientific_results.relevance import ScientificResultRelevanceEvaluator
 from mdi_api.infrastructure.scientific_results.artifact_loader import load_committed_json_artifact
+from mdi_api.infrastructure.scientific_results.execution_records import read_snapshot_execution_records
+from mdi_api.infrastructure.persistence.sqlalchemy_artifacts import _artifact_from_row
 from mdi_api.infrastructure.scientific_results.service import ScientificResultProjectionService
 from mdi_api.artifact_storage import create_artifact_storage_from_settings
 from mdi_api.infrastructure.interpretation.service import InterpretationFailure
 from mdi_api.infrastructure.interpretation.queue import RedisRQInterpretationQueue
+from mdi_api.infrastructure.interpretation.message_projection import scientific_message_projections
 
 
 logger = logging.getLogger(__name__)
@@ -235,19 +246,8 @@ def get_research_turn_context_manifest(
         )
         if context_event is None:
             raise ScientificResultNotReady(f"context manifest unavailable for {turn_id}")
-        manifest = (context_event.get("payload_json") or {}).get("context_manifest")
-        if not isinstance(manifest, dict):
-            # Older completed turns persisted the immutable context snapshot
-            # reference but predated the embedded manifest contract.  Build a
-            # deterministic, bounded read-model from that snapshot so history
-            # remains auditable without mutating the event or introducing a
-            # second context authority.
-            factory = create_repository_factory()
-            with factory.session() as session:
-                snapshot = session.agent2.research_context_snapshots.get_for_turn(turn_id)
-            if snapshot is None:
-                raise ScientificResultNotReady(f"context manifest unavailable for {turn_id}")
-            manifest = _compat_context_manifest_from_snapshot(turn, snapshot)
+        context_payload = context_event.get("payload_json") or {}
+        manifest = context_payload.get("context_manifest")
         operation_manifests: list[dict[str, Any]] = []
         for event in events:
             payload = event.get("payload_json") or {}
@@ -261,6 +261,22 @@ def get_research_turn_context_manifest(
                 "event_id": str(event.get("id")) if event.get("id") is not None else None,
                 "sequence_no": event.get("sequence_no"),
             })
+        if not isinstance(manifest, dict):
+            if context_payload.get("requested_action") is not None:
+                # An explicit action intentionally skipped the intent model.
+                # Do not invent a legacy orchestrator input for that stage.
+                if not operation_manifests:
+                    raise ScientificResultNotReady(f"context manifest unavailable for {turn_id}")
+                manifest = operation_manifests[0]["manifest"]
+            else:
+                # Older turns predate embedded manifests. Preserve their
+                # bounded read-model without rewriting immutable history.
+                factory = create_repository_factory()
+                with factory.session() as session:
+                    snapshot = session.agent2.research_context_snapshots.get_for_turn(turn_id)
+                if snapshot is None:
+                    raise ScientificResultNotReady(f"context manifest unavailable for {turn_id}")
+                manifest = _compat_context_manifest_from_snapshot(turn, snapshot)
         if not operation_manifests:
             operation_manifests = [{
                 "operation": str(manifest.get("operation") or "ORCHESTRATOR"),
@@ -273,6 +289,7 @@ def get_research_turn_context_manifest(
             # Backward-compatible primary manifest for existing clients.
             "manifest": manifest,
             "manifests": operation_manifests,
+            "result_sources": _context_result_sources(turn, [manifest, *(entry["manifest"] for entry in operation_manifests)]),
         })
     except ScientificResultNotReady as exc:
         # This is an expected transitional state while a new Turn is still
@@ -282,6 +299,33 @@ def get_research_turn_context_manifest(
     except Exception as exc:
         logger.exception("context_manifest_projection_failed", extra={"turn_id": str(turn_id)})
         raise _http_error(exc) from exc
+
+
+def _context_result_sources(turn: dict[str, Any], manifests: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Add navigation metadata beside, never inside, immutable model inputs."""
+    result_ids: set[UUID] = set()
+    for manifest in manifests:
+        if any(str(manifest.get(key) or "") != str(turn[field]) for key, field in (
+            ("project_id", "project_id"), ("research_session_id", "research_session_id"), ("research_turn_id", "id"),
+        )):
+            continue
+        for item in manifest.get("included_items") or []:
+            if not isinstance(item, dict) or item.get("kind") != "SCIENTIFIC_RESULT" or item.get("authorization_checked") is not True:
+                continue
+            reference = item.get("result_ref")
+            if not isinstance(reference, str) or item.get("server_side_source_identity") != reference:
+                continue
+            try:
+                result_ids.add(UUID(reference))
+            except ValueError:
+                continue
+    if not result_ids:
+        return []
+    factory = create_repository_factory()
+    with factory.session() as session:
+        return session.agent2.scientific_result_snapshots.current_source_locations(
+            str(turn["project_id"]), sorted(result_ids, key=str)[:128],
+        )
 
 
 def _compat_context_manifest_from_snapshot(
@@ -615,6 +659,138 @@ def dispatch_research_turn(turn_id: UUID, current_user: CurrentUser = Depends(ge
         raise _http_error(exc) from exc
 
 
+def _research_failure_warning(turn: dict[str, Any]) -> dict[str, str] | None:
+    if str(turn["status"]) != "FAILED":
+        return None
+    # Raw failure summaries can contain exceptions, endpoint details or model
+    # output. Project a reviewed explanation from the durable code only.
+    messages = {
+        "RESEARCH_STAGE_TIMEOUT": "研究准备长时间未完成，本次请求已停止，尚未开始科学计算。原问题已保留，可以重试。",
+        "RESEARCH_QUEUE_TIMEOUT": "研究排队等待超时，本次请求已停止，尚未开始科学计算。原问题已保留，可以重试。",
+        "EXECUTION_WORKER_LOST": "科学计算意外中断，本次研究未能完成。原问题和已生成的文件已保留，可以重试。",
+        "EXECUTION_QUEUE_TIMEOUT": "科学任务排队等待超时，本次研究已停止。原问题、分析计划和已有文件已保留，可以重新运行。",
+        "RESULT_PROJECTION_TIMEOUT": "科学结果整理长时间未完成，本次研究已停止。原问题和已生成的文件已保留。",
+        "INTERPRETATION_STAGE_TIMEOUT": "自动解读长时间未完成，本次解读已停止。已有科学结果仍可查看，也可以重新解读。",
+        "ORCHESTRATOR_PROVIDER_UNAVAILABLE": "模型连接暂时不可用。请检查模型设置，或选择其他可用模型后重试。",
+        "ORCHESTRATOR_TIMEOUT": "模型响应超时，本次研究已停止。可以稍后重试或选择其他可用模型。",
+        "ORCHESTRATOR_PROVIDER_RATE_LIMITED": "模型服务返回限流或额度不足，本次研究未完成。请稍后重试，或选择其他可用模型。",
+        "ORCHESTRATOR_PROVIDER_AUTH_FAILED": "模型服务拒绝了认证。请检查模型设置中的密钥和使用权限后重试。",
+        "ORCHESTRATOR_PROVIDER_REQUEST_REJECTED": "模型服务拒绝了当前请求。请检查所选模型和请求协议后重试。",
+        "ORCHESTRATOR_OUTPUT_TRUNCATED": "模型响应达到输出长度上限，本次研究未完成。请缩小问题范围后重试。",
+        "CAPABILITY_PLANNER_UNAVAILABLE": "模型未能完成分析方案。可以稍后重试或选择其他可用模型。",
+        "CONTEXT_ASSEMBLY_FAILED": "本次研究的数据上下文未能准备完成。请检查来源数据后重试。",
+        "ORCHESTRATOR_INVALID_RESPONSE": "模型返回的分析安排未通过校验。请重试或调整问题。",
+        "ORCHESTRATOR_INVALID_OUTPUT": "模型已响应，但返回内容未通过分析安排校验。请重试或调整问题。",
+        "INTERPRETATION_GROUNDING_FAILED": "科学结果已生成，但自动解读未通过证据校验。已有结果仍可查看，也可以重新解读。",
+        "INTERPRETATION_SCHEMA_INVALID": "科学结果已生成，但自动解读格式不完整。已有结果仍可查看，也可以重新解读。",
+        "INTERPRETATION_PROVIDER_FAILED": "科学结果已生成，但模型未能完成自动解读。已有结果仍可查看，也可以重新解读。",
+        "INTERPRETATION_PROVIDER_TIMEOUT": "模型响应超时。科学结果已保留，可以重新解读或更换模型。",
+        "INTERPRETATION_PROVIDER_UNAVAILABLE": "暂时无法连接模型服务。科学结果已保留，可以稍后重新解读或更换模型。",
+        "INTERPRETATION_PROVIDER_RATE_LIMITED": "模型服务返回限流或额度不足。科学结果已保留，可以稍后重新解读或更换模型。",
+        "INTERPRETATION_PROVIDER_AUTH_FAILED": "模型连接认证失败。科学结果已保留，请检查密钥和使用权限。",
+        "INTERPRETATION_PROVIDER_REQUEST_REJECTED": "模型服务拒绝了本次解读请求。科学结果已保留，请检查所选模型和请求协议。",
+        "INTERPRETATION_PROVIDER_OUTPUT_TRUNCATED": "模型响应达到输出长度上限，解读内容不完整。科学结果已保留，可以调整问题后重新解读。",
+        "INTERPRETATION_PROVIDER_INVALID_RESPONSE": "模型未返回有效的结构化解读。科学结果已保留，可以重新解读或更换模型。",
+    }
+    code = str(turn.get("error_code") or "")
+    from mdi_api.research_agent.execution.diagnostics import execution_failure_warning
+
+    execution_warning = execution_failure_warning(code)
+    if execution_warning:
+        return execution_warning.model_dump(mode="json")
+    if code in messages:
+        return {"code": code, "message": messages[code]}
+    return {"code": "RESEARCH_FAILED", "message": "本次研究未能完成，现有记录不足以确定具体原因。原问题已保留，可以重试；已有结果仍可查看。"}
+
+
+def _execution_dispatch_pending(status: str, events: list[dict[str, Any]]) -> bool:
+    """A durable dispatch intent is not a Redis acknowledgement."""
+    if status != "QUEUED":
+        return False
+    started = max((int(event["sequence_no"]) for event in events if event["event_type"] == "EXECUTION_DISPATCH_STARTED"), default=0)
+    published = max((int(event["sequence_no"]) for event in events if event["event_type"] == "JOB_QUEUE_PUBLISHED"), default=0)
+    return started > published
+
+
+def _explicit_preserved_turn_result(session: Any, turn: dict[str, Any], events: list[dict[str, Any]] | None = None) -> dict[str, Any] | None:
+    if str(turn["status"]) not in {ResearchTurnStatus.FAILED.value, ResearchTurnStatus.CANCELED.value} or turn.get("job_id"):
+        return None
+    events = events if events is not None else session.agent2.research_turn_events.list_for_turn(turn["id"])
+    received = next((event for event in events if event["event_type"] == ResearchTurnEventType.TURN_RECEIVED.value), None)
+    explicit_ids = ((received or {}).get("payload_json", {}).get("ui_context") or {}).get("explicit_result_ids") or []
+    if len(explicit_ids) != 1:
+        return None
+    row = session.agent2.scientific_result_snapshots.get(UUID(str(explicit_ids[0])))
+    if str(row["project_id"]) != str(turn["project_id"]):
+        raise UnauthorizedScientificObjectReference("referenced result is outside the project")
+    return row
+
+
+def _research_turn_result_snapshot(session: Any, turn: dict[str, Any], events: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """Read the owned or explicitly reused snapshot without creating a result."""
+    turn_id = turn["id"]
+    try:
+        return session.agent2.scientific_result_snapshots.get_latest_for_turn(turn_id)
+    except ScientificResultSnapshotNotFound:
+        if str(turn.get("action_type") or "") == ResearchAction.INTERPRET_RESULT.value:
+            decision = session.agent2.research_turn_decisions.get_for_turn(turn_id)
+            context = session.agent2.research_context_snapshots.get_for_turn(turn_id)
+            requested = set(
+                str(item)
+                for item in ((decision or {}).get("decision_json") or {}).get("reusable_result_ref_keys") or []
+            )
+            for candidate in (context or {}).get("referenced_result_refs_json") or []:
+                if not isinstance(candidate, dict) or (requested and str(candidate.get("candidate_key")) not in requested):
+                    continue
+                snapshot_id = candidate.get("result_id")
+                if not snapshot_id:
+                    continue
+                row = session.agent2.scientific_result_snapshots.get(UUID(str(snapshot_id)))
+                if str(row["project_id"]) != str(turn["project_id"]):
+                    raise UnauthorizedScientificObjectReference("reused result is outside the project")
+                return row
+        elif str(turn["status"]) in {ResearchTurnStatus.FAILED.value, ResearchTurnStatus.CANCELED.value} and not turn.get("job_id"):
+            # Failure or cancellation may precede the reuse decision. Only the
+            # single explicitly attached result can be retained in that case.
+            events = events if events is not None else session.agent2.research_turn_events.list_for_turn(turn_id)
+            row = _explicit_preserved_turn_result(session, turn, events)
+            if row is not None:
+                return row
+            received = next((event for event in events if event["event_type"] == ResearchTurnEventType.TURN_RECEIVED.value), None)
+            payload = (received or {}).get("payload_json") or {}
+            if "ui_context" in payload:
+                context = payload["ui_context"]
+                if context is None or (isinstance(context, dict) and context.get("explicit_result_ids") == []):
+                    # The accepted request confirms there is no attached result
+                    # and this terminal Turn cannot still produce one. Preserve
+                    # the missing-snapshot response so its source can be reused.
+                    raise
+        else:
+            raise
+        raise ScientificResultNotReady(str(turn_id))
+
+
+def _current_interpretation_warning(session: Any, turn: dict[str, Any]) -> dict[str, str] | None:
+    if str(turn["status"]) not in {"COMPLETED", "PARTIAL"}:
+        return None
+    row = session.agent2.interpretations.get_for_turn(turn["id"])
+    if row is None:
+        return None
+    snapshot = session.agent2.scientific_result_snapshots.get(row["result_snapshot_id"])
+    if str(snapshot["project_id"]) != str(turn["project_id"]):
+        raise ScientificResultNotReady(str(turn["id"]))
+    try:
+        bundle = ScientificResultBundle.model_validate(snapshot["bundle_json"])
+        output = project_grounded_communication(
+            ScientificInterpretationOutput.model_validate(row["output_json"]["interpretation"]), bundle,
+        )
+        if row["grounding_status"] == "VALID" and validate_interpretation(output, bundle).valid:
+            return None
+    except (TypeError, ValueError, KeyError):
+        pass
+    return {"code": "INTERPRETATION_GROUNDING_REJECTED", "message": HISTORICAL_GROUNDING_NOTICE}
+
+
 def get_research_turn_progress(turn_id: UUID, current_user: CurrentUser = Depends(get_current_user)) -> dict[str, Any]:
     try:
         factory = create_repository_factory()
@@ -629,14 +805,26 @@ def get_research_turn_progress(turn_id: UUID, current_user: CurrentUser = Depend
                 turn,
                 turn_events,
             )
+            failure_warning = _research_failure_warning(turn)
+            current_grounding_warning = _current_interpretation_warning(session, turn)
+            preserved_result_available = False
+            if not job_id and str(turn["status"]) in {ResearchTurnStatus.FAILED.value, ResearchTurnStatus.CANCELED.value}:
+                try:
+                    preserved_result_available = _research_turn_result_snapshot(session, turn, turn_events) is not None
+                except (ScientificResultNotReady, ScientificResultSnapshotNotFound, UnauthorizedScientificObjectReference, ValueError):
+                    pass
         if not job_id:
             payload = {
                 "contract_version": "1.0", "turn_id": str(turn_id), "status": turn["status"],
                 "response_kind": _research_progress_response_kind(turn, decision),
                 "plan_title": None, "steps": [], "active_step_ids": [], "completed_step_count": 0,
-                "total_step_count": 0, "incremental_outputs": [], "warnings": [],
+                "total_step_count": 0, "incremental_outputs": [], "warnings": [failure_warning] if failure_warning else [],
                 "execution_outcome": None, "result_projection_pending": False,
             }
+            if preserved_result_available:
+                payload["preserved_result_available"] = True
+            if current_grounding_warning:
+                payload["warnings"].append(current_grounding_warning)
             if interpretation_retry_warning is not None:
                 payload["warnings"].append(interpretation_retry_warning)
             if autonomy["enabled"]:
@@ -655,13 +843,48 @@ def get_research_turn_progress(turn_id: UUID, current_user: CurrentUser = Depend
                 "missing analysis_plan_json" in str(exc)
                 and ResearchTurnStatus(str(turn["status"])) in TERMINAL_TURN_STATUSES
             ):
-                return _historical_terminal_progress(turn_id, str(turn["status"]))
+                with factory.session() as session:
+                    summary = session.agent2.research_execution_summaries.get_for_turn(turn_id)
+                    payload = _historical_terminal_progress(turn, summary)
+                    try:
+                        if _research_turn_result_snapshot(session, turn, turn_events) is not None:
+                            payload["preserved_result_available"] = True
+                    except (ScientificResultNotReady, ScientificResultSnapshotNotFound, UnauthorizedScientificObjectReference, ValueError):
+                        pass
+                if failure_warning:
+                    payload["warnings"].append(failure_warning)
+                if current_grounding_warning:
+                    payload["warnings"].append(current_grounding_warning)
+                if interpretation_retry_warning is not None:
+                    payload["warnings"].append(interpretation_retry_warning)
+                return payload
             raise
         payload = jsonable_encoder(
             view.model_dump(mode="json") if hasattr(view, "model_dump") else view
         )
+        for output in payload.get("incremental_outputs", []):
+            artifact_id = output.get("artifact_id")
+            if artifact_id:
+                output["content_url"] = f"/api/planner/jobs/{quote(job_id, safe='')}/artifacts/{quote(str(artifact_id), safe='')}/content"
+        payload["execution_dispatch_pending"] = _execution_dispatch_pending(str(payload.get("status")), turn_events)
+        if payload["execution_dispatch_pending"]:
+            payload.setdefault("warnings", []).append({
+                "code": "EXECUTION_QUEUE_PUBLISH_PENDING",
+                "message": "执行排队尚未确认，正在恢复已保存的分析任务。",
+            })
         if interpretation_retry_warning is not None:
             payload.setdefault("warnings", []).append(interpretation_retry_warning)
+        if failure_warning:
+            warnings = payload.setdefault("warnings", [])
+            # Prefer the current execution diagnosis over the legacy fallback,
+            # and a specific recovery code over a generic execution failure.
+            generic_codes = {"RESEARCH_FAILED", "EXECUTION_FAILED", "EXECUTION_PARTIAL"}
+            if failure_warning["code"] not in generic_codes:
+                warnings[:] = [item for item in warnings if item["code"] not in generic_codes]
+            if not warnings or (failure_warning["code"] not in generic_codes and not any(item["code"] == failure_warning["code"] for item in warnings)):
+                warnings.append(failure_warning)
+        if current_grounding_warning:
+            payload.setdefault("warnings", []).append(current_grounding_warning)
         if autonomy["enabled"]:
             payload["autonomy"] = autonomy
         return payload
@@ -869,26 +1092,29 @@ def get_research_turn_correlation(
         raise _http_error(exc) from exc
 
 
-def _historical_terminal_progress(turn_id: UUID, status: str) -> dict[str, Any]:
-    outcome = (
-        "SUCCESS"
-        if status == ResearchTurnStatus.COMPLETED.value
-        else "PARTIAL"
-        if status == ResearchTurnStatus.PARTIAL.value
-        else "FAILED"
-    )
+def _historical_terminal_progress(turn: dict[str, Any], summary: dict[str, Any] | None) -> dict[str, Any]:
+    # Interpretation failure and cancellation do not determine the scientific
+    # execution outcome. Only a summary owned by this exact Turn/Job can do so.
+    outcome = None
+    if (summary is not None and str(summary.get("research_turn_id")) == str(turn["id"])
+            and str(summary.get("job_id")) == str(turn.get("job_id"))
+            and summary.get("execution_outcome") in {"SUCCESS", "PARTIAL", "FAILED", "CANCELED"}):
+        outcome = summary["execution_outcome"]
     return {
         "contract_version": "1.0",
-        "turn_id": str(turn_id),
-        "status": status,
+        "turn_id": str(turn["id"]),
+        "status": str(turn["status"]),
         "response_kind": "SCIENTIFIC_EXECUTION",
-        "plan_title": "Historical completed analysis",
+        "plan_title": "历史分析",
         "steps": [],
         "active_step_ids": [],
         "completed_step_count": 0,
         "total_step_count": 0,
         "incremental_outputs": [],
-        "warnings": ["HISTORICAL_ANALYSIS_PLAN_PAYLOAD_UNAVAILABLE"],
+        "warnings": [{
+            "code": "HISTORICAL_ANALYSIS_PLAN_PAYLOAD_UNAVAILABLE",
+            "message": "历史分析的执行计划详情不可用；这里只显示已保存的研究状态。",
+        }],
         "execution_outcome": outcome,
         "result_projection_pending": False,
     }
@@ -930,49 +1156,17 @@ def get_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depends(
                 # requires a persisted snapshot below, so this does not turn
                 # a failed scientific execution into a false result.
                 ResearchTurnStatus.FAILED.value,
+                ResearchTurnStatus.CANCELED.value,
             }:
                 raise ScientificResultNotReady(str(turn_id))
-            try:
-                row = session.agent2.scientific_result_snapshots.get_latest_for_turn(turn_id)
-            except ScientificResultSnapshotNotFound:
-                # INTERPRET_RESULT creates a new conversational Turn but
-                # intentionally does not duplicate the immutable scientific
-                # snapshot. Resolve the explicitly reused snapshot through the
-                # persisted context/decision relation instead of treating the
-                # current Turn as if it owned a new Result.
-                if str(turn.get("action_type") or "") != ResearchAction.INTERPRET_RESULT.value:
-                    raise
-                decision = session.agent2.research_turn_decisions.get_for_turn(turn_id)
-                context = session.agent2.research_context_snapshots.get_for_turn(turn_id)
-                requested = set(
-                    str(item)
-                    for item in ((decision or {}).get("decision_json") or {}).get("reusable_result_ref_keys") or []
-                )
-                candidates = (context or {}).get("referenced_result_refs_json") or []
-                row = None
-                for candidate in candidates:
-                    if not isinstance(candidate, dict):
-                        continue
-                    if requested and str(candidate.get("candidate_key")) not in requested:
-                        continue
-                    snapshot_id = candidate.get("result_id")
-                    if not snapshot_id:
-                        continue
-                    candidate_row = session.agent2.scientific_result_snapshots.get(UUID(str(snapshot_id)))
-                    if str(candidate_row["project_id"]) != str(turn["project_id"]):
-                        raise UnauthorizedScientificObjectReference("reused result is outside the project")
-                    row = candidate_row
-                    break
-                if row is None:
-                    raise ScientificResultNotReady(str(turn_id))
+            row = _research_turn_result_snapshot(session, turn)
             bundle = ScientificResultBundle.model_validate(row["bundle_json"])
             # Artifacts remain authoritative in the existing Job/artifact
             # repository.  Expose only the bounded descriptors needed by the
             # presentation compiler; payload bytes stay behind the existing
             # artifact routes.
-            artifacts = []
-            if row.get("job_id"):
-                artifacts = session.repositories.artifacts.list_for_job(str(row["job_id"]))[:64]
+            artifact_rows, tool_rows = read_snapshot_execution_records(session.connection, row)
+            artifacts = [_artifact_from_row(item) for item in artifact_rows]
             snapshot = session.agent2.research_context_snapshots.get_for_turn(turn_id)
             if snapshot is None and str(bundle.research_turn_id) != str(turn_id):
                 snapshot = session.agent2.research_context_snapshots.get_for_turn(bundle.research_turn_id)
@@ -1007,15 +1201,20 @@ def get_research_turn_result(turn_id: UUID, current_user: CurrentUser = Depends(
                 # two UUIDs.
                 "result_id": str(bundle.result_id),
                 "result_snapshot_id": str(row["id"]),
-                "research_turn_id": str(bundle.research_turn_id),
+                # Bind this authorized view to the requested conversational
+                # Turn while retaining the immutable result's original owner.
+                "research_turn_id": str(turn_id),
+                "source_research_turn_id": str(bundle.research_turn_id),
                 "research_question": bundle.research_question, "execution_status": bundle.execution_status.value,
                 "relevance_status": relevance.value, "result_items": [item.model_dump(mode="json") for item in bundle.result_items],
                 "source_object_refs": source_object_refs,
+                "input_provenance": _public_project_input_provenance(bundle),
                 "facts": [item.model_dump(mode="json") for item in bundle.facts],
                 "figures": [item.model_dump(mode="json") for item in bundle.figures],
                 "tables": [item.model_dump(mode="json") for item in bundle.tables],
                 "evidence": [item.model_dump(mode="json") for item in bundle.evidence[:64]],
                 "artifacts": artifacts,
+                "tool_call_ids": [str(item["id"]) for item in tool_rows],
                 "limitations": [item.model_dump(mode="json") for item in bundle.limitations],
                 "warnings": [item.model_dump(mode="json") for item in bundle.warnings],
                 # A bounded immutable selection is interaction provenance, not a
@@ -1086,18 +1285,26 @@ def get_research_turn_interpretation(turn_id: UUID, current_user: CurrentUser = 
             if row is None:
                 raise ScientificResultNotReady(str(turn_id))
             payload = dict(row["output_json"] or {})
+            snapshot = session.agent2.scientific_result_snapshots.get(row["result_snapshot_id"])
+            if str(snapshot["project_id"]) != str(turn["project_id"]):
+                raise ScientificResultNotReady(str(turn_id))
+            bundle = ScientificResultBundle.model_validate(snapshot["bundle_json"])
+            interpretation = project_grounded_communication(
+                ScientificInterpretationOutput.model_validate(payload.get("interpretation")), bundle,
+            )
+            valid = row["grounding_status"] == "VALID" and validate_interpretation(interpretation, bundle).valid
             return {
                 "interpretation_id": str(row["id"]),
                 "research_turn_id": str(turn_id),
-                "status": row["grounding_status"],
+                "status": "VALID" if valid else "REJECTED",
                 "title": (payload.get("interpretation") or {}).get("title"),
-                "message": payload.get("message"),
+                "message": interpretation.answer_lead if valid else HISTORICAL_GROUNDING_NOTICE,
                 "execution_status": payload.get("execution_status"),
                 # The full object is already validated and persisted by the
                 # interpretation service.  Returning it here lets the
                 # deterministic presentation compiler render claim-level
                 # provenance without treating assistant text as authority.
-                "interpretation": payload.get("interpretation"),
+                "interpretation": interpretation.model_dump(mode="json") if valid else None,
             }
     except Exception as exc:
         raise _http_error(exc) from exc
@@ -1140,6 +1347,99 @@ def stream_research_turn_events(
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
+
+
+def stream_research_answer(
+    turn_id: UUID,
+    request: Request,
+    last_event_id: str | None = Header(default=None, alias="Last-Event-ID"),
+    follow: bool = Query(default=True),
+    current_user: CurrentUser = Depends(get_current_user),
+) -> StreamingResponse:
+    try:
+        cursor = int(last_event_id or "0")
+        if cursor < 0 or cursor > 9_007_199_254_740_991:
+            raise ValueError()
+    except ValueError:
+        raise HTTPException(status_code=422, detail="Last-Event-ID 必须是非负整数。") from None
+    service = get_research_turn_service()
+    actor = _research_actor(current_user)
+    try:
+        initial = service.list_events(turn_id, actor, after_sequence=cursor)
+    except Exception as exc:
+        raise _http_error(exc) from exc
+
+    def frame(kind: str, sequence: int, payload: dict[str, Any]) -> str:
+        body = {**payload, "turn_id": str(turn_id)}
+        return f"id: {sequence}\nevent: {kind}\ndata: {json.dumps(body, ensure_ascii=True, separators=(',', ':'))}\n\n"
+
+    def final_message(turn: dict[str, Any]) -> dict[str, Any] | None:
+        message_id = turn.get("assistant_final_message_id")
+        if not message_id:
+            return None
+        with service.repository_factory.session() as session:
+            message = session.agent2.research_turns.get_message(str(message_id))
+            payload = message.get("payload_json")
+            if (
+                str(message["session_id"]) != str(turn["research_session_id"])
+                or message.get("role") != "agent"
+                or not isinstance(payload, dict)
+                or str(payload.get("turnId")) != str(turn_id)
+                or payload.get("messageKind") != "ASSISTANT_FINAL"
+            ):
+                return None
+            scientific = payload.get("source") == "agent2_scientific_interpreter"
+            content = str(message.get("content_summary") or "")
+            if scientific:
+                content = scientific_message_projections(
+                    [message], session.connection, project_id=str(turn["project_id"]),
+                )[str(message_id)]
+            return {
+                "message_id": str(message_id), "text": content,
+                "response_kind": "SCIENTIFIC_INTERPRETATION" if scientific else "ANSWER",
+            }
+
+    async def generate():
+        after = cursor
+        turn, events = initial
+        started = monotonic()
+        heartbeat = started
+        while True:
+            if await request.is_disconnected():
+                return
+            latest = max([after, *(int(event["sequence_no"]) for event in events)])
+            status = str(turn["status"])
+            if ResearchTurnStatus(status) in TERMINAL_TURN_STATUSES:
+                saved = await asyncio.to_thread(final_message, turn)
+                if saved and status in {"ANSWERED", "COMPLETED", "PARTIAL", "NEEDS_CLARIFICATION"}:
+                    yield frame("answer.completed", latest, {**saved, "status": status})
+                else:
+                    yield frame("answer.stopped", latest, {"status": status})
+                return
+            for event in events:
+                kind = {
+                    ResearchTurnEventType.ASSISTANT_RESPONSE_DELTA.value: "answer.delta",
+                    ResearchTurnEventType.ASSISTANT_RESPONSE_RESET.value: "answer.reset",
+                }.get(str(event["event_type"]))
+                if kind:
+                    yield frame(kind, int(event["sequence_no"]), event.get("payload_json") or {})
+            after = latest
+            if not follow or monotonic() - started >= 25:
+                return
+            if monotonic() - heartbeat >= 5:
+                yield ": keep-alive\n\n"
+                heartbeat = monotonic()
+            await asyncio.sleep(0.15)
+            try:
+                turn, events = await asyncio.to_thread(service.list_events, turn_id, actor, after_sequence=after)
+            except Exception:
+                yield frame("answer.unavailable", after, {})
+                return
+
+    return StreamingResponse(generate(), media_type="text/event-stream", headers={
+        # Next's proxy compression otherwise buffers small SSE frames.
+        "Cache-Control": "no-cache, no-store, no-transform", "X-Accel-Buffering": "no",
+    })
 
 
 def list_scientific_objects(

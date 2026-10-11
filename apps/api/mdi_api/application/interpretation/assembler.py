@@ -7,14 +7,16 @@ from typing import Any
 
 from mdi_api.domain.scientific_results.relevance import ScientificResultRelevanceEvaluator
 from mdi_api.domain.scientific_results.contracts import ScientificResultBundle
+from mdi_api.domain.scientific_results.reference_sources import project_reference_context
 
 from mdi_api.domain.interpretation.contracts import InterpretationInputEnvelope
+from mdi_api.application.scientific_reasoning.follow_ups import follow_up_policy
 
 
 class InterpreterInputAssembler:
     """Build a bounded provider envelope from a persisted Result snapshot."""
 
-    version = "agent2.interpreter-input/1.0"
+    version = "agent2.interpreter-input/1.2"
     provider_reference_limit = 32
 
     def assemble(self, *, bundle: ScientificResultBundle, question: str, relevance_status: str, prior_goal: str | None = None) -> tuple[InterpretationInputEnvelope, str]:
@@ -29,6 +31,13 @@ class InterpreterInputAssembler:
             )
         )
         result["result_items"] = self._bounded(result.get("result_items", []), 24, "result_item", omitted)
+        if len({str(ref.version_id) for ref in bundle.source_object_refs}) > 1:
+            for item in result["result_items"]:
+                item["source_labels"] = list(dict.fromkeys(
+                    str(ref.get("display_name") or "")[:512]
+                    for ref in item.get("scientific_object_refs", [])
+                    if ref.get("display_name")
+                ))
         result.pop("reference_aliases", None)
         result["figures"] = [self._compact_visual(item) for item in self._bounded(result.get("figures", []), 16, "figure", omitted)]
         result["tables"] = [self._compact_visual(item) for item in self._bounded(result.get("tables", []), 16, "table", omitted)]
@@ -46,6 +55,12 @@ class InterpreterInputAssembler:
         ]
         evidence = self._bounded(result.pop("evidence", []), 64, "evidence", omitted)
         result = self._provider_result_projection(result)
+        reference_context = project_reference_context(bundle)
+        if reference_context is not None:
+            result["provenance"] = reference_context
+        policy = follow_up_policy(bundle)
+        if policy is not None:
+            result["follow_up_policy"] = policy
         envelope = self._fit_operation_budget(
             result=result,
             evidence=evidence,
@@ -123,6 +138,13 @@ class InterpreterInputAssembler:
                     evidence=evidence_items,
                     result_items=result_items,
                 ),
+                **{
+                    kind: [cls._compact_support_edges(item, facts=facts,
+                        allowed_fact_ids=allowed_fact_ids, allowed_result_ids=allowed_result_ids,
+                        allowed_evidence_ids=allowed_evidence_ids, item_kind="visual")
+                        for item in result.get(kind, [])]
+                    for kind in ("figures", "tables")
+                },
             }
             represented_evidence = [
                 cls._compact_support_edges(
@@ -144,7 +166,7 @@ class InterpreterInputAssembler:
                     "user_question": question[:4000],
                     "relevant_prior_goal": prior_goal,
                 },
-                omitted_supporting_items=omitted,
+                omitted_supporting_items=cls._compact_omissions(omitted),
             )
             encoded = json.dumps(
                 envelope.model_dump(mode="json"),
@@ -202,6 +224,7 @@ class InterpreterInputAssembler:
                     "role",
                     "fact_refs",
                     "evidence_refs",
+                    "source_labels",
                 )
                 if key in item
             }
@@ -216,6 +239,8 @@ class InterpreterInputAssembler:
                 )
                 if key in item
             }
+        elif item_kind == "visual":
+            represented = dict(item)
         else:
             raise ValueError(f"unsupported provider item kind: {item_kind}")
         for key, allowed in (
@@ -243,6 +268,14 @@ class InterpreterInputAssembler:
                     ]
                 represented[key] = filtered
         return represented
+
+    @staticmethod
+    def _compact_omissions(items: list[str], *, limit: int = 256) -> list[str]:
+        if len(items) <= limit:
+            return list(items)
+        counts = Counter(item.partition(":")[0] for item in items)
+        return [f"{kind}: {count} items omitted from provider input; complete values remain in the Result snapshot"
+                for kind, count in sorted(counts.items())]
 
     @staticmethod
     def _bounded_fact_refs(
@@ -442,7 +475,11 @@ class InterpreterInputAssembler:
             if not isinstance(item, dict)
             or predicate_counts[str(item.get("predicate") or "")] <= 8
         ]
-        selected_indices = summary_indices[:limit]
+        # A descriptive suite can have more than 64 low-frequency statistics.
+        # Reserve room for real repeated measurements (such as named pairs),
+        # otherwise all coefficients disappear behind unrelated summaries.
+        summary_limit = limit - min(16, limit // 4) if group_keys else limit
+        selected_indices = summary_indices[:summary_limit]
         selected_index_set = set(selected_indices)
         if len(selected_indices) < limit:
             groups: dict[str, list[int]] = {}

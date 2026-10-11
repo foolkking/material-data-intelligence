@@ -6,7 +6,7 @@ import minimalScene from "../../../../../tests/fixtures/viewer_scene_v1/valid_mi
 import multiSpeciesScene from "../../../../../tests/fixtures/viewer_scene_v1/valid_multi_species_crystal.viewer_scene.v1.json";
 import { ViewerSceneRendererSurface } from "./ViewerSceneRendererSurface";
 import type { ViewerRendererEngine, ViewerRendererEngineFactory, ViewerRendererSnapshot } from "./viewerSceneRendererTypes";
-import { periodicBoundaryScene } from "./viewerScenePeriodicBondTestFixture";
+import { idealCrystalScene, periodicBoundaryScene } from "./viewerScenePeriodicBondTestFixture";
 
 function fakeEngine(dispose = vi.fn()) {
   let cellVisible = true;
@@ -78,25 +78,117 @@ function fakeEngine(dispose = vi.fn()) {
 }
 
 describe("ViewerSceneRendererSurface", () => {
+  it("shows saved ideal-model neighbors with their own method and complete periodic endpoints", async () => {
+    let args: Parameters<ViewerRendererEngineFactory>[0] | undefined;
+    const payload = idealCrystalScene();
+    render(<ViewerSceneRendererSurface payload={payload} capabilityOverride engineFactory={async value => { args = value; return fakeEngine(); }} />);
+    await waitFor(() => expect(args).toBeTruthy());
+    expect(screen.getByRole("button", { name: "近邻连接" })).toHaveAttribute("title", expect.stringContaining("最短周期近邻"));
+    expect(screen.queryByRole("button", { name: /^键合$/ })).toBeNull();
+    act(() => args?.onSitePick?.({ siteIndex: 0, imageOffset: [0, 0, 0] }));
+    await userEvent.click(screen.getByText("完整坐标与相邻关系", { selector: "summary" }));
+    expect(screen.getByRole("region", { name: "已保存的相邻关系" })).toBeVisible();
+    expect(screen.getByTestId("viewer-periodic-neighbor-source")).toHaveTextContent("最短周期距离");
+    expect(screen.getByTestId("viewer-periodic-neighbor-authoritative")).toHaveTextContent("理想模型近邻");
+    expect(screen.getByTestId("viewer-periodic-neighbor-table")).not.toHaveTextContent("参考共价半径");
+    await userEvent.click(screen.getByRole("button", { name: "显示完整近邻" }));
+    expect(screen.getByTestId("viewer-scene-renderer-summary")).toHaveTextContent("含 1 个周期副本");
+    expect(screen.getByTestId("viewer-periodic-neighbor-row")).toHaveTextContent("范围内");
+    fireEvent.keyDown(screen.getByTestId("viewer-scene-renderer-surface"), { key: "b" });
+    expect(screen.getByRole("complementary", { name: "已选近邻连接" })).toBeVisible();
+    await userEvent.click(screen.getByText("来源与判定", { selector: "summary" }));
+    expect(screen.getByTestId("viewer-bond-inspector")).toHaveTextContent("理想模型中已保存的最短周期近邻");
+    expect(screen.getByTestId("viewer-bond-inspector")).not.toHaveTextContent("参考共价半径");
+  });
+
+  it("identifies source radius previews as current near-neighbor candidates", async () => {
+    let args: Parameters<ViewerRendererEngineFactory>[0] | undefined;
+    const engine = fakeEngine();
+    const original = periodicBoundaryScene();
+    const payload = { ...original, metadata: { ...original.metadata, display_only: true,
+      connectivity: { method: "covalent_radii", radius_scale: 1.15, radius_reference: "Cordero et al. 2008 / ASE", authoritative: false } } };
+    render(<ViewerSceneRendererSurface payload={payload} capabilityOverride engineFactory={async value => { args = value; return engine; }} />);
+    await waitFor(() => expect(args).toBeTruthy());
+    expect(screen.getByRole("button", { name: "近邻连接" })).toBeVisible();
+    act(() => args?.onSitePick?.({ siteIndex: 0, imageOffset: [0, 0, 0] }));
+    await userEvent.click(screen.getByText("完整坐标与相邻关系", { selector: "summary" }));
+    expect(screen.getByRole("region", { name: "当前预览的近邻关系" })).toBeVisible();
+    expect(screen.getByTestId("viewer-periodic-neighbor-source")).toHaveTextContent("参考共价半径");
+    expect(screen.getByTestId("viewer-periodic-neighbor-authoritative")).toHaveTextContent("近邻候选");
+    expect(screen.getByTestId("viewer-periodic-neighbor-table")).not.toHaveTextContent("已保存");
+    vi.mocked(engine.setSelection).mockClear();
+    await userEvent.click(screen.getByRole("button", { name: "显示完整近邻" }));
+    expect(screen.getByTestId("viewer-periodic-neighbor-row")).toHaveTextContent("范围内");
+    expect(screen.getByRole("button", { name: /高亮指向位点 1/ })).toBeVisible();
+    expect(engine.setSelection).toHaveBeenCalledWith([{ siteIndex: 0, imageOffset: [0, 0, 0] }]);
+  });
+
+  it("shows an actionable connection-limit notice while retaining the source atoms", async () => {
+    const original = periodicBoundaryScene();
+    const message = "近邻搜索超出快速预览范围，当前仅显示原子；可在研究中选择适合此结构的连接规则。";
+    render(<ViewerSceneRendererSurface payload={{ ...original, metadata: { ...original.metadata, display_only: true },
+      scene: { ...original.scene, bonds: [] }, warnings: [{ code: "VIEWER_PREVIEW_CONNECTIONS_UNAVAILABLE", message }] }} capabilityOverride engineFactory={async () => fakeEngine()} />);
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state")).toHaveTextContent("已就绪"));
+    expect(screen.getByRole("button", { name: "近邻连接" })).toBeDisabled();
+    expect(screen.getAllByText(message).some(node => node.classList.contains("notice"))).toBe(true);
+    expect(screen.getByTestId("viewer-scene-renderer-summary")).toHaveTextContent("2 个位点");
+  });
+
+  it.each([-3, 3])("restores a source preview image at offset %s and clears it when hidden", async offset => {
+    const original = periodicBoundaryScene();
+    const onSiteSelection = vi.fn();
+    const payload = { ...original, metadata: { ...original.metadata, display_only: true,
+      connectivity: { method: "covalent_radii", radius_scale: 1.15, radius_reference: "Cordero et al. 2008 / ASE", authoritative: false } } };
+    render(<ViewerSceneRendererSurface payload={payload} externalSiteId={`${original.scene.sites[0].element}-0:${offset}.0.0`} onSiteSelection={onSiteSelection} capabilityOverride engineFactory={async () => fakeEngine()} />);
+    await waitFor(() => expect(screen.getByTestId("viewer-selected-site-image-offset")).toHaveTextContent(`[${offset}, 0, 0]`));
+    expect(screen.getByTestId("viewer-scene-renderer-summary")).toHaveTextContent("3 个位点");
+    expect(onSiteSelection).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByText("完整坐标与相邻关系", { selector: "summary" }));
+    await userEvent.click(screen.getByRole("button", { name: "隐藏额外周期副本" }));
+    expect(screen.queryByTestId("viewer-selected-site-image-offset")).toBeNull();
+    expect(onSiteSelection).toHaveBeenLastCalledWith(null);
+  });
+
   it("separates draft from applied state, uses presets, toggles the outer boundary, and downloads inert state",async()=>{
     const engine=fakeEngine(); const createUrl=vi.fn(()=>"blob:supercell"); Object.defineProperty(URL,"createObjectURL",{configurable:true,value:createUrl}); Object.defineProperty(URL,"revokeObjectURL",{configurable:true,value:vi.fn()}); const anchorClick=vi.spyOn(HTMLAnchorElement.prototype,"click").mockImplementation(()=>undefined);
     render(<ViewerSceneRendererSurface payload={periodicBoundaryScene()} capabilityOverride engineFactory={async()=>engine}/>);
     await waitFor(()=>expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("已就绪"));
+    await userEvent.click(screen.getByText("超晶胞", { selector: "summary" }));
     await userEvent.click(screen.getByRole("button",{name:"2 × 2 × 1"}));
     expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("已应用 1 × 1 × 1");
     expect(screen.getByTestId("viewer-supercell-estimate").textContent).toContain("草稿 2 × 2 × 1");
     await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
     await waitFor(()=>expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("已应用 2 × 2 × 1"));
+    await userEvent.click(screen.getByText("视角与裁剪", { selector: "summary" }));
     await userEvent.click(screen.getByTestId("viewer-scene-renderer-toggle-supercell-boundary"));
     expect(engine.setSupercellBoundaryVisible).toHaveBeenLastCalledWith(false);
     await userEvent.click(screen.getByTestId("viewer-supercell-download"));
     expect(createUrl).toHaveBeenCalledOnce(); expect(anchorClick).toHaveBeenCalled();
     anchorClick.mockRestore();
   });
+  it("retains saved out-of-range neighbors in a single cell without offering an ineffective highlight", async () => {
+    let args: Parameters<ViewerRendererEngineFactory>[0] | undefined;
+    render(<ViewerSceneRendererSurface payload={periodicBoundaryScene()} capabilityOverride engineFactory={async value => { args = value; return fakeEngine(); }} />);
+    await waitFor(() => expect(args).toBeTruthy());
+    act(() => args?.onSitePick?.({ siteIndex: 0, imageOffset: [0, 0, 0] }));
+    await userEvent.click(screen.getByText("完整坐标与相邻关系", { selector: "summary" }));
+    expect(screen.getByTestId("viewer-selected-site-neighbors")).toHaveTextContent("1@[1,0,0]（1）");
+    expect(screen.getByTestId("viewer-periodic-neighbor-row")).toHaveTextContent("Cl");
+    expect(screen.getByTestId("viewer-periodic-neighbor-row")).toHaveTextContent("范围外");
+    expect(screen.getByTestId("viewer-periodic-neighbor-distance")).toHaveTextContent("0.400000");
+    expect(screen.queryByRole("button", { name: /高亮指向位点/ })).toBeNull();
+    expect(screen.getByText("跨边界键合").nextElementSibling).toHaveTextContent("1");
+    expect(screen.getByText("显示键合").nextElementSibling).toHaveTextContent("0");
+    act(() => args?.onSitePick?.({ siteIndex: 1, imageOffset: [0, 0, 0] }));
+    expect(screen.getByTestId("viewer-selected-site-neighbors")).toHaveTextContent("0@[-1,0,0]（1）");
+    expect(screen.getByTestId("viewer-periodic-neighbor-row")).toHaveTextContent("Na");
+  });
+
   it("shows periodic neighbor topology and highlights the stored target endpoint",async()=>{
     const engine=fakeEngine(); let args:Parameters<ViewerRendererEngineFactory>[0]|undefined; const onSiteSelection=vi.fn();
     render(<ViewerSceneRendererSurface payload={periodicBoundaryScene()} capabilityOverride engineFactory={async(value)=>{args=value;return engine;}} onSiteSelection={onSiteSelection}/>);
     await waitFor(()=>expect(args).toBeTruthy());
+    await userEvent.click(screen.getByText("超晶胞", { selector: "summary" }));
     fireEvent.change(screen.getByTestId("viewer-supercell-x"), {target:{value:"2"}});
     await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
     await waitFor(()=>expect(vi.mocked(engine.replaceScene).mock.calls.at(-1)?.[0].bonds).toHaveLength(1));
@@ -106,10 +198,26 @@ describe("ViewerSceneRendererSurface", () => {
     expect(screen.getByTestId("viewer-periodic-neighbor-distance").textContent).toBe("0.400000");
     expect(screen.getByTestId("viewer-periodic-neighbor-source").textContent).toBe("distance_cutoff");
     expect(screen.getByText(/周期相邻关系/).tagName).toBe("CAPTION");
+    await userEvent.click(screen.getByText("完整坐标与相邻关系", { selector: "summary" }));
     const neighborButton=screen.getByRole("button",{name:/高亮指向位点 1/});
     await userEvent.click(neighborButton);
     expect(neighborButton.getAttribute("aria-pressed")).toBe("true");
     expect(engine.setSelection).toHaveBeenLastCalledWith([{siteIndex:0,imageOffset:[0,0,0]},{siteIndex:1,imageOffset:[1,0,0]}]);
+  });
+  it("leaves inspector keyboard navigation to the focused table and controls", async () => {
+    const engine = fakeEngine(); let args: Parameters<ViewerRendererEngineFactory>[0] | undefined;
+    render(<ViewerSceneRendererSurface payload={periodicBoundaryScene()} capabilityOverride engineFactory={async value => { args = value; return engine; }} />);
+    await waitFor(() => expect(args).toBeTruthy());
+    act(() => args?.onSitePick?.({ siteIndex: 0, imageOffset: [0, 0, 0] }));
+    await userEvent.click(screen.getByText("完整坐标与相邻关系", { selector: "summary" }));
+    const table = screen.getByRole("region", { name: "已保存的相邻关系" });
+    expect(table).toHaveAttribute("tabindex", "0");
+    expect(fireEvent.keyDown(table, { key: "ArrowRight" })).toBe(true);
+    expect(fireEvent.keyDown(screen.getByRole("button", { name: "复制坐标" }), { key: "n" })).toBe(true);
+    expect(engine.keyboardCamera).not.toHaveBeenCalled();
+    expect(screen.getByTestId("viewer-selected-site-index")).toHaveTextContent("0");
+    fireEvent.keyDown(screen.getByTestId("viewer-scene-renderer-surface"), { key: "ArrowRight" });
+    expect(engine.keyboardCamera).toHaveBeenLastCalledWith("rotate_right");
   });
   it("maps a canonical bond pick to ordered endpoints, inspector, undo, and artifact download", async () => {
     const engine=fakeEngine(); let args:Parameters<ViewerRendererEngineFactory>[0]|undefined;
@@ -118,9 +226,11 @@ describe("ViewerSceneRendererSurface", () => {
     const anchorClick=vi.spyOn(HTMLAnchorElement.prototype,"click").mockImplementation(()=>undefined);
     render(<ViewerSceneRendererSurface payload={periodicBoundaryScene()} capabilityOverride engineFactory={async(value)=>{args=value;return engine;}}/>);
     await waitFor(()=>expect(args).toBeTruthy());
+    await userEvent.click(screen.getByText("超晶胞", { selector: "summary" }));
     fireEvent.change(screen.getByTestId("viewer-supercell-x"),{target:{value:"2"}}); await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
     await waitFor(()=>expect(vi.mocked(engine.replaceScene).mock.calls.at(-1)?.[0].bonds).toHaveLength(1));
     const expanded=vi.mocked(engine.replaceScene).mock.calls.at(-1)![0];
+    await userEvent.click(screen.getByText("测量距离与角度", { selector: "summary" }));
     await userEvent.click(screen.getByRole("button",{name:"距离"}));
     act(()=>args?.onBondPick?.(expanded.bonds[0].id));
     expect(screen.getByTestId("viewer-selected-bond-id").textContent).toBe(expanded.bonds[0].id);
@@ -138,6 +248,7 @@ describe("ViewerSceneRendererSurface", () => {
     let args: Parameters<ViewerRendererEngineFactory>[0] | undefined;
     render(<ViewerSceneRendererSurface payload={boundary} capabilityOverride engineFactory={async (value) => { args=value; return fakeEngine(); }} />);
     await waitFor(() => expect(args).toBeTruthy());
+    await userEvent.click(screen.getByText("测量距离与角度", { selector: "summary" }));
     await userEvent.click(screen.getByRole("button", {name:"距离"}));
     act(() => { args?.onSitePick?.({siteIndex:0,imageOffset:[0,0,0]}); args?.onSitePick?.({siteIndex:1,imageOffset:[0,0,0]}); });
     expect(screen.getByTestId("viewer-measurement-result").textContent).toContain("9.600");
@@ -152,6 +263,7 @@ describe("ViewerSceneRendererSurface", () => {
     let latest: Parameters<ViewerRendererEngineFactory>[0] | undefined;
     render(<ViewerSceneRendererSurface payload={multiSpeciesScene} capabilityOverride engineFactory={async (args) => { latest=args; scenes.push(args.scene); return engine; }} />);
     await waitFor(() => expect(scenes).toHaveLength(1));
+    await userEvent.click(screen.getByText("超晶胞", { selector: "summary" }));
     fireEvent.change(screen.getByTestId("viewer-supercell-x"), {target:{value:"2"}});
     fireEvent.change(screen.getByTestId("viewer-supercell-y"), {target:{value:"2"}});
     fireEvent.change(screen.getByTestId("viewer-supercell-z"), {target:{value:"2"}});
@@ -172,6 +284,7 @@ describe("ViewerSceneRendererSurface", () => {
     const factory = vi.fn(async () => fakeEngine()) satisfies ViewerRendererEngineFactory;
     render(<ViewerSceneRendererSurface payload={large} capabilityOverride engineFactory={factory} />);
     await waitFor(() => expect(factory).toHaveBeenCalledOnce());
+    await userEvent.click(screen.getByText("超晶胞", { selector: "summary" }));
     for (const axis of ["x","y","z"] as const) fireEvent.change(screen.getByTestId(`viewer-supercell-${axis}`), {target:{value:"3"}});
     await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
     expect(screen.getByTestId("viewer-supercell-status").textContent).toContain("请求 6912 个位点");
@@ -186,6 +299,7 @@ describe("ViewerSceneRendererSurface", () => {
     const calls: Parameters<ViewerRendererEngineFactory>[0][] = []; const engine=fakeEngine();
     render(<ViewerSceneRendererSurface payload={large} capabilityOverride engineFactory={async (args) => { calls.push(args); return engine; }} />);
     await waitFor(() => expect(calls).toHaveLength(1));
+    await userEvent.click(screen.getByText("超晶胞", { selector: "summary" }));
     for (const axis of ["x","y","z"] as const) fireEvent.change(screen.getByTestId(`viewer-supercell-${axis}`), {target:{value:"3"}});
     await userEvent.click(screen.getByTestId("viewer-supercell-apply"));
     await waitFor(() => expect(vi.mocked(engine.replaceScene)).toHaveBeenCalled());
@@ -230,6 +344,7 @@ describe("ViewerSceneRendererSurface", () => {
     expect((screen.getByRole("button", { name: "重置相机" }) as HTMLButtonElement).disabled).toBe(false);
     await user.click(screen.getByTestId("viewer-scene-renderer-reset"));
     expect(engine.resetCamera).toHaveBeenCalledOnce();
+    await userEvent.click(screen.getByText("视角与裁剪", { selector: "summary" }));
     await user.click(screen.getByTestId("viewer-scene-renderer-toggle-cell"));
     expect(screen.getByTestId("viewer-scene-renderer-audit").textContent).toContain("晶胞边0");
     await user.click(screen.getByTestId("viewer-scene-renderer-toggle-bonds"));
@@ -240,6 +355,7 @@ describe("ViewerSceneRendererSurface", () => {
     const engine=fakeEngine();
     render(<ViewerSceneRendererSurface payload={multiSpeciesScene} capabilityOverride engineFactory={async()=>engine}/>);
     await waitFor(()=>expect(screen.getByTestId("viewer-scene-renderer-state").textContent).toBe("已就绪"));
+    await userEvent.click(screen.getByText("视角与裁剪", { selector: "summary" }));
     await userEvent.click(screen.getByTestId("viewer-clipping-enabled"));
     await userEvent.click(screen.getByTestId("viewer-clip-x-enabled"));
     fireEvent.change(screen.getByTestId("viewer-clip-x-position"),{target:{value:"1"}});
@@ -249,7 +365,7 @@ describe("ViewerSceneRendererSurface", () => {
     expect(engine.setLatticeAxesVisible).toHaveBeenLastCalledWith(true);
     await userEvent.click(screen.getByTestId("viewer-camera-top"));
     expect(engine.setCameraPreset).toHaveBeenLastCalledWith("top");
-    expect(screen.getByTestId("viewer-camera-status").textContent).toContain("top");
+    expect(screen.getByTestId("viewer-camera-status").textContent).toContain("顶部");
   });
 
   it("provides bounded keyboard camera controls without trapping form inputs", async () => {
@@ -266,6 +382,7 @@ describe("ViewerSceneRendererSurface", () => {
     expect(engine.keyboardCamera).toHaveBeenNthCalledWith(3,"zoom_in");
     fireEvent.keyDown(region, {key:"r"});
     expect(engine.resetCamera).toHaveBeenCalledOnce();
+    await userEvent.click(screen.getByText("超晶胞", { selector: "summary" }));
     const input=screen.getByTestId("viewer-supercell-x");
     fireEvent.keyDown(input,{key:"ArrowLeft"});
     expect(engine.keyboardCamera).toHaveBeenCalledTimes(3);
@@ -287,8 +404,10 @@ describe("ViewerSceneRendererSurface", () => {
     expect(screen.getByTestId("viewer-scene-semantic-summary").textContent).toContain("0@[0,0,0]");
     expect(screen.getByTestId("viewer-scene-accessibility-announcement").textContent).toContain("已选择位点 0");
     expect(screen.getByTestId("viewer-selected-site-cartesian").textContent).toContain("0, 0, 0");
+    await userEvent.click(screen.getByText("完整坐标与相邻关系", { selector: "summary" }));
     await user.click(screen.getByRole("button", { name: "复制位点 JSON" }));
     expect(writeText).toHaveBeenCalledOnce();
+    await userEvent.click(screen.getByText("测量距离与角度", { selector: "summary" }));
     await user.click(screen.getByRole("button", { name: "距离" }));
     act(() => { onSitePick?.({siteIndex:0,imageOffset:[0,0,0]}); onSitePick?.({siteIndex:1,imageOffset:[0,0,0]}); });
     await waitFor(() => expect(screen.getByTestId("viewer-measurement-result").textContent).toContain("distance"));
@@ -349,10 +468,35 @@ describe("ViewerSceneRendererSurface", () => {
     await userEvent.click(screen.getByText("高级导出"));
     await userEvent.click(screen.getByTestId("viewer-scene-export-png"));
     rerender(<ViewerSceneRendererSurface payload={changed} capabilityOverride engineFactory={async () => engine} />);
-    act(() => resolveExport?.(new Blob(["stale"], {type:"image/png"})));
-    await waitFor(() => expect(screen.getByTestId("viewer-export-status").textContent).toContain("导出失败"));
+    await act(async () => resolveExport?.(new Blob(["stale"], {type:"image/png"})));
+    expect(screen.getByTestId("viewer-export-status").textContent).toContain("尚未准备导出");
+    expect(screen.queryByTestId("viewer-scene-export-error")).not.toBeInTheDocument();
     expect(createUrl).not.toHaveBeenCalled();
     delete (URL as unknown as { createObjectURL?: unknown }).createObjectURL;
+  });
+
+  it("keeps the new scene's export busy when the previous scene fails late", async () => {
+    const oldEngine = fakeEngine();
+    const newEngine = fakeEngine();
+    let failOld!: (error: Error) => void;
+    let failNew!: (error: Error) => void;
+    vi.mocked(oldEngine.exportPng).mockImplementation(() => new Promise((_resolve, reject) => { failOld = reject; }));
+    vi.mocked(newEngine.exportPng).mockImplementation(() => new Promise((_resolve, reject) => { failNew = reject; }));
+    const factory = vi.fn().mockResolvedValueOnce(oldEngine).mockResolvedValue(newEngine);
+    const view = render(<ViewerSceneRendererSurface payload={minimalScene} capabilityOverride engineFactory={factory} />);
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-renderer-state")).toHaveTextContent("已就绪"));
+    await userEvent.click(screen.getByText("高级导出"));
+    await userEvent.click(screen.getByTestId("viewer-scene-export-png"));
+    view.rerender(<ViewerSceneRendererSurface payload={{...minimalScene, metadata:{...minimalScene.metadata,title:"new source"}}} capabilityOverride engineFactory={factory} />);
+    await waitFor(() => expect(screen.getByTestId("viewer-scene-export-png")).toBeEnabled());
+    await userEvent.click(screen.getByTestId("viewer-scene-export-png"));
+    await act(async () => failOld(new Error("old source failure")));
+    expect(screen.getByTestId("viewer-scene-export-png")).toBeDisabled();
+    expect(screen.getByTestId("viewer-export-status")).toHaveTextContent("正在准备导出");
+    expect(screen.queryByTestId("viewer-scene-export-error")).not.toBeInTheDocument();
+    await act(async () => failNew(new Error("current source failure")));
+    expect(screen.getByTestId("viewer-scene-export-png")).toBeEnabled();
+    expect(screen.getByTestId("viewer-export-status")).toHaveTextContent("导出失败");
   });
 
   it("invalidates a prepared bundle when orbit controls change the camera", async () => {
@@ -465,5 +609,70 @@ describe("ViewerSceneRendererSurface", () => {
     }
     unmount();
     expect(disposals[20]).toHaveBeenCalledOnce();
+  });
+
+  it.each(["Si-0:0.0.0", "Si-0:1.0.0", "Si-0:-1.0.0"])("restores the exact periodic site %s without publishing a new selection", async (siteId) => {
+    const listener = vi.fn();
+    const factory: ViewerRendererEngineFactory = async () => fakeEngine();
+    const { rerender } = render(<ViewerSceneRendererSurface payload={minimalScene} externalSiteId={siteId} onSiteSelection={listener} capabilityOverride engineFactory={factory} />);
+    await screen.findByTestId("viewer-selected-site-index");
+    const match = /^Si-(\d+):(.+)$/.exec(siteId)!;
+    expect(screen.getByTestId("viewer-selected-site-index")).toHaveTextContent(match[1]);
+    expect(screen.getByTestId("viewer-selected-site-image-offset")).toHaveTextContent(`[${match[2].split(".").join(", ")}]`);
+    expect(listener).not.toHaveBeenCalled();
+    rerender(<ViewerSceneRendererSurface payload={minimalScene} externalSiteId={null} onSiteSelection={listener} capabilityOverride engineFactory={factory} />);
+    await waitFor(() => expect(screen.queryByTestId("viewer-selected-site-index")).not.toBeInTheDocument());
+    expect(listener).not.toHaveBeenCalled();
+  });
+
+  it.each(["Fe-0:0.0.0", "Si-99:0.0.0", "Si-0:99.0.0", "Si-0:-2.0.0", "broken"])("does not substitute another atom for unavailable site %s", async (siteId) => {
+    render(<ViewerSceneRendererSurface payload={minimalScene} externalSiteId={siteId} capabilityOverride engineFactory={async () => fakeEngine()} />);
+    expect(await screen.findByRole("alert")).toHaveTextContent("链接中的位点当前无法显示");
+    expect(screen.queryByTestId("viewer-selected-site-index")).not.toBeInTheDocument();
+  });
+
+  it("publishes committed selection and clear for toggles, undo and Escape", async () => {
+    const listener = vi.fn();
+    let pick: Parameters<ViewerRendererEngineFactory>[0]["onSitePick"];
+    const factory: ViewerRendererEngineFactory = async args => { pick = args.onSitePick; return fakeEngine(); };
+    render(<ViewerSceneRendererSurface payload={minimalScene} onSiteSelection={listener} capabilityOverride engineFactory={factory} />);
+    await waitFor(() => expect(pick).toBeTypeOf("function"));
+    act(() => pick?.({ siteIndex: 0, imageOffset: [0, 0, 0] }));
+    expect(listener).toHaveBeenLastCalledWith(expect.objectContaining({ siteId: "Si-0:0.0.0" }));
+    act(() => pick?.({ siteIndex: 0, imageOffset: [0, 0, 0] }));
+    expect(listener).toHaveBeenLastCalledWith(null);
+    const surface = screen.getByRole("region", { name: "三维结构查看器" });
+    fireEvent.keyDown(surface, { key: "n" });
+    fireEvent.keyDown(surface, { key: "Backspace" });
+    expect(listener).toHaveBeenLastCalledWith(null);
+    fireEvent.keyDown(surface, { key: "n" });
+    fireEvent.keyDown(surface, { key: "Escape" });
+    expect(listener).toHaveBeenLastCalledWith(null);
+  });
+
+  it("cycles through every displayed atom with N before wrapping to the first", async () => {
+    const payload = structuredClone(minimalScene);
+    payload.scene.sites = [0, 1, 2].map(index => ({ ...payload.scene.sites[0], index, label: `Si${index + 1}`, xyz: [index, 0, 0], frac: [index / 5, 0, 0] }));
+    payload.metadata.site_count = 3;
+    const factory: ViewerRendererEngineFactory = async () => fakeEngine();
+    render(<ViewerSceneRendererSurface payload={payload} capabilityOverride engineFactory={factory} />);
+    const surface = screen.getByRole("region", { name: "三维结构查看器" });
+    for (const expected of [0, 1, 2, 0]) {
+      fireEvent.keyDown(surface, { key: "n" });
+      expect(screen.getByTestId("viewer-selected-site-index")).toHaveTextContent(String(expected));
+    }
+  });
+
+  it("applies a restored supercell to a renderer that finishes loading after selection recovery", async () => {
+    const engine = fakeEngine();
+    let resolve!: (engine: ViewerRendererEngine) => void;
+    const factory: ViewerRendererEngineFactory = () => new Promise(done => { resolve = done; });
+    render(<ViewerSceneRendererSurface payload={minimalScene} externalSiteId="Si-0:1.0.0" capabilityOverride engineFactory={factory} />);
+    await screen.findByTestId("viewer-selected-site-index");
+    await act(async () => resolve(engine));
+    expect(engine.replaceScene).toHaveBeenCalledWith(expect.objectContaining({ atoms: expect.any(Array), supercellRepeat: [2, 1, 1] }), "interactive", expect.any(Number));
+    expect(vi.mocked(engine.replaceScene).mock.calls[0][0].atoms).toHaveLength(2);
+    expect(engine.setSelection).toHaveBeenLastCalledWith([{ siteIndex: 0, imageOffset: [1, 0, 0] }]);
+    expect(screen.getByTestId("viewer-scene-accessibility-announcement")).toHaveTextContent("共 2 个显示位点");
   });
 });

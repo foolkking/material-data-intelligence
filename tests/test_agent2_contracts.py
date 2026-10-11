@@ -25,7 +25,7 @@ from mdi_api.research_agent.orchestration.schemas import (
 from mdi_api.research_agent.orchestration.validator import ResearchTurnDecisionValidator
 from mdi_api.research_agent.registry_validation import build_default_agent2_registries
 from mdi_api.research_agent.schemas import ResearchAction, RequirementCriticality
-from mdi_api.research_agent.schemas import ResearchTurnUIContext
+from mdi_api.research_agent.schemas import ResearchTurnUIContext, ScientificSelectionContext
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
 
 
@@ -214,6 +214,43 @@ def test_turn_ui_context_rejects_unbounded_reference_lists():
         ResearchTurnUIContext(selection_refs=[object_ref() for _ in range(17)])
 
 
+def test_semantic_selection_changes_fingerprint_and_cannot_be_trimmed_or_rebound():
+    ref = object_ref()
+    selected = ReferenceCandidate(
+        candidate_key="obj_2", ref_type="SCIENTIFIC_OBJECT", object_ref=ref,
+        source=ReferenceCandidateSource.UI_SELECTION, display_label="Selected", recency_rank=0,
+    )
+    selection = ScientificSelectionContext(
+        object_ref=ref, viewer_id="scientific.structure", selection_type="PERIODIC_SITE",
+        semantic_locator={"site_index": 0}, display_label="Site 0",
+    )
+    other = selected.model_copy(update={"candidate_key": "obj_1", "object_ref": object_ref(), "source": ReferenceCandidateSource.CURRENT_SCOPE})
+    bundle = ResearchContextCandidateBundle(
+        project_id="project", research_session_id="session", research_turn_id=uuid4(),
+        active_object_candidates=[other, selected], scientific_selections=[selection],
+        result_candidates=[], finding_candidates=[], explicit_constraints=[], current_research_goal=None,
+        unresolved_questions=[], recent_messages=[],
+    )
+    compiler = ResearchContextCompiler()
+    compact = compiler.compile(turn={}, candidates=bundle)
+    changed = bundle.model_copy(update={"scientific_selections": [selection.model_copy(update={"semantic_locator": {"site_index": 1}})]})
+    assert compiler.compile(turn={}, candidates=changed).context_fingerprint != compact.context_fingerprint
+    # The later selected object must not disappear when the context is tight.
+    with pytest.raises(ValueError, match="cannot fit"):
+        compiler.compile(turn={}, candidates=bundle, token_budget=256)
+    with pytest.raises(ValidationError, match="exact authorized"):
+        ResearchContextCandidateBundle.model_validate({**bundle.model_dump(), "scientific_selections": [selection.model_copy(update={"object_ref": object_ref()})]})
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
+def test_selection_coordinates_must_be_finite(value):
+    with pytest.raises(ValidationError, match="finite"):
+        ScientificSelectionContext(
+            object_ref=object_ref(), viewer_id="trajectory.atomic", selection_type="TRAJECTORY_ATOM",
+            semantic_locator={"source_x": value}, display_label="Li",
+        )
+
+
 def test_decision_contract_rejects_extra_invalid_enum_and_negative_shape():
     decision = ResearchTurnDecision(
         contract_version="1.0", action=ResearchAction.ANALYZE,
@@ -236,7 +273,7 @@ def test_decision_contract_rejects_extra_invalid_enum_and_negative_shape():
 def test_default_requirement_registry_has_only_bounded_phase2_requirements():
     registry = build_default_agent2_registries().requirements
     ids = [item.requirement_id for item in registry.list_active()]
-    assert len(ids) == 29
+    assert len(ids) == 38
     assert {
         "structure.inspect_view",
         "structure.inspect_brillouin_zone",
@@ -252,6 +289,9 @@ def test_default_requirement_registry_has_only_bounded_phase2_requirements():
         "electronic.inspect_band", "electronic.inspect_dos",
         "data.explore_composition_space", "data.explore_materials",
         "volumetric.inspect",
+        "structure.inspect_local_environment_crystalnn", "structure.inspect_local_environment_voronoi",
+        "reference.periodic_table", "reference.compare_elements", "reference.convert_units",
+        "generation.function_curve", "composition.from_formula", "viz.inline_xy", "generation.ideal_crystal",
     }.issubset(ids)
     assert all("tool" not in item.requirement_id for item in registry.list_active())
     rdf = registry.require("structure.compute_rdf")

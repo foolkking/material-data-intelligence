@@ -1,4 +1,4 @@
-"""Independent validator for AnalysisPlan 0.2 dependency semantics."""
+"""Independent validator for dependency-plan Tool contracts and graph semantics."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ from mdi_schemas import (
     DependencyDiagnosticCode,
     compute_dependency_graph_hash,
     deterministic_binding_id,
+    parse_dependency_plan,
     topological_order,
 )
 
@@ -32,16 +33,18 @@ def validate_dependency_plan(
     selected_tool_ids: list[str] | None = None,
 ) -> DependencyValidationResult:
     try:
-        parsed = plan if isinstance(plan, AnalysisPlanV02) else AnalysisPlanV02.model_validate(plan)
+        parsed = parse_dependency_plan(plan)
     except Exception as exc:
         message = str(exc)
         code = _schema_diagnostic_code(message)
-        return _failed(code, "plan", f"AnalysisPlan 0.2 schema/graph validation failed: {message}")
+        return _failed(code, "plan", f"AnalysisPlan dependency schema/graph validation failed: {message}")
     actual_selected = sorted(step.toolId for step in parsed.steps)
     if selected_tool_ids is not None and actual_selected != sorted(selected_tool_ids):
         return _failed(DependencyDiagnosticCode.selected_tool_mismatch, "steps", "Plan tools do not match the exact L2 selected tool set.")
     try:
-        matrix = build_artifact_compatibility_matrix(registry, selected_tool_ids=actual_selected)
+        # The matrix describes Tool contracts; repeated invocations on exact
+        # material versions share that contract but remain separate steps.
+        matrix = build_artifact_compatibility_matrix(registry, selected_tool_ids=sorted(set(actual_selected)))
     except Exception as exc:
         return _failed(DependencyDiagnosticCode.dependency_composition_not_allowed, "registry", f"Artifact-port compatibility could not be recomputed: {exc}")
     compatible = {

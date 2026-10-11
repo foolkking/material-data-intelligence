@@ -1,3 +1,7 @@
+import { presentationLimitationText } from "./scientific-limitation-text";
+import { scientificNarrativeText } from "./scientific-narrative-text";
+import { tableFactLabels, tableMetricTitle } from "./scientific-table-labels";
+export { presentationLimitationText } from "./scientific-limitation-text";
 import type { Artifact, GroundedScientificInterpretation, ScientificEvidenceItem } from "./planner-api";
 import type { ScientificReportView } from "./scientific-report-api";
 import { projectScientificArtifacts } from "./scientific-result-projection";
@@ -52,7 +56,7 @@ export type PersistedScientificInterpretation = {
 
 export type ScientificPresentationBlock =
   | { id: string; type: "narrative"; title?: string; text: string; source: PresentationSource }
-  | { id: string; type: "finding"; title: string; text: string; confidence: "DIRECT" | "QUALIFIED" | "LIMITED"; source: PresentationSource; evidenceIds: string[] }
+  | { id: string; type: "finding"; title: string; text: string; confidence: "DIRECT" | "QUALIFIED" | "LIMITED"; source: PresentationSource; evidenceIds: string[]; factIds?: string[] }
   | { id: string; type: "metric"; title: string; value: string; unit?: string | null; source: PresentationSource }
   | { id: string; type: "table" | "figure"; title: string; artifactId: string; source: PresentationSource }
   | { id: string; type: "viewer_reference"; title: string; label: string; source: PresentationSource }
@@ -147,8 +151,9 @@ export function formatPresentationMetricValue(value: string): string {
  */
 export function formatScientificNarrativeNumbers(text: string): string {
   return text.replace(
-    /(^|[^A-Za-z0-9_-])([-+]?(?:\d+\.\d+|\d+e[-+]?\d+|\d+\.\d+e[-+]?\d+))(?=$|[^A-Za-z0-9_-])/giu,
-    (_match, prefix: string, token: string) => `${prefix}${formatPresentationMetricValue(token)}`,
+    /(^|[^A-Za-z0-9_.-])([-+]?(?:\d+(?:\.\d+)?e[-+]?\d+|\d+\.\d+))(?![A-Za-z0-9_-]|\.\d)/giu,
+    (match, prefix: string, token: string, offset: number) => /(?:版本|version)\s*[:：]?\s*v?$/iu.test(text.slice(0, offset + prefix.length))
+      ? match : `${prefix}${formatPresentationMetricValue(token)}`,
   );
 }
 
@@ -160,37 +165,175 @@ function persistedFindingConfidence(
   return "LIMITED";
 }
 
-const PRESENTATION_LIMITATION_TRANSLATIONS: Readonly<Record<string, string>> = {
-  "The result projector does not infer peaks or coordination shells from the RDF curve.": "结果投影不会从 RDF 曲线中推断峰位或配位壳层。",
-  "MSD series values remain referenced structured data and are not expanded into scalar facts.": "MSD 序列保留为可追溯的结构化数据，不会被展开或改写为额外标量事实。",
-  "The current band Artifact does not provide eigenvectors or animation authority.": "当前声子能带 Artifact 不包含特征向量，因此不提供模式动画依据。",
-  "The current DOS Artifact does not provide eigenvectors or animation authority.": "当前声子态密度 Artifact 不包含特征向量，因此不提供模式动画依据。",
-  "The combined Artifact is a static band/DOS result and does not provide eigenvectors or animation authority.": "当前组合 Artifact 是静态声子能带/DOS 结果，不包含特征向量或动画依据。",
-  "The result references the validated coordination Artifact and does not recompute neighbors.": "该结果引用已验证的配位 Artifact；呈现时不会重新计算近邻。",
-  "RDF series remain bounded structured evidence; the projector does not detect peaks.": "RDF 序列保留为有界结构化证据；结果投影不会自行识别峰位。",
-  "Band values are supplied electronic data; no DFT/GW calculation or interpolation is executed.": "能带数值来自已提供的权威电子结构数据；本次呈现不会执行 DFT/GW 计算或插值。",
-  "Band energies and gap facts are derived only from the supplied sampled electronic data; the platform performs no DFT, GW correction, interpolation or projected-band analysis.": "能带能量与带隙事实仅来自已提供的采样电子数据；平台未执行 DFT、GW 修正、插值或投影能带分析。",
-  "DOS values are supplied electronic data; no new electronic calculation is executed.": "DOS 数值来自已提供的权威电子结构数据；本次呈现不会执行新的电子结构计算。",
-  "DOS values are supplied data. Partial or unknown projection coverage describes only provided channels; no total, electron count, bonding, magnetism or band character is inferred.": "DOS 数值来自已提供的数据。PARTIAL 或未知投影覆盖仅描述现有通道；不会据此推断总态密度、电子数、成键、磁性或能带性质。",
-  "Composition-space projection is descriptive and does not establish material identity or causality.": "组成空间投影仅用于描述数据分布，不据此确立材料身份或因果关系。",
-  "Only the bounded, profile-authorized dataset projection is included.": "当前结果仅包含通过语义 Profile 授权的有界 Dataset 投影。",
-  "Diffusion is estimated only over the explicitly selected fit window and is not an unconditional long-time bulk diffusion coefficient.": "扩散系数仅在明确选择的拟合时间窗内估算，不代表无条件的长时间体相扩散系数。",
-  "MSD uses Cartesian x/y/z axes and is not automatically crystallographic a/b/c diffusion.": "MSD 使用笛卡尔 x/y/z 轴，不会自动解释为晶体学 a/b/c 方向扩散。",
-  "No center-of-mass drift correction is applied.": "本次结果未应用质心漂移校正。",
-};
-
-export function presentationLimitationText(text: string): string {
-  return PRESENTATION_LIMITATION_TRANSLATIONS[text] || text;
-}
-
 const PRESENTATION_METRIC_LABELS: Readonly<Record<string, string>> = {
+  "structure.coordination_successful_sites": "成功分析位点数",
+  "structure.coordination.method": "近邻判定方法",
+  "structure.coordination.coverage.totalSites": "结构位点数",
+  "structure.coordination.coverage.successfulSites": "成功分析位点数",
+  "structure.coordination.coverage.requestedSites": "请求位点数",
+  "structure.coordination.coverage.evaluatedSites": "已评估位点数",
+  "structure.coordination.coverage.unavailableSites": "不可用位点数",
+  "structure.coordination.coverage.classifiedSites": "已分类位点数",
+  "structure.coordination.coverage.ambiguousSites": "分类不唯一位点数",
+  "structure.coordination.coverage.unclassifiedSites": "未归类位点数",
+  "structure.coordination.site_index": "中心位点编号",
+  "structure.coordination.species": "位点元素",
+  "structure.coordination.semantics": "配位权重定义",
+  "structure.coordination.weighted_value": "配位权重和",
+  "structure.coordination.neighbor_count": "近邻数量",
+  "structure.coordination.neighbor_site": "近邻精确标识",
+  "structure.coordination.neighbor_site_index": "近邻位点编号",
+  "structure.coordination.neighbor_distance": "近邻距离",
+  "structure.coordination.periodic_image_x": "周期偏移 x",
+  "structure.coordination.periodic_image_y": "周期偏移 y",
+  "structure.coordination.periodic_image_z": "周期偏移 z",
+  "structure.local_environment.status": "几何分类状态",
+  "structure.local_environment.reference_geometry": "参考几何",
+  "structure.local_environment.geometry_score": "几何匹配分数",
+  "structure.local_environment.geometry_distance_rms": "几何距离 RMS",
+  "structure.local_environment.face_status": "表面生成状态",
+  "structure.local_environment.mean_neighbor_distance": "平均近邻距离",
+  "structure.local_environment.neighbor_distance_spread": "近邻距离标准差",
+  "structure.local_environment.radial_distortion_index": "径向畸变指数",
+  "structure.local_environment.angular_rms_deviation": "角度均方根偏差",
+  "structure.local_environment.volume": "多面体体积",
+  "structure.local_environment.surface_area": "多面体表面积",
+  "structure.local_environment.relative_x": "相对坐标 x",
+  "structure.local_environment.relative_y": "相对坐标 y",
+  "structure.local_environment.relative_z": "相对坐标 z",
+  "xrd.peak_count": "保留衍射峰数",
+  "xrd.peak_count_before_limit": "截断前衍射峰数",
+  "xrd.wavelength": "X 射线波长",
+  "xrd.two_theta_min": "2θ 扫描起点",
+  "xrd.two_theta_max": "2θ 扫描终点",
+  "xrd.intensity_scale": "强度归一化方式",
+  "xrd.peak.two_theta": "衍射峰 2θ",
+  "xrd.peak.intensity": "衍射峰相对强度",
+  "xrd.peak.d_spacing": "晶面间距",
+  "xrd.peak.structure": "衍射峰来源结构",
+  "structure.reduced_formula": "简约化学式",
+  "structure.site_count": "晶胞位点数",
+  "structure.lattice_a": "晶格长度 a",
+  "structure.lattice_b": "晶格长度 b",
+  "structure.lattice_c": "晶格长度 c",
+  "structure.lattice_alpha": "晶格角 α",
+  "structure.lattice_beta": "晶格角 β",
+  "structure.lattice_gamma": "晶格角 γ",
+  "structure.lattice_volume": "晶胞体积",
+  "structure.spacegroup_number": "空间群编号",
+  "structure.spacegroup_symbol": "空间群符号",
+  "structure.crystal_system": "晶系",
+  "structure.selected_site_index": "所选位点索引",
+  "structure.selected_element": "所选元素",
+  "structure.selected_coordinate_basis": "所选坐标基准",
+  "structure.selected_base_cartesian_x": "原晶胞坐标 x",
+  "structure.selected_base_cartesian_y": "原晶胞坐标 y",
+  "structure.selected_base_cartesian_z": "原晶胞坐标 z",
+  "structure.selected_base_fractional_x": "原晶胞分数坐标 x",
+  "structure.selected_base_fractional_y": "原晶胞分数坐标 y",
+  "structure.selected_base_fractional_z": "原晶胞分数坐标 z",
+  "volumetric.length_unit": "坐标长度单位",
+  "volumetric.coordinate_space": "坐标空间",
+  "volumetric.sample_location": "网格采样位置",
+  "volumetric.endpoint_policy": "端点规则",
+  "volumetric.grid_size_a": "a 方向网格点数",
+  "volumetric.grid_size_b": "b 方向网格点数",
+  "volumetric.grid_size_c": "c 方向网格点数",
+  "volumetric.boundary_a": "a 方向边界",
+  "volumetric.boundary_b": "b 方向边界",
+  "volumetric.boundary_c": "c 方向边界",
+  "volumetric.selected_field_name": "所选数据场",
+  "volumetric.selected_component": "所选分量",
+  "volumetric.selected_quantity": "所选物理量",
+  "volumetric.selected_canonical_unit": "所选数值单位",
+  "volumetric.selected_minimum": "所选通道最小值",
+  "volumetric.selected_maximum": "所选通道最大值",
+  "volumetric.field_name": "数据场名称",
+  "volumetric.quantity": "物理量定义",
+  "volumetric.value_kind": "数值类型",
+  "volumetric.canonical_unit": "数值单位",
+  "volumetric.minimum": "源数值最小值",
+  "volumetric.integral": "整胞积分",
+  "volumetric.mean": "源数值均值",
+  "volumetric.volume_integral": "源体积分",
+  "volumetric.potential_reference": "势能参考零点",
+  "volumetric.potential_shift": "已保存的势能平移量",
+  "volumetric.integral_semantics": "积分物理含义",
+  "volumetric.normalization_semantics": "归一化方式",
+  "volumetric.source_unit": "记录的源单位",
+  "volumetric.unit_conversion_applied": "已应用单位转换",
+  "volumetric.unit_conversion_factor": "单位转换系数",
+  "volumetric.statistics_authority": "统计数值来源",
+  "volumetric.maximum": "源数值最大值",
+  "phonon.atom_count": "原子数",
+  "trajectory.frame_count": "分析帧数",
+  "trajectory.source_frame_count": "源轨迹帧数",
+  "trajectory.analysis_frame_count": "所选帧数",
+  "trajectory.analysis_first_frame": "所选起始帧",
+  "trajectory.analysis_last_frame": "所选结束帧",
+  "trajectory.analysis_start_time": "分析起始时间",
+  "trajectory.analysis_end_time": "分析结束时间",
+  "trajectory.msd_atom_count": "MSD 原子数",
+  "trajectory.msd_species": "MSD 元素",
+  "trajectory.msd_lag_count": "MSD 滞后时间点数",
+  "trajectory.msd_first_lag_time": "首个滞后时间",
+  "trajectory.msd_last_lag_time": "末个滞后时间",
+  "trajectory.msd_first_total": "首个滞后点总 MSD",
+  "trajectory.msd_last_total": "末个滞后点总 MSD",
+  "trajectory.msd_first_origin_count": "首个滞后点时间原点数",
+  "trajectory.msd_last_origin_count": "末个滞后点时间原点数",
+  "trajectory.msd_first_x": "首个滞后点 x 方向 MSD",
+  "trajectory.msd_first_y": "首个滞后点 y 方向 MSD",
+  "trajectory.msd_first_z": "首个滞后点 z 方向 MSD",
+  "trajectory.msd_last_x": "末个滞后点 x 方向 MSD",
+  "trajectory.msd_last_y": "末个滞后点 y 方向 MSD",
+  "trajectory.msd_last_z": "末个滞后点 z 方向 MSD",
+  "trajectory.diffusion_coefficient": "所选窗口扩散系数",
+  "trajectory.diffusion_fit_start_time": "拟合窗口起点",
+  "trajectory.diffusion_fit_end_time": "拟合窗口终点",
+  "trajectory.diffusion_fit_point_count": "拟合点数",
+  "trajectory.diffusion_fit_duration": "拟合窗口时长",
+  "trajectory.diffusion_fit_r2": "拟合决定系数 R²",
+  "trajectory.diffusion_fit_rmse": "拟合均方根误差",
+  "trajectory.diffusion_regime": "扩散诊断",
+  "trajectory.diffusion_minimum_duration": "最短拟合时长要求",
+  "trajectory.diffusion_minimum_points": "最少拟合点数要求",
+  "trajectory.diffusion_origin_coverage": "时间原点覆盖率",
+  "trajectory.diffusion_minimum_origin_coverage": "最低时间原点覆盖率",
+  "trajectory.diffusion_minimum_r2": "最低决定系数要求",
+  "trajectory.diffusion_alpha": "扩散指数 α",
+  "trajectory.diffusion_alpha_min": "扩散指数下限",
+  "trajectory.diffusion_alpha_max": "扩散指数上限",
+  "phonon.frequency_unit": "频率单位",
+  "phonon.selected_qpoint_index": "所选 q 点索引",
+  "phonon.selected_branch_index": "所选分支索引",
+  "phonon.selected_frequency": "所选模式频率",
+  "phonon.selected_qpoint_label": "所选 q 点标签",
+  "phonon.branch_count": "声子分支数",
+  "phonon.qpoint_count": "q 点数",
+  "phonon.frequency_min": "采样最低频率",
+  "phonon.frequency_max": "采样最高频率",
+  "phonon.imaginary_mode_count": "采样虚频模式数",
   "electronic.band_gap": "电子带隙（供应数据）",
   "electronic.kpoint_count": "k 点数",
   "electronic.energy_point_count": "DOS 能量点数",
+  "electronic.energy_reference": "能量参考",
+  "electronic.fermi_energy": "费米能量",
+  "electronic.spin_mode": "自旋模式",
+  "electronic.selected_spin_channel": "所选自旋通道",
+  "electronic.selected_band_id": "所选能带",
+  "electronic.selected_kpoint_id": "所选 k 点",
+  "electronic.selected_kpoint_label": "所选 k 点标签",
+  "electronic.selected_energy": "所选能量",
+  "electronic.selected_dos_channel": "所选 DOS 通道",
+  "electronic.selected_dos_value": "所选态密度",
+  "electronic.dos_unit_semantic": "态密度单位定义",
+  "electronic.projection_completeness": "投影覆盖情况",
   "ml.sample_count": "评估样本数",
   "ml.mae": "平均绝对误差（MAE）",
   "ml.rmse": "均方根误差（RMSE）",
   "ml.r2": "决定系数（R²）",
+  "ml.r2_status": "R² 适用性",
   "ml.mean_signed_error": "平均符号误差",
   "ml.median_absolute_error": "中位绝对误差",
   "ml.high_error_sample_id": "最大误差样本",
@@ -199,14 +342,44 @@ const PRESENTATION_METRIC_LABELS: Readonly<Record<string, string>> = {
   "ml.high_error_prediction": "最大误差样本预测值",
   "ml.high_error_residual": "最大误差样本残差",
   "ml.high_error_absolute_error": "最大绝对误差",
+  "rdf.structure_count": "结构数",
+  "rdf.bin_count": "径向区间数",
+  "rdf.r_max": "最大半径",
+  "rdf.bin_width": "径向步长",
+  "rdf.number_density": "数密度",
+  "reference.element_count": "所选元素数", "reference.value_count": "有效参考值数",
+  "reference.version": "参考资料版本", "reference.property_definition": "性质定义",
+  "reference.element.symbol": "元素", "reference.element.atomic_number": "原子序数", "reference.element.covalent_radius": "参考共价半径",
+  "calculation.input_value": "原数值", "calculation.output_value": "换算结果", "calculation.quantity": "物理量",
+  "calculation.conversion_factor": "换算系数", "calculation.conversion_offset": "换算偏移",
+  "calculation.point_count": "采样点数", "calculation.x_min": "区间起点", "calculation.x_max": "区间终点",
+  "calculation.function": "函数", "calculation.sampled_min": "采样最小值", "calculation.sampled_max": "采样最大值",
+  "calculation.start_value": "起点函数值", "calculation.end_value": "终点函数值",
+  "calculation.parameter.coefficients": "多项式系数", "calculation.parameter.amplitude": "幅值",
+  "calculation.parameter.offset": "纵向偏移", "calculation.parameter.rate": "自变量系数",
+  "calculation.parameter.phase": "自变量偏移", "calculation.parameter.center": "中心", "calculation.parameter.sigma": "标准差参数",
+  "composition.formula": "输入化学式", "composition.total_stoichiometry": "总化学计量数",
+  "composition.element": "元素", "composition.stoichiometry": "化学计量数",
+  "composition.atomic_fraction": "原子分数", "composition.atomic_percent": "原子百分比",
+  "inline.row_count": "数据行数", "inline.column_count": "数据列数", "inline.column": "列名",
+  "inline.minimum": "最小值", "inline.maximum": "最大值", "inline.mean": "均值", "inline.first": "首行数值", "inline.last": "末行数值",
+  "model.prototype": "晶格原型", "model.formula": "理想模型化学式", "model.site_count": "位点数",
+  "model.lattice_a": "单胞 a", "model.lattice_c": "单胞 c", "model.cell_volume": "展示晶胞体积", "model.nearest_distance": "最短周期近邻距离",
+  "model.repeat_a": "沿 a 重复数", "model.repeat_b": "沿 b 重复数", "model.repeat_c": "沿 c 重复数",
 };
 
 export function presentationMetricTitle(predicate: string): string {
-  return PRESENTATION_METRIC_LABELS[predicate] || predicate.replaceAll("_", " ");
+  const millerComponent = predicate.match(/^xrd\.peak\.hkl_([0-3])\.component_([0-3])$/u);
+  if (millerComponent) return `晶面族 ${Number(millerComponent[1]) + 1} · 分量 ${Number(millerComponent[2]) + 1}`;
+  return PRESENTATION_METRIC_LABELS[predicate] || tableMetricTitle(predicate) || predicate.replaceAll("_", " ");
+}
+
+export function presentationMetricUnit(unit: string): string {
+  return ({ count: "", fraction: "", picosecond: "ps", femtosecond: "fs", angstrom: "Å", "angstrom^-3": "Å⁻³", "angstrom^2": "Å²", "angstrom^3": "Å³", "angstrom^2/picosecond": "Å²/ps", degC: "°C", um: "µm", us: "µs" } as Record<string, string>)[unit] ?? unit;
 }
 
 export function presentationScientificText(text: string): string {
-  const normalized = text
+  const normalized = scientificNarrativeText(presentationLimitationText(text))
     .replace(
       /该事实来自证据\s*(?:\b(?:fact|evidence|limitation|figure)\.[a-z0-9.]+\b)(?:\s*（step_[^)]+）)?/giu,
       "该数值已绑定本次分析证据",
@@ -287,8 +460,8 @@ function projectedArtifactBlocks(
 ): ScientificPresentationBlock[] {
   return projectScientificArtifacts(artifacts).slice(0, 12).map((artifact, index) => {
     const id = artifactId(artifact);
-    const title = artifact.resultTitle;
     const itemSources = artifactSourceRefs?.[id] || [];
+    const title = sourceLabelledTitle(artifact.resultTitle, itemSources, sourceObjectRefs);
     const exactArtifactSource =
       itemSources.length === 1
         ? exactSource(itemSources)
@@ -297,9 +470,17 @@ function projectedArtifactBlocks(
           : {};
     const source = { ...exactArtifactSource, resultId, artifactId: id, jobId: artifact.jobId };
     const isTable = artifact.resultRole.endsWith("TABLE");
-    const block: ScientificPresentationBlock = { id: stableId(isTable ? "table" : "figure", title, index), type: isTable ? "table" : "figure", title, artifactId: id, source };
+    const block: ScientificPresentationBlock = { id: `${isTable ? "table" : "figure"}-${id || index}`, type: isTable ? "table" : "figure", title, artifactId: id, source };
     return block;
   });
+}
+
+function sourceLabelledTitle(title: string, itemSources: PresentationInput["sourceObjectRefs"], allSources: PresentationInput["sourceObjectRefs"]): string {
+  if ((allSources?.length || 0) <= 1 || itemSources?.length !== 1) return title;
+  const item = itemSources[0];
+  const index = allSources?.findIndex((source) => source.objectId === item.objectId && source.versionId === item.versionId) ?? -1;
+  const label = item.displayName?.trim() || (index >= 0 ? `来源 ${index + 1}` : "");
+  return label ? `${label} · ${title}` : title;
 }
 
 /**
@@ -334,7 +515,8 @@ export function compileScientificPresentation(input: PresentationInput): Scienti
           factId: finding.fact_refs[0] || null,
           evidenceId: finding.evidence_refs[0] || null,
         },
-        evidenceIds: [...new Set([...finding.fact_refs, ...finding.evidence_refs])].slice(0, 12),
+        factIds: [...new Set(finding.fact_refs)].slice(0, 12),
+        evidenceIds: [...new Set(finding.evidence_refs)].slice(0, 12),
       });
     });
   } else {
@@ -357,7 +539,7 @@ export function compileScientificPresentation(input: PresentationInput): Scienti
   const narrative = presentationSummary(persistedInterpretation, narrativeSource);
   if (narrative) blocks.unshift({ id: "narrative-grounded-summary", type: "narrative", title: "科学摘要", text: narrative, source: { ...source, resultId: input.resultId, interpretationId } });
 
-  evidence.filter((item) => ["SCALAR", "COUNT", "RANGE", "CATEGORY", "BOOLEAN"].includes(item.evidenceKind)).slice(0, 12).forEach((item, index) => {
+  evidence.filter((item) => ["SCALAR", "COUNT", "RANGE", "CATEGORY", "BOOLEAN"].includes(item.evidenceKind)).forEach((item, index) => {
     blocks.push({
       id: stableId("metric", item.semanticRole || item.evidenceItemId, index),
       type: "metric",
@@ -368,16 +550,17 @@ export function compileScientificPresentation(input: PresentationInput): Scienti
     });
   });
 
-  selectedFactsFirst(input.facts || [], input.scientificSelections).slice(0, 12).forEach((fact, index) => {
+  const tableLabels = tableFactLabels(input.facts || []);
+  selectedFactsFirst(input.facts || [], input.scientificSelections).forEach((fact, index) => {
     const value = displayFactValue(fact.value);
     if (value === null) return;
     blocks.push({
       id: stableId("fact-metric", fact.factId || fact.predicate, index),
       type: "metric",
-      title: presentationMetricTitle(fact.predicate),
+      title: sourceLabelledTitle(tableLabels.get(fact.factId) || presentationMetricTitle(fact.predicate), input.artifactSourceRefs?.[fact.source?.artifactId || ""], input.sourceObjectRefs),
       value,
       unit: fact.unit,
-      source: factSource(fact, input.resultId, input.sourceObjectRefs),
+      source: factSource(fact, input.resultId, input.artifactSourceRefs?.[fact.source?.artifactId || ""] || input.sourceObjectRefs),
     });
   });
 
@@ -499,7 +682,8 @@ export function compileReportPresentation(view: ScientificReportView): Scientifi
         interpretationId,
         factId: finding.fact_refs[0] || null,
       },
-      evidenceIds: [...new Set([...finding.finding_refs, ...finding.fact_refs, ...finding.evidence_refs])].slice(0, 12),
+      factIds: [...new Set(finding.fact_refs)].slice(0, 12),
+      evidenceIds: [...new Set(finding.evidence_refs)].slice(0, 12),
     });
   });
   (report?.primary_figures || []).slice(0, 12).forEach((figure, index) => {
@@ -509,8 +693,6 @@ export function compileReportPresentation(view: ScientificReportView): Scientifi
       ? {
           objectId: figureSource.object_id,
           versionId: figureSource.version_id,
-          objectType: figureSource.object_type || null,
-          displayName: sourceRefs.find((candidate) => candidate.objectId === figureSource.object_id)?.displayName || null,
         }
       : source;
     blocks.push({
@@ -598,7 +780,7 @@ const PRESENTATION_SOURCE_KEYS = new Set([
 
 const PRESENTATION_BLOCK_KEYS: Readonly<Record<string, ReadonlySet<string>>> = {
   narrative: new Set(["id", "type", "title", "text", "source"]),
-  finding: new Set(["id", "type", "title", "text", "confidence", "source", "evidenceIds"]),
+  finding: new Set(["id", "type", "title", "text", "confidence", "source", "evidenceIds", "factIds"]),
   metric: new Set(["id", "type", "title", "value", "unit", "source"]),
   table: new Set(["id", "type", "title", "artifactId", "source"]),
   figure: new Set(["id", "type", "title", "artifactId", "source"]),
@@ -664,7 +846,9 @@ export function isSafePresentationBlock(block: unknown): block is ScientificPres
       && ["DIRECT", "QUALIFIED", "LIMITED"].includes(String(candidate.confidence))
       && Array.isArray(candidate.evidenceIds)
       && candidate.evidenceIds.length <= 12
-      && candidate.evidenceIds.every((item) => isSafeReference(item));
+      && candidate.evidenceIds.every((item) => isSafeReference(item))
+      && (candidate.factIds === undefined || (Array.isArray(candidate.factIds)
+        && candidate.factIds.length <= 12 && candidate.factIds.every((item) => isSafeReference(item))));
   }
   if (candidate.type === "metric") {
     return isSafeDisplayText(candidate.title)

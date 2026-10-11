@@ -1,18 +1,21 @@
 from __future__ import annotations
 
-from typing import Any
+import json
+from typing import Any, Callable
 
 from mdi_api.research_agent.context.fingerprint import context_fingerprint
 from mdi_api.research_agent.context.schemas import (
     CompactObjectSummary,
     CompactFindingSummary,
     CompactResearchContext,
+    CompactScientificSelection,
     CompactResultSummary,
+    ReferenceCandidateSource,
     ResearchContextCandidateBundle,
 )
 
 
-COMPILER_VERSION = "agent2.context-compiler/1.0"
+COMPILER_VERSION = "agent2.context-compiler/1.2"
 
 
 class ResearchContextCompiler:
@@ -22,9 +25,23 @@ class ResearchContextCompiler:
         turn: dict[str, Any],
         candidates: ResearchContextCandidateBundle,
         token_budget: int = 12_000,
+        input_payload: Callable[[CompactResearchContext], dict[str, Any]] | None = None,
     ) -> CompactResearchContext:
         if token_budget < 256:
             raise ValueError("token_budget must be at least 256")
+        object_keys = {
+            (item.object_ref.object_id, item.object_ref.version_id): item.candidate_key
+            for item in candidates.active_object_candidates
+        }
+        selections = [CompactScientificSelection(
+            ref_key=object_keys[(item.object_ref.object_id, item.object_ref.version_id)],
+            selection_type=item.selection_type,
+            semantic_locator=item.semantic_locator,
+        ) for item in candidates.scientific_selections]
+        required_object_keys = {item.ref_key for item in selections} | {
+            item.candidate_key for item in candidates.active_object_candidates
+            if item.source in {ReferenceCandidateSource.UI_SELECTION, ReferenceCandidateSource.EXPLICIT_REFERENCE}
+        }
         object_summaries = [CompactObjectSummary(
             ref_key=item.candidate_key,
             object_type=item.object_ref.object_type,
@@ -57,6 +74,16 @@ class ResearchContextCompiler:
             context_role="EVIDENCE",
             support_eligible=item.support_eligible,
         ) for item in candidates.result_candidates]
+        required_result_keys = {
+            item.candidate_key for item in candidates.result_candidates
+            if item.result_id in candidates.pinned_result_ids
+            or item.source in {
+                ReferenceCandidateSource.EXPLICIT_REFERENCE,
+                ReferenceCandidateSource.UI_SELECTION,
+                ReferenceCandidateSource.PINNED_CONTEXT,
+                ReferenceCandidateSource.PREVIOUS_TURN_RESULT,
+            }
+        }
         finding_summaries = [CompactFindingSummary(
             ref_key=item.candidate_key,
             display_label=item.display_label,
@@ -78,6 +105,7 @@ class ResearchContextCompiler:
                 [item.candidate_key, str(item.result_id), "STALE" if item.stale else "CURRENT"]
                 for item in candidates.result_candidates
             ],
+            "scientific_selections": [item.model_dump(mode="json") for item in selections],
             "constraints": candidates.explicit_constraints,
             "pinned_result_ids": [str(item) for item in candidates.pinned_result_ids],
             "resolved_references": [],
@@ -98,6 +126,7 @@ class ResearchContextCompiler:
                 current_goal=candidates.current_research_goal,
                 current_user_message=candidates.current_user_message,
                 objects=objects,
+                scientific_selections=selections,
                 results=results,
                 relevant_findings=findings,
                 pinned_results=[item for item in results if item.result_id in set(candidates.pinned_result_ids)],
@@ -111,7 +140,12 @@ class ResearchContextCompiler:
                 omitted_supporting_items=list(candidates.omitted_supporting_items),
                 context_fingerprint=fingerprint,
             )
-            if len(compact.model_dump_json().encode("utf-8")) <= max_bytes:
+            # Use the same JSON representation as the actual-input manifest.
+            # The orchestrator supplies its complete envelope, including the
+            # current question, requirement schemas and permitted actions.
+            payload = input_payload(compact) if input_payload else compact.model_dump(mode="json")
+            encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
+            if len(encoded.encode("utf-8")) <= max_bytes:
                 return compact
             if messages:
                 messages = messages[1:]
@@ -122,12 +156,15 @@ class ResearchContextCompiler:
             elif len(results) > 1:
                 # Preserve pinned and explicitly referenced candidates; trim
                 # only lower-priority historical candidates.
-                pinned_ids = set(candidates.pinned_result_ids)
-                removable = next((i for i in range(len(results) - 1, -1, -1) if results[i].result_id not in pinned_ids), None)
+                removable = next((i for i in range(len(results) - 1, -1, -1) if results[i].ref_key not in required_result_keys), None)
                 if removable is None:
-                    removable = len(results) - 1
+                    raise ValueError("Selected scientific context cannot fit within token_budget")
                 results.pop(removable)
             elif len(objects) > 1:
-                objects = objects[:-1]
+                removable = next((i for i in range(len(objects) - 1, 0, -1)
+                                  if objects[i].ref_key not in required_object_keys), None)
+                if removable is None:
+                    raise ValueError("Selected scientific context cannot fit within token_budget")
+                objects = objects[:removable] + objects[removable + 1:]
             else:
                 raise ValueError("Research context cannot fit within token_budget")

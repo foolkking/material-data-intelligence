@@ -1,7 +1,10 @@
+import json
+
 from mdi_api.routers import datasets as dataset_routes
 from mdi_api.routers.datasets import _json_safe_resource
 from mdi_material_parsers.models import NormalizedObjectDraft
 from mdi_schemas import MaterialObjectType
+from pymatgen.core import Lattice, Structure
 
 
 def test_volumetric_channel_values_are_not_silently_cut_at_generic_list_limit():
@@ -59,6 +62,22 @@ def test_source_viewer_receives_canonical_trajectory_payload_not_execution_wrapp
     projected = dataset_routes.get_dataset_object_store("dataset_1")
 
     assert projected["resources"][0]["payload"] == payload
+
+
+def test_legacy_source_connections_are_a_separate_exact_identity_projection(monkeypatch):
+    payload = json.loads(json.dumps(Structure.from_spacegroup("Fd-3m", Lattice.cubic(5.43), ["Si"], [[0, 0, 0]]).as_dict()))
+    store = {"__mdi_source_resources__": {"si": {"objectId": "si", "objectType": "Structure", "objectHash": "c" * 64, "datasetId": "dataset"}}, "si": payload}
+    monkeypatch.setattr("mdi_api.phase2_runtime.get_phase2_dataset_object_store", lambda _dataset_id: store)
+    resource = dataset_routes.get_dataset_object_store("dataset")["resources"][0]
+    assert resource["payload"] == payload
+    assert "viewerScene" not in store and "bonds" not in payload
+    scene = resource["viewerScene"]
+    assert len(scene["scene"]["bonds"]) == 16
+    assert scene["provenance"]["source_hash"] == "c" * 64
+    assert scene["provenance"]["source_object_id"] == "si"
+    assert scene["provenance"]["source_dataset_id"] == "dataset"
+    assert scene["provenance"]["source_version_id"] is None
+    assert scene["provenance"]["scientific_analysis_result"] is False
 
 
 def test_source_table_projects_profile_defined_stable_sample_identity(monkeypatch):

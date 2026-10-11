@@ -2,13 +2,11 @@
 
 import {
   ProductLink as Link,
-  useProductRouter,
 } from "../../shared/layout/ProductNavigation";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import {
-  bulkDatasetAction,
   bulkProjectAction,
   createProject,
   deleteEmptyDataset,
@@ -27,6 +25,7 @@ import {
   type DependencyImpact,
   type ProjectHistory,
   type ProjectSummary,
+  type UploadDatasetFile,
 } from "../../app/lib/planner-api";
 import {
   PHONON_BAND_SCHEMA_VERSION,
@@ -52,35 +51,51 @@ import {
   researchRunTitle,
 } from "../../app/lib/research-display";
 import {
-  bulkUpdateScientificObjects,
-  listScientificObjects,
   getScientificObjectDependencyImpact,
-  updateScientificObject,
   type ScientificObjectDependencyImpact,
   type ScientificObjectSummary,
 } from "../../app/lib/scientific-viewer-api";
 import { RouteLoading } from "../../shared/ui/RouteLoading";
 import { projectRoleAllows } from "../../app/lib/project-permissions";
-import { DependencyImpactEntry, EmptyOrError, productProjectName, sourceTypeLabel, useProject } from "../projects/ProductPages";
+import { DependencyImpactEntry, dependencyDisplayLabel, EmptyOrError, productProjectName, sourceTypeLabel, useProject } from "../projects/ProductPages";
 import type { LoadState } from "../projects/ProductPages";
+import { DependencyPreviewFeedback, useDependencyPreview, type DependencyPreviewState } from "../../shared/ui/DependencyPreview";
+import { useScientificObjectDirectory } from "./use-scientific-object-directory";
+import { pushProductQuery, replaceProductQuery } from "../../shared/layout/product-query-history";
+import { useDataNavigator } from "./use-data-navigator";
+import { useClampedTitle } from "../../shared/ui/use-clamped-title";
+import { useDatasetOperation, validateDataset, readDatasetDirectory, updateDatasetBatches, type DatasetOperation } from "./dataset-operations";
+import { useScientificObjectOperation } from "../../shared/workspace/scientific-object-operations";
+import { DatasetSourceDetails } from "./DatasetSourceDetails";
+import sourceDetailsStyles from "./DatasetSourceDetails.module.css";
 
 type ProjectDataset = ProjectHistory["datasets"][number];
 
+function UnavailableDataEntry({ title }: { title: string }) {
+  const name = useClampedTitle(title, true);
+  return <div className="data-unavailable-entry" tabIndex={0} {...name.events}><strong ref={name.titleRef} className="managed-object-name-clamped">{title}</strong><span>暂无可查看的版本</span>{name.tooltip}</div>;
+}
+
 function ScientificObjectTrashDialog({
   item,
-  impact,
+  preview,
   busy,
   error,
   onClose,
   onConfirm,
+  recovery,
+  locked = false,
 }: {
+  recovery?: ReactNode;
+  locked?: boolean;
   item: ScientificObjectSummary;
-  impact: ScientificObjectDependencyImpact | null;
+  preview: DependencyPreviewState<ScientificObjectDependencyImpact>;
   busy: boolean;
   error: string;
   onClose: () => void;
   onConfirm: () => void;
 }) {
+  const impact = preview.items[0];
   return (
     <ProductModal
       eyebrow="科研对象管理"
@@ -95,7 +110,7 @@ function ScientificObjectTrashDialog({
           <button
             type="button"
             className="product-danger-action"
-            disabled={busy}
+            disabled={busy || locked || !preview.complete}
             onClick={onConfirm}
           >
             {busy ? "正在移动…" : "移入回收站"}
@@ -103,7 +118,7 @@ function ScientificObjectTrashDialog({
         </>
       }
     >
-      <div className="product-form-grid danger-zone">
+      <div className="product-form-grid danger-zone scientific-object-management-form">
         <p>
           <strong>{item.display_name}</strong> 的历史科学记录不会被删除。
         </p>
@@ -121,11 +136,11 @@ function ScientificObjectTrashDialog({
             ) : (
               <p>未发现已持久化的结果依赖。</p>
             )}
-            <p>受保护的科学 provenance、版本和历史研究仍可访问。</p>
+            <p>受保护的科学来源、版本和历史研究仍可访问。</p>
           </div>
-        ) : (
-          <p role="status">正在检查依赖影响…</p>
-        )}
+        ) : null}
+        <DependencyPreviewFeedback preview={preview} />
+        {recovery}
         {error ? (
           <p className="product-form-error" role="alert">
             {error}
@@ -138,25 +153,30 @@ function ScientificObjectTrashDialog({
 
 function ScientificObjectBulkTrashDialog({
   items,
-  impacts,
+  preview,
   busy,
   error,
   onClose,
   onConfirm,
+  recovery,
+  locked = false,
 }: {
+  recovery?: ReactNode;
+  locked?: boolean;
   items: ScientificObjectSummary[];
-  impacts: ScientificObjectDependencyImpact[] | null;
+  preview: DependencyPreviewState<ScientificObjectDependencyImpact>;
   busy: boolean;
   error: string;
   onClose: () => void;
   onConfirm: () => void;
 }) {
+  const impacts = preview.items;
   const dependencyTotals = new Map<string, { label: string; count: number }>();
   for (const impact of impacts || []) {
     for (const dependency of impact.dependencies) {
       const current = dependencyTotals.get(dependency.kind);
       dependencyTotals.set(dependency.kind, {
-        label: dependency.label,
+        label: dependencyDisplayLabel(dependency.kind, dependency.label),
         count: (current?.count || 0) + dependency.count,
       });
     }
@@ -179,7 +199,7 @@ function ScientificObjectBulkTrashDialog({
           <button
             type="button"
             className="product-danger-action"
-            disabled={busy || !impacts || impacts.length !== items.length}
+            disabled={busy || locked || !preview.complete}
             onClick={onConfirm}
           >
             {busy ? "正在移动…" : "确认移入回收站"}
@@ -187,10 +207,10 @@ function ScientificObjectBulkTrashDialog({
         </>
       }
     >
-      <div className="product-form-grid danger-zone">
+      <div className="product-form-grid danger-zone scientific-object-management-form">
         <p>
-          已选择 <strong>{items.length}</strong> 个对象，服务器报告共{" "}
-          <strong>{totalDependencies}</strong> 项受保护依赖。
+          已选择 <strong>{items.length}</strong> 个对象。
+          {impacts.length > 0 ? <>已读取 {impacts.length} 项检查，共 <strong>{totalDependencies}</strong> 项受保护依赖。</> : null}
         </p>
         <ul className="bulk-lifecycle-targets">
           {items.slice(0, 8).map((item) => (
@@ -201,7 +221,7 @@ function ScientificObjectBulkTrashDialog({
           ))}
           {items.length > 8 ? <li>另有 {items.length - 8} 个对象…</li> : null}
         </ul>
-        {impacts ? (
+        {impacts.length > 0 ? (
           <div role="status">
             <strong>依赖影响汇总</strong>
             {dependencyTotals.size ? (
@@ -213,13 +233,13 @@ function ScientificObjectBulkTrashDialog({
                 ))}
               </ul>
             ) : (
-              <p>未发现已持久化的结果依赖。</p>
+              <p>已读取的检查中未发现已持久化的结果依赖。</p>
             )}
-            <p>对象会从新的研究选择中移除；历史研究和 exact source provenance 仍可访问。</p>
+            <p>对象会从新的研究选择中移除；历史研究和精确来源记录仍可访问。</p>
           </div>
-        ) : (
-          <p role="status">正在检查 {items.length} 个对象的依赖影响…</p>
-        )}
+        ) : null}
+        <DependencyPreviewFeedback preview={preview} />
+        {recovery}
         {error ? <p className="product-form-error" role="alert">{error}</p> : null}
       </div>
     </ProductModal>
@@ -228,25 +248,30 @@ function ScientificObjectBulkTrashDialog({
 
 function DatasetBulkTrashDialog({
   items,
-  impacts,
+  preview,
   busy,
   error,
   onClose,
   onConfirm,
+  recovery,
+  locked = false,
 }: {
+  recovery?: ReactNode;
+  locked?: boolean;
   items: ProjectDataset[];
-  impacts: DependencyImpact[] | null;
+  preview: DependencyPreviewState<DependencyImpact>;
   busy: boolean;
   error: string;
   onClose: () => void;
   onConfirm: () => void;
 }) {
+  const impacts = preview.items;
   const dependencyTotals = new Map<string, { label: string; count: number }>();
   for (const impact of impacts || []) {
     for (const dependency of impact.dependencies) {
       const current = dependencyTotals.get(dependency.kind);
       dependencyTotals.set(dependency.kind, {
-        label: dependency.label,
+        label: dependencyDisplayLabel(dependency.kind, dependency.label),
         count: (current?.count || 0) + dependency.count,
       });
     }
@@ -269,7 +294,7 @@ function DatasetBulkTrashDialog({
           <button
             type="button"
             className="product-danger-action"
-            disabled={busy || !impacts || impacts.length !== items.length}
+            disabled={busy || locked || !preview.complete || !items.length}
             onClick={onConfirm}
           >
             {busy ? "正在移动…" : "确认移入回收站"}
@@ -277,10 +302,10 @@ function DatasetBulkTrashDialog({
         </>
       }
     >
-      <div className="product-form-grid danger-zone">
+      <div className="product-form-grid danger-zone dataset-management-form">
         <p>
-          已选择 <strong>{items.length}</strong> 个数据集，服务器报告共{" "}
-          <strong>{totalDependencies}</strong> 项受保护依赖。
+          已选择 <strong>{items.length}</strong> 个数据集。
+          {impacts.length > 0 ? <>已读取 {impacts.length} 项检查，共 <strong>{totalDependencies}</strong> 项受保护依赖。</> : null}
         </p>
         <ul className="bulk-lifecycle-targets">
           {items.slice(0, 8).map((item) => (
@@ -291,7 +316,7 @@ function DatasetBulkTrashDialog({
           ))}
           {items.length > 8 ? <li>另有 {items.length - 8} 个数据集…</li> : null}
         </ul>
-        {impacts ? (
+        {impacts.length > 0 ? (
           <div role="status">
             <strong>依赖影响汇总</strong>
             {dependencyTotals.size ? (
@@ -303,13 +328,13 @@ function DatasetBulkTrashDialog({
                 ))}
               </ul>
             ) : (
-              <p>未发现已持久化的结果依赖。</p>
+              <p>已读取的检查中未发现已持久化的结果依赖。</p>
             )}
-            <p>数据集会从新的研究选择中移除；历史研究和 exact source provenance 仍可访问。</p>
+            <p>数据集会从新的研究选择中移除；历史研究和精确来源记录仍可访问。</p>
           </div>
-        ) : (
-          <p role="status">正在检查 {items.length} 个数据集的依赖影响…</p>
-        )}
+        ) : null}
+        <DependencyPreviewFeedback preview={preview} />
+        {recovery}
         {error ? <p className="product-form-error" role="alert">{error}</p> : null}
       </div>
     </ProductModal>
@@ -322,7 +347,13 @@ function DatasetEditDialog({
   onClose,
   onUpdated,
   onDeleted,
+  projectId, operation, onReload, available, canManage,
 }: {
+  projectId: string;
+  operation: DatasetOperation;
+  onReload: () => void;
+  available: boolean;
+  canManage: boolean;
   dataset: ProjectDataset;
   mode: "edit" | "trash" | "delete";
   onClose: () => void;
@@ -331,74 +362,35 @@ function DatasetEditDialog({
 }) {
   const [name, setName] = useState(dataset.name);
   const [confirmation, setConfirmation] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
-  const [impact, setImpact] = useState<DependencyImpact | null>(null);
-  useEffect(() => {
-    if (mode !== "delete" && mode !== "trash") return;
-    void getDatasetDependencyImpact(dataset.datasetId)
-      .then(setImpact)
-      .catch(() => setImpact(null));
-  }, [dataset.datasetId, mode]);
+  const busy = operation.pending || operation.reading;
+  const locked = busy || operation.uncertain || !available || !canManage;
+  const error = operation.error;
+  const recovery = <>
+    {error ? <p className="product-form-error" role="alert">{error}</p> : null}
+    {operation.uncertain ? <div className="dataset-operation-recovery"><button type="button" className="product-secondary-action" disabled={busy} onClick={onReload}>{operation.reading ? "正在读取…" : "重新读取数据列表"}</button>{operation.readError ? <p role="status">{operation.readError}</p> : null}</div> : null}
+    {!available ? <p role="status">此数据已不在当前项目列表中，编辑内容仍保留。</p> : null}
+    {available && !canManage ? <p role="status">当前没有修改此数据的权限，编辑内容仍保留。</p> : null}
+  </>;
+  const preview = useDependencyPreview(
+    mode === "edit" ? [] : [{ id: dataset.datasetId, label: dataset.name }],
+    getDatasetDependencyImpact,
+  );
+  const impact = preview.items[0];
   async function save() {
-    if (!name.trim() || busy) return;
-    setBusy(true);
-    setError("");
-    try {
-      const result = await updateDataset(dataset.datasetId, {
-        name: name.trim(),
-      });
-      onUpdated({
-        name: result.name || name.trim(),
-        status: result.status || dataset.status,
-      });
-      onClose();
-    } catch (reason) {
-      setError(
-        reason instanceof Error ? reason.message : "数据集更新失败，请重试。",
-      );
-    } finally {
-      setBusy(false);
-    }
+    if (!name.trim() || locked) return;
+    await operation.run("重命名数据集", async (signal) => validateDataset(await updateDataset(dataset.datasetId, { name: name.trim() }, signal), projectId, dataset.datasetId, { name: name.trim() }), (changes) => { onUpdated(changes); onClose(); });
   }
   async function remove() {
-    if (confirmation !== dataset.name || busy) return;
-    setBusy(true);
-    setError("");
-    try {
-      await deleteEmptyDataset(dataset.datasetId);
-      onDeleted(dataset.datasetId);
-      onClose();
-    } catch (reason) {
-      setError(
-        reason instanceof Error
-          ? reason.message
-          : "数据集包含源文件或研究记录，请改为归档。",
-      );
-    } finally {
-      setBusy(false);
-    }
+    if (confirmation !== dataset.name || locked || !preview.complete || !impact?.canDelete) return;
+    await operation.run("删除空数据集", async (signal) => {
+      const result = await deleteEmptyDataset(dataset.datasetId, signal);
+      if (result?.datasetId !== dataset.datasetId || result.deleted !== true) throw new Error("Dataset deletion identity mismatch");
+      return result;
+    }, () => { onDeleted(dataset.datasetId); onClose(); });
   }
   async function trash() {
-    if (busy) return;
-    setBusy(true);
-    setError("");
-    try {
-      const result = await updateDataset(dataset.datasetId, {
-        lifecycle: "TRASHED",
-      });
-      onUpdated({
-        name: result.name || dataset.name,
-        status: result.status || "trashed",
-      });
-      onClose();
-    } catch (reason) {
-      setError(
-        reason instanceof Error ? reason.message : "数据集暂时无法移入回收站。",
-      );
-    } finally {
-      setBusy(false);
-    }
+    if (locked || !preview.complete) return;
+    await operation.run("移入回收站", async (signal) => validateDataset(await updateDataset(dataset.datasetId, { lifecycle: "TRASHED" }, signal), projectId, dataset.datasetId, { lifecycle: "TRASHED" }), (changes) => { onUpdated(changes); onClose(); });
   }
   if (mode === "trash")
     return (
@@ -419,7 +411,7 @@ function DatasetEditDialog({
             <button
               type="button"
               className="product-danger-action"
-              disabled={busy}
+              disabled={locked || !preview.complete}
               onClick={() => void trash()}
             >
               {busy ? "正在移动…" : "移入回收站"}
@@ -427,7 +419,7 @@ function DatasetEditDialog({
           </>
         }
       >
-        <div className="product-form-grid danger-zone">
+        <div className="product-form-grid danger-zone dataset-management-form">
           <p>
             <strong>{dataset.name}</strong> 将不再出现在当前数据列表中。
           </p>
@@ -445,16 +437,12 @@ function DatasetEditDialog({
               ) : (
                 <p>未发现依赖记录。</p>
               )}
-              <p>受保护的科学 provenance 不会被删除。</p>
+              <p>受保护的科学来源记录不会被删除。</p>
             </div>
-          ) : (
-            <p role="status">正在检查依赖影响…</p>
-          )}
-          {error ? (
-            <p className="product-form-error" role="alert">
-              {error}
-            </p>
           ) : null}
+          <DependencyPreviewFeedback preview={preview} />
+          {recovery}
+
         </div>
       </ProductModal>
     );
@@ -477,7 +465,7 @@ function DatasetEditDialog({
             <button
               type="button"
               className="product-danger-action"
-              disabled={busy || confirmation !== dataset.name}
+              disabled={locked || confirmation !== dataset.name || !preview.complete || !impact?.canDelete}
               onClick={() => void remove()}
             >
               {busy ? "正在删除…" : "永久删除"}
@@ -485,11 +473,12 @@ function DatasetEditDialog({
           </>
         }
       >
-        <div className="product-form-grid danger-zone">
+        <div className="product-form-grid danger-zone dataset-management-form">
           <p>
             输入数据集名称 <strong>{dataset.name}</strong> 以确认。
           </p>
-          {impact && impact.dependencyCount > 0 ? (
+          <DependencyPreviewFeedback preview={preview} />
+          {impact && !impact.canDelete ? (
             <div role="status">
               <strong>依赖影响</strong>
               <ul>
@@ -515,11 +504,8 @@ function DatasetEditDialog({
             }}
             autoComplete="off"
           />
-          {error ? (
-            <p className="product-form-error" role="alert">
-              {error}
-            </p>
-          ) : null}
+          {recovery}
+
         </div>
       </ProductModal>
     );
@@ -527,7 +513,7 @@ function DatasetEditDialog({
     <ProductModal
       eyebrow="数据管理"
       title="重命名数据集"
-      description="名称会同步到 Data Navigator、研究数据范围和报告来源。"
+      description="修改后可在数据目录和研究中看到新名称。"
       onClose={onClose}
       footer={
         <>
@@ -541,7 +527,7 @@ function DatasetEditDialog({
           <button
             type="button"
             className="product-primary-action"
-            disabled={busy || !name.trim()}
+            disabled={locked || !name.trim()}
             onClick={() => void save()}
           >
             {busy ? "正在保存…" : "保存更改"}
@@ -549,10 +535,12 @@ function DatasetEditDialog({
         </>
       }
     >
-      <div className="product-form-grid">
+      <div className="product-form-grid dataset-management-form">
         <label htmlFor="edit-dataset-name">数据集名称</label>
         <input
           id="edit-dataset-name"
+          maxLength={160}
+          disabled={busy}
           value={name}
           onChange={(event) => setName(event.target.value)}
           onKeyDown={(event) => {
@@ -562,11 +550,8 @@ function DatasetEditDialog({
             }
           }}
         />
-        {error ? (
-          <p className="product-form-error" role="alert">
-            {error}
-          </p>
-        ) : null}
+        {recovery}
+
       </div>
     </ProductModal>
   );
@@ -627,9 +612,7 @@ export function resolveDatasetSelection(
   selectedId: string,
   visibleDatasetIds: readonly string[],
 ): string {
-  if (queryDatasetId && visibleDatasetIds.includes(queryDatasetId)) {
-    return queryDatasetId;
-  }
+  if (queryDatasetId) return visibleDatasetIds.includes(queryDatasetId) ? queryDatasetId : "";
   if (selectedId && visibleDatasetIds.includes(selectedId)) {
     return selectedId;
   }
@@ -672,11 +655,17 @@ export function ProjectDataPage({
     searchParams?.get("tableSort") === "desc" ? "desc" : "asc";
   const queryTableRow = searchParams?.get("tableRow") || "";
   const querySelectionToken = searchParams?.get("selection") || "";
+  const queryResourceId = searchParams?.get("resource") ?? null;
   const { history, setHistory, state, error, retry } = useProject(projectId);
   const [selectedId, setSelectedId] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     "active" | "archived" | "trashed"
   >("active");
+  const changeStatusFilter = (next: "active" | "archived" | "trashed") => {
+    setStatusFilter(next);
+    setSelectedDatasetIds(new Set());
+    setSelectedScientificObjectIds(new Set());
+  };
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedDatasetIds, setSelectedDatasetIds] = useState<Set<string>>(
     new Set(),
@@ -687,30 +676,85 @@ export function ProjectDataPage({
     dataset: ProjectDataset;
     mode: "edit" | "trash" | "delete";
   } | null>(null);
-  const [mutationError, setMutationError] = useState("");
-  const [busy, setBusy] = useState(false);
+  const objectOperation = useScientificObjectOperation(projectId);
+  const datasetOperation = useDatasetOperation(projectId);
+  const busy = objectOperation.pending || objectOperation.reading || datasetOperation.pending || datasetOperation.reading;
+  const dataHeadingRef = useRef<HTMLHeadingElement | null>(null);
+  async function recoverDatasets() {
+    const recovered = await datasetOperation.reconcile((next) => {
+      setHistory(next);
+      setDialog((current) => { const dataset = next.datasets.find((item) => item.datasetId === current?.dataset.datasetId); return current && dataset ? { ...current, dataset } : current; });
+      const visible = new Set(next.datasets.filter((item) => statusFilter === "active" ? !["archived", "trashed"].includes(item.status) : item.status === statusFilter).map((item) => item.datasetId));
+      setSelectedDatasetIds((current) => new Set([...current].filter((id) => visible.has(id))));
+      setDatasetBulkTrashTargets((current) => { const remaining = current?.filter((item) => visible.has(item.datasetId)); return remaining?.length ? remaining : null; });
+    });
+    if (recovered) window.requestAnimationFrame(() => (document.getElementById("edit-dataset-name") || dataHeadingRef.current)?.focus());
+  }
+  const datasetRecovery = datasetOperation.uncertain ? <div className="dataset-operation-recovery" role="status"><p>{datasetOperation.error}</p><button type="button" className="product-secondary-action" disabled={busy} onClick={() => void recoverDatasets()}>{datasetOperation.reading ? "正在读取…" : "重新读取数据列表"}</button>{datasetOperation.readError ? <p>{datasetOperation.readError}</p> : null}</div> : datasetOperation.error ? <p className="product-form-error" role="alert">{datasetOperation.error}</p> : null;
   const [inspector, setInspector] = useState(false);
   const [mobileNavigatorCollapsed, setMobileNavigatorCollapsed] = useState(false);
+  const navigator = useDataNavigator();
+  const [directoryView, setDirectoryView] = useState<"datasets" | "objects">(queryObjectId ? "objects" : "datasets");
+  const dataViewsRef = useRef<HTMLElement | null>(null);
+  useEffect(() => { setDirectoryView(queryObjectId ? "objects" : "datasets"); }, [projectId, queryObjectId, queryDatasetId]);
+  const changeDirectoryView = (view: "datasets" | "objects") => {
+    setDirectoryView(view);
+    setSelectionMode(false);
+    setSelectedDatasetIds(new Set());
+    setSelectedScientificObjectIds(new Set());
+  };
+  const browseDataViews = () => {
+    changeDirectoryView("objects");
+    navigator.setCollapsed(false);
+    setMobileNavigatorCollapsed(false);
+    window.requestAnimationFrame(() => {
+      const links = Array.from(dataViewsRef.current?.querySelectorAll<HTMLAnchorElement>("a[href]") || []);
+      const target = links.find((link) => new URL(link.href).searchParams.get("object") === queryObjectId) || links[0] || dataViewsRef.current;
+      target?.focus();
+    });
+  };
   const [scientificSelection, setScientificSelection] =
     useState<WorkspaceSelectionContext | null>(null);
   const [selectedSourceAvailability, setSelectedSourceAvailability] = useState<
     "loading" | "ready" | "empty" | "unavailable"
   >("loading");
-  const [scientificObjects, setScientificObjects] = useState<
-    ScientificObjectSummary[]
-  >([]);
+  const objectDirectory = useScientificObjectDirectory(projectId, statusFilter === "archived" ? "ARCHIVED" : statusFilter === "trashed" ? "TRASHED" : "ACTIVE");
+  const scientificObjects = useMemo(() => [...new Map([
+    ...objectDirectory.items.map((item) => [item.id, item] as const),
+    ...Object.values(objectOperation.known).map((item) => [item.id, item] as const),
+  ]).values()].filter((item) => item.lifecycle_status.toLowerCase() === statusFilter), [objectDirectory.items, objectOperation.known, statusFilter]);
   const [scientificObjectTrashTarget, setScientificObjectTrashTarget] =
     useState<ScientificObjectSummary | null>(null);
   const [scientificObjectBulkTrashTargets, setScientificObjectBulkTrashTargets] =
     useState<ScientificObjectSummary[] | null>(null);
-  const [scientificObjectBulkTrashImpacts, setScientificObjectBulkTrashImpacts] =
-    useState<ScientificObjectDependencyImpact[] | null>(null);
   const [datasetBulkTrashTargets, setDatasetBulkTrashTargets] =
     useState<ProjectDataset[] | null>(null);
-  const [datasetBulkTrashImpacts, setDatasetBulkTrashImpacts] =
-    useState<DependencyImpact[] | null>(null);
-  const [scientificObjectImpact, setScientificObjectImpact] =
-    useState<ScientificObjectDependencyImpact | null>(null);
+  useEffect(() => {
+    const visible = new Set(scientificObjects.map((item) => item.id));
+    setSelectedScientificObjectIds((current) => new Set([...current].filter((id) => visible.has(id))));
+    setScientificObjectBulkTrashTargets((current) => {
+      const remaining = current?.filter((item) => objectOperation.known[item.id]?.lifecycle_status !== "TRASHED");
+      return remaining?.length ? remaining : null;
+    });
+  }, [scientificObjects, objectOperation.known]);
+  const objectRecovery = objectOperation.error ? <div className="dataset-operation-recovery" role="alert"><p>{objectOperation.error}</p><button type="button" className="product-secondary-action" disabled={busy} onClick={() => {
+    void objectOperation.recheck("directory").then((success) => { if (success) window.requestAnimationFrame(() => {
+      const dialog = document.querySelector<HTMLElement>("[role='dialog']");
+      (dialog?.querySelector<HTMLElement>("footer button:last-child:not(:disabled)") || dataHeadingRef.current)?.focus();
+    }); });
+  }}>{objectOperation.reading ? "正在核对…" : "重新读取对象状态"}</button>{objectOperation.readError ? <p>{objectOperation.readError}</p> : null}</div> : null;
+  const objectPreview = useDependencyPreview(
+    scientificObjectTrashTarget ? [{ id: scientificObjectTrashTarget.id, label: scientificObjectTrashTarget.display_name }] : [],
+    getScientificObjectDependencyImpact,
+  );
+  const objectBulkPreview = useDependencyPreview(
+    (scientificObjectBulkTrashTargets || []).map((item) => ({ id: item.id, label: item.display_name })),
+    getScientificObjectDependencyImpact,
+  );
+  const datasetBulkPreview = useDependencyPreview(
+    (datasetBulkTrashTargets || []).map((item) => ({ id: item.datasetId, label: item.name })),
+    getDatasetDependencyImpact,
+  );
   const inspectorTriggerRef = useRef<HTMLElement | null>(null);
   const inspectorTriggerLabelRef = useRef<string | null>(null);
   const inspectorCloseRef = useRef<HTMLButtonElement | null>(null);
@@ -724,93 +768,8 @@ export function ProjectDataPage({
     [history?.datasets, statusFilter],
   );
   useEffect(() => {
-    const controller = new AbortController();
-    void listScientificObjects(
-      projectId,
-      controller.signal,
-      queryObjectId
-        ? undefined
-        : statusFilter === "archived"
-          ? "ARCHIVED"
-          : statusFilter === "trashed"
-            ? "TRASHED"
-            : "ACTIVE",
-    )
-      .then((response) => setScientificObjects(response.items))
-      .catch(() => setScientificObjects([]));
-    return () => controller.abort();
-  }, [queryObjectId, projectId, statusFilter]);
-  useEffect(() => {
-    if (!scientificObjectTrashTarget) {
-      setScientificObjectImpact(null);
-      return;
-    }
-    let active = true;
-    setScientificObjectImpact(null);
-    void getScientificObjectDependencyImpact(scientificObjectTrashTarget.id)
-      .then((preview) => {
-        if (active) setScientificObjectImpact(preview);
-      })
-      .catch(() => {
-        if (active) setScientificObjectImpact(null);
-      });
-    return () => {
-      active = false;
-    };
-  }, [scientificObjectTrashTarget]);
-  useEffect(() => {
-    if (!scientificObjectBulkTrashTargets) {
-      setScientificObjectBulkTrashImpacts(null);
-      return;
-    }
-    let active = true;
-    setScientificObjectBulkTrashImpacts(null);
-    void Promise.all(
-      scientificObjectBulkTrashTargets.map((item) =>
-        getScientificObjectDependencyImpact(item.id),
-      ),
-    )
-      .then((impacts) => {
-        if (active) setScientificObjectBulkTrashImpacts(impacts);
-      })
-      .catch(() => {
-        if (active) {
-          setScientificObjectBulkTrashImpacts(null);
-          setMutationError("批量对象的依赖影响暂时无法读取，未执行回收站操作。");
-        }
-      });
-    return () => {
-      active = false;
-    };
-  }, [scientificObjectBulkTrashTargets]);
-  useEffect(() => {
-    if (!datasetBulkTrashTargets) {
-      setDatasetBulkTrashImpacts(null);
-      return;
-    }
-    let active = true;
-    setDatasetBulkTrashImpacts(null);
-    void Promise.all(
-      datasetBulkTrashTargets.map((item) =>
-        getDatasetDependencyImpact(item.datasetId),
-      ),
-    )
-      .then((impacts) => {
-        if (active) setDatasetBulkTrashImpacts(impacts);
-      })
-      .catch(() => {
-        if (active) {
-          setDatasetBulkTrashImpacts(null);
-          setMutationError("批量数据集的依赖影响暂时无法读取，未执行回收站操作。");
-        }
-      });
-    return () => {
-      active = false;
-    };
-  }, [datasetBulkTrashTargets]);
-  useEffect(() => {
     if (typeof window.matchMedia !== "function") return;
-    const media = window.matchMedia("(max-width: 720px)");
+    const media = window.matchMedia("(max-width: 960px)");
     const sync = () => setMobileNavigatorCollapsed(media.matches);
     sync();
     media.addEventListener("change", sync);
@@ -820,10 +779,10 @@ export function ProjectDataPage({
     const nextSelection = resolveDatasetSelection(
       queryDatasetId,
       selectedId,
-      visibleDatasets.map((item) => item.datasetId),
+      (queryDatasetId ? history?.datasets || [] : visibleDatasets).map((item) => item.datasetId),
     );
     if (nextSelection !== selectedId) setSelectedId(nextSelection);
-  }, [queryDatasetId, selectedId, visibleDatasets]);
+  }, [queryDatasetId, selectedId, visibleDatasets, history?.datasets]);
   const openInspector = () => {
     const active = document.activeElement;
     if (active instanceof HTMLElement && active !== document.body) {
@@ -881,9 +840,9 @@ export function ProjectDataPage({
       document.removeEventListener("focusin", remember, true);
     };
   }, []);
-  const selected = visibleDatasets.find(
-    (item) => item.datasetId === selectedId,
-  );
+  const selected = queryDatasetId
+    ? history?.datasets.find((item) => item.datasetId === queryDatasetId)
+    : visibleDatasets.find((item) => item.datasetId === selectedId);
   useEffect(() => {
     setScientificSelection(
       resolveDataPageSelection(
@@ -896,9 +855,6 @@ export function ProjectDataPage({
   useEffect(() => {
     setSelectedSourceAvailability("loading");
   }, [selected?.datasetId]);
-  const selectedScientificObject = scientificObjects.find(
-    (item) => item.id === queryObjectId,
-  );
   const objectRouteMissingVersion = Boolean(
     queryObjectId && !queryObjectVersionId,
   );
@@ -909,97 +865,57 @@ export function ProjectDataPage({
     visibleDatasets.every((dataset) =>
       selectedDatasetIds.has(dataset.datasetId),
     );
-  const allVisibleObjectsSelected =
-    scientificObjects.length > 0 &&
-    scientificObjects.every((item) => selectedScientificObjectIds.has(item.id));
+  const selectableObjects = scientificObjects.filter((item) => item.current_version_id);
+  const directoryFeedbackInViewer = !selected && !queryDatasetId && !queryObjectId && selectableObjects.length === 0;
+  const allVisibleObjectsSelected = selectableObjects.length > 0 && selectableObjects.every((item) => selectedScientificObjectIds.has(item.id));
   const handleSelection = (selection: WorkspaceSelectionContext) => {
     setScientificSelection(selection);
     try {
       const token = encodeWorkspaceSelectionUrl(selection);
       const next = dataTableViewHref(window.location.href, {
-        selection: token,
+        selection: selection.cleared ? "" : token,
+        ...(!selection.cleared && selection.primary ? {
+          resource: selection.primary.kind === "VOLUMETRIC_FIELD"
+            ? /^source:(.+):volumetric-dataset$/.exec(selection.primary.artifactId || "")?.[1]
+            : selection.primary.artifactId?.startsWith("source:")
+            ? selection.primary.artifactId.slice("source:".length)
+            : selection.primary.phononArtifactId?.startsWith("source:") ? selection.primary.phononArtifactId.slice("source:".length)
+            : selection.primary.objectId || undefined,
+        } : {}),
       });
-      window.history.pushState(
-        { ...(window.history.state || {}), scientificSelection: true },
-        "",
-        next,
-      );
+      pushProductQuery(next, { scientificSelection: true });
     } catch {
       // Keep the in-tab selection usable. Only validated, bounded exact
       // selections may become shareable URL state.
     }
-    openInspector();
   };
   const updateTableViewRoute = (
     changes: DataTableRouteState,
     mode: "push" | "replace",
   ) => {
     const next = dataTableViewHref(window.location.href, changes);
-    window.history[mode === "push" ? "pushState" : "replaceState"](
-      { ...(window.history.state || {}), dataTableView: true },
-      "",
-      next,
-    );
+    if (mode === "push") pushProductQuery(next, { dataTableView: true });
+    else replaceProductQuery(next);
   };
-  async function setScientificObjectLifecycle(
-    item: ScientificObjectSummary,
-    lifecycle: "ACTIVE" | "ARCHIVED" | "TRASHED",
-  ): Promise<boolean> {
-    if (busy) return false;
-    setBusy(true);
-    setMutationError("");
-    try {
-      const updated = await updateScientificObject(
-        item.id,
-        lifecycle === "TRASHED"
-          ? { lifecycle }
-          : { archived: lifecycle === "ARCHIVED" },
-      );
-      setScientificObjects((current) => {
-        const shouldRemove = statusFilter !== lifecycle.toLowerCase();
-        return shouldRemove
-          ? current.filter((candidate) => candidate.id !== item.id)
-          : current.map((candidate) =>
-              candidate.id === item.id
-                ? { ...candidate, ...updated }
-                : candidate,
-            );
-      });
-      return true;
-    } catch (reason) {
-      setMutationError(
-        reason instanceof Error ? reason.message : "科研对象状态更新失败。",
-      );
-      return false;
-    } finally {
-      setBusy(false);
-    }
+  const changeResource = (resourceId: string) => {
+    if (!selected) return;
+    setScientificSelection(null);
+    const next = new URL(dataTableViewHref(window.location.href, { resource: resourceId, selection: "", query: "", sort: "asc", row: "" }), window.location.origin);
+    next.searchParams.set("dataset", selected.datasetId);
+    pushProductQuery(`${next.pathname}${next.search}${next.hash}`, { dataResourceView: true });
+  };
+  async function setScientificObjectLifecycle(item: ScientificObjectSummary, lifecycle: "ACTIVE" | "ARCHIVED" | "TRASHED"): Promise<boolean> {
+    if (busy || !canWriteProject) return false;
+    const success = await objectOperation.update([item.id], lifecycle, "directory");
+    if (success) window.requestAnimationFrame(() => dataHeadingRef.current?.focus());
+    return success;
   }
-  async function applyScientificObjectBatch(
-    lifecycle: "ACTIVE" | "ARCHIVED" | "TRASHED",
-  ): Promise<boolean> {
-    if (!selectedScientificObjectIds.size || busy) return false;
-    setBusy(true);
-    setMutationError("");
-    try {
-      await bulkUpdateScientificObjects(
-        projectId,
-        Array.from(selectedScientificObjectIds),
-        lifecycle,
-      );
-      setScientificObjects((current) =>
-        current.filter((item) => !selectedScientificObjectIds.has(item.id)),
-      );
-      setSelectedScientificObjectIds(new Set());
-      return true;
-    } catch (reason) {
-      setMutationError(
-        reason instanceof Error ? reason.message : "批量科研对象操作失败。",
-      );
-      return false;
-    } finally {
-      setBusy(false);
-    }
+  async function applyScientificObjectBatch(lifecycle: "ACTIVE" | "ARCHIVED" | "TRASHED", confirmedIds?: string[]): Promise<boolean> {
+    const ids = confirmedIds || scientificObjects.filter((item) => selectedScientificObjectIds.has(item.id)).map((item) => item.id);
+    if (!ids.length || busy || !canWriteProject) return false;
+    const success = await objectOperation.update(ids, lifecycle, "directory", true);
+    if (success) { setSelectedScientificObjectIds(new Set()); setSelectionMode(false); window.requestAnimationFrame(() => dataHeadingRef.current?.focus()); }
+    return success;
   }
   function requestScientificObjectBulkTrash() {
     if (!selectedScientificObjectIds.size || busy) return;
@@ -1007,21 +923,19 @@ export function ProjectDataPage({
       selectedScientificObjectIds.has(item.id),
     );
     if (!targets.length) return;
-    setMutationError("");
+
     setScientificObjectBulkTrashTargets(targets);
   }
   function confirmScientificObjectBulkTrash() {
     if (
       !scientificObjectBulkTrashTargets ||
-      !scientificObjectBulkTrashImpacts ||
-      scientificObjectBulkTrashImpacts.length !== scientificObjectBulkTrashTargets.length
+      !objectBulkPreview.complete
     ) {
       return;
     }
-    void applyScientificObjectBatch("TRASHED").then((success) => {
+    void applyScientificObjectBatch("TRASHED", scientificObjectBulkTrashTargets.map((item) => item.id)).then((success) => {
       if (success) {
         setScientificObjectBulkTrashTargets(null);
-        setScientificObjectBulkTrashImpacts(null);
       }
     });
   }
@@ -1049,6 +963,7 @@ export function ProjectDataPage({
                   ? "ACTIVE"
                   : "ARCHIVED",
             ),
+          disabled: busy || objectOperation.uncertain,
         }
       : { label: "查看研究记录", href: `/projects/${projectId}/research` },
       canWriteProject && item.lifecycle_status === "ACTIVE"
@@ -1079,62 +994,30 @@ export function ProjectDataPage({
     dataset: ProjectDataset,
     archived: boolean,
   ) {
-    setBusy(true);
-    setMutationError("");
-    try {
-      const result = await updateDataset(dataset.datasetId, { archived });
-      updateLocalDataset(dataset.datasetId, {
-        name: result.name,
-        status: result.status,
-      });
-    } catch (reason) {
-      setMutationError(
-        reason instanceof Error ? reason.message : "数据集状态更新失败。",
-      );
-    } finally {
-      setBusy(false);
-    }
+    if (busy || !canWriteProject) return;
+    await datasetOperation.run(archived ? "归档数据集" : "恢复数据集", async (signal) => validateDataset(await updateDataset(dataset.datasetId, { archived }, signal), projectId, dataset.datasetId, { archived }, dataset.status), (changes) => {
+      updateLocalDataset(dataset.datasetId, changes);
+      window.requestAnimationFrame(() => dataHeadingRef.current?.focus());
+    });
   }
   async function restoreDataset(dataset: ProjectDataset) {
-    setBusy(true);
-    setMutationError("");
-    try {
-      const result = await updateDataset(dataset.datasetId, {
-        archived: false,
-      });
-      updateLocalDataset(dataset.datasetId, {
-        name: result.name,
-        status: result.status,
-      });
-    } catch (reason) {
-      setMutationError(
-        reason instanceof Error ? reason.message : "数据集恢复失败。",
-      );
-    } finally {
-      setBusy(false);
-    }
+    await setDatasetArchived(dataset, false);
   }
   async function applyDatasetBatch(
     action: "archive" | "trash" | "restore",
+    confirmedIds?: string[],
   ): Promise<boolean> {
-    if (!selectedDatasetIds.size || busy) return false;
-    setBusy(true);
-    setMutationError("");
-    try {
-      const ids = Array.from(selectedDatasetIds);
-      await bulkDatasetAction(ids, action);
-      setHistory(await getProjectHistory(projectId));
-      setSelectedDatasetIds(new Set());
-      setSelectionMode(false);
-      return true;
-    } catch (reason) {
-      setMutationError(
-        reason instanceof Error ? reason.message : "批量数据操作失败。",
-      );
-      return false;
-    } finally {
-      setBusy(false);
-    }
+    const ids = confirmedIds || visibleDatasets.filter((item) => selectedDatasetIds.has(item.datasetId)).map((item) => item.datasetId);
+    if (!ids.length || busy || !canWriteProject) return false;
+    return datasetOperation.run("批量更新数据集", async (signal) => { await updateDatasetBatches(ids, action, signal, (confirmed) => {
+      const completed = new Set(confirmed);
+      const status = action === "archive" ? "archived" : "trashed";
+      if (action !== "restore") setHistory((current) => current ? { ...current, datasets: current.datasets.map((item) => completed.has(item.datasetId) ? { ...item, status } : item) } : current);
+      setSelectedDatasetIds((current) => new Set([...current].filter((id) => !completed.has(id))));
+      setDatasetBulkTrashTargets((current) => { const remaining = current?.filter((item) => !completed.has(item.datasetId)); return remaining?.length ? remaining : null; });
+    });
+      return action === "restore" ? readDatasetDirectory(projectId, signal) : null;
+    }, (next) => { if (next) setHistory(next); setSelectionMode(false); window.requestAnimationFrame(() => dataHeadingRef.current?.focus()); });
   }
   function requestDatasetBulkTrash() {
     if (!selectedDatasetIds.size || busy) return;
@@ -1142,21 +1025,19 @@ export function ProjectDataPage({
       selectedDatasetIds.has(item.datasetId),
     );
     if (!targets.length) return;
-    setMutationError("");
+
     setDatasetBulkTrashTargets(targets);
   }
   function confirmDatasetBulkTrash() {
     if (
       !datasetBulkTrashTargets ||
-      !datasetBulkTrashImpacts ||
-      datasetBulkTrashImpacts.length !== datasetBulkTrashTargets.length
+      !datasetBulkPreview.complete
     ) {
       return;
     }
-    void applyDatasetBatch("trash").then((success) => {
+    void applyDatasetBatch("trash", datasetBulkTrashTargets.map((item) => item.datasetId)).then((success) => {
       if (success) {
         setDatasetBulkTrashTargets(null);
-        setDatasetBulkTrashImpacts(null);
       }
     });
   }
@@ -1171,6 +1052,7 @@ export function ProjectDataPage({
       if (canWriteProject)
         actions.push({
           label: "从回收站恢复",
+          disabled: busy || datasetOperation.uncertain,
           onSelect: () => void restoreDataset(dataset),
         });
       else
@@ -1201,6 +1083,7 @@ export function ProjectDataPage({
       });
       actions.push({
         label: dataset.status === "archived" ? "恢复数据集" : "归档数据集",
+        disabled: busy || datasetOperation.uncertain,
         onSelect: () =>
           void setDatasetArchived(dataset, dataset.status !== "archived"),
       });
@@ -1231,7 +1114,7 @@ export function ProjectDataPage({
       return next;
     });
   const confirmScientificObjectTrash = () => {
-    if (!scientificObjectTrashTarget) return;
+    if (!scientificObjectTrashTarget || !objectPreview.complete) return;
     void setScientificObjectLifecycle(scientificObjectTrashTarget, "TRASHED").then(
       (updated) => {
         if (updated) setScientificObjectTrashTarget(null);
@@ -1244,25 +1127,26 @@ export function ProjectDataPage({
         {scientificObjectTrashTarget ? (
           <ScientificObjectTrashDialog
             item={scientificObjectTrashTarget}
-            impact={scientificObjectImpact}
+            preview={objectPreview}
             busy={busy}
-            error={mutationError}
-            onClose={() => setScientificObjectTrashTarget(null)}
+            error=""
+            recovery={objectRecovery}
+            locked={objectOperation.uncertain}
+            onClose={() => { objectOperation.dismiss("directory"); setScientificObjectTrashTarget(null); }}
             onConfirm={confirmScientificObjectTrash}
           />
         ) : null}
         {scientificObjectBulkTrashTargets ? (
           <ScientificObjectBulkTrashDialog
             items={scientificObjectBulkTrashTargets}
-            impacts={scientificObjectBulkTrashImpacts}
+            preview={objectBulkPreview}
             busy={busy}
-            error={mutationError}
+            error=""
+            recovery={objectRecovery}
+            locked={objectOperation.uncertain}
             onClose={() => {
-              if (!busy) {
-                setScientificObjectBulkTrashTargets(null);
-                setScientificObjectBulkTrashImpacts(null);
-                setMutationError("");
-              }
+              objectOperation.dismiss("directory");
+              setScientificObjectBulkTrashTargets(null);
             }}
             onConfirm={confirmScientificObjectBulkTrash}
           />
@@ -1270,74 +1154,33 @@ export function ProjectDataPage({
         {datasetBulkTrashTargets ? (
           <DatasetBulkTrashDialog
             items={datasetBulkTrashTargets}
-            impacts={datasetBulkTrashImpacts}
+            preview={datasetBulkPreview}
             busy={busy}
-            error={mutationError}
+            locked={datasetOperation.uncertain}
+            error=""
+            recovery={datasetRecovery}
             onClose={() => {
-              if (!busy) {
-                setDatasetBulkTrashTargets(null);
-                setDatasetBulkTrashImpacts(null);
-                setMutationError("");
-              }
+              datasetOperation.dismiss();
+              setDatasetBulkTrashTargets(null);
             }}
             onConfirm={confirmDatasetBulkTrash}
           />
         ) : null}
-        <section className="data-workbench">
-          <EmptyOrError state={state} error={error} onRetry={retry} />
+        <section className="data-workbench" ref={navigator.workbenchRef} style={navigator.style} data-directory-collapsed={navigator.collapsed} data-directory-dragging={navigator.dragging}>
+          {!history ? <EmptyOrError state={state} error={error} onRetry={retry} /> : null}
           {history && (
             <>
-              <aside className="data-navigator">
+              <aside className="data-navigator" aria-label="项目数据目录" data-mobile-collapsed={mobileNavigatorCollapsed}>
                 <header>
                   <div className="data-navigator-heading">
-                    <div>
-                      <p className="product-kicker">项目数据</p>
-                      <h1>{productProjectName(history.project.name)}</h1>
-                    </div>
-                    <button
-                      type="button"
-                      className="data-navigator-toggle"
-                      aria-expanded={!mobileNavigatorCollapsed}
-                      aria-controls="data-navigator-content"
-                      onClick={() =>
-                        setMobileNavigatorCollapsed((collapsed) => !collapsed)
-                      }
-                    >
-                      {mobileNavigatorCollapsed ? "显示数据" : "收起数据"}
-                    </button>
-                  </div>
-                  <div className="data-navigator-controls">
-                    <div
-                      className="segmented-control"
-                      role="group"
-                      aria-label="数据集状态"
-                    >
-                      <button
-                        type="button"
-                        aria-pressed={statusFilter === "active"}
-                        onClick={() => setStatusFilter("active")}
-                      >
-                        当前
-                      </button>
-                      <button
-                        type="button"
-                        aria-pressed={statusFilter === "archived"}
-                        onClick={() => setStatusFilter("archived")}
-                      >
-                        已归档
-                      </button>
-                      <button
-                        type="button"
-                        aria-pressed={statusFilter === "trashed"}
-                        onClick={() => setStatusFilter("trashed")}
-                      >
-                        回收站
-                      </button>
+                    <div className="data-navigator-title">
+                      <h1 ref={dataHeadingRef} tabIndex={-1}>项目数据</h1>
+                      {statusFilter !== "active" ? <span className="data-navigator-filter-label">{statusFilter === "archived" ? "已归档" : "回收站"}</span> : null}
                     </div>
                     {canWriteProject ? (
                       <button
                         type="button"
-                        className="product-icon-action"
+                        className="product-icon-action data-directory-select"
                         aria-label={
                           selectionMode
                             ? "退出数据选择"
@@ -1354,6 +1197,21 @@ export function ProjectDataPage({
                         {selectionMode ? "×" : "✓"}
                       </button>
                     ) : null}
+                    <button type="button" className="data-navigator-collapse" aria-label={navigator.collapsed ? "展开数据目录" : "收起数据目录"} title={navigator.collapsed ? "展开数据目录" : "收起数据目录"} aria-expanded={!navigator.collapsed} aria-controls="data-navigator-content" onClick={() => navigator.setCollapsed((value) => !value)}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /><path d={navigator.collapsed ? "m13 9 3 3-3 3" : "m16 9-3 3 3 3"} /></svg>
+                      {navigator.collapsed ? <span>目录</span> : null}
+                    </button>
+                    <button
+                      type="button"
+                      className="data-navigator-toggle"
+                      aria-expanded={!mobileNavigatorCollapsed}
+                      aria-controls="data-navigator-content"
+                      onClick={() =>
+                        setMobileNavigatorCollapsed((collapsed) => !collapsed)
+                      }
+                    >
+                      {mobileNavigatorCollapsed ? "展开目录" : "收起目录"}
+                    </button>
                   </div>
                 </header>
                 <div
@@ -1361,28 +1219,40 @@ export function ProjectDataPage({
                   className="data-navigator-content"
                   data-mobile-collapsed={mobileNavigatorCollapsed}
                 >
-                <section
-                  className="data-authority-legend"
-                  aria-labelledby="data-authority-legend-title"
-                >
-                  <p className="product-kicker">阅读提示</p>
-                  <h2 id="data-authority-legend-title">来源数据与科学身份</h2>
-                  <p className="data-authority-legend-intro">
-                    左侧按两种层级组织数据；查看器和研究结果始终回链到精确对象版本。
-                  </p>
-                  <div className="data-authority-legend-items">
-                    <div>
-                      <span className="data-authority-legend-token">Dataset</span>
-                      <strong>来源范围</strong>
-                      <small>管理导入文件、记录与查询，不代表不可变科学状态。</small>
+                  <div className="data-navigator-controls">
+                    <div
+                      className="segmented-control"
+                      role="group"
+                      aria-label="数据集状态"
+                    >
+                      <button
+                        type="button"
+                        aria-pressed={statusFilter === "active"}
+                        onClick={() => changeStatusFilter("active")}
+                      >
+                        当前
+                      </button>
+                      <button
+                        type="button"
+                        aria-pressed={statusFilter === "archived"}
+                        onClick={() => changeStatusFilter("archived")}
+                      >
+                        已归档
+                      </button>
+                      <button
+                        type="button"
+                        aria-pressed={statusFilter === "trashed"}
+                        onClick={() => changeStatusFilter("trashed")}
+                      >
+                        回收站
+                      </button>
                     </div>
-                    <div>
-                      <span className="data-authority-legend-token">Scientific Object</span>
-                      <strong>科研对象 / 版本</strong>
-                      <small>保存解析后的科学身份；打开时不会按名称替换版本。</small>
-                    </div>
+
                   </div>
-                </section>
+                <div className="data-directory-switch" role="group" aria-label="目录内容">
+                  <button type="button" aria-pressed={directoryView === "objects"} onClick={() => changeDirectoryView("objects")}>数据视图</button>
+                  <button type="button" aria-pressed={directoryView === "datasets"} onClick={() => changeDirectoryView("datasets")}>上传记录</button>
+                </div>
                 {selectionMode ? (
                   <div
                     className="data-batch-actions"
@@ -1398,7 +1268,7 @@ export function ProjectDataPage({
                       <span>当前筛选</span>
                     </div>
                     <div className="data-batch-selection-tools">
-                      <button
+                      {directoryView === "datasets" ? <button
                         type="button"
                         className="data-batch-select-all"
                         disabled={!visibleDatasets.length || busy}
@@ -1415,8 +1285,8 @@ export function ProjectDataPage({
                         }
                       >
                         {allVisibleDatasetsSelected ? "清空数据" : "全选数据"}
-                      </button>
-                      {scientificObjects.length ? (
+                      </button> : null}
+                      {directoryView === "objects" && selectableObjects.length ? (
                         <button
                           type="button"
                           className="data-batch-select-all"
@@ -1426,7 +1296,7 @@ export function ProjectDataPage({
                               allVisibleObjectsSelected
                                 ? new Set()
                                 : new Set(
-                                    scientificObjects.map((item) => item.id),
+                                    selectableObjects.map((item) => item.id),
                                   ),
                             )
                           }
@@ -1435,11 +1305,11 @@ export function ProjectDataPage({
                         </button>
                       ) : null}
                     </div>
-                    <div className="data-batch-selection-actions">
+                    {directoryView === "datasets" ? <div className="data-batch-selection-actions">
                       {statusFilter === "trashed" ? (
                         <button
                           type="button"
-                          disabled={!selectedDatasetIds.size || busy}
+                          disabled={!selectedDatasetIds.size || busy || datasetOperation.uncertain}
                           onClick={() => void applyDatasetBatch("restore")}
                         >
                           恢复
@@ -1450,6 +1320,7 @@ export function ProjectDataPage({
                             type="button"
                             disabled={
                               !selectedDatasetIds.size ||
+                              datasetOperation.uncertain ||
                               busy ||
                               statusFilter === "archived"
                             }
@@ -1460,14 +1331,14 @@ export function ProjectDataPage({
                           <button
                             type="button"
                             className="product-danger-action"
-                            disabled={!selectedDatasetIds.size || busy}
+                            disabled={!selectedDatasetIds.size || busy || datasetOperation.uncertain}
                             onClick={requestDatasetBulkTrash}
                           >
                             移入回收站
                           </button>
                         </>
                       )}
-                    </div>
+                    </div> : null}
                   </div>
                 ) : null}
                 {selectionMode && selectedScientificObjectIds.size ? (
@@ -1483,7 +1354,7 @@ export function ProjectDataPage({
                     statusFilter === "archived" ? (
                       <button
                         type="button"
-                        disabled={busy}
+                        disabled={busy || objectOperation.uncertain}
                         onClick={() =>
                           void applyScientificObjectBatch("ACTIVE")
                         }
@@ -1494,7 +1365,7 @@ export function ProjectDataPage({
                       <>
                         <button
                           type="button"
-                          disabled={busy}
+                          disabled={busy || objectOperation.uncertain}
                           onClick={() =>
                             void applyScientificObjectBatch("ARCHIVED")
                           }
@@ -1504,7 +1375,7 @@ export function ProjectDataPage({
                         <button
                           type="button"
                           className="product-danger-action"
-                          disabled={busy}
+                          disabled={busy || objectOperation.uncertain}
                           onClick={requestScientificObjectBulkTrash}
                         >
                           移入回收站
@@ -1513,33 +1384,27 @@ export function ProjectDataPage({
                     )}
                   </div>
                 ) : null}
-                {mutationError ? (
-                  <p
-                    className="product-form-error data-management-error"
-                    role="alert"
-                  >
-                    {mutationError}
-                  </p>
-                ) : null}
-                <div className="data-navigator-section-heading">
-                  <div>
-                    <p className="product-kicker">来源范围</p>
-                    <strong>数据集</strong>
+                {!dialog && !datasetBulkTrashTargets ? datasetRecovery : null}
+                {!scientificObjectTrashTarget && !scientificObjectBulkTrashTargets && objectOperation.origin !== `viewer:${queryObjectId}:${queryObjectVersionId}` ? objectRecovery : null}
+                <section className="data-directory-list" aria-label="上传记录" hidden={directoryView !== "datasets"}>
+                <p className="data-directory-count">{visibleDatasets.length} 条上传记录</p>
+                {visibleDatasets.length === 0 ? (
+                  <div className="data-navigator-empty">
+                    <p>{statusFilter === "archived" ? "没有已归档的上传记录。" : statusFilter === "trashed" ? "上传记录回收站为空。" : "还没有上传记录。"}</p>
+                    {scientificObjects.length > 0 ? <button type="button" className="product-secondary-action" onClick={browseDataViews}>查看数据视图</button> : null}
                   </div>
-                  <span>{visibleDatasets.length} 个</span>
-                </div>
+                ) : null}
                 <div className="data-tree managed-data-tree">
                   {visibleDatasets.map((dataset) => (
                     <ManagedObjectRow
                       key={dataset.datasetId}
                       href={`/projects/${projectId}/data?dataset=${dataset.datasetId}`}
                       title={productProjectName(dataset.name)}
+                      truncateTitle
+                      onOpen={() => setMobileNavigatorCollapsed(true)}
                       description={`${dataset.import.fileCount} 个文件 · ${dataKindLabel(inferDataKind(dataset))}`}
                       trailing={
-                        dataset.datasetId === selected?.datasetId &&
-                        !selectedScientificObject
-                          ? "正在查看"
-                          : dataset.status === "trashed"
+                        dataset.status === "trashed"
                             ? "回收站"
                             : dataset.status === "archived"
                               ? "已归档"
@@ -1550,7 +1415,7 @@ export function ProjectDataPage({
                       selected={selectedDatasetIds.has(dataset.datasetId)}
                       active={
                         !selectionMode &&
-                        !selectedScientificObject &&
+                        !queryObjectId &&
                         dataset.datasetId === selected?.datasetId
                       }
                       onSelectedChange={(checked) =>
@@ -1559,74 +1424,28 @@ export function ProjectDataPage({
                     />
                   ))}
                 </div>
-                {selected && scientificObjects.length ? (
+                </section>
+                {(
                   <section
-                    className="data-authority-map"
-                    aria-labelledby="data-authority-map-title"
+                    ref={dataViewsRef}
+                    tabIndex={-1}
+                    className="scientific-object-list data-directory-list"
+                    aria-label="数据视图"
+                    hidden={directoryView !== "objects"}
                   >
-                    <p className="product-kicker">数据权威层级</p>
-                    <h2 id="data-authority-map-title">
-                      来源 Dataset → 科研对象 → 不可变版本
-                    </h2>
-                    <ol>
-                      <li>
-                        <span>来源 Dataset</span>
-                        <strong>{productProjectName(selected.name)}</strong>
-                        <small>{selected.import.fileCount} 个源文件</small>
-                      </li>
-                      <li>
-                        <span>项目科研对象</span>
-                        <strong>{scientificObjects.length} 个</strong>
-                        <small>由解析与科学身份流程管理</small>
-                      </li>
-                      <li>
-                        <span>当前不可变版本</span>
-                        <strong>
-                          {
-                            scientificObjects.filter(
-                              (item) => item.current_version_id,
-                            ).length
-                          }{" "}
-                          个已绑定
-                        </strong>
-                        <small>选择下方对象查看精确版本</small>
-                      </li>
-                    </ol>
-                    <p>
-                      Dataset 负责来源组织；科研对象及其版本是科学权威。
-                      重命名或归档 Dataset 不会改写不可变科学版本。
-                    </p>
-                    <details>
-                      <summary>如何核对一一对应关系</summary>
-                      <p>
-                        打开下方科研对象后，以查看器显示的精确对象、版本与来源绑定为准；
-                        本页不会按名称猜测或替换版本。
-                      </p>
-                    </details>
-                  </section>
-                ) : null}
-                {scientificObjects.length ? (
-                  <section
-                    className="scientific-object-list"
-                    aria-labelledby="scientific-object-list-title"
-                  >
-                    <div className="data-navigator-section-heading scientific-object-section-heading">
-                      <div>
-                        <p className="product-kicker">解析后的科学身份</p>
-                        <h2 id="scientific-object-list-title">科研对象</h2>
-                      </div>
-                      <span>{scientificObjects.length} 个</span>
-                    </div>
-                    <p className="data-navigator-section-hint">
-                      选择对象后查看其精确不可变版本；它不是 Dataset 的替代入口。
-                    </p>
-                    <div className="managed-scientific-object-list">
+                    <p className="data-directory-count">{objectDirectory.nextCursor ? `已显示 ${scientificObjects.length} 项数据` : objectDirectory.state === "ready" ? `${scientificObjects.length} 项数据` : ""}</p>
+                    {objectDirectory.state === "loading" && !directoryFeedbackInViewer ? <p className="data-navigator-section-hint" role="status">正在读取数据视图…</p> : null}
+                    {objectDirectory.state === "error" && !directoryFeedbackInViewer ? <div className="data-directory-feedback" role="alert"><p>{objectDirectory.error}</p><button type="button" className="product-secondary-action" onClick={objectDirectory.retry}>重新加载科研对象</button></div> : null}
+                    {objectDirectory.state === "ready" && scientificObjects.length === 0 ? <div className="data-navigator-empty"><p>{statusFilter === "archived" ? "没有已归档的数据视图。" : statusFilter === "trashed" ? "数据视图回收站为空。" : "还没有可查看的数据视图。"}</p>{visibleDatasets.length > 0 ? <button type="button" className="product-secondary-action" onClick={() => changeDirectoryView("datasets")}>查看上传记录</button> : null}</div> : null}
+                    <div className="managed-scientific-object-list managed-data-tree">
                       {scientificObjects.map((item) =>
                         item.current_version_id ? (
                           <ManagedObjectRow
                             key={item.id}
                             href={`/projects/${projectId}/data?object=${encodeURIComponent(item.id)}&version=${encodeURIComponent(item.current_version_id)}`}
                             title={item.display_name}
+                            truncateTitle
+                            onOpen={() => setMobileNavigatorCollapsed(true)}
                             description={scientificObjectTypeLabel(
                               item.object_type,
                             )}
@@ -1640,34 +1459,17 @@ export function ProjectDataPage({
                             actions={scientificObjectActions(item)}
                             selectionMode={selectionMode}
                             selected={selectedScientificObjectIds.has(item.id)}
+                            active={item.id === queryObjectId}
                             onSelectedChange={(checked) =>
                               toggleScientificObjectSelected(item.id, checked)
                             }
                           />
-                        ) : null,
+                        ) : <UnavailableDataEntry key={item.id} title={item.display_name} />,
                       )}
                     </div>
+                    {objectDirectory.nextCursor ? <button type="button" className="product-secondary-action" disabled={objectDirectory.state !== "ready"} onClick={objectDirectory.loadMore}>加载更多科研对象</button> : null}
                   </section>
-                ) : null}
-                {visibleDatasets.length === 0 &&
-                scientificObjects.length === 0 ? (
-                  <div className="data-navigator-empty">
-                    <strong>
-                      {statusFilter === "archived"
-                        ? "没有已归档数据"
-                        : statusFilter === "trashed"
-                          ? "回收站为空"
-                          : "还没有项目数据"}
-                    </strong>
-                    <p>
-                      {statusFilter === "archived"
-                        ? "归档后的数据会显示在这里。"
-                        : statusFilter === "trashed"
-                          ? "移入回收站的数据集可在这里检查依赖并恢复。"
-                          : "上传后将按文件、科学对象和组合视图组织。"}
-                    </p>
-                  </div>
-                ) : null}
+                )}
                 {canWriteProject && statusFilter === "active" ? (
                   <Link
                     className="product-secondary-action data-upload"
@@ -1678,28 +1480,39 @@ export function ProjectDataPage({
                 ) : null}
                 </div>
               </aside>
+              <div className="data-directory-divider" {...navigator.separatorProps}><span aria-hidden="true" /></div>
               <section className="scientific-viewer">
                 {objectRouteMissingVersion ? (
                   <div className="product-state" role="alert">
-                    <p className="product-kicker">精确科学来源</p>
-                    <h2>需要指定科研对象版本</h2>
-                    <p>
-                      此链接只指定了科研对象，没有指定不可变版本。为避免静默替换为最新版本，
-                      请从左侧科研对象列表重新打开精确版本。
-                    </p>
-                    <Link
+                    <h2>这个链接缺少数据版本</h2>
+                    <p>请从数据视图中重新选择这份数据。</p>
+                    <button
+                      type="button"
                       className="product-secondary-action"
-                      href={`/projects/${projectId}/data`}
+                      onClick={browseDataViews}
                     >
-                      返回项目数据
-                    </Link>
+                      选择数据版本
+                    </button>
                   </div>
-                ) : selectedScientificObject && queryObjectVersionId ? (
+                ) : queryObjectId && queryObjectVersionId ? (
                   <LazyScientificObjectViewer
+                    management={objectOperation}
                     projectId={projectId}
-                    objectId={selectedScientificObject.id}
+                    objectId={queryObjectId}
                     versionId={queryObjectVersionId}
+                    canManage={canWriteProject}
+                    canResearch={projectRoleAllows(history?.project.role, "research")}
+                    initialSelectionToken={querySelectionToken}
                   />
+                ) : queryDatasetId && !selected ? (
+                  <div className="product-state" role={state === "loading" ? "status" : "alert"}>
+                    <h2>{state === "loading" ? "正在查找这份数据…" : "暂时无法打开这份数据"}</h2>
+                    <p>{state === "error" ? error : "暂未找到链接对应的上传记录。可以重新检查，或从目录选择其他数据。"}</p>
+                    <div className="product-row-actions">
+                      <button type="button" className="product-primary-action" disabled={state === "loading"} onClick={retry}>{state === "loading" ? "正在检查…" : "重新检查"}</button>
+                      <Link className="product-secondary-action" href={`/projects/${projectId}/data`}>浏览项目数据</Link>
+                    </div>
+                  </div>
                 ) : selected ? (
                   <>
                     <header className="viewer-toolbar">
@@ -1725,11 +1538,7 @@ export function ProjectDataPage({
                         ) > 0 ? (
                           <Link
                             className="product-primary-action"
-                            href={`/projects/${projectId}/research?dataset=${encodeURIComponent(selected.datasetId)}${
-                              scientificSelection?.primary?.sampleRef
-                                ? `&sample=${encodeURIComponent(scientificSelection.primary.sampleRef)}`
-                                : ""
-                            }`}
+                            href={`/projects/${projectId}/research?dataset=${encodeURIComponent(selected.datasetId)}${scientificSelection?.primary?.sampleRef ? `&sample=${encodeURIComponent(scientificSelection.primary.sampleRef)}` : ""}${querySelectionToken && ["DATASET_SAMPLE", "PERIODIC_SITE", "ELECTRONIC_BAND_STATE", "ELECTRONIC_DOS_POINT", "PHONON_Q_POINT", "PHONON_DOS_POINT", "TRAJECTORY_FRAME", "TRAJECTORY_ATOM", "VOLUMETRIC_FIELD"].includes(scientificSelection?.primary?.kind || "") ? `&sourceSelection=${encodeURIComponent(querySelectionToken)}` : ""}`}
                           >
                             研究此数据
                           </Link>
@@ -1737,10 +1546,14 @@ export function ProjectDataPage({
                       </div>
                     </header>
                     <ScientificDataView
+                      key={`${projectId}:${selected.datasetId}`}
                       projectId={projectId}
                       dataset={selected}
                       kind={kind}
                       onInspect={openInspector}
+                      selection={scientificSelection}
+                      requestedResourceId={queryDatasetId === selected.datasetId ? queryResourceId : null}
+                      onResourceChange={changeResource}
                       onSelection={handleSelection}
                       onAvailabilityChange={setSelectedSourceAvailability}
                       tableRouteState={{
@@ -1751,11 +1564,22 @@ export function ProjectDataPage({
                       onTableRouteChange={updateTableViewRoute}
                     />
                   </>
+                ) : scientificObjects.length > 0 ? (
+                  <div className="product-state" role={directoryFeedbackInViewer && objectDirectory.state === "error" ? "alert" : undefined}>
+                    <h2>{selectableObjects.length ? "选择一份数据开始查看" : "这些数据暂时无法查看"}</h2>
+                    <p>{selectableObjects.length ? "在数据视图中选择表格、结构或图谱，查看具体内容。" : objectDirectory.state === "error" ? "目录暂时无法更新，请重新加载。" : "还没有可打开的版本。可以稍后重新加载数据视图。"}</p>
+                    {selectableObjects.length ? <button type="button" className="product-primary-action" onClick={browseDataViews}>浏览数据视图</button> : <button type="button" className="product-secondary-action" disabled={objectDirectory.state === "loading"} onClick={objectDirectory.retry}>{objectDirectory.state === "loading" ? "正在加载…" : "重新加载数据视图"}</button>}
+                  </div>
+                ) : objectDirectory.state !== "ready" ? (
+                  <div className="product-state" role={objectDirectory.state === "error" ? "alert" : "status"}>
+                    <h2>{objectDirectory.state === "error" ? "暂时无法读取数据目录" : "正在读取数据目录…"}</h2>
+                    {objectDirectory.state === "error" ? <><p>请重新加载，查看项目中已有的数据。</p><button type="button" className="product-primary-action" onClick={objectDirectory.retry}>重新加载目录</button></> : null}
+                  </div>
                 ) : (
                   <div className="product-state">
                     <h2>
                       {statusFilter === "archived"
-                        ? "没有可恢复的数据"
+                        ? "没有已归档数据"
                         : statusFilter === "trashed"
                           ? "回收站为空"
                           : "尚无项目数据"}
@@ -1774,32 +1598,34 @@ export function ProjectDataPage({
                       >
                         上传数据
                       </Link>
-                    ) : null}
+                    ) : statusFilter !== "active" ? <button type="button" className="product-secondary-action" onClick={() => changeStatusFilter("active")}>查看当前数据</button> : null}
                   </div>
                 )}
               </section>
-              {inspector && selected && (
+              {inspector && selected && !queryObjectId && (
                 <aside
-                  className="context-inspector"
+                  className={`context-inspector ${sourceDetailsStyles.inspector}`}
                   role="region"
                   aria-labelledby="context-inspector-title"
                 >
-                  <button
-                    ref={inspectorCloseRef}
-                    type="button"
-                    aria-label="关闭详情"
-                    onClick={closeInspector}
-                  >
-                    ×
-                  </button>
-                  <p className="product-kicker">详情</p>
-                  <h2 id="context-inspector-title">
-                    {scientificSelection?.primary
-                      ? selectionTitle(scientificSelection.primary)
-                      : productProjectName(selected.name)}
-                  </h2>
+                  <header className={sourceDetailsStyles.heading}>
+                    <h2 id="context-inspector-title">
+                      {scientificSelection?.primary
+                        ? `已选${selectionKindLabel(scientificSelection.primary.kind)}`
+                        : productProjectName(selected.name)}
+                    </h2>
+                    <button
+                      ref={inspectorCloseRef}
+                      type="button"
+                      aria-label="关闭详情"
+                      onClick={closeInspector}
+                    >
+                      ×
+                    </button>
+                  </header>
+                  <div className={sourceDetailsStyles.inspectorBody}>
                   {scientificSelection?.primary ? (
-                    <dl>
+                    <dl className={sourceDetailsStyles.summary}>
                       <dt>选择类型</dt>
                       <dd>
                         {selectionKindLabel(scientificSelection.primary.kind)}
@@ -1810,7 +1636,7 @@ export function ProjectDataPage({
                       <dd>已选择，可继续查看依据</dd>
                     </dl>
                   ) : (
-                    <dl>
+                    <dl className={sourceDetailsStyles.summary}>
                       <dt>数据类型</dt>
                       <dd>{dataKindLabel(kind)}</dd>
                       <dt>记录</dt>
@@ -1823,25 +1649,25 @@ export function ProjectDataPage({
                       <dd>{dataStatusLabel(selected.status)}</dd>
                     </dl>
                   )}
-                  <h3>依据</h3>
-                  <p>内容类型与可用属性来自已生成的数据语义档案。</p>
-                  <details>
-                    <summary>来源与过程</summary>
-                    <p>
-                      {selected.import.fileCount} 个源文件，经当前导入流程识别。
-                    </p>
-                  </details>
+                  <DatasetSourceDetails key={`${projectId}:${selected.datasetId}`} projectId={projectId} dataset={selected} analyses={history.analyses} />
                   <details>
                     <summary>技术详情</summary>
-                    <p>选择 contract 已绑定当前项目和数据范围。</p>
+                    <p>数据标识：{scientificSelection?.primary ? selectionTitle(scientificSelection.primary) : selected.datasetId}</p>
                   </details>
+                  </div>
                 </aside>
               )}
               {dialog ? (
                 <DatasetEditDialog
+                  key={`${dialog.dataset.datasetId}:${dialog.mode}`}
+                  projectId={projectId}
+                  operation={datasetOperation}
+                  onReload={() => void recoverDatasets()}
+                  available={Boolean(history.datasets.some((item) => item.datasetId === dialog.dataset.datasetId))}
+                  canManage={projectRoleAllows(history.project.role, dialog.mode === "delete" ? "purge" : "write")}
                   dataset={dialog.dataset}
                   mode={dialog.mode}
-                  onClose={() => setDialog(null)}
+                  onClose={() => { datasetOperation.dismiss(); setDialog(null); }}
                   onUpdated={(changes) =>
                     updateLocalDataset(dialog.dataset.datasetId, changes)
                   }
@@ -1867,8 +1693,45 @@ export function ProjectDataPage({
   );
 }
 
+function UploadFilePicker({ id, label, files, onChange, multiple = false, accept, disabled }: {
+  id: string;
+  label: string;
+  files: File[];
+  onChange: (files: File[]) => void;
+  multiple?: boolean;
+  accept?: string;
+  disabled: boolean;
+}) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  return <div className="upload-field">
+    <label id={`${id}-label`} htmlFor={id}>{label}</label>
+    <div className="upload-file-select">
+      <input ref={inputRef} id={id} type="file" className="upload-file-input" aria-labelledby={`${id}-label`} aria-required="true" multiple={multiple} accept={accept} disabled={disabled} onChange={(event) => {
+        const chosen = Array.from(event.currentTarget.files || []);
+        if (chosen.length) onChange(chosen);
+        event.currentTarget.value = "";
+      }} />
+      <label className="upload-pick-action" htmlFor={id}>{files.length ? "重新选择" : "选择文件"}</label>
+      <span>{files.length ? `已选 ${files.length} 个文件` : multiple ? "可同时选择多个文件" : "尚未选择文件"}</span>
+    </div>
+    {files.length ? <ul className="upload-file-list" aria-label={`${label}已选择文件`}>
+      {files.map((file, index) => <li key={`${file.name}:${file.size}:${index}`}>
+        <span className="upload-file-name">{file.name}</span>
+        <span className="upload-file-size">{file.size < 1024 ? `${file.size} B` : file.size < 1024 * 1024 ? `${(file.size / 1024).toFixed(1)} KiB` : `${(file.size / (1024 * 1024)).toFixed(1)} MiB`}</span>
+        <button type="button" disabled={disabled} aria-label={`移除 ${label} ${file.name}`} onClick={() => {
+          onChange(files.filter((_, itemIndex) => itemIndex !== index));
+          window.requestAnimationFrame(() => inputRef.current?.focus());
+        }}>移除</button>
+      </li>)}
+    </ul> : null}
+  </div>;
+}
+
 export function DatasetUploadPage({ projectId }: { projectId: string }) {
-  const router = useProductRouter();
+  return <DatasetUploadForm key={projectId} projectId={projectId} />;
+}
+
+function DatasetUploadForm({ projectId }: { projectId: string }) {
   const {
     history,
     state: projectState,
@@ -1877,8 +1740,12 @@ export function DatasetUploadPage({ projectId }: { projectId: string }) {
   } = useProject(projectId);
   const [name, setName] = useState("");
   const [files, setFiles] = useState<File[]>([]);
+  const [uploadMode, setUploadMode] = useState<"files" | "phonon">("files");
+  const [uploaded, setUploaded] = useState<{ datasetId: string | null; name: string; fileCount: number } | null>(null);
+  const uploadingRef = useRef(false);
+  const resultRef = useRef<HTMLHeadingElement | null>(null);
+  const nameRef = useRef<HTMLInputElement | null>(null);
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [phononStructureFile, setPhononStructureFile] =
     useState<File | null>(null);
@@ -1890,17 +1757,36 @@ export function DatasetUploadPage({ projectId }: { projectId: string }) {
       phononBandFile &&
       phononDosFile,
   );
+  useEffect(() => { if (uploaded) resultRef.current?.focus(); }, [uploaded]);
+  const canSubmit = Boolean(name.trim() && (uploadMode === "phonon" ? typedPhononReady : files.length));
+  const changeUploadMode = (mode: "files" | "phonon") => {
+    if (uploadingRef.current) return;
+    setUploadMode(mode);
+    setError("");
+  };
+  const startAnotherUpload = () => {
+    setUploaded(null);
+    setName("");
+    setFiles([]);
+    setPhononStructureFile(null);
+    setPhononBandFile(null);
+    setPhononDosFile(null);
+    setError("");
+    window.requestAnimationFrame(() => nameRef.current?.focus());
+  };
   async function submit(event: React.FormEvent) {
     event.preventDefault();
-    if (!name.trim() || !files.length) return;
+    if (uploadingRef.current || uploaded || !canSubmit) return;
+    uploadingRef.current = true;
     setBusy(true);
     setError("");
-    setMessage("");
     try {
-      await uploadDatasetFiles(
-        projectId,
-        name.trim(),
-        files.map((file) => {
+      const requestedName = name.trim();
+      const uploadFiles: UploadDatasetFile[] = uploadMode === "phonon" ? [
+        { file: phononStructureFile!, companionGroupId: "phonon_bundle" },
+        { file: phononBandFile!, importKind: "phonon_band", contractVersion: PHONON_BAND_SCHEMA_VERSION, companionGroupId: "phonon_bundle" },
+        { file: phononDosFile!, importKind: "phonon_dos", contractVersion: PHONON_DOS_SCHEMA_VERSION, companionGroupId: "phonon_bundle" },
+      ] : files.map((file) => {
           const normalizedName = file.name
             .toLowerCase()
             .replace(/[\s-]+/gu, "_");
@@ -1927,64 +1813,15 @@ export function DatasetUploadPage({ projectId }: { projectId: string }) {
                   : "primary_bundle"
                 : undefined,
           };
-        }),
-      );
-      setMessage("数据已上传并进入解析流程。");
-      setFiles([]);
-      setName("");
+        });
+      const result = await uploadDatasetFiles(projectId, requestedName, uploadFiles);
+      const datasetId = result.datasetId || result.id;
+      setUploaded({ datasetId: typeof datasetId === "string" && datasetId.trim() && (!result.projectId || result.projectId === projectId) ? datasetId : null, name: requestedName, fileCount: uploadFiles.length });
     } catch (reason) {
-      setError(
-        reason instanceof Error
-          ? reason.message
-          : "上传失败，请检查文件后重试。",
-      );
+      const status = typeof reason === "object" && reason !== null && "status" in reason ? Number(reason.status) : 0;
+      setError(status === 413 ? "文件超出上传大小限制。请减小文件或分批上传。" : status === 401 || status === 403 ? "当前账户无法上传到此项目。请检查登录状态和项目权限。" : "暂时无法确认上传结果。名称和文件已保留，重试前可先查看项目数据。");
     } finally {
-      setBusy(false);
-    }
-  }
-  async function submitTypedPhononBundle() {
-    if (
-      !name.trim() ||
-      !phononStructureFile ||
-      !phononBandFile ||
-      !phononDosFile
-    )
-      return;
-    setBusy(true);
-    setError("");
-    setMessage("");
-    try {
-      const uploaded = await uploadDatasetFiles(projectId, name.trim(), [
-        {
-          file: phononStructureFile,
-          companionGroupId: "phonon_bundle",
-        },
-        {
-          file: phononBandFile,
-          importKind: "phonon_band",
-          contractVersion: PHONON_BAND_SCHEMA_VERSION,
-          companionGroupId: "phonon_bundle",
-        },
-        {
-          file: phononDosFile,
-          importKind: "phonon_dos",
-          contractVersion: PHONON_DOS_SCHEMA_VERSION,
-          companionGroupId: "phonon_bundle",
-        },
-      ]);
-      const datasetId = uploaded.datasetId || uploaded.id;
-      if (!datasetId) throw new Error("上传完成但未返回数据集标识。");
-      setMessage("声子三文件数据集已上传，正在进入研究工作区。");
-      router.push(
-        `/projects/${encodeURIComponent(projectId)}/research?dataset=${encodeURIComponent(datasetId)}`,
-      );
-    } catch (reason) {
-      setError(
-        reason instanceof Error
-          ? reason.message
-          : "声子数据上传失败，请检查三个文件的角色后重试。",
-      );
-    } finally {
+      uploadingRef.current = false;
       setBusy(false);
     }
   }
@@ -1998,9 +1835,8 @@ export function DatasetUploadPage({ projectId }: { projectId: string }) {
             ← 返回项目数据
           </Link>
           <header className="product-page-heading">
-            <p className="product-kicker">项目数据</p>
             <h1>上传数据</h1>
-            <p>上传后，系统会识别文件格式并生成可用于研究的数据档案。</p>
+            <p>添加材料文件，查看数据并开始研究。</p>
           </header>
           <EmptyOrError state={projectState} error={projectError} onRetry={retryProject} />
           {history && !canUpload ? (
@@ -2012,110 +1848,65 @@ export function DatasetUploadPage({ projectId }: { projectId: string }) {
               </Link>
             </div>
           ) : null}
-          {history && canUpload ? (
+          {history && canUpload && uploaded ? (
+            <section className="upload-result" aria-labelledby="upload-result-title">
+              <h2 id="upload-result-title" ref={resultRef} tabIndex={-1}>文件已上传</h2>
+              <p><strong>{uploaded.name}</strong> · {uploaded.fileCount} 个文件</p>
+              <p>{uploaded.datasetId ? "可以查看数据与解析情况，或进入研究工作区提问。" : "请在项目数据中检查这次上传记录。"}</p>
+              <div className="product-row-actions">
+                <Link className="product-primary-action" href={uploaded.datasetId ? `${dataHref}?dataset=${encodeURIComponent(uploaded.datasetId)}` : dataHref}>{uploaded.datasetId ? "查看数据" : "查看项目数据"}</Link>
+                {uploaded.datasetId ? <Link className="product-secondary-action" href={`/projects/${encodeURIComponent(projectId)}/research?dataset=${encodeURIComponent(uploaded.datasetId)}`}>开始研究</Link> : null}
+                <button type="button" className="product-secondary-action" onClick={startAnotherUpload}>继续上传</button>
+              </div>
+            </section>
+          ) : history && canUpload ? (
             <form
               className="upload-form"
+              aria-label="上传数据"
               onSubmit={(event) => void submit(event)}
             >
-              <label htmlFor="dataset-upload-name">数据集名称</label>
-              <input
-                id="dataset-upload-name"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                placeholder="例如：BaTiO3 稳定性数据"
-                required
-              />
-              <label htmlFor="dataset-upload-files">源文件</label>
-              <input
-                id="dataset-upload-files"
-                type="file"
-                multiple
-                onChange={(event) =>
-                  setFiles(Array.from(event.target.files || []))
-                }
-                required
-              />
-              {files.length ? (
-                <ul aria-label="已选择文件">
-                  {files.map((file) => (
-                    <li key={file.name + file.size}>
-                      {file.name} · {(file.size / 1024).toFixed(1)} KiB
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="upload-hint">
-                  支持的格式以当前导入能力为准；不支持的文件会保留为可解释的失败状态。
-                </p>
-              )}
-              <fieldset className="typed-import-fieldset">
-                <legend>声子三文件数据集</legend>
-                <p className="upload-hint">
-                  明确选择结构、声子能带和声子态密度文件。系统会把三个角色绑定到同一个
-                  phonon_bundle，不依赖文件名或选择顺序。
-                </p>
-                <label htmlFor="phonon-structure-file">结构文件</label>
-                <input
-                  id="phonon-structure-file"
-                  type="file"
-                  onChange={(event) =>
-                    setPhononStructureFile(event.currentTarget.files?.[0] || null)
-                  }
-                />
-                <small>{phononStructureFile?.name || "尚未选择结构文件"}</small>
-                <label htmlFor="phonon-band-file">声子能带文件</label>
-                <input
-                  id="phonon-band-file"
-                  type="file"
-                  accept="application/json,.json"
-                  onChange={(event) =>
-                    setPhononBandFile(event.currentTarget.files?.[0] || null)
-                  }
-                />
-                <small>{phononBandFile?.name || "尚未选择声子能带文件"}</small>
-                <label htmlFor="phonon-dos-file">声子态密度文件</label>
-                <input
-                  id="phonon-dos-file"
-                  type="file"
-                  accept="application/json,.json"
-                  onChange={(event) =>
-                    setPhononDosFile(event.currentTarget.files?.[0] || null)
-                  }
-                />
-                <small>{phononDosFile?.name || "尚未选择声子态密度文件"}</small>
-                <button
-                  type="button"
-                  className="product-secondary-action"
-                  disabled={busy || !typedPhononReady}
-                  onClick={() => void submitTypedPhononBundle()}
-                >
-                  {busy ? "正在上传…" : "上传声子数据并开始研究"}
-                </button>
+              <div className="upload-field">
+                <span id="upload-mode-label" className="upload-field-label">上传方式</span>
+                <div className="upload-method-switch" role="group" aria-labelledby="upload-mode-label">
+                  <button type="button" disabled={busy} aria-pressed={uploadMode === "files"} onClick={() => changeUploadMode("files")}>普通文件</button>
+                  <button type="button" disabled={busy} aria-pressed={uploadMode === "phonon"} onClick={() => changeUploadMode("phonon")}>声子组合</button>
+                </div>
+                <p className="upload-hint">{uploadMode === "files" ? "上传表格、晶体结构、轨迹或压缩包。" : "将同一材料的结构、声子能带和态密度文件一起上传。"}</p>
+              </div>
+              <div className="upload-field">
+                <label htmlFor="dataset-upload-name">数据集名称</label>
+                <input ref={nameRef} id="dataset-upload-name" value={name} disabled={busy} onChange={(event) => setName(event.target.value)} placeholder="例如：BaTiO3 稳定性数据" required maxLength={160} />
+              </div>
+              <fieldset className="upload-source-fields" hidden={uploadMode !== "files"} disabled={busy || uploadMode !== "files"}>
+                <legend className="sr-only">普通文件</legend>
+                <UploadFilePicker id="dataset-upload-files" label="源文件" files={files} onChange={setFiles} multiple disabled={busy || uploadMode !== "files"} />
+                <p className="upload-hint">常用格式：CSV、CIF、POSCAR、XYZ、ZIP。文件内容是否可解析，会在上传后显示。</p>
+              </fieldset>
+              <fieldset className="upload-source-fields" hidden={uploadMode !== "phonon"} disabled={busy || uploadMode !== "phonon"}>
+                <legend className="sr-only">声子组合文件</legend>
+                <UploadFilePicker id="phonon-structure-file" label="结构文件" files={phononStructureFile ? [phononStructureFile] : []} onChange={(items) => setPhononStructureFile(items[0] || null)} disabled={busy || uploadMode !== "phonon"} />
+                <UploadFilePicker id="phonon-band-file" label="声子能带文件" files={phononBandFile ? [phononBandFile] : []} onChange={(items) => setPhononBandFile(items[0] || null)} accept="application/json,.json" disabled={busy || uploadMode !== "phonon"} />
+                <UploadFilePicker id="phonon-dos-file" label="声子态密度文件" files={phononDosFile ? [phononDosFile] : []} onChange={(items) => setPhononDosFile(items[0] || null)} accept="application/json,.json" disabled={busy || uploadMode !== "phonon"} />
+                <p className="upload-hint">能带与态密度请选择声子数据 JSON 文件。</p>
               </fieldset>
               {error && (
-                <p className="product-form-error" role="alert">
-                  {error}
-                </p>
+                <div className="upload-error" role="alert"><p className="product-form-error">{error}</p><Link href={dataHref}>查看项目数据</Link></div>
               )}
-              {message && (
-                <p className="product-form-success" role="status">
-                  {message}
-                </p>
-              )}
+              {busy ? <p className="upload-hint" role="status">正在上传文件，请保持此页面打开。</p> : null}
               <div className="product-row-actions">
                 <button
                   type="submit"
                   className="product-primary-action"
-                  disabled={busy || !name.trim() || !files.length}
+                  disabled={busy || !canSubmit}
                 >
-                  {busy ? "正在上传…" : "上传并解析"}
+                  {busy ? "正在上传…" : error ? "重试上传" : "上传并解析"}
                 </button>
-                <Link
+                {!busy ? <Link
                   className="product-secondary-action"
                   href={`/projects/${projectId}/data`}
                 >
                   取消
-                </Link>
+                </Link> : null}
               </div>
             </form>
           ) : null}
@@ -2159,9 +1950,15 @@ function selectionKindLabel(kind: string) {
       {
         DATASET_SAMPLE: "数据样本",
         STRUCTURE_SITE: "结构位点",
+        PERIODIC_SITE: "结构位点",
+        ELECTRONIC_BAND_STATE: "能带状态",
+        ELECTRONIC_DOS_POINT: "态密度点",
+        PHONON_Q_POINT: "声子模式",
+        PHONON_DOS_POINT: "声子态密度点",
         EXPERIMENTAL_XRD_PEAK: "实验峰",
         XRD_MATCH: "匹配峰",
         TRAJECTORY_ATOM: "轨迹原子",
+        TRAJECTORY_FRAME: "轨迹帧",
         ARTIFACT: "科学结果",
       } as Record<string, string>
     )[kind] || "科学对象"
@@ -2170,12 +1967,20 @@ function selectionKindLabel(kind: string) {
 
 function selectionTitle(selection: {
   kind: string;
+  qPointId?: string | null;
+  branchId?: string | null;
+  frequencyPointId?: string | null;
+  dosChannelId?: string | null;
   sampleRef: string | null;
   siteId: string | null;
   peakId: string | null;
   matchId: string | null;
   atomId: string | null;
+  frameId?: string | null;
 }) {
+  if (["TRAJECTORY_FRAME", "TRAJECTORY_ATOM"].includes(selection.kind)) return `第 ${Number(selection.frameId?.replace(/^frame:/, "")) + 1} 帧${selection.atomId ? ` · 原子 ${Number(selection.atomId.split(":")[1]) + 1}` : ""}`;
+  if (selection.kind === "PHONON_DOS_POINT") return `${selection.dosChannelId === "total" ? "总态密度" : `投影 ${selection.dosChannelId?.replace(/^projection:/, "")}`} · 频率点 ${selection.frequencyPointId?.replace(/^frequency:/, "")}`;
+  if (selection.kind === "PHONON_Q_POINT") return `q 点 ${selection.qPointId?.replace(/^q:/, "")}${selection.branchId ? ` · 分支 ${selection.branchId.replace(/^branch:/, "")}` : ""}`;
   return (
     selection.sampleRef ||
     selection.siteId ||
@@ -2191,6 +1996,9 @@ function ScientificDataView({
   dataset,
   kind,
   onInspect,
+  selection,
+  requestedResourceId,
+  onResourceChange,
   onSelection,
   onAvailabilityChange,
   tableRouteState,
@@ -2200,6 +2008,9 @@ function ScientificDataView({
   dataset: ProjectHistory["datasets"][number];
   kind: DataKind;
   onInspect: () => void;
+  selection: WorkspaceSelectionContext | null;
+  requestedResourceId: string | null;
+  onResourceChange: (resourceId: string) => void;
   onSelection: (selection: WorkspaceSelectionContext) => void;
   onAvailabilityChange: (
     state: "loading" | "ready" | "empty" | "unavailable",
@@ -2213,47 +2024,81 @@ function ScientificDataView({
   const [resources, setResources] = useState<DatasetSourceResource[] | null>(
     null,
   );
-  const [resourceError, setResourceError] = useState<string | null>(null);
+  const [resourceError, setResourceError] = useState<"FAILED" | "TIMEOUT" | null>(null);
   const [resourceErrorKind, setResourceErrorKind] = useState<
     "TRANSIENT" | "CONFIRMED_MISSING"
   >("TRANSIENT");
-  const [selectedId, setSelectedId] = useState("");
   const [loadAttempt, setLoadAttempt] = useState(0);
+  const recoveryContainerRef = useRef<HTMLElement | null>(null);
+  const retrySourceRead = (event: React.MouseEvent<HTMLButtonElement>) => {
+    recoveryContainerRef.current = event.currentTarget.closest<HTMLElement>(".scientific-viewer");
+    setLoadAttempt(attempt => attempt + 1);
+  };
+  const selectionResource = useMemo(() => {
+    const primary = selection?.primary;
+    if (!resources || !primary || primary.projectId !== projectId || primary.datasetId !== dataset.datasetId) return null;
+    const matching = resources.filter((item) => item.datasetId === dataset.datasetId
+      && (!primary.objectId || item.objectId === primary.objectId)
+      && (!primary.kind.startsWith("ELECTRONIC_") || primary.artifactId === `source:${item.objectId}`)
+      && (!primary.kind.startsWith("PHONON_") || primary.phononArtifactId === `source:${item.objectId}`)
+      && (primary.kind !== "VOLUMETRIC_FIELD" || primary.artifactId === `source:${item.objectId}:volumetric-dataset`)
+      && (!["TRAJECTORY_FRAME", "TRAJECTORY_ATOM"].includes(primary.kind) || primary.artifactId === `source:${item.objectId}`)
+      && item.objectHash === selection.sourceScopeHash
+      && (item.versionId || item.objectHash || "current") === primary.datasetVersion);
+    return matching.length === 1 ? matching[0] : null;
+  }, [resources, selection, projectId, dataset.datasetId]);
+  const selected = resources && (requestedResourceId !== null
+    ? resources.find(item => item.objectId === requestedResourceId)
+    : selectionResource || preferredResource(resources, kind));
+  const selectionConflict = Boolean(selected && selectionResource && selected.objectId !== selectionResource.objectId);
+  useEffect(() => {
+    onAvailabilityChange(resources === null ? "loading" : resourceError || selectionConflict || (requestedResourceId !== null && !selected) ? "unavailable" : selected ? "ready" : "empty");
+  }, [resources, resourceError, selected, selectionConflict, requestedResourceId, onAvailabilityChange]);
+  useEffect(() => {
+    if (resources === null || !recoveryContainerRef.current) return;
+    const container = recoveryContainerRef.current;
+    const frame = window.requestAnimationFrame(() => {
+      if (!container.isConnected) return;
+      container.querySelector<HTMLElement>('nav[aria-label="数据内容"] button[aria-pressed="true"], [data-source-retry], .source-scientific-viewer > button')?.focus();
+      recoveryContainerRef.current = null;
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [resources, resourceError, selected]);
   useEffect(() => {
     const controller = new AbortController();
     setResources(null);
     setResourceError(null);
     setResourceErrorKind("TRANSIENT");
-    setSelectedId("");
-    onAvailabilityChange("loading");
+    const timer = setTimeout(() => {
+      controller.abort();
+      setResources([]);
+      setResourceError("TIMEOUT");
+    }, 10_000);
     void getDatasetSourceResources(dataset.datasetId, controller.signal)
       .then((items) => {
+        if (controller.signal.aborted) return;
+        if (items.some(item => item.datasetId !== dataset.datasetId || !item.objectId) || new Set(items.map(item => item.objectId)).size !== items.length) throw new Error("SOURCE_RESOURCE_IDENTITY_MISMATCH");
         setResources(items);
-        setSelectedId(
-          preferredResource(items, kind)?.objectId || items[0]?.objectId || "",
-        );
-        onAvailabilityChange(items.length ? "ready" : "empty");
       })
       .catch((reason) => {
         if (controller.signal.aborted) return;
         setResources([]);
         setResourceErrorKind(classifySourceLoadFailure(reason));
-        setResourceError(
-          reason instanceof Error
-            ? reason.message
-            : "SOURCE_RESOURCE_LOAD_FAILED",
-        );
-        onAvailabilityChange("unavailable");
-      });
-    return () => controller.abort();
-  }, [dataset.datasetId, kind, loadAttempt, onAvailabilityChange]);
+        setResourceError("FAILED");
+      })
+      .finally(() => clearTimeout(timer));
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [dataset.datasetId, kind, loadAttempt]);
   if (resources === null)
     return (
       <div className="product-loading" role="status">
         正在加载科学数据…
       </div>
     );
-  if (resourceError && kind !== "table") {
+  if (resourceError) {
     const confirmedMissing = resourceErrorKind === "CONFIRMED_MISSING";
     const fallbackTitleId = `science-fallback-title-${dataset.datasetId}-${kind}`.replace(
       /[^a-zA-Z0-9_-]/g,
@@ -2261,69 +2106,81 @@ function ScientificDataView({
     );
     const uploadHref = `/projects/${encodeURIComponent(projectId)}/datasets/new`;
     return (
-      <div
-        className={`science-canvas science-canvas-fallback source-load-failure ${kind}`}
-        role="alert"
-        aria-labelledby={fallbackTitleId}
-      >
-        <div className="science-canvas-label">
-          <span>{dataKindLabel(kind)}</span>
-          <strong id={fallbackTitleId}>
+      <>
+        <div
+          className={`science-canvas science-canvas-fallback source-load-failure ${kind}`}
+          role="alert"
+          aria-labelledby={fallbackTitleId}
+        >
+          <div className="science-canvas-label">
+            <span>{dataKindLabel(kind)}</span>
+            <strong id={fallbackTitleId}>
+              {confirmedMissing
+                ? "原始科学数据当前不可用"
+                : resourceError === "TIMEOUT"
+                  ? "读取科学数据超时"
+                  : "当前科学资源暂时无法读取"}
+            </strong>
+          </div>
+          <p>
             {confirmedMissing
-              ? "原始解析 payload 当前不可用"
-              : "当前科学资源暂时无法读取"}
-          </strong>
+              ? "系统已确认声明位置没有原始科学数据；数据档案、精确来源与解析记录仍然保留，不会用其他版本替代。请重新导入或恢复原始文件。"
+              : kind === "table"
+                ? "表格数据尚未加载。已读取的数据档案与来源信息仍可查看，请重新加载数据。"
+                : "数据档案、精确来源与解析记录仍然保留；科学数据暂时无法读取，请重新加载。"}
+          </p>
+          <p className="source-load-failure-status" role="status">
+            <span>读取状态</span>
+            <strong>{confirmedMissing ? "已确认缺失" : "暂时失败，可重试"}</strong>
+          </p>
+          <div className="source-load-failure-actions">
+            <button
+              type="button"
+              className="product-secondary-action"
+              onClick={onInspect}
+            >
+              查看来源与属性
+            </button>
+            <button
+              type="button"
+              className="product-primary-action"
+              data-source-retry
+              onClick={retrySourceRead}
+            >
+              {confirmedMissing ? "再次确认来源" : "重新加载数据"}
+            </button>
+            {confirmedMissing ? (
+              <Link className="product-secondary-action" href={uploadHref}>
+                重新导入源文件
+              </Link>
+            ) : null}
+          </div>
         </div>
-        <p>
-          {confirmedMissing
-            ? "系统已确认声明位置没有原始 payload；数据档案、精确来源与解析记录仍然保留，不会用其他版本替代。请重新导入或恢复原始文件。"
-            : "数据档案、精确来源与解析记录仍然保留；当前规范化 payload 暂时未能通过存储读取。"}
-        </p>
-        <p className="source-load-failure-status" role="status">
-          <span>读取状态</span>
-          <strong>{confirmedMissing ? "已确认缺失" : "暂时失败，可重试"}</strong>
-        </p>
-        <div className="source-load-failure-actions">
-          <button
-            type="button"
-            className="product-primary-action"
-            onClick={onInspect}
-          >
-            查看来源与属性
-          </button>
-          <button
-            type="button"
-            className="product-secondary-action"
-            onClick={() => setLoadAttempt((attempt) => attempt + 1)}
-          >
-            {confirmedMissing ? "再次确认来源" : "重新检查存储"}
-          </button>
-          {confirmedMissing ? (
-            <Link className="product-secondary-action" href={uploadHref}>
-              重新导入源文件
-            </Link>
-          ) : null}
-        </div>
-        <details>
-          <summary>技术详情</summary>
-          <p>{resourceError}</p>
-          <p>未选择其他 Dataset、ScientificObjectVersion 或 Artifact 作为替代。</p>
-        </details>
-      </div>
+        {kind === "table" && Object.keys(dataset.profile?.semanticRoles || {}).length > 0 ? (
+          <details className="data-retained-profile">
+            <summary>查看已读取的列描述</summary>
+            <TableScientificView
+              dataset={dataset}
+              onInspect={onInspect}
+              initialQuery={tableRouteState.query}
+              initialSort={tableRouteState.sort}
+              initialSelectedRow={tableRouteState.row}
+              onRouteStateChange={onTableRouteChange}
+            />
+          </details>
+        ) : null}
+      </>
     );
   }
-  const selected =
-    resources.find((item) => item.objectId === selectedId) ||
-    preferredResource(resources, kind);
-  if (resources.length > 1 || kind === "detected")
+  const missingResource = requestedResourceId !== null && !selected;
+  if (resources.length > 1 || kind === "detected" || missingResource || selectionConflict)
     return (
       <div className="detected-content">
-        <div>
-          <p className="product-kicker">检测到的数据</p>
-          <h2>此上传包含 {resources.length} 个科学对象</h2>
-          <p>仅展示导入流程实际识别的资源，不推测压缩包目录。</p>
+        <div className="detected-content-heading">
+          <strong>数据内容</strong>
+          <span>{resources.length} 项</span>
         </div>
-        <nav aria-label="检测到的科学对象">
+        <nav aria-label="数据内容">
            {resources.map((resource, index) => (
              <button
                key={resource.objectId}
@@ -2331,23 +2188,24 @@ function ScientificDataView({
                 resource.objectId === selected?.objectId ? "selected" : ""
               }
                aria-pressed={resource.objectId === selected?.objectId}
-               onClick={() => setSelectedId(resource.objectId)}
+               title={resourceDisplayName(resource, resources, index)}
+               onClick={() => { if (resource.objectId !== selected?.objectId || selectionConflict) onResourceChange(resource.objectId); }}
              >
                <strong>{resourceDisplayName(resource, resources, index)}</strong>
-               <span>
-                 {resource.objectId === selected?.objectId
-                   ? "当前查看"
-                   : "切换查看"}
-               </span>
              </button>
            ))}
         </nav>
-        {selected ? (
+        {missingResource || selectionConflict ? <div className="product-state" role="alert">
+          <h2>{selectionConflict ? "链接中的数据内容与选择不一致" : "暂时无法找到这项数据内容"}</h2>
+          <p>{selectionConflict ? "请从上方选择要查看的数据内容，旧的数据点选择会随之清除。" : "所选内容不在当前资源列表中。可以重新读取，或从上方选择其他内容。"}</p>
+          <button type="button" className="product-secondary-action" data-source-retry onClick={retrySourceRead}>重新读取数据内容</button>
+        </div> : selected ? (
           <section className="source-scientific-viewer">
             <LazyScientificSourceViewer
               projectId={projectId}
               resource={selected}
               resources={resources}
+              selection={selection}
               onSelection={onSelection}
             />
             <button
@@ -2368,6 +2226,7 @@ function ScientificDataView({
           projectId={projectId}
           resource={selected}
           resources={resources}
+          selection={selection}
           onSelection={onSelection}
         />
         <button
@@ -2498,14 +2357,12 @@ function preferredResource(
 function classifySourceLoadFailure(reason: unknown): "TRANSIENT" | "CONFIRMED_MISSING" {
   if (!reason || typeof reason !== "object") return "TRANSIENT";
   const candidate = reason as { status?: unknown; errorType?: unknown; details?: unknown };
-  const status = Number(candidate.status);
   const errorType = String(candidate.errorType || "");
   const detail = candidate.details && typeof candidate.details === "object"
     ? candidate.details as { errorType?: unknown; code?: unknown }
     : {};
   const detailType = String(detail.errorType || detail.code || "");
-  return status === 404
-    || /(?:SOURCE_MISSING|OBJECT_STORE_SOURCE_MISSING|SOURCE_RESOURCE_MISSING|PAYLOAD_MISSING)/i.test(`${errorType} ${detailType}`)
+  return /(?:SOURCE_MISSING|OBJECT_STORE_SOURCE_MISSING|SOURCE_RESOURCE_MISSING|PAYLOAD_MISSING)/i.test(`${errorType} ${detailType}`)
     ? "CONFIRMED_MISSING"
     : "TRANSIENT";
 }
@@ -2549,7 +2406,7 @@ export type DataTableViewState = Readonly<{
 }>;
 
 export type DataTableRouteState = Partial<
-  DataTableViewState & { selection: string }
+  DataTableViewState & { selection: string; resource: string }
 >;
 
 export function resolveDataPageSelection(
@@ -2579,6 +2436,10 @@ export function dataTableViewHref(
   changes: DataTableRouteState,
 ): string {
   const url = new URL(currentHref, "http://localhost");
+  if (changes.resource !== undefined) {
+    if (changes.resource) url.searchParams.set("resource", changes.resource);
+    else url.searchParams.delete("resource");
+  }
   if (changes.query !== undefined) {
     if (changes.query) url.searchParams.set("tableQuery", changes.query);
     else url.searchParams.delete("tableQuery");

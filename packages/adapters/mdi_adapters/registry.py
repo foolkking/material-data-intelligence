@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from .base import BaseToolAdapter
+from .platform_builtin.element_reference import ReferencePeriodicTableAdapter, ReferenceElementComparisonAdapter
+from .platform_builtin.project_parameters import UnitConversionAdapter, FunctionCurveAdapter, FormulaCompositionAdapter, InlineXYAdapter, IdealCrystalAdapter
 from .platform_builtin import (
     BasicMetricsAdapter,
     BrillouinZoneAdapter,
@@ -58,6 +60,13 @@ from .pymatviz.structure_3d import Structure3DAdapter
 
 
 ADAPTER_CLASSES: dict[str, type[BaseToolAdapter]] = {
+    UnitConversionAdapter.__name__: UnitConversionAdapter,
+    FunctionCurveAdapter.__name__: FunctionCurveAdapter,
+    FormulaCompositionAdapter.__name__: FormulaCompositionAdapter,
+    InlineXYAdapter.__name__: InlineXYAdapter,
+    IdealCrystalAdapter.__name__: IdealCrystalAdapter,
+    ReferencePeriodicTableAdapter.__name__: ReferencePeriodicTableAdapter,
+    ReferenceElementComparisonAdapter.__name__: ReferenceElementComparisonAdapter,
     BasicMetricsAdapter.__name__: BasicMetricsAdapter,
     BrillouinZoneAdapter.__name__: BrillouinZoneAdapter,
     ClassificationEvaluationAdapter.__name__: ClassificationEvaluationAdapter,

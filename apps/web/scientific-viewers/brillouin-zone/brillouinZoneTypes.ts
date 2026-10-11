@@ -136,8 +136,8 @@ export type BZRendererSnapshot = Readonly<{
   cameraTarget: BZVector3;
   cameraUp: BZVector3;
   selection: BZSelection | null;
-  pointScreenPositions: readonly Readonly<{ id: string; x: number; y: number }>[];
-  faceScreenPositions: readonly Readonly<{ id: string; x: number; y: number }>[];
+  pointScreenPositions: readonly Readonly<{ id: string; x: number; y: number; visible?: boolean }>[];
+  faceScreenPositions: readonly Readonly<{ id: string; x: number; y: number; visible?: boolean }>[];
   metrics: BZRendererMetrics;
 }>;
 

@@ -276,3 +276,15 @@ def test_density_product_planner_routing(prompt: str) -> None:
         tools=registry.list_tools(), data_profile=_profile(),
     )
     assert response.raw_json and response.raw_json["steps"][0]["toolId"] == "structure.volumetric_data"
+
+
+def test_zero_spin_retains_equal_up_down_payloads_as_distinct_fields(tmp_path: Path) -> None:
+    source = copy.deepcopy(parse_file(FIXTURES / "CHGCAR.collinear", dataset_id="dataset").objects[0].payload)
+    source["channels"][1]["values"] = [0.0] * len(source["channels"][1]["values"])
+    artifacts = VolumetricDataAdapter().execute(_context(tmp_path, source), _request())
+    dataset = _read(tmp_path, artifacts, "volumetric_dataset.json")
+    fields = {item["field_name"]: item for item in dataset["fields"]}
+    assert fields["spin_up"]["field_id"] != fields["spin_down"]["field_id"]
+    assert fields["spin_up"]["payload_id"] == fields["spin_down"]["payload_id"]
+    binaries = {item.name: (tmp_path / item.storageKey).read_bytes() for item in artifacts if item.type.value == "volumetric_binary"}
+    assert validate_volumetric_dataset(dataset, binaries).valid

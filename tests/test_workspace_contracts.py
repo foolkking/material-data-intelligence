@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import base64
 import json
 from pathlib import Path
 
@@ -36,6 +37,20 @@ from mdi_schemas import (
 
 SHA = "a" * 64
 NOW = datetime(2026, 8, 1, tzinfo=timezone.utc)
+
+
+def test_trajectory_atom_keeps_exact_frame_in_navigation_roundtrip() -> None:
+    selection = WorkspaceSelectionContext.model_validate({
+        "schemaVersion": "1.0", "sourceScopeHash": SHA,
+        "primary": {"kind": "TRAJECTORY_ATOM", "sourceScopeHash": SHA,
+                    "projectId": "project_1", "datasetId": "dataset_1", "datasetVersion": "version_1",
+                    "trajectoryId": "trajectory_1", "atomId": "atom:1:1.0.1", "frameId": "frame:5",
+                    "artifactId": "source:trajectory_1", "artifactChecksum": SHA},
+        "secondary": [], "propagation": "EXACT_COMPATIBLE_ONLY", "compatibility": "EXACT", "cleared": False,
+    })
+    restored = decode_workspace_selection_url(encode_workspace_selection_url(selection))
+    assert restored.primary.frameId == "frame:5"
+    assert restored.primary.atomId == "atom:1:1.0.1"
 
 
 def _selection_ref(**overrides: object) -> WorkspaceSelectionRef:
@@ -173,6 +188,67 @@ def test_selection_contract_enforces_exact_kind_fields_and_url_round_trip() -> N
         WorkspaceSelectionRef.model_validate(
             {**artifact.model_dump(mode="json"), "structureId": "guessed-by-label"}
         )
+
+
+@pytest.mark.parametrize("channel", ["total", "projection:0", "projection:1"])
+def test_phonon_dos_selection_has_exact_frequency_and_channel(channel: str) -> None:
+    ref = WorkspaceSelectionRef(
+        kind=WorkspaceSelectionKind.PHONON_DOS_POINT, sourceScopeHash=SHA,
+        projectId="project_1", datasetId="dataset_1", datasetVersion="version_1",
+        phononArtifactId="source:dos_1", artifactChecksum=SHA,
+        frequencyPointId="frequency:600", dosChannelId=channel,
+    )
+    context = WorkspaceSelectionContext(sourceScopeHash=SHA, primary=ref)
+    token = encode_workspace_selection_url(context)
+    assert len(token) <= 2048
+    assert decode_workspace_selection_url(token) == context
+    payload = ref.model_dump(mode="json")
+    for field in ("frequencyPointId", "dosChannelId"):
+        with pytest.raises(ValidationError, match="missing required fields"):
+            WorkspaceSelectionRef.model_validate({**payload, field: None})
+    for field in ("qPointId", "energyPointId", "branchId"):
+        with pytest.raises(ValidationError, match="forbidden fields"):
+            WorkspaceSelectionRef.model_validate({**payload, field: "foreign:1"})
+
+
+def test_selection_url_compacts_real_structure_identity_and_keeps_legacy_tokens() -> None:
+    dataset_id = "dataset_0002_7d84dd2fe2424b9c"
+    site = WorkspaceSelectionRef(
+        kind=WorkspaceSelectionKind.PERIODIC_SITE, sourceScopeHash=SHA,
+        projectId="project_0001_d280978e0f6c432c", datasetId=dataset_id,
+        datasetVersion=SHA, objectId=f"{dataset_id}:obj_structure_6d93a281007b",
+        structureId=SHA, siteId="Li-0:0.0.0",
+    )
+    context = WorkspaceSelectionContext(sourceScopeHash=SHA, primary=site)
+    token = encode_workspace_selection_url(context)
+    assert len(token) <= 2048
+    assert decode_workspace_selection_url(token) == context
+    decoded = json.loads(base64.urlsafe_b64decode(token + "=" * (-len(token) % 4)))
+    assert all(value is not None for value in decoded["primary"].values())
+
+    legacy_context = WorkspaceSelectionContext(sourceScopeHash=SHA, primary=_selection_ref())
+    legacy = legacy_context.model_dump(mode="json")
+    for field in ("electronicResourceId", "spinChannelId", "kpointId", "bandId", "bandStateId", "bandEdgeId", "dosChannelId", "projectionId", "energyPointId"):
+        legacy["primary"].pop(field, None)
+    raw = json.dumps(legacy, sort_keys=True, separators=(",", ":"))
+    legacy_token = base64.urlsafe_b64encode(raw.encode()).rstrip(b"=").decode()
+    assert decode_workspace_selection_url(legacy_token) == legacy_context
+    pretty = base64.urlsafe_b64encode(json.dumps(legacy, indent=2).encode()).rstrip(b"=").decode()
+    with pytest.raises(ValueError):
+        decode_workspace_selection_url(pretty)
+
+
+def test_selection_contract_accepts_durable_dataset_sample_reference() -> None:
+    selection = WorkspaceSelectionRef(
+        kind=WorkspaceSelectionKind.DATASET_SAMPLE,
+        sourceScopeHash=SHA,
+        projectId="project_1",
+        datasetId="dataset_0001",
+        datasetVersion="2",
+        objectId="obj_dataframe_1f4ba55e6e625275",
+        sampleRef="dataset_0001@2:1f4ba55e6e625275:0",
+    )
+    assert selection.sampleRef == "dataset_0001@2:1f4ba55e6e625275:0"
 
 
 def test_selection_multi_scope_and_duplicate_rules() -> None:

@@ -40,25 +40,40 @@ _SERVICE_RUNTIME_ENVIRONMENT = (
 )
 
 
-def pytest_configure(config: pytest.Config) -> None:
-    """Keep pytest scratch data in a configurable workspace-local directory."""
-
-    root = Path(__file__).resolve().parents[1]
-    configured = config.option.basetemp or os.getenv(
-        "MDI_PYTEST_CACHE_DIR", ".cache/tooling/pytest"
-    )
+def _pytest_scratch_paths(root: Path, local_root: str | None, configured: str | None, temp_root: str | None = None) -> tuple[Path, Path | None]:
+    root = root.resolve()
+    local = Path(local_root).resolve() if local_root else root.with_name(f"{root.name}.local")
+    temporary = Path(temp_root).resolve() if temp_root else local / "tmp"
+    scratch = (temporary / "pytest").resolve()
+    if scratch.is_relative_to(root) or (not temp_root and not scratch.is_relative_to(local)):
+        raise pytest.UsageError("MDI_PYTEST_SCRATCH_MUST_BE_OUTSIDE_REPOSITORY")
+    if not configured:
+        return scratch, None
     candidate = Path(configured)
     if not candidate.is_absolute():
-        candidate = root / candidate
+        candidate = scratch / candidate
     candidate = candidate.resolve()
-    try:
-        candidate.relative_to(root)
-    except ValueError as exc:
-        raise pytest.UsageError(
-            "MDI_PYTEST_CACHE_OUTSIDE_REPOSITORY"
-        ) from exc
-    candidate.mkdir(parents=True, exist_ok=True)
-    config.option.basetemp = str(candidate)
+    # pytest clears an explicit basetemp recursively. Only a strict child of
+    # dedicated scratch space is eligible, never the data root or scratch root.
+    if candidate == scratch or not candidate.is_relative_to(scratch):
+        raise pytest.UsageError("MDI_PYTEST_BASETEMP_MUST_BE_SCRATCH_CHILD")
+    return scratch, candidate
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    """Keep temporary test artifacts outside source and persistent service data."""
+    scratch, candidate = _pytest_scratch_paths(
+        Path(__file__).resolve().parents[1], os.getenv("MDI_LOCAL_ROOT"),
+        config.option.basetemp or os.getenv("MDI_PYTEST_CACHE_DIR"),
+        os.getenv("MDI_TEMP_ROOT"),
+    )
+    scratch.mkdir(parents=True, exist_ok=True)
+    if candidate is None:
+        # Retain pytest's numbered directories, concurrent-run isolation and
+        # retention policy instead of reusing one destructively cleared folder.
+        os.environ["PYTEST_DEBUG_TEMPROOT"] = str(scratch)
+    else:
+        config.option.basetemp = str(candidate)
 
 
 @pytest.fixture(autouse=True)

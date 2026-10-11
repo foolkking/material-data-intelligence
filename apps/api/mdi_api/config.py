@@ -76,9 +76,9 @@ class ApiSettings:
     agent2_interpretation_queue_name: str = worker_queue_definition("interpretation").default_name
     agent2_report_enabled: bool = True
     agent2_report_queue_name: str = worker_queue_definition("report").default_name
-    # Re-publish only existing durable identities after an API/queue restart.
-    # The recovery service excludes explicit qualification actors and never
-    # creates a replacement scientific Result.
+    # Recover existing identities after restart and check inactive preparation
+    # stages every minute. The same enable/window settings govern both paths;
+    # preparation expiry has a five-minute floor and never expires running Jobs.
     agent2_startup_recovery_enabled: bool = True
     agent2_startup_recovery_stale_minutes: int = 15
     agent2_startup_recovery_limit: int = 50

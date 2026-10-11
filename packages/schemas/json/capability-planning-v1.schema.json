@@ -473,7 +473,7 @@
         "items": {
           "$ref": "#/$defs/EvaluatedToolCandidate"
         },
-        "maxItems": 64,
+        "maxItems": 128,
         "title": "Evaluatedcandidates",
         "type": "array"
       },
@@ -489,7 +489,7 @@
         "items": {
           "type": "string"
         },
-        "maxItems": 64,
+        "maxItems": 128,
         "title": "Rejectedtoolids",
         "type": "array"
       },
@@ -1207,12 +1207,20 @@
         "title": "Desiredoutputs",
         "type": "array"
       },
+      "executionScope": {
+        "default": "MATERIAL",
+        "enum": [
+          "MATERIAL",
+          "PROJECT"
+        ],
+        "title": "Executionscope",
+        "type": "string"
+      },
       "acceptedObjectTypes": {
         "items": {
           "type": "string"
         },
         "maxItems": 16,
-        "minItems": 1,
         "title": "Acceptedobjecttypes",
         "type": "array"
       },
@@ -1224,7 +1232,6 @@
           "type": "array"
         },
         "maxItems": 16,
-        "minItems": 1,
         "title": "Inputobjecttypeoptions",
         "type": "array"
       },
@@ -1247,14 +1254,14 @@
       "minInputs": {
         "default": 1,
         "maximum": 32,
-        "minimum": 1,
+        "minimum": 0,
         "title": "Mininputs",
         "type": "integer"
       },
       "maxInputs": {
         "default": 1,
         "maximum": 32,
-        "minimum": 1,
+        "minimum": 0,
         "title": "Maxinputs",
         "type": "integer"
       },
@@ -1330,8 +1337,6 @@
       "availability",
       "scientificIntents",
       "desiredOutputs",
-      "acceptedObjectTypes",
-      "inputObjectTypeOptions",
       "declaredArtifactTypes",
       "costClass"
     ],

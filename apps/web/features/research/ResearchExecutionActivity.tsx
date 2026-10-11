@@ -3,10 +3,16 @@
 import type { Agent2ProgressView } from "../../app/lib/agent2-execution-api";
 import {
   RESEARCH_CANCELLING_LABEL,
+  canCancelResearchTurn,
   isResearchCancellationPending,
 } from "../../app/lib/research-status";
 
 const statusLabel: Record<Agent2ProgressView["status"], string> = {
+  RECEIVED: "研究问题已接收",
+  RESOLVING_CONTEXT: "正在读取研究数据",
+  NEEDS_CLARIFICATION: "需要补充研究条件",
+  UNSUPPORTED: "当前暂不支持这项研究",
+  PLAN_REJECTED: "分析方案未通过检查",
   ORCHESTRATING: "正在组织研究",
   READY_TO_PLAN: "等待生成分析方案",
   PLANNING: "正在准备分析方案",
@@ -77,11 +83,17 @@ const comparisonStatusLabel: Record<string, string> = {
   INSUFFICIENT_METADATA: "现有元数据不足以确认这些结果是否可比较。",
 };
 
-export function ResearchExecutionActivity({ progress, onCancel, cancelPending = false, onContinue, onRetry, retryPending = false, onEdit }: { progress: Agent2ProgressView; onCancel?: () => void; cancelPending?: boolean; onContinue?: () => void; onRetry?: () => void; retryPending?: boolean; onEdit?: () => void }) {
+function hasInterpretationFailure(progress: Agent2ProgressView): boolean {
+  return progress.warnings.some((warning) => warning.code === "INTERPRETATION_GROUNDING_REJECTED"
+    || (progress.status === "FAILED" && warning.code.startsWith("INTERPRETATION_")));
+}
+
+export function ResearchExecutionActivity({ progress, completedAnswerVisible = false, onCancel, cancelPending = false, cancelUnconfirmed = false, onContinue, onRetry, onReinterpret, retryPending = false, onEdit }: { progress: Agent2ProgressView; completedAnswerVisible?: boolean; onCancel?: () => void; cancelPending?: boolean; cancelUnconfirmed?: boolean; onContinue?: () => void; onRetry?: () => void; onReinterpret?: () => void; retryPending?: boolean; onEdit?: () => void }) {
   const importantStatus = progress.status === "FAILED" || progress.status === "CANCELED" || progress.status === "RESULT_PENDING" || progress.status === "RESULT_READY" || progress.status === "INTERPRETING" || progress.status === "COMPLETED" || progress.status === "PARTIAL";
-  const cancelable = progress.status === "ORCHESTRATING" || progress.status === "READY_TO_PLAN" || progress.status === "PLANNING" || progress.status === "PLAN_READY" || progress.status === "QUEUED" || progress.status === "RUNNING";
+  const cancelable = canCancelResearchTurn(progress.status);
   const cancellationPending = isResearchCancellationPending(progress.status);
-  const retryable = progress.status === "FAILED" || progress.status === "CANCELED";
+  const retryable = progress.status === "FAILED" || progress.status === "CANCELED" || hasInterpretationFailure(progress);
+  const interpretationFailed = hasInterpretationFailure(progress);
   const warnings = Array.from(
     new Map(
       progress.warnings.map((warning) => [
@@ -103,7 +115,13 @@ export function ResearchExecutionActivity({ progress, onCancel, cancelPending = 
   const activeHypothesis = strategy?.active_hypothesis
     || strategy?.hypotheses?.find((item) => item.status !== "CONTRADICTED")
     || strategy?.hypotheses?.[0];
-  return (
+  const compactCompleted = completedAnswerVisible && ["ANSWERED", "COMPLETED"].includes(progress.status)
+    && !warnings.length && !autonomy && !cancelPending && !cancelUnconfirmed
+    && !progress.result_projection_pending && progress.active_step_ids?.length === 0
+    && progress.execution_outcome !== "PARTIAL" && progress.execution_outcome !== "FAILED"
+    && progress.steps.every(step => step.status === "SUCCEEDED");
+  if (compactCompleted && !progress.steps.length && !progress.incremental_outputs.length) return null;
+  const activity = (
     <section className="research-execution-activity" aria-label="分析进度">
       <div className="research-execution-heading">
         <strong>{progress.status === "ANSWERED"
@@ -112,8 +130,8 @@ export function ResearchExecutionActivity({ progress, onCancel, cancelPending = 
             : progress.response_kind === "RESULT_REUSE"
               ? "已基于现有科学结果继续回答"
               : "回答已完成"
-          : statusLabel[progress.status]}</strong>
-        <div>{progress.total_step_count > 0 ? <span>{progress.completed_step_count}/{progress.total_step_count}</span> : null}{cancelable && onCancel ? <button type="button" className="product-link-button research-execution-cancel" onClick={onCancel} disabled={cancelPending}>{cancelPending ? "正在提交取消…" : "取消当前分析"}</button> : cancellationPending ? <span className="research-execution-cancel-state" role="status">{RESEARCH_CANCELLING_LABEL}，等待服务端确认</span> : null}</div>
+          : interpretationFailed ? "解读未能完成" : statusLabel[progress.status]}</strong>
+        <div>{progress.total_step_count > 0 ? <span>{progress.completed_step_count}/{progress.total_step_count}</span> : null}{cancelable && onCancel ? <button type="button" className="product-link-button research-execution-cancel" onClick={onCancel} disabled={cancelPending || cancelUnconfirmed}>{cancelPending ? "正在提交取消…" : cancelUnconfirmed ? "等待取消确认" : "取消当前分析"}</button> : cancellationPending ? <span className="research-execution-cancel-state" role="status">{RESEARCH_CANCELLING_LABEL}，等待服务端确认</span> : null}</div>
       </div>
       {autonomy ? (
         <aside className="research-strategy-progress" aria-label="研究策略">
@@ -172,24 +190,28 @@ export function ResearchExecutionActivity({ progress, onCancel, cancelPending = 
       <ol className="research-execution-steps">
         {progress.steps.map((step) => (
           <li key={step.step_id} className={`research-execution-step status-${step.status.toLowerCase()}`}>
-            <span className="research-execution-marker" aria-hidden="true">{step.status === "SUCCEEDED" ? "✓" : step.status === "RUNNING" ? "●" : step.status === "FAILED" ? "!" : "○"}</span>
-            <span>{step.status === "RUNNING" ? step.running_label || `正在${step.display_name}` : step.status === "SUCCEEDED" ? step.completed_label || `${step.display_name}已完成` : step.warning || step.display_name}</span>
+            <span className="research-execution-marker" aria-hidden="true">{step.status === "SUCCEEDED" ? "✓" : step.status === "RUNNING" ? "●" : step.status === "FAILED" ? "!" : step.status === "SKIPPED" || step.status === "CANCELED" ? "—" : "○"}</span>
+            <span>{step.status === "RUNNING" ? step.running_label || `正在${step.display_name}` : step.status === "SUCCEEDED" ? step.completed_label || `${step.display_name}已完成` : step.status === "SKIPPED" ? `${step.display_name} · 未执行` : step.status === "CANCELED" ? `${step.display_name} · 已取消` : step.status === "FAILED" ? `${step.display_name} · 未完成` : step.display_name}</span>
             {step.output_available ? <small>已有输出</small> : null}
           </li>
         ))}
       </ol>
       {progress.incremental_outputs.length > 0 ? <p className="research-execution-output-note" role="status">已有 {progress.incremental_outputs.length} 项真实执行输出可查看。</p> : null}
       {importantStatus && warnings.length > 0 ? <ul className="research-execution-warnings" role="status">{warnings.map((warning) => <li key={`${warning.code}-${warning.message}`}>{warning.message}</li>)}</ul> : null}
-      {retryable && (onContinue || onEdit || onRetry) ? (
+      {retryable && (onContinue || onEdit || onRetry || onReinterpret) ? (
         <div className="research-execution-recovery" role="group" aria-label="研究恢复操作">
-          <p>{progress.status === "CANCELED" ? "当前分析已取消。已经提交的有效输出仍会保留；继续当前研究不会自动重算。" : "本次研究未完成。已完成的科学结果会保留；重新运行会创建一次新的执行。"}</p>
+          {!interpretationFailed ? <p>{progress.status === "CANCELED" ? "当前分析已取消。已经提交的有效输出仍会保留；继续当前研究不会自动重算。" : "本次研究未完成。已完成的科学结果会保留；重新运行会创建一次新的执行。"}</p> : null}
           <div>
-            {onContinue ? <button type="button" className="product-primary-action" onClick={onContinue}>继续当前研究</button> : null}
+            {interpretationFailed && onReinterpret ? <button type="button" className="product-primary-action" onClick={onReinterpret} disabled={retryPending}>{retryPending ? "正在提交解读…" : "重新解读"}</button> : null}
+            {onContinue ? <button type="button" className={interpretationFailed ? "product-secondary-action" : "product-primary-action"} onClick={onContinue}>继续当前研究</button> : null}
             {onEdit ? <button type="button" className="product-secondary-action" onClick={onEdit}>修改问题并创建分支</button> : null}
-            {onRetry ? <button type="button" className="product-secondary-action" onClick={onRetry} disabled={retryPending}>{retryPending ? "正在创建新运行…" : "重新运行分析"}</button> : null}
+            {!interpretationFailed && onRetry ? <button type="button" className="product-secondary-action" onClick={onRetry} disabled={retryPending}>{retryPending ? "正在创建新运行…" : "重新运行分析"}</button> : null}
           </div>
         </div>
       ) : null}
     </section>
   );
+  return compactCompleted
+    ? <details key={progress.turn_id} className="research-execution-details"><summary>分析过程</summary>{activity}</details>
+    : activity;
 }

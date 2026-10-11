@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Any
 
 import pandas as pd
+import numpy as np
 
 from .errors import ToolExecutionError
 
@@ -66,7 +67,18 @@ def prepare_regression_frame(raw: Any, params: dict[str, Any], *, tool_id: str) 
     return PreparedRegressionFrame(dataframe=clean, target_column=target_column, prediction_column=prediction_column)
 
 
-def regression_metrics(prepared: PreparedRegressionFrame) -> dict[str, float | int]:
+def regression_r2(target: Any, *, ss_residual: float, ss_total: float) -> float | None:
+    values = np.asarray(target, dtype=float)
+    # A decimal constant's floating-point mean need not equal the value itself.
+    # Test the samples, not a rounded sum of squares or an isclose tolerance.
+    if len(values) and bool(np.all(values == values[0])):
+        return None
+    if ss_total == 0:
+        raise ValueError("Nonconstant target variance is below numerical precision.")
+    return float(1 - ss_residual / ss_total)
+
+
+def regression_metrics(prepared: PreparedRegressionFrame) -> dict[str, float | int | str | None]:
     target = prepared.dataframe[prepared.target_column].astype(float)
     prediction = prepared.dataframe[prepared.prediction_column].astype(float)
     error = prediction - target
@@ -75,11 +87,13 @@ def regression_metrics(prepared: PreparedRegressionFrame) -> dict[str, float | i
     target_mean = target.mean()
     ss_tot = float(((target - target_mean) ** 2).sum())
     ss_res = float(sq_error.sum())
+    r2 = regression_r2(target, ss_residual=ss_res, ss_total=ss_tot)
     return {
         "n": int(len(prepared.dataframe)),
         "mae": float(abs_error.mean()),
         "rmse": float(sq_error.mean() ** 0.5),
-        "r2": float(1 - ss_res / ss_tot) if ss_tot else 1.0,
+        "r2": r2,
+        "r2Status": "undefined_constant_target" if r2 is None else "defined",
         "meanError": float(error.mean()),
         "maxAbsError": float(abs_error.max()),
     }

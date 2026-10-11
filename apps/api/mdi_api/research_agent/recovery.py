@@ -1,21 +1,24 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
+import asyncio
 import logging
 import re
 from typing import Any
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 
 from mdi_api.config import ApiSettings, load_settings
 from mdi_api.bootstrap.repository_factory import create_repository_factory
-from mdi_api.db import projects, research_turns
+from mdi_api.db import agent2_scientific_report_generations, jobs, projects, research_turn_events, research_turns
 from mdi_api.infrastructure.interpretation.reconciler import ScientificInterpretationReconciler
 from mdi_api.infrastructure.scientific_results.queue import result_projection_queue_from_settings
 from mdi_api.infrastructure.scientific_results.reconciler import ScientificResultReconciler
 from mdi_api.research_agent.execution.reconciler import ResearchExecutionReconciler
+from mdi_api.research_agent.execution.supervisor import ResearchExecutionSupervisor
 from mdi_api.research_agent.orchestration.queue import RedisRQAgentTurnQueue
 from mdi_api.research_agent.planning.queue import RedisRQCapabilityPlanningQueue
 from mdi_api.research_agent.schemas import (
@@ -27,10 +30,30 @@ from mdi_api.research_agent.lifecycle import (
     LifecycleFailureCategory,
     classify_failure,
     recovery_action,
+    is_stale_active_turn,
 )
+from mdi_api.research_agent.service import ResearchTurnService
+from mdi_api.research_agent.turns.state_machine import ensure_transition
 
 
 logger = logging.getLogger(__name__)
+
+_PRE_EXECUTION_STAGES = frozenset({
+    ResearchTurnStatus.RESOLVING_CONTEXT,
+    ResearchTurnStatus.ORCHESTRATING,
+    ResearchTurnStatus.PLANNING,
+})
+_WAITING_PRE_EXECUTION_STAGES = frozenset({
+    ResearchTurnStatus.RECEIVED,
+    ResearchTurnStatus.READY_TO_PLAN,
+    ResearchTurnStatus.PLAN_READY,
+})
+_EXECUTION_STAGES = frozenset({
+    ResearchTurnStatus.QUEUED, ResearchTurnStatus.RUNNING, ResearchTurnStatus.CANCELING,
+})
+_RESULT_STAGES = frozenset({
+    ResearchTurnStatus.RESULT_PENDING, ResearchTurnStatus.RESULT_READY, ResearchTurnStatus.INTERPRETING,
+})
 
 _ACTIVE_STATUSES = frozenset({
     ResearchTurnStatus.RECEIVED,
@@ -81,6 +104,8 @@ class RecoveryOutcome:
 
     @property
     def failure_category(self) -> str:
+        if self.action in {"STALLED_STAGE_TERMINALIZED", "ABANDONED_EXECUTION_TERMINALIZED"}:
+            return LifecycleFailureCategory.RETRYABLE.value
         if self.action == "QUEUE_UNAVAILABLE":
             return LifecycleFailureCategory.RETRYABLE.value
         if self.action == "LEGACY_QUERY_DATA_TERMINALIZED":
@@ -135,6 +160,7 @@ class StaleResearchRecoveryService:
         *,
         stale_minutes: int = 15,
         limit: int = 200,
+        statuses: frozenset[ResearchTurnStatus] = _ACTIVE_STATUSES,
     ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
         cutoff = datetime.now(timezone.utc) - timedelta(minutes=max(1, stale_minutes))
         with self.repository_factory.session() as session:
@@ -145,11 +171,12 @@ class StaleResearchRecoveryService:
                     research_turns.c.status,
                     research_turns.c.action_type,
                     research_turns.c.updated_at,
+                    research_turns.c.row_version,
                     projects.c.created_by,
                 )
                 .join(projects, projects.c.id == research_turns.c.project_id)
                 .where(
-                    research_turns.c.status.in_([item.value for item in _ACTIVE_STATUSES]),
+                    research_turns.c.status.in_([item.value for item in statuses]),
                     research_turns.c.updated_at < cutoff,
                 )
                 .order_by(research_turns.c.updated_at.asc())
@@ -169,6 +196,27 @@ class StaleResearchRecoveryService:
             ) else product
             target.append(item)
         return product, qualification
+
+    def expire_stalled_pre_execution(self) -> int:
+        """Bound only pre-scientific stages; running Jobs retain lease authority."""
+        candidates, _qualification = self.list_stale(
+            stale_minutes=max(5, self.settings.agent2_startup_recovery_stale_minutes),
+            limit=self.settings.agent2_startup_recovery_limit,
+            statuses=_PRE_EXECUTION_STAGES | _WAITING_PRE_EXECUTION_STAGES,
+        )
+        count = 0
+        for candidate in candidates[:self.settings.agent2_startup_recovery_limit]:
+            try:
+                with self.repository_factory.session() as session:
+                    turn = session.agent2.research_turns.get(UUID(str(candidate["id"])))
+                if turn["status"] != candidate["status"] or turn["row_version"] != candidate["row_version"]:
+                    continue
+                outcome = self._expire_stalled_stage(turn)
+                count += int(outcome is not None and outcome.accepted)
+            except Exception as exc:
+                # One damaged historical row must not starve later messages.
+                logger.warning("research_stage_watchdog_item_failed", extra={"error_type": type(exc).__name__})
+        return count
 
     def reconcile_stale(
         self,
@@ -200,10 +248,284 @@ class StaleResearchRecoveryService:
             ],
         }
 
+    def expire_stalled_results(self) -> int:
+        """End inactive result/interpretation work without replaying science or providers."""
+        enabled_stages = set()
+        if self.settings.agent2_result_projection_enabled:
+            enabled_stages.add(ResearchTurnStatus.RESULT_PENDING)
+        if self.settings.agent2_interpretation_enabled:
+            enabled_stages.update({ResearchTurnStatus.RESULT_READY, ResearchTurnStatus.INTERPRETING, ResearchTurnStatus.ORCHESTRATING})
+        if not enabled_stages:
+            return 0
+        candidates, _qualification = self.list_stale(
+            stale_minutes=max(5, self.settings.agent2_startup_recovery_stale_minutes),
+            limit=self.settings.agent2_startup_recovery_limit,
+            statuses=frozenset(enabled_stages),
+        )
+        candidates = [candidate for candidate in candidates if
+            candidate["status"] != ResearchTurnStatus.ORCHESTRATING.value
+            or candidate.get("action_type") == ResearchAction.INTERPRET_RESULT.value]
+        count = 0
+        for candidate in candidates[:self.settings.agent2_startup_recovery_limit]:
+            try:
+                with self.repository_factory.session() as session:
+                    turn = session.agent2.research_turns.get(UUID(str(candidate["id"])))
+                status = ResearchTurnStatus(str(turn["status"]))
+                interpretation_handoff = (
+                    status == ResearchTurnStatus.ORCHESTRATING
+                    and str(turn.get("action_type") or "") == ResearchAction.INTERPRET_RESULT.value
+                )
+                if status not in _RESULT_STAGES and not interpretation_handoff:
+                    continue
+                projection = status == ResearchTurnStatus.RESULT_PENDING
+                if not (self.settings.agent2_result_projection_enabled if projection else self.settings.agent2_interpretation_enabled):
+                    continue
+                if not is_stale_active_turn(
+                    turn, stale_after_seconds=max(300, self.settings.agent2_startup_recovery_stale_minutes * 60),
+                ):
+                    continue
+                updated = ResearchTurnService(self.repository_factory).fail_if_active(
+                    UUID(str(turn["id"])),
+                    "RESULT_PROJECTION_TIMEOUT" if projection else "INTERPRETATION_STAGE_TIMEOUT",
+                    "Result processing exceeded its recovery deadline; saved scientific outputs are retained.",
+                    expected_statuses=frozenset({status}),
+                    expected_version=int(turn["row_version"]),
+                )
+                count += int(updated is not None)
+            except Exception as exc:
+                logger.warning("research_result_watchdog_item_failed", extra={"error_type": type(exc).__name__})
+        return count
+
+    def expire_stalled_reports(self) -> int:
+        """Bound lost report work while retaining its completed research/results."""
+        if not self.settings.agent2_report_enabled:
+            return 0
+        table = agent2_scientific_report_generations
+        cutoff = datetime.now(timezone.utc) - timedelta(minutes=max(5, self.settings.agent2_startup_recovery_stale_minutes))
+        with self.repository_factory.session() as session:
+            rows = session.connection.execute(
+                select(table, projects.c.created_by)
+                .join(projects, projects.c.id == table.c.project_id)
+                .where(table.c.status.in_(["REQUESTED", "COMPOSING"]), table.c.updated_at < cutoff)
+                .order_by(table.c.updated_at, table.c.id)
+                .limit(max(1000, self.settings.agent2_startup_recovery_limit * 10))
+            ).mappings().all()
+        count = processed = 0
+        for row in rows:
+            if is_qualification_project(project_id=str(row["project_id"]), created_by=str(row["created_by"])):
+                continue
+            if processed >= self.settings.agent2_startup_recovery_limit:
+                break
+            processed += 1
+            try:
+                with self.repository_factory.unit_of_work() as unit:
+                    report = unit.agent2.scientific_reports.get_for_turn(row["research_turn_id"])
+                    ready = report is not None and report["project_id"] == row["project_id"]
+                    updated = unit.agent2.scientific_report_generations.compare_status(
+                        row["id"], "READY" if ready else "FAILED",
+                        expected_status=row["status"], expected_attempt=row["attempt_count"],
+                        expected_updated_at=row["updated_at"],
+                        error_code=None if ready else "REPORT_QUEUE_TIMEOUT" if row["status"] == "REQUESTED" else "REPORT_STAGE_TIMEOUT",
+                        error_summary=None if ready else "报告生成超过恢复时限，可重试生成；已保存的科学结果保留。",
+                        # Consume the unclaimed attempt so its delayed queue
+                        # message cannot claim a later explicit retry.
+                        increment_attempt=not ready and row["status"] == "REQUESTED",
+                    )
+                    count += int(updated is not None)
+            except Exception as exc:
+                logger.warning("report_watchdog_item_failed", extra={"error_type": type(exc).__name__})
+        return count
+
+    def expire_stalled_execution(self) -> int:
+        """Find inactive execution Jobs without allowing live leases to crowd them out."""
+        now = datetime.now(timezone.utc)
+        cutoff = now - timedelta(minutes=max(5, self.settings.agent2_startup_recovery_stale_minutes))
+        with self.repository_factory.session() as session:
+            rows = session.connection.execute(
+                select(research_turns.c.id, research_turns.c.project_id, projects.c.created_by)
+                .join(projects, projects.c.id == research_turns.c.project_id)
+                .join(jobs, jobs.c.id == research_turns.c.job_id)
+                .where(
+                    research_turns.c.status.in_([status.value for status in _EXECUTION_STAGES]),
+                    jobs.c.status.in_(["created", "queued", "running", "cancel_requested"]),
+                    jobs.c.updated_at < cutoff,
+                    or_(jobs.c.lease_expires_at.is_(None), jobs.c.lease_expires_at <= now),
+                )
+                .order_by(jobs.c.updated_at.asc(), research_turns.c.id)
+                .limit(max(1000, self.settings.agent2_startup_recovery_limit * 10))
+            ).mappings().all()
+        count = processed = 0
+        for row in rows:
+            if is_qualification_project(project_id=str(row["project_id"]), created_by=str(row["created_by"])):
+                continue
+            if processed >= self.settings.agent2_startup_recovery_limit:
+                break
+            processed += 1
+            try:
+                count += int(self._expire_execution_turn(UUID(str(row["id"]))))
+            except Exception as exc:
+                logger.warning("research_execution_watchdog_item_failed", extra={"error_type": type(exc).__name__})
+        return count
+
+    def reconcile_finished_execution(self) -> int:
+        """Repair the commit/sync gap using saved execution outputs only."""
+        cutoff = datetime.now(timezone.utc) - timedelta(minutes=1)
+        with self.repository_factory.session() as session:
+            rows = session.connection.execute(
+                select(research_turns.c.job_id, research_turns.c.project_id, projects.c.created_by)
+                .join(projects, projects.c.id == research_turns.c.project_id)
+                .join(jobs, jobs.c.id == research_turns.c.job_id)
+                .where(
+                    research_turns.c.status.in_([status.value for status in _EXECUTION_STAGES]),
+                    jobs.c.status.in_(["completed", "partial_success", "failed", "cancelled"]),
+                    jobs.c.project_id == research_turns.c.project_id,
+                    jobs.c.updated_at < cutoff,
+                )
+                .order_by(jobs.c.updated_at, research_turns.c.id)
+                .limit(max(1000, self.settings.agent2_startup_recovery_limit * 10))
+            ).mappings().all()
+        count = processed = 0
+        for row in rows:
+            if is_qualification_project(project_id=str(row["project_id"]), created_by=str(row["created_by"])):
+                continue
+            if processed >= self.settings.agent2_startup_recovery_limit:
+                break
+            processed += 1
+            try:
+                view = ResearchExecutionSupervisor(self.repository_factory).sync_for_job(
+                    str(row["job_id"]), recover_terminal_only=True,
+                )
+                count += int(view is not None)
+            except Exception as exc:
+                logger.warning("research_execution_handoff_failed", extra={"error_type": type(exc).__name__})
+        return count
+
+    def republish_unstarted_results(self) -> int:
+        """Retry missed result wakeups without renewing their inactivity deadline."""
+        if not self.settings.agent2_result_projection_enabled or (
+            self.result_queue is None and self.settings.queue_backend != "redis"
+        ):
+            return 0
+        now = datetime.now(timezone.utc)
+        cutoff = now - timedelta(minutes=max(5, self.settings.agent2_startup_recovery_stale_minutes))
+        with self.repository_factory.session() as session:
+            rows = session.connection.execute(
+                select(research_turns.c.id, research_turns.c.project_id, projects.c.created_by)
+                .join(projects, projects.c.id == research_turns.c.project_id)
+                .join(jobs, jobs.c.id == research_turns.c.job_id)
+                .where(
+                    research_turns.c.status == ResearchTurnStatus.RESULT_PENDING.value,
+                    research_turns.c.updated_at >= cutoff,
+                    research_turns.c.updated_at < now - timedelta(minutes=1),
+                    jobs.c.project_id == research_turns.c.project_id,
+                    jobs.c.status.in_(["completed", "partial_success", "failed"]),
+                    ~select(research_turn_events.c.id).where(
+                        research_turn_events.c.turn_id == research_turns.c.id,
+                        research_turn_events.c.event_type == "RESULT_PROJECTION_STARTED",
+                    ).exists(),
+                )
+                .order_by(research_turns.c.updated_at, research_turns.c.id)
+                .limit(max(1000, self.settings.agent2_startup_recovery_limit * 10))
+            ).mappings().all()
+        queue = self.result_queue or result_projection_queue_from_settings(self.settings)
+        count = processed = 0
+        for row in rows:
+            if is_qualification_project(project_id=str(row["project_id"]), created_by=str(row["created_by"])):
+                continue
+            if processed >= self.settings.agent2_startup_recovery_limit:
+                break
+            processed += 1
+            try:
+                result = ScientificResultReconciler(self.repository_factory, queue).reconcile_turn(UUID(str(row["id"])))
+                count += int(result is not None and result.enqueued)
+            except Exception as exc:
+                logger.warning("research_result_handoff_failed", extra={"error_type": type(exc).__name__})
+                # A bounded Redis timeout must not be multiplied by the batch.
+                break
+        return count
+
+    def _expire_execution_turn(self, turn_id: UUID) -> bool:
+        # Use the same Turn -> Job lock order as normal progress publication.
+        # Job, unfinished calls, Turn and events commit or roll back together.
+        with self.repository_factory.unit_of_work() as unit:
+            turn = unit.agent2.research_turns.get_for_update(turn_id)
+            status = ResearchTurnStatus(str(turn["status"]))
+            job_id = str(turn.get("job_id") or "")
+            if status not in _EXECUTION_STAGES or not job_id:
+                return False
+            job = unit.repositories.jobs.get(job_id)
+            if str(job["projectId"]) != str(turn["project_id"]):
+                return False
+            waiting = job["status"] in {"created", "queued"}
+            error_code = "EXECUTION_QUEUE_TIMEOUT" if waiting else "EXECUTION_WORKER_LOST"
+            reason = "Scientific queue wait exceeded its recovery deadline." if waiting else "Execution lease expired without further activity."
+            expired = unit.repositories.jobs.expire_abandoned_execution(
+                job_id,
+                stale_after_seconds=max(300, self.settings.agent2_startup_recovery_stale_minutes * 60),
+                cancel_requested=status == ResearchTurnStatus.CANCELING,
+            )
+            if expired is None:
+                return False
+            cancelled = expired["status"] == "cancelled"
+            for call in unit.repositories.tool_calls.list_for_job(job_id):
+                if int(call.get("attempt") or 0) != int(expired.get("executionAttempt") or 0):
+                    continue
+                if call["status"] in {"planned", "running"}:
+                    unit.repositories.tool_calls.save({
+                        **call, "status": "skipped" if cancelled else "failed",
+                        "error": {"code": error_code, "message": reason},
+                    })
+            target = ResearchTurnStatus.CANCELED if cancelled else ResearchTurnStatus.FAILED
+            if cancelled and status != ResearchTurnStatus.CANCELING:
+                ensure_transition(status, ResearchTurnStatus.CANCELING)
+                turn = unit.agent2.research_turns.compare_and_set_status(
+                    turn_id, expected_status=status.value, expected_version=int(turn["row_version"]),
+                    target_status=ResearchTurnStatus.CANCELING.value,
+                )
+                status = ResearchTurnStatus.CANCELING
+                self._append_event(unit, turn_id, ResearchTurnEventType.CANCELLATION_REQUESTED, {"status": status.value})
+            ensure_transition(status, target)
+            unit.agent2.research_turns.compare_and_set_status(
+                turn_id, expected_status=status.value, expected_version=int(turn["row_version"]),
+                target_status=target.value, completed_at=datetime.now(timezone.utc),
+                error_code=None if cancelled else error_code,
+                error_summary=None if cancelled else f"{reason} Saved outputs are retained.",
+            )
+            self._append_event(
+                unit, turn_id,
+                ResearchTurnEventType.EXECUTION_CANCELED if cancelled else ResearchTurnEventType.TURN_FAILED,
+                {"status": target.value, "error_code": None if cancelled else error_code},
+            )
+            unit.repositories.job_events.append_event(
+                job_id, event_type="job.abandoned_execution_ended", status="warning" if cancelled else "error",
+                message=reason,
+                payload={"executionAttempt": expired.get("executionAttempt"), "cancelled": cancelled},
+            )
+        return True
+
     def reconcile_turn(self, turn_id: UUID) -> RecoveryOutcome:
         with self.repository_factory.session() as session:
             turn = session.agent2.research_turns.get(turn_id)
             status = ResearchTurnStatus(str(turn["status"]))
+
+        if status in _EXECUTION_STAGES and turn.get("job_id"):
+            view = ResearchExecutionSupervisor(self.repository_factory).sync_for_job(
+                str(turn["job_id"]), recover_terminal_only=True,
+            )
+            if view is not None:
+                if view.status == ResearchTurnStatus.RESULT_PENDING and self.settings.agent2_result_projection_enabled:
+                    queue = self.result_queue or result_projection_queue_from_settings(self.settings)
+                    try:
+                        ScientificResultReconciler(self.repository_factory, queue).reconcile_turn(turn_id)
+                    except Exception as exc:
+                        return self._queue_unavailable(turn_id, status, "RESULT_PROJECTION_REPUBLISH", exc)
+                return RecoveryOutcome(turn_id, status.value, "EXECUTION_HANDOFF_RECONCILED", True, "saved execution outcome synchronized")
+
+        if status in _EXECUTION_STAGES and self._expire_execution_turn(turn_id):
+            return RecoveryOutcome(
+                turn_id, status.value, "ABANDONED_EXECUTION_TERMINALIZED", True,
+                "expired execution ended; saved outputs retained",
+            )
 
         if status == ResearchTurnStatus.RECEIVED:
             queue = self.orchestration_queue or RedisRQAgentTurnQueue(
@@ -287,6 +609,10 @@ class StaleResearchRecoveryService:
                 "query-only Turn completed without scientific execution",
             )
 
+        expired = self._expire_stalled_stage(turn)
+        if expired is not None:
+            return expired
+
         return RecoveryOutcome(
             turn_id,
             status.value,
@@ -294,6 +620,36 @@ class StaleResearchRecoveryService:
             False,
             "state cannot be replayed without risking duplicate or unauthorized scientific work",
         )
+
+    def _expire_stalled_stage(self, turn: dict[str, Any]) -> RecoveryOutcome | None:
+        status = ResearchTurnStatus(str(turn["status"]))
+        turn_id = UUID(str(turn["id"]))
+        waiting = status in _WAITING_PRE_EXECUTION_STAGES
+        if (
+            status in _PRE_EXECUTION_STAGES | _WAITING_PRE_EXECUTION_STAGES
+            and not turn.get("job_id")
+            and (waiting or str(turn.get("action_type") or "") not in {
+                ResearchAction.INTERPRET_RESULT.value, ResearchAction.QUERY_DATA.value,
+            })
+            and is_stale_active_turn(
+                turn,
+                stale_after_seconds=max(300, self.settings.agent2_startup_recovery_stale_minutes * 60),
+            )
+        ):
+            updated = ResearchTurnService(self.repository_factory).fail_if_active(
+                turn_id,
+                "RESEARCH_QUEUE_TIMEOUT" if waiting else "RESEARCH_STAGE_TIMEOUT",
+                "Research queue wait exceeded its recovery deadline; no scientific job was started" if waiting
+                else "Research preparation exceeded its recovery deadline; no scientific job was started",
+                expected_statuses=frozenset({status}),
+                expected_version=int(turn["row_version"]),
+            )
+            return RecoveryOutcome(
+                turn_id, status.value, "STALLED_STAGE_TERMINALIZED", updated is not None,
+                "stalled preparation ended with retry feedback" if updated else "newer durable state preserved",
+            )
+
+        return None
 
     @staticmethod
     def _queue_unavailable(
@@ -402,6 +758,57 @@ class StaleResearchRecoveryService:
             "payload_json": payload,
             "created_at": datetime.now(timezone.utc),
         })
+
+
+def _watchdog_cycle(settings: ApiSettings) -> int:
+    service = StaleResearchRecoveryService(
+        create_repository_factory(settings), settings=settings,
+    )
+    return (
+        service.expire_stalled_pre_execution() + service.expire_stalled_execution()
+        + service.expire_stalled_results() + service.reconcile_finished_execution()
+        + service.republish_unstarted_results() + service.expire_stalled_reports()
+    )
+
+
+@asynccontextmanager
+async def research_stage_watchdog(settings: ApiSettings, *, interval_seconds: float = 60.0):
+    """Check preparation/result deadlines and abandoned execution leases.
+
+    The loop never reruns scientific execution. It synchronizes saved outcomes
+    and republishes only unstarted result projection identities, with bounded
+    queue I/O. Its cycles never overlap.
+    """
+    if not (
+        settings.agent2_startup_recovery_enabled
+        and "postgres" in settings.database_url
+        and settings.queue_backend == "redis"
+        and (settings.agent2_orchestration_enabled or settings.agent2_report_enabled)
+    ):
+        yield
+        return
+    stopped = asyncio.Event()
+    logger.info("research_stage_watchdog_started interval_seconds=%s stale_minutes=%s", interval_seconds, max(5, settings.agent2_startup_recovery_stale_minutes))
+
+    async def maintain():
+        while not stopped.is_set():
+            try:
+                expired = await asyncio.to_thread(_watchdog_cycle, settings)
+                if expired:
+                    logger.info("research_stage_watchdog_recovered count=%s", expired)
+            except Exception as exc:
+                logger.warning("research_stage_watchdog_failed", extra={"error_type": type(exc).__name__})
+            try:
+                await asyncio.wait_for(stopped.wait(), timeout=max(0.01, interval_seconds))
+            except asyncio.TimeoutError:
+                pass
+
+    task = asyncio.create_task(maintain(), name="research-stage-watchdog")
+    try:
+        yield
+    finally:
+        stopped.set()
+        await task
 
 
 def run_startup_recovery(

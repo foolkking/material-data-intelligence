@@ -3,7 +3,7 @@ export type WorkspacePlotRecord = Record<string, unknown>;
 export function normalizedPlotFigure(content: unknown): WorkspacePlotRecord | null {
   const root = record(content);
   if (!root) return null;
-  const figure = record(root.figure) ?? root;
+  const figure = record(root.figure) ?? record(root.plotlyFigure) ?? root;
   if (Array.isArray(figure.data)) return figure;
 
   const series = Array.isArray(root.series) ? root.series : null;
@@ -47,9 +47,9 @@ function record(value: unknown): WorkspacePlotRecord | null {
     : null;
 }
 
-function scalarArray(value: unknown): Array<number | string> | null {
+function scalarArray(value: unknown): Array<number | string | null> | null {
   return Array.isArray(value) && value.every((item) =>
-    (typeof item === "number" && Number.isFinite(item)) || typeof item === "string")
-    ? value as Array<number | string>
+    item === null || (typeof item === "number" && Number.isFinite(item)) || typeof item === "string")
+    ? value as Array<number | string | null>
     : null;
 }

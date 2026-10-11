@@ -22,6 +22,20 @@ beforeEach(() => {
 });
 
 describe("product task feed", () => {
+  it("starts a fresh request when remounting before an aborted request settles", async () => {
+    mocks.listWorkspaceTaskFeed.mockImplementationOnce(({signal}: {signal: AbortSignal}) => new Promise((_resolve, reject) => {
+      signal.addEventListener("abort", () => reject(new DOMException("aborted", "AbortError")), {once:true});
+    }));
+    mocks.listWorkspaceTaskFeed.mockResolvedValueOnce({data:{items:[],projectCount:1,truncated:false,nextCursor:null}});
+    const controller = new AbortController();
+    const first = getProductTaskFeed({signal:controller.signal});
+    const firstResult = expect(first).rejects.toMatchObject({name:"AbortError"});
+    controller.abort();
+    const second = getProductTaskFeed({signal:new AbortController().signal});
+    await expect(second).resolves.toMatchObject({projectCount:1,rows:[]});
+    await firstResult;
+    expect(mocks.listWorkspaceTaskFeed).toHaveBeenCalledTimes(2);
+  });
   it("supports bounded search text and stable recent/oldest ordering", () => {
     const rows = [
       { projectName: "Project A", researchQuestion: "Compare CrystalNN and VoronoiNN", jobId: "job-old", jobStatus: "completed", workspaceProjectionStatus: "COMPLETE", createdAt: "2026-08-30T00:00:00Z", updatedAt: "2026-08-30T01:00:00Z" },

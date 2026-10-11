@@ -18,7 +18,7 @@ from mdi_api.research_agent.planning.deterministic import (
 from mdi_api.research_agent.planning.validator import CapabilityPlanValidator
 
 
-PROMPT_VERSION = "scientific-capability-planner/1.1"
+PROMPT_VERSION = "scientific-capability-planner/1.3"
 
 
 def _binding_contracts() -> dict[str, dict[str, Any]]:
@@ -87,6 +87,23 @@ def requires_llm_planning(
         if len(equally_ranked) > 1:
             return True
     for candidate in resolution.candidates:
+        if registry is not None:
+            manifest = registry.require(candidate.capability_id, candidate.capability_version)
+            if len(manifest.input_slots) > 1 and any(
+                len(values) > 1 for values in candidate.bound_source_ref_keys.values()
+            ):
+                return True
+            # Multi-input consumers need an explicit correspondence when a
+            # producer has several material-specific outputs.
+            if len(manifest.input_slots) > 1 and any(
+                len(values) > 1
+                for producer in resolution.candidates
+                if f"{producer.capability_id}@{producer.capability_version}" in {
+                    value for values in candidate.possible_producers.values() for value in values
+                }
+                for values in producer.bound_source_ref_keys.values()
+            ):
+                return True
         if any(len(values) > 1 for values in candidate.possible_producers.values()):
             return True
         if any(len(values) > 1 for values in candidate.reusable_result_bindings.values()):

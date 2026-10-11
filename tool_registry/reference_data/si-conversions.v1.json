@@ -1,0 +1,144 @@
+{
+  "schemaVersion": "mdi.reference.si-conversions/1.0",
+  "version": "1.0.0",
+  "name": "SI 单位换算定义",
+  "sources": [
+    {
+      "name": "BIPM — The International System of Units, 9th edition",
+      "url": "https://www.bipm.org/en/publications/si-brochure",
+      "version": "9th edition (2019), updated 2026",
+      "license": "CC-BY-4.0",
+      "use": "SI prefixes, Celsius offset and exact elementary charge defining the electronvolt."
+    }
+  ],
+  "definitions": {
+    "length": {
+      "label": "长度",
+      "baseUnit": "m",
+      "definition": "SI 十进制前缀；1 Å = 10^-10 m。",
+      "units": {
+        "m": {
+          "scale": "1"
+        },
+        "cm": {
+          "scale": "0.01"
+        },
+        "mm": {
+          "scale": "0.001"
+        },
+        "um": {
+          "scale": "0.000001"
+        },
+        "nm": {
+          "scale": "0.000000001"
+        },
+        "pm": {
+          "scale": "0.000000000001"
+        },
+        "angstrom": {
+          "scale": "0.0000000001"
+        }
+      }
+    },
+    "time": {
+      "label": "时间",
+      "baseUnit": "s",
+      "definition": "以秒为基准的 SI 十进制前缀。",
+      "units": {
+        "s": {
+          "scale": "1"
+        },
+        "ms": {
+          "scale": "0.001"
+        },
+        "us": {
+          "scale": "0.000001"
+        },
+        "ns": {
+          "scale": "0.000000001"
+        },
+        "ps": {
+          "scale": "0.000000000001"
+        },
+        "fs": {
+          "scale": "0.000000000000001"
+        }
+      }
+    },
+    "energy": {
+      "label": "能量",
+      "baseUnit": "J",
+      "definition": "1 eV = 1.602176634 × 10^-19 J（定义值）。",
+      "units": {
+        "J": {
+          "scale": "1"
+        },
+        "kJ": {
+          "scale": "1000"
+        },
+        "eV": {
+          "scale": "1.602176634e-19"
+        },
+        "meV": {
+          "scale": "1.602176634e-22"
+        }
+      }
+    },
+    "pressure": {
+      "label": "压强",
+      "baseUnit": "Pa",
+      "definition": "以帕斯卡为基准的 SI 十进制前缀。",
+      "units": {
+        "Pa": {
+          "scale": "1"
+        },
+        "kPa": {
+          "scale": "1000"
+        },
+        "MPa": {
+          "scale": "1000000"
+        },
+        "GPa": {
+          "scale": "1000000000"
+        }
+      }
+    },
+    "temperature": {
+      "label": "温度",
+      "baseUnit": "K",
+      "definition": "T/K = t/°C + 273.15；温差换算不加偏移。",
+      "units": {
+        "K": {
+          "scale": "1",
+          "offset": "0"
+        },
+        "degC": {
+          "scale": "1",
+          "offset": "273.15"
+        }
+      }
+    },
+    "frequency": {
+      "label": "频率",
+      "baseUnit": "Hz",
+      "definition": "以赫兹为基准的 SI 十进制前缀。",
+      "units": {
+        "Hz": {
+          "scale": "1"
+        },
+        "kHz": {
+          "scale": "1000"
+        },
+        "MHz": {
+          "scale": "1000000"
+        },
+        "GHz": {
+          "scale": "1000000000"
+        },
+        "THz": {
+          "scale": "1000000000000"
+        }
+      }
+    }
+  }
+}

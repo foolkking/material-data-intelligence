@@ -13,7 +13,7 @@ from mdi_api.research_agent.capabilities.versions import version_satisfies
 from mdi_tool_registry import build_tool_artifact_port_metadata
 
 
-RESOLVER_VERSION = "agent2.capability-resolver/1.0"
+RESOLVER_VERSION = "agent2.capability-resolver/1.1"
 
 
 class CapabilityResolutionService:
@@ -114,13 +114,16 @@ class CapabilityResolutionService:
         ) -> CapabilityCandidate:
             bound: dict[str, list[ScientificObjectRef]] = {}
             result_bindings: dict[str, list[str]] = {}
+            result_source_keys: dict[str, dict[str, list[str]]] = {}
             missing: list[str] = []
             reasons: list[str] = []
             required_artifact_slots = artifact_required_slots(manifest)
             for slot in manifest.input_slots:
-                refs = [ref for item in requirements for ref in item["refs"] if ref.object_type in slot.accepted_object_types]
+                refs = [ref for item in (matched or requirements) for ref in item["refs"] if ref.object_type in slot.accepted_object_types]
                 dedup = {(str(ref.object_id), str(ref.version_id)): ref for ref in refs}
-                refs = list(dedup.values())[: slot.max_count or len(dedup)]
+                # These are eligible source choices. Cardinality limits a
+                # single invocation, not the user's complete source scope.
+                refs = list(dedup.values())
                 reusable_keys = []
                 if not refs or slot.name in required_artifact_slots:
                     for result_key, result in sorted((reusable_results or {}).items()):
@@ -136,6 +139,14 @@ class CapabilityResolutionService:
                             or bool(result_types.intersection(slot.accepted_object_types))
                         ):
                             reusable_keys.append(result_key)
+                            matching_sources = [ref for ref in output_refs if ref.object_type in slot.accepted_object_types]
+                            for result_type, source_refs in (result.get("source_object_refs_by_result_type") or {}).items():
+                                if result_type in slot.accepted_object_types:
+                                    matching_sources.extend(source_refs)
+                            result_source_keys.setdefault(slot.name, {})[result_key] = [
+                                ref_key for ref_key, ref in all_refs.items()
+                                if any(ref.object_id == source.object_id and ref.version_id == source.version_id for source in matching_sources)
+                            ]
                 if reusable_keys:
                     result_bindings[slot.name] = reusable_keys
                 elif (
@@ -186,6 +197,7 @@ class CapabilityResolutionService:
                 bound_source_inputs=bound,
                 bound_source_ref_keys={slot: [key_by_version[str(ref.version_id)] for ref in refs] for slot, refs in bound.items()},
                 reusable_result_bindings=result_bindings,
+                reusable_result_source_ref_keys=result_source_keys,
                 missing_input_slots=missing,
                 possible_producers=producers,
                 reason_codes=sorted(set(reasons)),

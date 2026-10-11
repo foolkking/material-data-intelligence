@@ -30,7 +30,7 @@ from mdi_api.research_agent.context.policy import (
 )
 from mdi_api.routers.research import _scientific_message_projections
 from mdi_api.scientific_objects.schemas import ScientificObjectRef
-from mdi_api.scientific_results.schemas import ScientificResultBundle
+from mdi_api.scientific_results.schemas import ScientificFigure, ScientificResultBundle
 
 
 def _bundle(*, execution_status: str = "SUCCESS") -> ScientificResultBundle:
@@ -52,6 +52,154 @@ def _output(statement: str = "第一峰位于 2.5 angstrom。", *, lead: str = "
             "supporting_findings": [], "limitations": [], "primary_result_refs": ["rdf.item"], "supporting_result_refs": [], "follow_up_suggestions": []}
 
 
+def _multi_source_bundle():
+    from copy import deepcopy
+    payload = _bundle().model_dump(mode="json")
+    source_a = {**payload["source_object_refs"][0], "display_name": "Si.cif"}
+    source_b = {**source_a, "object_id": str(uuid4()), "version_id": str(uuid4()), "display_name": "Cu.cif"}
+    item_a = {**payload["result_items"][0], "scientific_object_refs": [source_a]}
+    item_b = {**deepcopy(item_a), "id": "rdf.b", "scientific_object_refs": [source_b], "artifact_ids": ["artifact-b"], "fact_refs": ["rdf.b.density"], "evidence_refs": []}
+    fact_b = {**payload["facts"][0], "fact_id": "rdf.b.density", "subject_ref": "b", "value": 4.5, "source": {"artifact_id": "artifact-b", "artifact_locator": "/value"}}
+    payload.update(source_object_refs=[source_a, source_b], result_items=[item_a, item_b], facts=[*payload["facts"], fact_b])
+    payload["provenance"]["artifact_ids"].append("artifact-b")
+    return ScientificResultBundle.model_validate(payload)
+
+
+def test_interpreter_preserves_exact_material_labels_after_compaction():
+    envelope, _ = InterpreterInputAssembler().assemble(bundle=_multi_source_bundle(), question="Compare", relevance_status="CURRENT")
+    assert [item["source_labels"] for item in envelope.result["result_items"]] == [["Si.cif"], ["Cu.cif"]]
+    assert envelope.result["result_items"][0]["fact_refs"] == ["rdf.first_peak"]
+
+
+@pytest.mark.parametrize("statement,all_refs,valid", [
+    ("Si.cif 的峰位为 2.5 angstrom。", False, True),
+    ("Cu.cif 的峰位为 2.5 angstrom。", False, False),
+    ("Unknown.cif 的峰位为 2.5 angstrom。", False, False),
+    ("Si.cif 为 2.5 angstrom，Cu.cif 为 4.5 angstrom。", True, True),
+    ("Si.cif 为 4.5 angstrom，Cu.cif 为 2.5 angstrom。", True, False),
+])
+def test_material_name_and_value_cannot_borrow_another_sources_citations(statement, all_refs, valid):
+    output = ScientificInterpretationOutput.model_validate(_output(statement))
+    if all_refs:
+        output.primary_findings[0].fact_refs.append("rdf.b.density")
+        output.primary_findings[0].result_item_refs.append("rdf.b")
+        output.answer_lead = "Si.cif 为 2.5 angstrom，Cu.cif 为 4.5 angstrom。"
+    result = validate_interpretation(output, _multi_source_bundle())
+    assert result.valid is valid, result.errors
+    if not valid:
+        assert any("source" in error for error in result.errors)
+
+
+def _field_bundle(quantity="electron_localization_function"):
+    from mdi_api.application.scientific_results.projectors.volumetric import volumetric_field_limitations
+
+    bundle = _bundle()
+    bundle.result_items[0].result_type = "volumetric.field"
+    bundle.limitations = volumetric_field_limitations("artifact-1", {"quantity": quantity})
+    return bundle
+
+
+@pytest.mark.parametrize("quantity,incorrect", [
+    ("electron_localization_function", "使用 Bader 分析处理该 ELF 场以获得电子计数。"),
+    ("electron_localization_function", "Integrate ELF basins to obtain their electron populations."),
+    ("electron_localization_function", "Use an unrelated method to prove the bond type."),
+    ("orbital_density", "通过等值面的面积分得到内部电子数。"),
+    ("orbital_density", "将整胞积分解释为 HOMO 轨道占据数。"),
+])
+def test_volumetric_follow_up_proposals_cannot_bypass_grounding(quantity, incorrect):
+    bundle = _field_bundle(quantity)
+    output = ScientificInterpretationOutput.model_validate({**_output(), "follow_up_suggestions": [incorrect]})
+    before = output.model_dump(mode="json")
+    assert any("follow_up_suggestions" in error for error in validate_interpretation(output, bundle).errors)
+    live = project_grounded_communication(output, bundle, project_suggestions=False)
+    assert not validate_interpretation(live, bundle).valid
+    historical = project_grounded_communication(output, bundle)
+    assert historical.follow_up_suggestions == []
+    assert historical.primary_findings[0].statement == output.primary_findings[0].statement
+    assert output.model_dump(mode="json") == before
+
+
+def test_volumetric_follow_up_choices_are_scoped_to_exact_saved_limitations():
+    from mdi_api.application.scientific_reasoning.follow_ups import follow_up_policy
+
+    elf = _field_bundle()
+    partial = _field_bundle("orbital_density")
+    policy = follow_up_policy(elf)
+    assert policy is not None and len(policy["options"]) == 2
+    assert {ref for item in policy["options"] for ref in item["limitation_refs"]} == {
+        item.limitation_id for item in elf.limitations
+    }
+    suggestion = "若需要电子数或盆布居，需补充相应的电子密度数据和布居分析结果；当前 ELF 场及其体积分不能替代这些证据。"
+    output = ScientificInterpretationOutput.model_validate({**_output(), "follow_up_suggestions": [suggestion]})
+    assert validate_interpretation(output, elf).valid
+    assert not validate_interpretation(output, partial).valid
+    elf.limitations = []
+    assert follow_up_policy(elf)["options"] == []
+    assert not validate_interpretation(output, elf).valid
+    assert validate_interpretation(ScientificInterpretationOutput.model_validate(_output()), elf).valid
+    assert follow_up_policy(_bundle()) is None
+
+
+@pytest.mark.parametrize("repair_succeeds", [True, False])
+def test_unsupported_follow_up_requires_real_provider_repair(repair_succeeds):
+    from mdi_api.interpretation.service import InterpretationFailure
+
+    bundle = _field_bundle()
+    envelope, _ = InterpreterInputAssembler().assemble(bundle=bundle, question="解释场数据", relevance_status="CURRENT")
+    allowed = envelope.result["follow_up_policy"]["options"][0]["text"]
+    invalid = {**_output(), "follow_up_suggestions": ["Use Bader on ELF to count electrons."]}
+    valid = {**_output(), "follow_up_suggestions": [allowed]}
+    contexts = []
+
+    class RecordingClient(FakeStructuredInterpreterClient):
+        async def generate_structured(self, **kwargs):
+            contexts.append(kwargs["request_context"])
+            choices = kwargs["output_schema"]["properties"]["follow_up_suggestions"]["items"]["enum"]
+            assert allowed in choices and invalid["follow_up_suggestions"][0] not in choices
+            return await super().generate_structured(**kwargs)
+
+    client = RecordingClient([invalid, valid if repair_succeeds else invalid])
+    service = ScientificInterpretationService(repository_factory=None, client=client)
+    if repair_succeeds:
+        output, repaired, _ = service._generate_with_one_repair(envelope, bundle)
+        assert repaired and output.follow_up_suggestions == [allowed]
+    else:
+        with pytest.raises(InterpretationFailure, match="follow_up_suggestions"):
+            service._generate_with_one_repair(envelope, bundle)
+    assert client.calls == 2
+    assert any("follow_up_suggestions" in text for text in contexts[1]["repair"]["validation_errors"])
+    assert "Use Bader" not in json.dumps(contexts)
+
+
+def test_femtosecond_symbol_preserves_grounding_without_accepting_picosecond_conversion():
+    bundle = _bundle()
+    bundle.facts[0].unit = "femtosecond"
+    output = ScientificInterpretationOutput.model_validate(_output("所选帧的时间为 2.5 fs。"))
+    assert validate_interpretation(output, bundle).valid
+    converted = ScientificInterpretationOutput.model_validate(_output("所选帧的时间为 2.5 ps。"))
+    assert not validate_interpretation(converted, bundle).valid
+
+
+@pytest.mark.parametrize("display_unit", ["electron/angstrom^3", "electron/Å^3", "electrons / Å^{3}", "电子/Å³"])
+def test_density_units_are_checked_as_whole_units_without_losing_the_numerator(display_unit):
+    bundle = _bundle()
+    bundle.facts[0].predicate = "volumetric.minimum"
+    bundle.facts[0].unit = "electron/angstrom^3"
+    output = ScientificInterpretationOutput.model_validate(_output(f"密度为 2.5 {display_unit}。"))
+    assert validate_interpretation(output, bundle).valid
+    bundle.facts[0].unit = "angstrom"
+    assert not validate_interpretation(output, bundle).valid
+
+
+@pytest.mark.parametrize("wrong_unit", ["Å³", "Å^-3", "electron/bohr^3", "electron/nm³", "elementary_charge/Å^3", "bohr_magneton/Å³"])
+def test_density_grounding_rejects_other_quantities_and_spatial_units(wrong_unit):
+    bundle = _bundle()
+    bundle.facts[0].predicate = "volumetric.minimum"
+    bundle.facts[0].unit = "electron/angstrom^3"
+    output = ScientificInterpretationOutput.model_validate(_output(f"数值为 2.5 {wrong_unit}。"))
+    assert any("unit is absent" in error for error in validate_interpretation(output, bundle).errors)
+
+
 def test_grounding_rejects_unknown_refs_numeric_hallucination_and_unit_conversion():
     bundle = _bundle()
     unknown = ScientificInterpretationOutput.model_validate(_output(fact="missing.fact"))
@@ -64,6 +212,141 @@ def test_grounding_rejects_unknown_refs_numeric_hallucination_and_unit_conversio
     assert not validate_interpretation(answer_lead, bundle).valid
     angstrom_symbol = ScientificInterpretationOutput.model_validate(_output("A peak is recorded at 2.5 Å."))
     assert validate_interpretation(angstrom_symbol, bundle).valid
+
+
+@pytest.mark.parametrize("statement", [
+    "回归评估指标已计算，包括 MAE、RMSE、R²。",
+    "已生成真实值与预测值的对比散点图及残差图。",
+    "已列出绝对误差最大的样本及其 sample_id 和 formula。",
+    "MAE was computed; RMSE was not computed.",
+    "未计算 RMSE，但 MAE 已计算。",
+    "没有训练模型，MAE 已计算。",
+])
+def test_derived_completion_requires_scoped_scientific_support(statement):
+    bundle = _bundle()
+    bundle.facts = []
+    bundle.result_items[0].fact_refs = []
+    bundle.result_items[0].result_type = "data.table_analysis"
+    output = _output(statement, lead=statement)
+    output["primary_findings"][0]["fact_refs"] = []
+    validation = validate_interpretation(ScientificInterpretationOutput.model_validate(output), bundle)
+    assert not validation.valid
+    assert any("derived product" in error for error in validation.errors)
+
+
+@pytest.mark.parametrize("statement", [
+    "未计算 MAE、RMSE 和 R²。",
+    "MAE、RMSE、R² 未计算。",
+    "MAE and RMSE were not computed.",
+    "No MAE or RMSE is available.",
+    "未生成残差图。",
+    "已生成普通表格散点图。",
+])
+def test_unavailable_derived_products_and_generic_views_are_not_false_completion(statement):
+    bundle = _bundle()
+    bundle.facts = []
+    bundle.result_items[0].fact_refs = []
+    output = _output(statement, lead=statement)
+    output["primary_findings"][0]["fact_refs"] = []
+    assert validate_interpretation(ScientificInterpretationOutput.model_validate(output), bundle).valid
+
+
+@pytest.mark.parametrize("statement", [
+    "R² 未定义（目标值为常量）。", "R² is undefined (constant target).",
+    "R²状态为undefined_constant_target，因为目标变量为常数，无法定义R²。",
+    "由于目标变量为常数，R²无法定义，因此不适用作为该合成测试集的评估指标。",
+    "R²不可定义。", "不可定义 R²。",
+])
+def test_undefined_r2_requires_its_saved_status(statement):
+    bundle = _bundle()
+    bundle.facts[0].predicate = "ml.r2_status"
+    bundle.facts[0].value = "undefined_constant_target"
+    bundle.facts[0].unit = None
+    output = ScientificInterpretationOutput.model_validate(_output(statement, lead=statement))
+    assert validate_interpretation(output, bundle).valid
+    bundle.facts[0].value = "defined"
+    assert not validate_interpretation(output, bundle).valid
+
+
+@pytest.mark.parametrize("statement", [
+    "R² = 1。", "R² 未定义（目标值为常量），R² = 1。", "R² 已计算。",
+    "R²状态为undefined_constant_target，但R²为1。",
+    "R²无法定义，R²为0。", "无法定义R²，R²已计算。",
+    "R²状态为undefined_constant_target_other。",
+])
+def test_undefined_r2_status_does_not_support_numeric_or_completion_claims(statement):
+    bundle = _bundle()
+    bundle.facts[0].predicate = "ml.r2_status"
+    bundle.facts[0].value = "undefined_constant_target"
+    bundle.facts[0].unit = None
+    output = ScientificInterpretationOutput.model_validate(_output(statement, lead=statement))
+    assert not validate_interpretation(output, bundle).valid
+
+
+def test_named_metric_support_cannot_borrow_an_uncited_result():
+    bundle = _bundle()
+    bundle.facts[0].predicate = "ml.mae"
+    bundle.result_items.append(bundle.result_items[0].model_copy(update={"id": "unrelated", "fact_refs": []}))
+    output = _output("MAE 已计算。", lead="MAE 已计算。")
+    output["primary_findings"][0].update(fact_refs=[], evidence_refs=[], result_item_refs=["unrelated"])
+    assert not validate_interpretation(ScientificInterpretationOutput.model_validate(output), bundle).valid
+    output["primary_findings"][0]["result_item_refs"] = ["rdf.item"]
+    assert validate_interpretation(ScientificInterpretationOutput.model_validate(output), bundle).valid
+
+
+@pytest.mark.parametrize("repair_succeeds", [True, False])
+def test_false_metric_completion_requires_provider_repair(repair_succeeds):
+    from mdi_api.interpretation.service import InterpretationFailure
+
+    bundle = _bundle()
+    bundle.facts = []
+    bundle.result_items[0].fact_refs = []
+    invalid = _output("MAE 已计算。", lead="MAE 已计算。")
+    invalid["primary_findings"][0]["fact_refs"] = []
+    valid = _output("未计算 MAE。", lead="未计算 MAE。")
+    valid["primary_findings"][0]["fact_refs"] = []
+    envelope, _ = InterpreterInputAssembler().assemble(bundle=bundle, question="评估预测误差", relevance_status="CURRENT")
+    client = FakeStructuredInterpreterClient([invalid, valid if repair_succeeds else invalid])
+    service = ScientificInterpretationService(repository_factory=None, client=client)
+    if repair_succeeds:
+        output, repaired, _ = service._generate_with_one_repair(envelope, bundle)
+        assert repaired and output.primary_findings[0].statement == "未计算 MAE。"
+    else:
+        with pytest.raises(InterpretationFailure, match="derived product"):
+            service._generate_with_one_repair(envelope, bundle)
+    assert client.calls == 2
+
+
+def test_historical_invalid_interpretation_is_rejected_by_read_and_report_admission(monkeypatch):
+    from contextlib import nullcontext
+    from types import SimpleNamespace
+    from mdi_api.transport.routers import agent2
+    from mdi_api.scientific_reports.requests import ScientificReportRequestService
+    from mdi_api.scientific_reports.service import ScientificReportError
+
+    bundle = _bundle()
+    output = _output("MAE 已计算。", lead="MAE 已计算。")
+    row = {"id": uuid4(), "grounding_status": "VALID", "result_snapshot_id": uuid4(), "output_json": {"interpretation": output, "message": "MAE 已计算。"}}
+    snapshot = {"project_id": "project", "bundle_json": bundle.model_dump(mode="json")}
+    before = json.dumps([row, snapshot], default=str)
+    unit = SimpleNamespace(connection=None, agent2=SimpleNamespace(
+        research_turns=SimpleNamespace(get=lambda _id: {"id": bundle.research_turn_id, "project_id": "project"}),
+        interpretations=SimpleNamespace(get_for_turn=lambda _id: row),
+        scientific_result_snapshots=SimpleNamespace(get=lambda _id: snapshot),
+    ))
+    factory = SimpleNamespace(session=lambda: nullcontext(unit), unit_of_work=lambda: nullcontext(unit))
+    monkeypatch.setattr(agent2, "create_repository_factory", lambda: factory)
+    monkeypatch.setattr(agent2, "require_project_access", lambda *args, **kwargs: None)
+    view = agent2.get_research_turn_interpretation(bundle.research_turn_id, current_user=None)
+    assert view["status"] == "REJECTED" and view["interpretation"] is None
+    assert "未通过当前事实校验" in view["message"]
+    assert agent2._current_interpretation_warning(unit, {"id": bundle.research_turn_id, "project_id": "project", "status": "COMPLETED"})["code"] == "INTERPRETATION_GROUNDING_REJECTED"
+    # No generation repository or queue is supplied: rejection must precede
+    # both persistent admission and provider dispatch.
+    with pytest.raises(ScientificReportError) as error:
+        ScientificReportRequestService(factory).request(bundle.research_turn_id, requested_by="user")
+    assert error.value.code == "REPORT_INTERPRETATION_REJECTED"
+    assert json.dumps([row, snapshot], default=str) == before
 
 
 def test_grounding_ignores_list_prefixes_and_viewer_dimension_labels() -> None:
@@ -628,6 +911,26 @@ def test_grounded_communication_hides_exact_reference_echo_from_visible_prose() 
     assert validate_interpretation(projected, bundle).valid
 
 
+@pytest.mark.parametrize("suffix,expected", [
+    ("（figure_type: reference.compare_elements）", ""),
+    ("（figure_type: other.figure）", "（figure_type: other.figure）"),
+    ("（figure_type: reference.compare_elements，Og 缺失）", "（figure_type: reference.compare_elements，Og 缺失）"),
+])
+def test_grounded_communication_omits_only_an_exact_redundant_figure_type(suffix, expected):
+    bundle = _bundle()
+    bundle.figures = [ScientificFigure(
+        figure_id="comparison.figure", figure_type="reference.compare_elements",
+        role="PRIMARY", artifact_ids=["artifact-1"],
+        fact_refs=["rdf.first_peak"], evidence_refs=["evidence.rdf"],
+    )]
+    raw = ScientificInterpretationOutput.model_validate(_output(statement=f"已生成比较图{suffix}。"))
+    before = raw.model_dump(mode="json")
+    projected = project_grounded_communication(raw, bundle)
+    assert projected.primary_findings[0].statement == f"已生成比较图{expected}。"
+    assert projected.primary_findings[0].fact_refs == raw.primary_findings[0].fact_refs
+    assert raw.model_dump(mode="json") == before
+
+
 def test_grounded_communication_removes_opaque_method_and_version_metadata() -> None:
     bundle = _bundle()
     raw = ScientificInterpretationOutput.model_validate(
@@ -894,14 +1197,19 @@ def test_reference_echo_cleanup_preserves_parenthetical_scientific_content() -> 
     assert validate_interpretation(projected, bundle).valid
 
 
-def test_historical_scientific_message_uses_grounded_read_projection() -> None:
+@pytest.mark.parametrize("unsupported", [False, True])
+@pytest.mark.parametrize("markdown", [False, True])
+def test_historical_scientific_message_uses_grounded_read_projection(unsupported, markdown) -> None:
     bundle = _bundle()
+    turn_id = uuid4()
     interpretation_id = uuid4()
     snapshot_id = uuid4()
     message_id = "message-scientific-final"
     interpretation_row = {
         "id": interpretation_id,
         "project_id": "project",
+        "research_turn_id": turn_id,
+        "grounding_status": "VALID",
         "result_snapshot_id": snapshot_id,
         "output_json": {
             "interpretation": {
@@ -918,6 +1226,9 @@ def test_historical_scientific_message_uses_grounded_read_projection() -> None:
         "project_id": "project",
         "bundle_json": bundle.model_dump(mode="json"),
     }
+    if unsupported:
+        interpretation_row["output_json"]["interpretation"]["primary_findings"][0]["statement"] = "MAE 已计算。"
+    before = json.dumps([interpretation_row, snapshot_row], default=str)
 
     class Rows:
         def __init__(self, values):
@@ -945,16 +1256,25 @@ def test_historical_scientific_message_uses_grounded_read_projection() -> None:
                 "source": "agent2_scientific_interpreter",
                 "messageKind": "ASSISTANT_FINAL",
                 "interpretationId": str(interpretation_id),
+                "turnId": str(turn_id),
+                "sourceResultSnapshotId": str(snapshot_id),
+                **({"responseFormat": "markdown"} if markdown else {}),
             },
         }],
         Connection(),
         project_id="project",
     )
 
+    assert json.dumps([interpretation_row, snapshot_row], default=str) == before
+    if unsupported:
+        assert "未通过当前事实校验" in projected[message_id]
+        assert "MAE 已计算" not in projected[message_id]
+        return
     assert "第一峰位于 2.5 angstrom。" in projected[message_id]
     assert "rdf.first_peak" not in projected[message_id]
     assert "非常准确" not in projected[message_id]
     assert "未来源的方法常识" not in projected[message_id]
+    assert projected[message_id].startswith("## RDF 解释\n\n")
 
 
 def test_grounding_does_not_treat_lowercase_k_labels_as_kelvin_units():
@@ -965,6 +1285,92 @@ def test_grounding_does_not_treat_lowercase_k_labels_as_kelvin_units():
     )
     # The statement intentionally has no measured unit; ``k`` is a path label.
     assert validate_interpretation(result, bundle).valid
+
+
+@pytest.mark.parametrize("path", ["Γ–M–K–Γ", "Γ-M-K-Γ", "Γ → M → K → Γ"])
+def test_reciprocal_path_k_is_not_a_kelvin_claim(path):
+    payload = _bundle().model_dump(mode="json")
+    payload["facts"][0].update(predicate="phonon.qpoint_count", value=51, unit="count")
+    bundle = ScientificResultBundle.model_validate(payload)
+    result = ScientificInterpretationOutput.model_validate(_output(f"沿 {path} 路径共包含 51 个 q 点。"))
+    assert validate_interpretation(result, bundle).valid
+
+    for statement in [f"沿 {path} 路径共包含 51 个 q 点，温度为 51 K。", "温度范围为 0–51 K。"]:
+        unsupported = ScientificInterpretationOutput.model_validate(_output(statement))
+        assert any("unit is absent" in error for error in validate_interpretation(unsupported, bundle).errors)
+
+
+def test_reciprocal_path_exception_does_not_apply_to_unrelated_facts():
+    result = ScientificInterpretationOutput.model_validate(_output("在 M–K 范围，第一峰为 2.5 angstrom。"))
+    assert any("unit is absent" in error for error in validate_interpretation(result, _bundle()).errors)
+
+
+@pytest.mark.parametrize("label", ["K点", "K 点", "K-point", "K‑point", "K points"])
+def test_partial_density_k_point_limitation_is_not_a_temperature_claim(label):
+    bundle = _bundle()
+    bundle.facts[0].predicate = "volumetric.field_kind"
+    bundle.facts[0].value = "partial_charge_density"
+    bundle.facts[0].unit = None
+    statement = f"该部分电荷密度不能确定具体能带、{label} 或轨道身份。"
+    result = ScientificInterpretationOutput.model_validate(_output(statement))
+    assert validate_interpretation(result, bundle).valid
+
+    result.primary_findings[0].statement = statement + "温度单位为 K。"
+    assert any("unit is absent" in error for error in validate_interpretation(result, bundle).errors)
+
+
+@pytest.mark.parametrize("statement", ["K 点的温度为 2.5 K。", "温度范围为 2.5–2.5 K。", "温度在 2.5 K 点附近。", "温度在 2.5\nK 点附近。"])
+def test_k_point_disambiguation_retains_numeric_kelvin_claims(statement):
+    bundle = _bundle()
+    bundle.facts[0].predicate = "volumetric.minimum"
+    result = ScientificInterpretationOutput.model_validate(_output(statement))
+    assert any("unit is absent" in error for error in validate_interpretation(result, bundle).errors)
+
+    bundle.facts[0].unit = "K"
+    assert validate_interpretation(result, bundle).valid
+
+
+def test_reciprocal_path_disambiguation_cannot_borrow_unreferenced_scientific_context():
+    bundle = _bundle()
+    other = bundle.facts[0].model_copy(update={"fact_id": "unrelated", "predicate": "electronic.energy"})
+    bundle.facts.append(other)
+    result = ScientificInterpretationOutput.model_validate(_output("沿 M–K 路径。"))
+    assert any("unit is absent" in error for error in validate_interpretation(result, bundle).errors)
+
+
+@pytest.mark.parametrize("label", ["2θ", "2 θ", "2theta", "2Theta"])
+def test_xrd_angle_notation_is_not_a_separate_numeric_claim(label):
+    payload = _bundle().model_dump(mode="json")
+    payload["facts"][0].update(predicate="xrd.peak.two_theta", value=20.498535, unit="degree")
+    bundle = ScientificResultBundle.model_validate(payload)
+    output = ScientificInterpretationOutput.model_validate(_output(f"峰位 {label} = 20.498535°。"))
+    assert validate_interpretation(output, bundle).valid
+    for statement in [f"峰位 {label} = 20.498535°，另有 2 个峰。", f"峰位 {label} = 25°。", "峰位 12θ = 20.498535°。"]:
+        output.primary_findings[0].statement = statement
+        assert any("quantitative claim" in e for e in validate_interpretation(output, bundle).errors)
+    payload["facts"][0]["predicate"] = "other.angle"
+    output.primary_findings[0].statement = f"峰位 {label} = 20.498535°。"
+    assert any("quantitative claim" in e for e in validate_interpretation(output, ScientificResultBundle.model_validate(payload)).errors)
+
+
+@pytest.mark.parametrize("predicate,value,statement", [
+    ("volumetric.length_unit", "angstrom", "坐标长度单位为 Å。"),
+    ("volumetric.selected_canonical_unit", "electronvolt", "所选字段单位为 eV。"),
+    ("phonon.frequency_unit", "terahertz", "频率单位为 THz。"),
+    ("volumetric.canonical_unit", "electron/angstrom^3", "电子密度单位为 电子/Å³。"),
+])
+def test_explicit_unit_definition_fact_supports_its_unit_symbol(predicate, value, statement):
+    payload = _bundle().model_dump(mode="json")
+    payload["facts"][0].update(predicate=predicate, value=value, unit=None)
+    bundle = ScientificResultBundle.model_validate(payload)
+    output = ScientificInterpretationOutput.model_validate(_output(statement, lead=statement))
+    assert validate_interpretation(output, bundle).valid
+    output.primary_findings[0].statement = "单位为 nm。"
+    assert any("unit is absent" in error for error in validate_interpretation(output, bundle).errors)
+    payload["facts"][0]["predicate"] = "volumetric.field_name"
+    arbitrary_label = ScientificResultBundle.model_validate(payload)
+    output.primary_findings[0].statement = statement
+    assert any("unit is absent" in error for error in validate_interpretation(output, arbitrary_label).errors)
 
 
 def test_partial_result_cannot_be_presented_as_complete():
@@ -1407,6 +1813,7 @@ def test_interpreter_input_removes_presentation_ordinals_and_runtime_locators() 
         "limitations",
         "warnings",
         "reference_aliases",
+        "follow_up_policy",
     }
     assert set(envelope.result["result_items"][0]) == {
         "id",
@@ -1588,6 +1995,84 @@ class _RepairContextCapturingClient(FakeStructuredInterpreterClient):
         return await super().generate_structured(**kwargs)
 
 
+def test_unit_only_repair_identifies_the_unsupported_unit_and_its_exact_source():
+    bundle = _bundle()
+    result = ScientificInterpretationOutput.model_validate(_output("第一峰位于 2.5 nm。"))
+    errors = validate_interpretation(result, bundle).errors
+    feedback = build_grounding_repair_context(result, bundle, errors)
+
+    assert any("unit is absent from referenced facts (nm)" in error for error in errors)
+    assert any("unsupported_units=['nm']" in item for item in feedback)
+    assert any("supported_units=['å']" in item for item in feedback)
+    assert any("rdf.first_peak=2.5 angstrom" in item for item in feedback)
+    assert any("do not convert units" in item for item in feedback)
+    assert not validate_interpretation(result, bundle).valid
+
+
+@pytest.mark.parametrize("unit, valid", [("Å³", True), ("angstrom^3", True), ("Å", False), ("Å^-3", False), ("eV·Å³", False)])
+def test_elf_volume_integral_grounding_preserves_the_volume_dimension(unit, valid):
+    payload = _bundle().model_dump(mode="json")
+    payload["facts"][0].update(predicate="volumetric.volume_integral", value=3.1, unit="angstrom^3")
+    bundle = ScientificResultBundle.model_validate(payload)
+    result = ScientificInterpretationOutput.model_validate(_output(f"ELF 数学体积分为 3.1 {unit}。"))
+    assert validate_interpretation(result, bundle).valid is valid
+
+
+@pytest.mark.parametrize("unit", ["eV·Å³", "eV Å^3", "electronvolt*angstrom^3", "eV⋅Å^{3}", "eVÅ³"])
+def test_potential_volume_integral_accepts_equivalent_unit_spelling(unit):
+    payload = _bundle().model_dump(mode="json")
+    payload["facts"][0].update(predicate="volumetric.volume_integral", value=89.24575101589733, unit="electronvolt*angstrom^3")
+    bundle = ScientificResultBundle.model_validate(payload)
+    result = ScientificInterpretationOutput.model_validate(_output(f"源体积分为 89.24575101589733 {unit}。"))
+    validation = validate_interpretation(result, bundle)
+    assert validation.valid, validation.errors
+
+
+@pytest.mark.parametrize("unit", ["eV/Å³", "eV·nm³", "eV·Å²", "Å³", "eV", "Ha·Å³"])
+def test_potential_volume_integral_rejects_changed_dimension_or_scale(unit):
+    payload = _bundle().model_dump(mode="json")
+    payload["facts"][0].update(predicate="volumetric.volume_integral", value=89.24575101589733, unit="electronvolt*angstrom^3")
+    bundle = ScientificResultBundle.model_validate(payload)
+    result = ScientificInterpretationOutput.model_validate(_output(f"源体积分为 89.24575101589733 {unit}。"))
+    validation = validate_interpretation(result, bundle)
+    assert not validation.valid
+    assert any("unit is absent" in error for error in validation.errors)
+
+
+@pytest.mark.parametrize("label", ["峰 2：", "峰2：", "Peak 2:"])
+def test_xrd_repair_explains_unsupported_display_ordinal_without_accepting_it(label):
+    payload = _bundle().model_dump(mode="json")
+    payload["facts"][0].update(predicate="xrd.peak.two_theta", value=21.874628, unit="degree")
+    bundle = ScientificResultBundle.model_validate(payload)
+    result = ScientificInterpretationOutput.model_validate(_output(f"{label}2θ = 21.874628°。"))
+    errors = validate_interpretation(result, bundle).errors
+    feedback = build_grounding_repair_context(result, bundle, errors)
+
+    assert any("quantitative claim" in error and "(2)" in error for error in errors)
+    assert any("added display label" in item and "two-theta angle" in item for item in feedback)
+    assert any("Do not rewrite the ordinal" in item and "Preserve the supported" in item for item in feedback)
+    assert result.primary_findings[0].statement == f"{label}2θ = 21.874628°。"
+    result.primary_findings[0].statement = "2θ = 21.874628°。"
+    assert validate_interpretation(result, bundle).valid
+
+    result.primary_findings[0].statement = "该峰位于 2°。"
+    feedback = build_grounding_repair_context(result, bundle, validate_interpretation(result, bundle).errors)
+    assert not any("added display label" in item for item in feedback)
+    assert not validate_interpretation(result, bundle).valid
+
+
+def test_unit_repair_uses_explicit_unit_definitions_without_inventing_conversions():
+    payload = _bundle().model_dump(mode="json")
+    payload["facts"][0].update(predicate="volumetric.length_unit", value="angstrom", unit=None)
+    bundle = ScientificResultBundle.model_validate(payload)
+    result = ScientificInterpretationOutput.model_validate(_output("坐标单位为 nm。"))
+    feedback = build_grounding_repair_context(result, bundle, validate_interpretation(result, bundle).errors)
+    assert any("supported_units=['å']" in item and "unsupported_units=['nm']" in item for item in feedback)
+    result.primary_findings[0].statement = "坐标单位为 Å。"
+    assert validate_interpretation(result, bundle).valid
+    assert build_grounding_repair_context(result, bundle, []) == []
+
+
 def test_interpretation_repair_sends_source_derived_grounding_context() -> None:
     first = _output(statement="目标值为 6.38 eV，预测值为 2.0 eV。", fact="rdf.first_peak")
     second = _output(statement="第一峰位于 2.5 angstrom。")
@@ -1622,6 +2107,91 @@ def test_schema_invalid_response_gets_one_bounded_repair():
     assert result.title == "RDF 解释"
     assert repaired is True
     assert client.calls == 2
+
+
+@pytest.mark.parametrize("reference_field", ["fact_refs", "evidence_refs", "result_item_refs"])
+def test_schema_repair_splits_oversized_citations_without_echoing_input(reference_field):
+    first = _output()
+    first["primary_findings"][0][reference_field] = [
+        f"untrusted-provider-reference-{index}" for index in range(35)
+    ]
+    client = _RepairContextCapturingClient([first, _output()])
+    service = ScientificInterpretationService(repository_factory=None, client=client)  # type: ignore[arg-type]
+    bundle = _bundle()
+
+    result, repaired, _meta = service._generate_with_one_repair(
+        InterpreterInputAssembler().assemble(
+            bundle=bundle, question="Explain the RDF", relevance_status="CURRENT",
+        )[0],
+        bundle,
+    )
+
+    assert repaired is True
+    assert result.primary_findings[0].fact_refs == ["rdf.first_peak"]
+    assert client.calls == 2
+    feedback = client.request_contexts[1]["repair"]["validation_errors"]
+    assert len(feedback) == 1
+    assert f"primary_findings.0.{reference_field}" in feedback[0]
+    assert "Maximum length: 32; actual length: 35" in feedback[0]
+    assert "one finding per peak" in feedback[0]
+    assert "complete relevant references together" in feedback[0]
+    assert "Do not truncate" in feedback[0]
+    assert "untrusted-provider-reference" not in feedback[0]
+    assert len(feedback[0]) < 1000
+    assert len(first["primary_findings"][0][reference_field]) == 35
+
+
+@pytest.mark.parametrize("collection, count", [("primary_findings", 9), ("supporting_findings", 17)])
+def test_schema_repair_guides_finding_grouping_with_both_array_limits(collection, count):
+    first = _output()
+    first[collection] = [
+        {**first["primary_findings"][0], "finding_id": f"oversized-{index}"}
+        for index in range(count)
+    ]
+    client = _RepairContextCapturingClient([first, _output()])
+    service = ScientificInterpretationService(repository_factory=None, client=client)  # type: ignore[arg-type]
+    bundle = _bundle()
+
+    _result, repaired, _meta = service._generate_with_one_repair(
+        InterpreterInputAssembler().assemble(
+            bundle=bundle, question="Explain the RDF", relevance_status="CURRENT",
+        )[0],
+        bundle,
+    )
+
+    assert repaired is True
+    feedback = client.request_contexts[1]["repair"]["validation_errors"]
+    assert len(feedback) == 1
+    assert f"{collection}: too_long" in feedback[0]
+    assert f"actual length: {count}" in feedback[0]
+    assert "citation" in feedback[0]
+    assert "requested" in feedback[0]
+    assert "oversized-0" not in feedback[0]
+    if collection == "primary_findings":
+        assert "move complete secondary" in feedback[0]
+        assert "supporting_findings" in feedback[0]
+
+
+def test_schema_repair_feedback_bounds_errors_and_excludes_invalid_payloads():
+    first = _output()
+    first["title"] = "raw-provider-payload" * 500
+    first.update({f"unknown_{index}": "raw-provider-payload" for index in range(40)})
+    client = _RepairContextCapturingClient([first, _output()])
+    service = ScientificInterpretationService(repository_factory=None, client=client)  # type: ignore[arg-type]
+    bundle = _bundle()
+
+    service._generate_with_one_repair(
+        InterpreterInputAssembler().assemble(
+            bundle=bundle, question="Explain the RDF", relevance_status="CURRENT",
+        )[0],
+        bundle,
+    )
+
+    feedback = client.request_contexts[1]["repair"]["validation_errors"]
+    assert len(feedback) == 16
+    assert all(len(item) < 1000 for item in feedback)
+    assert "raw-provider-payload" not in str(feedback)
+    assert "Remove this unsupported field" in feedback[-1]
 
 
 def test_schema_invalid_after_repair_is_not_accepted():
@@ -1667,6 +2237,59 @@ def test_retired_provider_finding_fields_are_contract_repaired_without_authority
     assert client.calls == 1
 
 
+@pytest.mark.parametrize("version", ["1.0", "1.1"])
+@pytest.mark.parametrize("assessment_shape", ["malformed", "fabricated"])
+def test_provider_does_not_author_or_receive_the_server_assessment_contract(version, assessment_shape):
+    from jsonschema import Draft202012Validator
+
+    proposed = _output()
+    proposed["contract_version"] = version
+    # This is deliberately not a valid assessment: the provider cannot supply
+    # a server decision, even when using the older response contract.
+    proposed["primary_findings"][0]["reasoning_assessment"] = {
+        "accepted": True, "provider_marker": "untrusted assessment",
+    }
+    if assessment_shape == "fabricated":
+        proposed["primary_findings"][0]["reasoning_assessment"] = {
+            "claim_id": "provider-owned", "claim_type": "CAUSAL_CLAIM",
+            "support_status": "DIRECTLY_SUPPORTED", "outcome": "SUPPORTED",
+            "accepted": True, "scope": "untrusted assessment",
+            "independent_evidence_groups": 16, "supporting_refs": ["foreign"],
+        }
+
+    class RecordingClient(FakeStructuredInterpreterClient):
+        async def generate_structured(self, **kwargs):
+            self.output_schema = kwargs["output_schema"]
+            return await super().generate_structured(**kwargs)
+
+    client = RecordingClient(proposed)
+    service = ScientificInterpretationService(repository_factory=None, client=client)
+    envelope = InterpreterInputAssembler().assemble(bundle=_bundle(), question="Explain the RDF", relevance_status="CURRENT")[0]
+    result, repaired, _ = service._generate_with_one_repair(envelope, _bundle())
+    assert client.calls == 1 and not repaired
+    assert "reasoning_assessment" not in json.dumps(client.output_schema)
+    assert "ClaimSupportAssessment" not in json.dumps(client.output_schema)
+    validator = Draft202012Validator(client.output_schema)
+    validator.check_schema(client.output_schema)
+    valid = _output()
+    valid["contract_version"] = version
+    validator.validate(valid)
+    assert list(validator.iter_errors(proposed))
+    for invalid in (
+        {**valid, "primary_findings": valid["primary_findings"] * 9},
+        {**valid, "primary_findings": [{**valid["primary_findings"][0], "fact_refs": ["f"] * 33}]},
+        {**valid, "primary_findings": [{**valid["primary_findings"][0], "unknown": True}]},
+    ):
+        assert list(validator.iter_errors(invalid))
+    assert "untrusted assessment" not in result.model_dump_json()
+    assessment = result.primary_findings[0].reasoning_assessment
+    assert (assessment is None) == (version == "1.0")
+    if assessment:
+        assert assessment.claim_id == result.primary_findings[0].finding_id
+    # The persisted/read contract still contains the server's assessment.
+    assert "reasoning_assessment" in json.dumps(ScientificInterpretationOutput.model_json_schema())
+
+
 def test_interpreter_prompt_keeps_factless_results_qualitative() -> None:
     from mdi_api.infrastructure.interpretation.client import (
         PROMPT_VERSION,
@@ -1675,10 +2298,21 @@ def test_interpreter_prompt_keeps_factless_results_qualitative() -> None:
 
     prompt = load_interpreter_prompt()
 
-    assert PROMPT_VERSION == "scientific-interpreter/1.2"
+    assert PROMPT_VERSION == "scientific-interpreter/1.19"
+    assert "primary_findings array must contain at most 8 findings" in prompt
+    assert "Identify each peak by its supplied angle" in prompt
+    assert "language of the current original user question" in prompt
+    assert "unless that question explicitly requests another response language" in prompt
+    assert "do not translate those contract values" in prompt
+    assert "source_native does not establish that numbers were copied unchanged" in prompt
+    assert "leave the transformation history unknown" in prompt
+    assert "They have different dimensions: do not compare their magnitudes" in prompt
     assert "When a Result supplies no scientific facts" in prompt
     assert "do not create separate findings" in prompt
     assert "limit findings to qualitative availability/status" in prompt
+    assert "When a cited ml.r2_status fact is undefined_constant_target" in prompt
+    assert "never substitute 0 or 1" in prompt
+    assert "Cite the exact status fact" in prompt
 
 
 def test_unknown_provider_finding_field_still_fails_closed_after_bounded_repair():
@@ -1735,6 +2369,58 @@ def test_provider_invalid_json_gets_one_bounded_structured_output_repair():
     assert result.title == "RDF 解释"
     assert repaired is True
     assert client.calls == 3
+
+
+@pytest.mark.parametrize("code, expected_code, attempts", [
+    ("PROVIDER_TIMEOUT", "INTERPRETATION_PROVIDER_TIMEOUT", 1),
+    ("DEEPSEEK_TIMEOUT", "INTERPRETATION_PROVIDER_TIMEOUT", 1),
+    ("LLM_TIMEOUT", "INTERPRETATION_PROVIDER_TIMEOUT", 1),
+    ("OPENAI_TIMEOUT", "INTERPRETATION_PROVIDER_TIMEOUT", 1),
+    ("PROVIDER_RATE_LIMITED", "INTERPRETATION_PROVIDER_RATE_LIMITED", 1),
+    ("PROVIDER_AUTH_FAILED", "INTERPRETATION_PROVIDER_AUTH_FAILED", 1),
+    ("PROVIDER_REQUEST_REJECTED", "INTERPRETATION_PROVIDER_REQUEST_REJECTED", 1),
+    ("PROVIDER_OUTPUT_TRUNCATED", "INTERPRETATION_PROVIDER_OUTPUT_TRUNCATED", 1),
+    ("PROVIDER_INVALID_RESPONSE", "INTERPRETATION_PROVIDER_INVALID_RESPONSE", 2),
+    ("EXTERNAL_UNAVAILABLE", "INTERPRETATION_PROVIDER_UNAVAILABLE", 1),
+    ("UNKNOWN_PRIVATE_CODE", "INTERPRETATION_PROVIDER_FAILED", 1),
+])
+def test_interpretation_failure_preserves_a_safe_reason_and_existing_science(code, expected_code, attempts):
+    from mdi_llm.providers import LLMProviderError
+    from tests.test_research_result_loss_recovery import _saved_result
+    from tests.test_research_worker_loss_recovery import _stalled_turn
+
+    class FailingClient:
+        def __init__(self):
+            self.contexts = []
+
+        async def generate_structured(self, **kwargs):
+            self.contexts.append(kwargs.get("request_context"))
+            raise LLMProviderError("private-test-credential and hidden model reasoning", code=code)
+
+    factory, turn_id = _stalled_turn("RESULT_READY", age_minutes=0)
+    snapshot = _saved_result(factory, turn_id)
+    client = FailingClient()
+    try:
+        with pytest.raises(Exception) as caught:
+            ScientificInterpretationService(factory, client=client).process_turn(turn_id)
+        assert caught.value.code == expected_code
+        assert caught.value.__suppress_context__
+        assert len(client.contexts) == attempts
+        assert "private-test-credential" not in str(client.contexts)
+        assert "hidden model reasoning" not in str(client.contexts)
+        with factory.session() as session:
+            turn = session.agent2.research_turns.get(turn_id)
+            assert turn["status"] == "FAILED" and turn["completed_at"] is not None
+            assert turn["error_code"] == expected_code
+            assert "private-test-credential" not in turn["error_summary"]
+            assert session.agent2.research_turns.get_message(turn["user_message_id"])["content_summary"] == "保留这条研究问题"
+            assert session.agent2.scientific_result_snapshots.get(snapshot["id"])["bundle_json"] == snapshot["bundle_json"]
+            assert session.agent2.interpretations.get_for_turn(turn_id) is None
+            assert turn["assistant_final_message_id"] is None
+            failures = [event for event in session.agent2.research_turn_events.list_for_turn(turn_id) if event["event_type"] == "TURN_FAILED"]
+            assert len(failures) == 1 and failures[0]["payload_json"]["error_code"] == expected_code
+    finally:
+        factory.engine.dispose()
 
 
 def test_interpretation_service_projects_only_an_unsupported_answer_lead_without_retry():
@@ -1844,3 +2530,32 @@ def test_live_deepseek_interpretation_is_grounded():
     result, _repaired, _meta = service._generate_with_one_repair(envelope, bundle)
     validation = validate_interpretation(result, bundle)
     assert validation.valid, validation.errors
+
+
+@pytest.mark.parametrize("predicate", ["structure.atom_x", "trajectory.selected_atom_source_x", "structure.selected_base_cartesian_x", "structure.selected_base_fractional_x"])
+def test_communication_prioritizes_only_authoritative_selected_coordinate_facts(predicate):
+    selected = predicate != "structure.atom_x"
+    bundle = _bundle()
+    bundle.facts.append(bundle.facts[0].model_copy(update={
+        "fact_id": "coordinate", "predicate": predicate,
+        "value": 9.3,
+    }))
+    bundle.result_items[0].fact_refs.append("coordinate")
+    payload = _output()
+    coordinate = {**payload["primary_findings"][0], "finding_id": "selected-coordinate", "statement": "所选原子的 x 坐标为 9.3 angstrom。", "fact_refs": ["coordinate"]}
+    payload["primary_findings"].append(coordinate)
+    raw = ScientificInterpretationOutput.model_validate(payload)
+    projected = project_grounded_communication(raw, bundle)
+    assert validate_interpretation(projected, bundle).valid
+    assert projected.primary_findings[0].finding_id == ("selected-coordinate" if selected else "finding-1")
+    assert projected.answer_lead.startswith(projected.primary_findings[0].statement.rstrip("。."))
+    assert {item.statement for item in projected.primary_findings} == {item.statement for item in raw.primary_findings}
+    assert raw.primary_findings[0].finding_id == "finding-1"
+
+
+def test_selection_priority_does_not_repair_unfounded_coordinates():
+    bundle = _bundle()
+    bundle.facts[0].predicate = "trajectory.selected_atom_source_x"
+    raw = ScientificInterpretationOutput.model_validate(_output("所选原子的 x 坐标为 99 angstrom。"))
+    assert project_grounded_communication(raw, bundle) is raw
+    assert not validate_interpretation(raw, bundle).valid

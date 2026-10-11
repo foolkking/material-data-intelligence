@@ -1,7 +1,21 @@
 "use client";
 
+import { getUserModels, type UserModel } from "../../app/lib/user-models-api";
+import { ResearchSettings } from "./ResearchSettings";
+import { acknowledgeResearchSessionCreation, hasPendingResearchSessionCreation } from "../../app/lib/research-session-creation";
+import { ResearchMaterialPicker } from "./ResearchMaterialPicker";
+import { useResearchMaterials } from "./use-research-materials";
+import { admitResearchMaterial, materialKey, materialTypes, materialsContext, type ResearchMaterials } from "./research-materials";
+import materialStyles from "./ResearchMaterials.module.css";
+import conversationStyles from "./ResearchConversation.module.css";
+import { ResearchContextContents } from "./ResearchContextContents";
+import { ResearchReplyContent } from "./ResearchReplyContent";
+import { useResearchAnswerStream } from "./use-research-answer-stream";
+import { useConversationScroll } from "./use-conversation-scroll";
+
 import { ProductLink as Link, useProductRouter } from "../../shared/layout/ProductNavigation";
 import React, {
+  useLayoutEffect,
   useEffect,
   useMemo,
   useRef,
@@ -24,6 +38,7 @@ import {
   getDataset,
   getDatasetProfile,
   getDatasetSourceResources,
+  getDatasetResearchSources,
   promoteDatasetTable,
   getProjectHistory,
   restoreProjectRun,
@@ -46,8 +61,8 @@ import {
   createResearchSession,
   getResearchSession,
   listResearchSessions,
-  resolveResearchScope,
   updateResearchSession,
+  type ResearchAssistantProjection,
   type ResearchMessage,
   type ResearchSession,
   type ResearchSessionBulkAction,
@@ -56,6 +71,8 @@ import {
 import { ProductShell, RequireProductAuth } from "../../shared/layout/ProductShell";
 import { scientistProjectLabel } from "../../shared/product-labels";
 import { ManagedObjectRow, ProductModal } from "../../shared/ui/ObjectManagement";
+import { readSessionRequest, useSessionOperation, validateResearchSession, validateSessionDirectory } from "./session-management";
+import { legacyJobIsTerminal, validateLegacyJob, watchLegacyJob } from "./legacy-job-polling";
 import { LazyScientificResultViewer } from "../../scientific-viewers/LazyScientificViewers";
 import {
   projectScientificArtifacts,
@@ -63,36 +80,33 @@ import {
   type ProjectedScientificArtifact,
 } from "../../app/lib/scientific-result-projection";
 import { formatScientificNarrativeNumbers } from "../../app/lib/scientific-presentation";
+import { scientificNarrativeText } from "../../app/lib/scientific-narrative-text";
 import { Agent2ScientificPresentation } from "./Agent2ScientificPresentation";
 import {
   getReportComposition,
   listReportCompositions,
   type ReportEditorialProjection,
 } from "../../app/lib/report-composition-api";
-import { researchRunTitle } from "../../app/lib/research-display";
+import { researchRunFailureMessage } from "../../app/lib/research-display";
 import {
-  cancelAgent2Execution,
-  getAgent2ExecutionProgress,
   type Agent2ProgressView,
 } from "../../app/lib/agent2-execution-api";
 import { ResearchExecutionActivity } from "./ResearchExecutionActivity";
+import { ResearchTurnResultState } from "./ResearchTurnResultState";
+import { ResearchSessionResult } from "./ResearchSessionResult";
 import { LiteratureEvidencePanel } from "./LiteratureEvidencePanel";
-import {
-  getAgent2SessionMemory,
-  unpinAgent2Object,
-  unpinAgent2Result,
-  type Agent2SessionMemory,
-} from "../../app/lib/agent2-memory-api";
+import { readBranchResult, readBranchTurn, validateBranchTurn } from "./branch-source";
+import { useEditResearchSource } from "./use-edit-research-source";
+import { useResearchContextNavigation } from "./use-research-context-navigation";
+import { useSessionMemory } from "./use-session-memory";
+import { SessionMemoryNotice } from "./SessionMemoryNotice";
 import { ScientificReportAction } from "../reports/ScientificReportAction";
 import {
+  Agent2AdmissionUnconfirmedError,
   Agent2ReadError,
   createAgent2AdmissionKey,
-  createAgent2ResearchTurn,
-  dispatchAgent2ResearchTurn,
-  getAgent2ContextManifest,
   getAgent2ResearchTurn,
-  getAgent2ResearchTurnResult,
-  listAgent2ResearchTurns,
+  createAgent2ResearchTurn as admitResearchTurn,
   type Agent2ScientificObjectRef,
   type Agent2ScientificSelection,
   type Agent2ContextManifest,
@@ -102,6 +116,7 @@ import {
   type Agent2TurnDetail,
   type Agent2TurnResponse,
 } from "../../app/lib/agent2-research-api";
+import { bindDatasetSourceSelection, datasetSourceSelection, selectedDatasetSourceResource, DatasetSourceSelectionError, type DatasetSourceSelection } from "./dataset-source-selection";
 import { decodeWorkspaceSelectionUrl } from "../../shared/workspace/workspace-selection-contract";
 import {
   apiSemanticLocator,
@@ -109,7 +124,12 @@ import {
   selectionToResearchObjectRef,
 } from "../../scientific-viewers/scientific-viewer/scientificSelection";
 import { resolveScientificViewer } from "../../scientific-viewers/scientific-viewer/scientificViewerRegistry";
-import { RESEARCH_CANCELLING_POLL_INTERVAL_MS } from "../../app/lib/research-status";
+import { getScientificViewerProjection } from "../../app/lib/scientific-viewer-api";
+import { volumetricVersionLocator } from "../../scientific-viewers/volumetric-viewer/volumetric-selection";
+import { trajectoryVersionLocator } from "../../scientific-viewers/trajectory-viewer/trajectory-selection";
+import { watchAgent2Execution, type ExecutionCancelState, type ExecutionReadState } from "./execution-recovery";
+import { canCancelResearchTurn, canReadSavedAgent2Result, hasAgent2ResultPresentation, isResearchCancellationPending } from "../../app/lib/research-status";
+import { resultFollowUpInput, type ResultResearchAction } from "./result-follow-up";
 import {
   beginResearchPerformanceAttempt,
   bindResearchPerformanceTurn,
@@ -126,6 +146,7 @@ type ResearchState =
   | "complete"
   | "partial"
   | "failed"
+  | "canceled"
   | "unsupported"
   | "clarification"
   | "capability-clarification";
@@ -142,14 +163,13 @@ export function researchComposerDraftKey(
   projectId: string,
   sessionId: string | undefined,
   turnId: string | undefined,
-): string | null {
-  if (!sessionId || !turnId) return null;
+): string {
   return [
     "mdi",
     "research-draft",
     encodeURIComponent(projectId),
-    encodeURIComponent(sessionId),
-    encodeURIComponent(turnId),
+    encodeURIComponent(sessionId || "new"),
+    encodeURIComponent(turnId || "composer"),
   ].join(":");
 }
 
@@ -382,16 +402,24 @@ function normalizeResearchSignal(value: string): string {
 }
 
 /** Resolve sibling research branches from the persisted Turn relation. */
+function researchBranchRootId(turns: Agent2TurnResponse[], current: Agent2TurnResponse, requestedRootId?: string) {
+  // The URL preserves the group being browsed; it cannot invent a relationship.
+  return requestedRootId && turns.some((turn) => turn.turn_id === requestedRootId) &&
+    (current.turn_id === requestedRootId || current.parent_turn_id === requestedRootId)
+    ? requestedRootId : current.parent_turn_id || current.turn_id;
+}
+
 export function researchBranchChoices(
   turns: Agent2TurnResponse[],
   currentTurnId?: string,
+  requestedRootId?: string,
 ): Agent2TurnResponse[] {
   if (!currentTurnId) return [];
   const current = turns.find(
     (turn) => turn.id === currentTurnId || turn.turn_id === currentTurnId,
   );
   if (!current) return [];
-  const rootId = current.parent_turn_id || current.turn_id;
+  const rootId = researchBranchRootId(turns, current, requestedRootId);
   const root = turns.find(
     (turn) => turn.id === rootId || turn.turn_id === rootId,
   );
@@ -414,20 +442,23 @@ export function researchBranchChoices(
 export function researchBranchNavigation(
   turns: Agent2TurnResponse[],
   currentTurnId?: string,
+  requestedRootId?: string,
 ): {
+  rootId: string;
   choices: Agent2TurnResponse[];
   current: Agent2TurnResponse;
   currentIndex: number;
   previous: Agent2TurnResponse | null;
   next: Agent2TurnResponse | null;
 } | null {
-  const choices = researchBranchChoices(turns, currentTurnId);
+  const choices = researchBranchChoices(turns, currentTurnId, requestedRootId);
   if (!choices.length || !currentTurnId) return null;
   const currentIndex = choices.findIndex(
     (turn) => (turn.id || turn.turn_id) === currentTurnId,
   );
   if (currentIndex < 0) return null;
   return {
+    rootId: researchBranchRootId(turns, choices[currentIndex], requestedRootId),
     choices,
     current: choices[currentIndex],
     currentIndex,
@@ -527,12 +558,16 @@ export function agent2ContextManifestForTurn(
   return manifest?.research_turn_id === turnId ? manifest : null;
 }
 
+const EMPTY_RESEARCH_TURNS: Agent2TurnResponse[] = [];
 export const CONTEXT_MANIFEST_RENDER_WINDOW = 32;
 
 export function defaultResearchConversationWidth(
   hasScientificWorkbenchContent: boolean,
+  workbenchWidth = 0,
 ): number {
-  return hasScientificWorkbenchContent ? 420 : 720;
+  return hasScientificWorkbenchContent
+    ? Math.round(Math.min(640, Math.max(420, workbenchWidth * 0.4)))
+    : 720;
 }
 
 export function researchWorkbenchContentAvailable(input: {
@@ -543,19 +578,16 @@ export function researchWorkbenchContentAvailable(input: {
   events: readonly JobEvent[];
   agent2Progress: Agent2ProgressView | null;
 }): boolean {
-  // Route identity is not scientific content. A run/turn can exist before any
-  // result, evidence or truthful progress is available, so keep the question
-  // readable until the workbench has something useful to inspect.
+  // Conversation and planning status already live beside the messages. The
+  // second pane opens automatically when there is scientific content to read.
   return Boolean(
     input.artifacts.length ||
       input.interpretation ||
       input.evidence?.evidenceItems?.length ||
       input.events.length ||
       input.job?.plan ||
-      (input.agent2Progress &&
-        !["RECEIVED", "QUEUED"].includes(
-          String(input.agent2Progress.status || "").toUpperCase(),
-        )),
+      hasAgent2ResultPresentation(input.agent2Progress) ||
+      (input.agent2Progress && canReadSavedAgent2Result(input.agent2Progress)),
   );
 }
 
@@ -600,6 +632,9 @@ export function agent2ProgressNeedsRefresh(status: string): boolean {
 export function agent2ProgressHasFreshSessionMessages(status: string): boolean {
   return [
     "ANSWERED",
+    "NEEDS_CLARIFICATION",
+    "UNSUPPORTED",
+    "PLAN_REJECTED",
     "COMPLETED",
     "PARTIAL",
     "FAILED",
@@ -660,7 +695,7 @@ export function agent2RetryInput(turn: Agent2TurnDetail) {
       scientific_selections: context?.scientific_selection || [],
       explicit_object_refs: context?.scope || [],
       explicit_result_ids: [],
-      explicit_finding_refs: [],
+      explicit_finding_refs: [] as string[],
     },
   };
 }
@@ -695,6 +730,7 @@ export function researchMessageWindow(
   expanded = false,
   recentLimit = 10,
   expandedWindowStart = 0,
+  branchMessageIds?: readonly string[],
 ) {
   if (expanded) {
     if (messages.length <= 100) {
@@ -713,6 +749,14 @@ export function researchMessageWindow(
   const selectedIndex = selectedMessageId
     ? messages.findIndex((message) => message.id === selectedMessageId)
     : -1;
+  if (branchMessageIds) {
+    // Completion order is not branch ownership. A late answer may follow a
+    // different question; only the Turn's referenced message IDs are authority.
+    const owned = new Set(branchMessageIds);
+    const visible = messages.filter((message) => owned.has(message.id));
+    const hiddenBefore = Math.max(0, selectedIndex);
+    return { visible, hiddenBefore, hiddenAfter: Math.max(0, messages.length - hiddenBefore - visible.length) };
+  }
   if (selectedIndex >= 0) {
     // A selected ResearchTurn is an exact conversational branch, not merely a
     // scroll anchor inside the whole session transcript. Show its authoritative
@@ -748,29 +792,24 @@ export function researchMessageWindow(
 export function researchMessageVisibleInTimeline(
   message: ResearchMessage,
 ): boolean {
-  return message.payload?.messageKind !== "DOWNSTREAM_ACKNOWLEDGEMENT";
+  // Execution progress already has a structured, cancellable presentation.
+  // A planning acknowledgement is not another answer to the user's question.
+  return message.role !== "assistant" || !["ASSISTANT_PRE_RUN", "DOWNSTREAM_ACKNOWLEDGEMENT"]
+    .includes(String(message.payload?.messageKind));
 }
 
 /**
- * Some historical session projections contain repeated copies of the same
- * message (for example, one row from the legacy projection and one from the
- * Agent2 projection). Keep the first durable identity and collapse only
- * adjacent, byte-for-byte duplicate role/content entries. Distinct repeated
- * questions separated by an assistant response remain visible.
+ * Collapse repeated projections of the same durable message only. Identical
+ * text with a different ID can be a retry or a distinct research branch.
  */
 export function dedupeResearchTimelineMessages(
   messages: ResearchMessage[],
 ): ResearchMessage[] {
   const result: ResearchMessage[] = [];
+  const seen = new Set<string>();
   for (const message of messages) {
-    const previous = result[result.length - 1];
-    if (
-      previous &&
-      previous.role === message.role &&
-      previous.content.trim() === message.content.trim()
-    ) {
-      continue;
-    }
+    if (seen.has(message.id)) continue;
+    seen.add(message.id);
     result.push(message);
   }
   return result;
@@ -867,11 +906,11 @@ function researchRunState(status: string | null | undefined): ResearchState {
   if (normalized === "answered") return "idle";
   if (["partial_success", "partial", "degraded"].includes(normalized))
     return "partial";
-  if (["failed", "error", "cancelled", "canceled"].includes(normalized))
-    return "failed";
+  if (["cancelled", "canceled"].includes(normalized)) return "canceled";
+  if (["failed", "error"].includes(normalized)) return "failed";
   if (["queued", "created", "planning", "pending"].includes(normalized))
     return "planning";
-  if (["running", "active", "started"].includes(normalized)) return "running";
+  if (["running", "active", "started", "cancel_requested"].includes(normalized)) return "running";
   return "failed";
 }
 
@@ -946,10 +985,12 @@ function freshResearchHref(
   datasetId?: string,
   sampleRef?: string,
   viewerContext?: ViewerResearchContext,
+  sourceSelectionToken?: string,
 ): string {
   const query = new URLSearchParams({ new: "1" });
   if (datasetId) query.set("dataset", datasetId);
   if (sampleRef) query.set("sample", sampleRef);
+  if (sourceSelectionToken) query.set("sourceSelection", sourceSelectionToken);
   if (viewerContext?.objectId) query.set("object", viewerContext.objectId);
   if (viewerContext?.versionId) query.set("version", viewerContext.versionId);
   if (viewerContext?.objectType) query.set("type", viewerContext.objectType);
@@ -961,95 +1002,105 @@ function freshResearchHref(
   return `/projects/${encodeURIComponent(projectId)}/research?${query.toString()}`;
 }
 
+type DatasetResearchScope = ScopeResolution & { scientific_selections?: Agent2ScientificSelection[] };
+
 async function resolveExplicitDatasetScope(
   projectId: string,
   datasetId: string,
-): Promise<ScopeResolution> {
-  const [dataset, profile, resources] = await Promise.all([
-    getDataset(datasetId),
-    getDatasetProfile(datasetId),
-    getDatasetSourceResources(datasetId),
-  ]);
-  const supportedScientificResources = resources.filter((item) =>
-    [
-      "DataFrame",
-      "Structure",
-      "Trajectory",
-      "ElectronicBand",
-      "ElectronicDos",
-      "PhononBand",
-      "PhononDos",
-      "VolumetricData",
-    ].includes(item.objectType),
-  );
-  if (!supportedScientificResources.length) {
-    // A dataset without an admitted normalized resource cannot enter the
-    // durable Agent2 path. Keep the existing bounded product response rather
-    // than inventing a source reference.
+  sourceSelection: DatasetSourceSelection | null = null,
+): Promise<DatasetResearchScope> {
+  return readSessionRequest(async (signal) => {
+    const [dataset, profile, resources] = await Promise.all([
+      getDataset(datasetId),
+      getDatasetProfile(datasetId),
+      getDatasetSourceResources(datasetId),
+    ]);
+    signal.throwIfAborted();
+    if (sourceSelection && ((dataset.datasetId || dataset.id) !== datasetId || profile.datasetId !== datasetId)) throw new DatasetSourceSelectionError();
+    const selectedSource = sourceSelection ? selectedDatasetSourceResource(sourceSelection, resources) : null;
+    const supportedScientificResources = resources.filter((item) =>
+      [
+        "DataFrame",
+        "Structure",
+        "Trajectory",
+        "ElectronicBand",
+        "ElectronicDos",
+        "PhononBand",
+        "PhononDos",
+        "VolumetricData",
+      ].includes(item.objectType),
+    );
+    if (!supportedScientificResources.length) {
+      // A dataset without an admitted normalized resource cannot enter the
+      // durable Agent2 path. Keep the existing bounded product response rather
+      // than inventing a source reference.
+      return {
+        status: "READY",
+        dataset_id: dataset.datasetId || dataset.id || datasetId,
+        profile_id: profile.profileId || profile.id,
+        dataset_name: dataset.name,
+      };
+    }
+    // Materialize every normalized resource into the existing ScientificObject
+    // authority.  The previous single-resource selection silently downgraded
+    // multi-resource datasets (XRD, phonon, electronic, multi-tool tables) to
+    // the legacy planner.  Agent2 needs the complete exact source set so its
+    // capability resolver can bind all required slots without question-string
+    // special cases.
+    const admitted = await Promise.all(
+      supportedScientificResources.map(async (resource) => {
+        signal.throwIfAborted();
+        const promoted = resource.objectType === "DataFrame"
+          ? await promoteDatasetTable(projectId, datasetId, resource.objectId)
+          : await admitDatasetResource(
+              projectId,
+              datasetId,
+              resource.objectId,
+              dataset.name,
+            );
+        signal.throwIfAborted();
+        const selection = sourceSelection && resource === selectedSource ? bindDatasetSourceSelection(sourceSelection, resource, promoted) : null;
+        const objectId = String(promoted.object?.id || "");
+        const versionId = String(
+          promoted.version?.id || promoted.object?.current_version_id || "",
+        );
+        if (!objectId || !versionId) {
+          throw new Error(`数据科学对象版本暂时无法解析: ${resource.objectType}`);
+        }
+        return {
+          resource,
+          selection,
+          ref: {
+            object_id: objectId,
+            version_id: versionId,
+            project_id: projectId,
+            object_type:
+              promoted.object?.object_type || resource.objectType,
+            display_name:
+              promoted.object?.display_name || dataset.name || "Scientific data",
+          },
+        };
+      }),
+    );
+    const scientificObjectRefs = admitted.map((item) => item.ref);
+    const selectedResource = admitted.find((item) => item.selection) || admitted.find(
+      (item) => item.ref.object_type === "materials.table",
+    ) || admitted[0];
     return {
       status: "READY",
       dataset_id: dataset.datasetId || dataset.id || datasetId,
       profile_id: profile.profileId || profile.id,
       dataset_name: dataset.name,
+      dataset_resource_id: selectedResource.resource.objectId,
+      scientific_object_ref: selectedResource.ref,
+      scientific_object_refs: scientificObjectRefs,
+      scientific_selections: admitted.flatMap(item => item.selection ? [item.selection] : []),
     };
-  }
-  // Materialize every normalized resource into the existing ScientificObject
-  // authority.  The previous single-resource selection silently downgraded
-  // multi-resource datasets (XRD, phonon, electronic, multi-tool tables) to
-  // the legacy planner.  Agent2 needs the complete exact source set so its
-  // capability resolver can bind all required slots without question-string
-  // special cases.
-  const admitted = await Promise.all(
-    supportedScientificResources.map(async (resource) => {
-      const promoted = resource.objectType === "DataFrame"
-        ? await promoteDatasetTable(projectId, datasetId, resource.objectId)
-        : await admitDatasetResource(
-            projectId,
-            datasetId,
-            resource.objectId,
-            dataset.name,
-          );
-      const objectId = String(promoted.object?.id || "");
-      const versionId = String(
-        promoted.version?.id || promoted.object?.current_version_id || "",
-      );
-      if (!objectId || !versionId) {
-        throw new Error(`数据科学对象版本暂时无法解析: ${resource.objectType}`);
-      }
-      return {
-        resource,
-        ref: {
-          object_id: objectId,
-          version_id: versionId,
-          project_id: projectId,
-          object_type:
-            promoted.object?.object_type || resource.objectType,
-          display_name:
-            promoted.object?.display_name || dataset.name || "Scientific data",
-        },
-      };
-    }),
-  );
-  const scientificObjectRefs = admitted.map((item) => item.ref);
-  const preferredTable = scientificObjectRefs.find(
-    (item) => item.object_type === "materials.table",
-  );
-  const selectedResource = admitted.find(
-    (item) => item.ref.object_type === "materials.table",
-  ) || admitted[0];
-  return {
-    status: "READY",
-    dataset_id: dataset.datasetId || dataset.id || datasetId,
-    profile_id: profile.profileId || profile.id,
-    dataset_name: dataset.name,
-    dataset_resource_id: selectedResource.resource.objectId,
-    scientific_object_ref: preferredTable || selectedResource.ref,
-    scientific_object_refs: scientificObjectRefs,
-  };
+  }, new AbortController().signal);
 }
 
 function datasetResearchRefs(
-  scope: ScopeResolution,
+  scope: DatasetResearchScope,
   sampleRef?: string,
 ): {
   objectRefs: Agent2ScientificObjectRef[];
@@ -1063,6 +1114,7 @@ function datasetResearchRefs(
         : []
   ) as Agent2ScientificObjectRef[];
   if (!objectRefs.length) return null;
+  if (scope.scientific_selections?.length) return { objectRefs, selections: scope.scientific_selections };
   if (!sampleRef?.trim()) return { objectRefs, selections: [] };
   const locator = { sample_ref: sampleRef.trim() };
   const objectRef = objectRefs.find((item) => item.object_type === "materials.table") || objectRefs[0];
@@ -1086,32 +1138,50 @@ export function ResearchPage({
   projectId,
   datasetId,
   sampleRef,
+  sourceSelectionToken,
   sessionId,
   runId,
   agent2TurnId,
+  branchRootTurnId,
   editTurnId,
   retryOfTurnId,
   retryRequested = false,
   fresh = false,
   resultContextId,
+  resultTargetSnapshotId,
+  resultTargetItemId,
   contextCandidateFromSearch = false,
   viewerContext,
 }: {
   projectId: string;
   datasetId?: string;
   sampleRef?: string;
+  sourceSelectionToken?: string;
   sessionId?: string;
   runId?: string;
   agent2TurnId?: string;
+  branchRootTurnId?: string;
   editTurnId?: string;
   retryOfTurnId?: string;
   retryRequested?: boolean;
   fresh?: boolean;
   resultContextId?: string;
+  resultTargetSnapshotId?: string;
+  resultTargetItemId?: string;
   contextCandidateFromSearch?: boolean;
   viewerContext?: ViewerResearchContext;
 }) {
   const router = useProductRouter();
+  const [resultOpenRequest, setResultOpenRequest] = useState(0);
+  const pendingSessionKey = useMemo(() => `mdi:research-pending-session:${JSON.stringify([
+    projectId, datasetId || null, sampleRef || null, fresh, resultContextId || null,
+    viewerContext?.objectId || null, viewerContext?.versionId || null,
+    viewerContext?.selectionToken || null,
+    ...(!sampleRef && sourceSelectionToken ? [sourceSelectionToken] : []),
+  ])}`, [projectId, datasetId, sampleRef, sourceSelectionToken, fresh, resultContextId, viewerContext?.objectId, viewerContext?.versionId, viewerContext?.selectionToken]);
+  const providerSettingsKey = sessionId
+    ? `mdi:research-session-settings:${JSON.stringify([projectId, sessionId])}`
+    : `${pendingSessionKey}:settings`;
   const [session, setSession] = useState<ResearchSession | null>(null);
   const [sessions, setSessions] = useState<ResearchSession[]>([]);
   const [history, setHistory] = useState<ProjectHistory | null>(null);
@@ -1136,47 +1206,62 @@ export function ResearchPage({
   const [error, setError] = useState("");
   const [agent2Progress, setAgent2Progress] =
     useState<Agent2ProgressView | null>(null);
-  const [agent2RecoveryState, setAgent2RecoveryState] = useState<
-    "connected" | "reconnecting"
-  >("connected");
+  const [sessionResultProgress, setSessionResultProgress] = useState<Agent2ProgressView | null>(null);
+  const [agent2RecoveryState, setAgent2RecoveryState] = useState<ExecutionReadState & { turnId: string }>({ status: "connected", turnId: "" });
   const [researchPerformanceSample, setResearchPerformanceSample] =
     useState<ResearchPerformanceSample | null>(null);
-  const [agent2ContextManifest, setAgent2ContextManifest] =
-    useState<Agent2ContextManifest | null>(null);
-  const [agent2ContextManifests, setAgent2ContextManifests] = useState<
-    Agent2ContextManifestRecord[]
-  >([]);
-  const [agent2ContextManifestLoadState, setAgent2ContextManifestLoadState] =
-    useState<"idle" | "loading" | "ready" | "error">("idle");
-  const [agent2ContextManifestReloadKey, setAgent2ContextManifestReloadKey] =
-    useState(0);
-  const [showFullContextManifest, setShowFullContextManifest] = useState(false);
-  const [contextManifestWindowStart, setContextManifestWindowStart] = useState(0);
-  const [agent2CancelPending, setAgent2CancelPending] = useState(false);
+  const contextNavigation = useResearchContextNavigation(projectId, sessionId || session?.id, agent2TurnId, agent2ProgressForTurn(agent2Progress, agent2TurnId)?.status, true);
+  const navigationTurnId = contextNavigation.selectedTurnId;
+  const agent2ContextManifest = contextNavigation.context.data?.manifest || null;
+  const agent2ContextManifests = contextNavigation.context.data?.manifests || [];
+  const agent2Turns = contextNavigation.directory.data || EMPTY_RESEARCH_TURNS;
+  const [agent2CancelState, setAgent2CancelState] = useState<ExecutionCancelState>("idle");
+  const [agent2DispatchNotice, setAgent2DispatchNotice] = useState("");
+  const [agent2DispatchRetryable, setAgent2DispatchRetryable] = useState(false);
   const [agent2CancelNotice, setAgent2CancelNotice] = useState("");
-  const [agent2ContinuationNotice, setAgent2ContinuationNotice] = useState("");
   const [agent2RetryPending, setAgent2RetryPending] = useState(false);
   const [continueTurnId, setContinueTurnId] = useState<string | null>(null);
   const [showFullConversation, setShowFullConversation] = useState(false);
   const [conversationWindowStart, setConversationWindowStart] = useState(0);
-  const [editingResult, setEditingResult] =
-    useState<Agent2ResearchTurnResult | null>(null);
-  const [editingTurn, setEditingTurn] = useState<Agent2TurnDetail | null>(null);
-  const [editingLoadState, setEditingLoadState] = useState<
-    "idle" | "loading" | "ready" | "error"
-  >("idle");
-  const agent2DispatchRef = useRef<string | null>(null);
-  const submitInFlightRef = useRef(false);
+  const editSource = useEditResearchSource(projectId, sessionId || session?.id, editTurnId);
+  const editingTurn = editSource.turn;
+  const editingResult = editSource.result;
+  const editingLoadState = editSource.loadState;
+  const editedDraftKeyRef = useRef<string | null>(null);
+  const seededEditDraftKeyRef = useRef<string | null>(null);
+  const editComposerFocusRef = useRef<{
+    key: string; origin: Element | null; handled: boolean;
+  } | null>(null);
+  const agent2ExecutionRef = useRef<ReturnType<typeof watchAgent2Execution> | null>(null);
+  const submitInFlightRef = useRef<symbol | null>(null);
+  // Route identity excludes the session created by this submission itself.
+  // A new route releases its composer while accepted work stays in the original session.
+  const submitScope = JSON.stringify([pendingSessionKey, sessionId, agent2TurnId, editTurnId, runId]);
+  const submitLifetime = useMemo(() => Symbol(), [submitScope]);
+  const currentSubmitScope = useRef<symbol | null>(submitLifetime);
+  currentSubmitScope.current = submitLifetime;
+  const isCurrentSubmissionScope = () => currentSubmitScope.current === submitLifetime;
+  useEffect(() => {
+    currentSubmitScope.current = submitLifetime;
+    setState(current => current === "planning" ? "idle" : current);
+    setError("");
+    return () => { submitInFlightRef.current = null; currentSubmitScope.current = null; };
+  }, [submitLifetime]);
+  const resultActionRef = useRef<symbol | null>(null);
+  const [resultActionPending, setResultActionPending] = useState(false);
+  const resultActionScope = JSON.stringify([projectId, sessionId || session?.id, agent2TurnId, editTurnId]);
+  const branchReadRef = useRef<AbortController | null>(null);
+  const currentResultActionScope = useRef(resultActionScope);
+  currentResultActionScope.current = resultActionScope;
+  useEffect(() => {
+    setResultActionPending(false); setAgent2RetryPending(false); setContinueTurnId(null);
+    return () => { resultActionRef.current = null; branchReadRef.current?.abort(); branchReadRef.current = null; };
+  }, [resultActionScope]);
   const autoRetryTurnRef = useRef<string | null>(null);
-  const continuationNoticeTurnRef = useRef<string | null>(null);
-  const [sessionMemory, setSessionMemory] =
-    useState<Agent2SessionMemory | null>(null);
-  const [sessionMemoryMutation, setSessionMemoryMutation] = useState(false);
-  const [sessionMemoryError, setSessionMemoryError] = useState("");
-  const [agent2Turns, setAgent2Turns] = useState<Agent2TurnResponse[]>([]);
   const [conversationWidth, setConversationWidth] = useState(() =>
     defaultResearchConversationWidth(Boolean(runId || agent2TurnId)),
   );
+  const [conversationMaxWidth, setConversationMaxWidth] = useState(760);
   const [sessionHistoryOpen, setSessionHistoryOpen] = useState(false);
   const [sessionHistoryQuery, setSessionHistoryQuery] = useState("");
   const [sessionHistoryStatus, setSessionHistoryStatus] = useState<
@@ -1196,16 +1281,39 @@ export function ResearchPage({
     new Map<"current" | "archived" | "trashed", HTMLButtonElement>(),
   );
   const [sessionLifecycleNotice, setSessionLifecycleNotice] = useState("");
+  const sessionOperation = useSessionOperation(projectId);
+  const [sessionActionConfirmation, setSessionActionConfirmation] = useState<{ items: ResearchSession[]; action: ResearchSessionBulkAction; bulk: boolean } | null>(null);
+  const [sessionDirectoryReading, setSessionDirectoryReading] = useState(false);
+  const [sessionDirectoryError, setSessionDirectoryError] = useState("");
+  const sessionDirectoryReadRef = useRef<AbortController | null>(null);
+  const pageReadScopeRef = useRef("");
+  useEffect(() => {
+    setSessionRenameTarget(null); setSessionActionConfirmation(null);
+    setSessionLifecycleNotice(""); setSessionDirectoryError(""); setSessionDirectoryReading(false);
+    setSelectedSessionIds([]);
+    return () => { sessionDirectoryReadRef.current?.abort(); sessionDirectoryReadRef.current = null; };
+  }, [projectId]);
+  useEffect(() => {
+    if (!sessionRenameTarget && !sessionActionConfirmation) return;
+    const bodyOverflow = document.body.style.overflow;
+    const rootOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = document.documentElement.style.overflow = "hidden";
+    return () => { document.body.style.overflow = bodyOverflow; document.documentElement.style.overflow = rootOverflow; };
+  }, [Boolean(sessionRenameTarget || sessionActionConfirmation)]);
   const [mobilePanel, setMobilePanel] = useState<"timeline" | "workbench">(
-    runId || agent2TurnId ? "workbench" : "timeline",
+    !editTurnId && (runId || agent2TurnId) ? "workbench" : "timeline",
   );
+  useEffect(() => { if (editTurnId) setMobilePanel("timeline"); }, [editTurnId]);
   const [pageLoadState, setPageLoadState] = useState<
     "loading" | "ready" | "error"
   >("loading");
   const [runResolutionState, setRunResolutionState] = useState<
     "idle" | "loading" | "settled"
   >(runId && !agent2TurnId ? "loading" : runId ? "settled" : "idle");
+  const [runReadFailures, setRunReadFailures] = useState<string[]>([]);
+  const [runReadPending, setRunReadPending] = useState(false);
   const [pageLoadError, setPageLoadError] = useState("");
+  const [projectHistoryReadState, setProjectHistoryReadState] = useState<"loading" | "ready" | "error">("loading");
   const [sessionLoadState, setSessionLoadState] = useState<
     "ready" | "loading" | "error"
   >("ready");
@@ -1223,16 +1331,41 @@ export function ResearchPage({
   const [providerReloadKey, setProviderReloadKey] = useState(0);
   const [selectedProvider, setSelectedProvider] = useState("");
   const [selectedModel, setSelectedModel] = useState("");
+  const [userModels, setUserModels] = useState<UserModel[]>([]);
+  const [researchSettingsOpen, setResearchSettingsOpen] = useState(false);
+  const providerChoiceRef = useRef<{ key: string; provider: string; model: string } | null>(null);
+  const providerScopeRef = useRef<string | null>(null);
+  function createAgent2ResearchTurn(project: string, session: string, input: Parameters<typeof admitResearchTurn>[2]) {
+    try {
+      const settings = JSON.stringify({
+        provider: selectedProvider, model: selectedModel, thinkingMode, autonomyMode,
+      });
+      window.sessionStorage.setItem(providerSettingsKey, settings);
+      // Admission navigates from a dataset/object URL to the canonical session
+      // URL. Keep that exact session's choice across the route handoff.
+      window.sessionStorage.setItem(`mdi:research-session-settings:${JSON.stringify([project, session])}`, settings);
+    } catch {
+      // The current submission still carries the exact selected settings.
+    }
+    return admitResearchTurn(project, session, {
+      ...input,
+      ...(input.requested_action === "INTERPRET_RESULT" ? { autonomy_mode: "STANDARD" as const } : {}),
+      model_selection: { provider: selectedProvider, model: selectedModel, thinking_mode: thinkingMode },
+    });
+  }
   const [thinkingMode, setThinkingMode] = useState<
     "quick" | "standard" | "deep"
   >("standard");
   const questionInputRef = useRef<HTMLTextAreaElement | null>(null);
+  const pendingDraftHandoffRef = useRef<{ key: string; draft: string } | null>(null);
+  const composerDraftCache = useRef(new Map<string, string>());
+  const composerDraftWriteFailures = useRef(new Set<string>());
   const restoredDraftRef = useRef<{
     key: string;
     skipPersistence: boolean;
   } | null>(null);
   const workbenchRef = useRef<HTMLElement | null>(null);
-  const conversationWidthCustomizedRef = useRef(false);
+  const conversationPreferredWidthRef = useRef<number | null>(null);
   const sessionHistoryTriggerRef = useRef<HTMLButtonElement | null>(null);
   const sessionHistoryRef = useRef<HTMLDivElement | null>(null);
   const sessionHistorySearchRef = useRef<HTMLInputElement | null>(null);
@@ -1240,6 +1373,38 @@ export function ResearchPage({
   const mobileWorkbenchTabRef = useRef<HTMLButtonElement | null>(null);
   const conversationHistoryRef = useRef<HTMLDivElement | null>(null);
   const contextManifestRef = useRef<HTMLDetailsElement | null>(null);
+  const contextManifestTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const contextReturnFocusRef = useRef<HTMLElement | null>(null);
+  const workbenchFocusRef = useRef<{
+    scope: string;
+    target: "context" | "results" | "return";
+    from: Element | null;
+  } | null>(null);
+  const contextPanelRef = useRef<HTMLDivElement | null>(null);
+  const branchNavigationRef = useRef<HTMLElement | null>(null);
+  const contextRetryFocus = useRef<string | null>(null);
+  const directoryRetryFocus = useRef<string | null>(null);
+  useEffect(() => () => { contextRetryFocus.current = null; directoryRetryFocus.current = null; }, [projectId, sessionId, agent2TurnId]);
+  useEffect(() => {
+    if (!contextNavigation.context.pending && !contextNavigation.context.failed && contextNavigation.context.data && contextRetryFocus.current === contextNavigation.context.scope) {
+      contextRetryFocus.current = null;
+      if (contextManifestRef.current) {
+        contextManifestRef.current.open = true;
+        contextManifestRef.current.querySelector<HTMLElement>("summary")?.focus();
+      }
+    }
+  }, [contextNavigation.context.pending, contextNavigation.context.failed, contextNavigation.context.data, contextNavigation.context.scope]);
+  useEffect(() => {
+    if (!contextNavigation.directory.pending && !contextNavigation.directory.failed && contextNavigation.directory.data && directoryRetryFocus.current === contextNavigation.directory.scope) {
+      directoryRetryFocus.current = null;
+      (branchNavigationRef.current?.querySelector<HTMLElement>("summary") || questionInputRef.current)?.focus();
+    }
+  }, [contextNavigation.directory.pending, contextNavigation.directory.failed, contextNavigation.directory.data, contextNavigation.directory.scope]);
+  const [wholeViewerVersionKey, setWholeViewerVersionKey] = useState("");
+  const viewerSelectionKey = JSON.stringify([projectId, viewerContext?.objectId, viewerContext?.versionId, viewerContext?.selectionToken]);
+  const currentViewerSelectionKey = useRef(viewerSelectionKey); currentViewerSelectionKey.current = viewerSelectionKey;
+  const scientificSelectionRead = useRef<AbortController | null>(null);
+  useEffect(() => () => scientificSelectionRead.current?.abort(), [viewerSelectionKey]);
   const exactViewerContext = useMemo(() => {
     if (
       !viewerContext?.objectId ||
@@ -1254,7 +1419,7 @@ export function ResearchPage({
       objectType: viewerContext.objectType,
       displayName: viewerContext.displayName || "所选科学数据",
     };
-    if (!viewerContext.selectionToken) return { sourceRef, selection: null };
+    if (!viewerContext.selectionToken || wholeViewerVersionKey === viewerSelectionKey) return { sourceRef, selection: null, selectionError: "" };
     try {
       const workspace = decodeWorkspaceSelectionUrl(
         viewerContext.selectionToken,
@@ -1262,18 +1427,17 @@ export function ResearchPage({
       const descriptor = resolveScientificViewer({
         objectType: viewerContext.objectType,
       });
-      return {
-        sourceRef,
-        selection: scientificSelectionFromWorkspace(
+      const selection = scientificSelectionFromWorkspace(
           workspace,
           sourceRef,
           descriptor.viewerId,
-        ),
-      };
+        );
+      if (!selection) throw new Error("VIEWER_SELECTION_SCOPE_INVALID");
+      return { sourceRef, selection, selectionError: "" };
     } catch {
-      return { sourceRef, selection: null };
+      return { sourceRef, selection: null, selectionError: "链接中的选择无法绑定到此项目的精确版本。请返回数据重新选择，或明确改用此完整版本。" };
     }
-  }, [projectId, viewerContext]);
+  }, [projectId, viewerContext, wholeViewerVersionKey, viewerSelectionKey]);
   const activeSearchResultContextId =
     contextCandidateFromSearch && searchContextCandidateActive
       ? resultContextId
@@ -1283,14 +1447,36 @@ export function ResearchPage({
     (!contextCandidateFromSearch || searchContextCandidateActive)
       ? exactViewerContext
       : null;
+  const incompleteViewerContext = Boolean(viewerContext?.objectId || viewerContext?.versionId || viewerContext?.objectType || viewerContext?.selectionToken)
+    && (!viewerContext?.objectId || !viewerContext?.versionId || !viewerContext?.objectType);
+  const viewerSelectionError = incompleteViewerContext
+    ? "此来源链接缺少对象、版本或科学类型，请返回项目数据重新打开。"
+    : activeViewerContext?.selectionError || "";
   const hasExplicitScientificHandoff = Boolean(
-    datasetId || activeViewerContext || activeSearchResultContextId,
+    datasetId || sourceSelectionToken || activeViewerContext || activeSearchResultContextId || incompleteViewerContext,
   );
+  const datasetSelection = useMemo(() => {
+    try {
+      const selection = datasetSourceSelection(projectId, datasetId, sourceSelectionToken, sampleRef);
+      if (selection && (activeViewerContext || incompleteViewerContext || activeSearchResultContextId)) throw new DatasetSourceSelectionError();
+      return { selection, error: "" };
+    }
+    catch { return { selection: null, error: "链接中的数据选择无法用于本次研究。请返回来源数据重新选择；你可以继续编辑问题。" }; }
+  }, [projectId, datasetId, sourceSelectionToken, sampleRef, activeViewerContext, incompleteViewerContext, activeSearchResultContextId]);
+  const [workbenchView, setWorkbenchView] = useState<"results" | "context">(() =>
+    !agent2TurnId && !runId && (activeViewerContext || datasetId) && !viewerSelectionError && !datasetSelection.error
+      ? "context" : "results",
+  );
+  const [workbenchVisibility, setWorkbenchVisibility] = useState<{ scope: string; open: boolean } | null>(null);
+  useEffect(() => {
+    if (workbenchView === "context" && contextManifestRef.current) contextManifestRef.current.open = true;
+  }, [workbenchView, contextNavigation.context.data?.manifest.context_manifest_id]);
   const startFreshResearchHref = freshResearchHref(
     projectId,
     datasetId,
     sampleRef,
     viewerContext,
+    sourceSelectionToken,
   );
 
   useEffect(() => {
@@ -1322,136 +1508,37 @@ export function ResearchPage({
   }, []);
 
   useEffect(() => {
-    if (continuationNoticeTurnRef.current === agent2TurnId) {
-      continuationNoticeTurnRef.current = null;
-    } else {
-      setAgent2ContinuationNotice("");
-    }
-    if (!agent2TurnId) {
-      setAgent2Progress(null);
-      setAgent2CancelNotice("");
-      setAgent2RecoveryState("connected");
-      return;
-    }
+    setAgent2Progress(null);
     setAgent2CancelNotice("");
-    agent2DispatchRef.current = null;
-    let active = true;
-    let inFlight = false;
-    let timer: number | undefined;
-    let reconnectAttempt = 0;
-    const scheduleReconnect = () => {
-      if (!active || timer) return;
-      const delay = Math.min(
-        RESEARCH_CANCELLING_POLL_INTERVAL_MS *
-          Math.max(1, 2 ** Math.min(reconnectAttempt, 3)),
-        8000,
-      );
-      reconnectAttempt += 1;
-      timer = window.setTimeout(() => {
-        timer = undefined;
-        refresh();
-      }, delay);
-    };
-    const refresh = () => {
-      if (!active || inFlight) return;
-      inFlight = true;
-      void getAgent2ExecutionProgress(agent2TurnId, {
-        signal: controller.signal,
-      })
-        .then((next) => {
-          if (!active) return;
-          reconnectAttempt = 0;
-          setAgent2RecoveryState("connected");
-          setAgent2Progress(next);
-          setAgent2CancelNotice((current) => {
-            if (!current) return current;
-            if (next.status === "CANCELED") {
-              return "";
-            }
-            if (["COMPLETED", "PARTIAL", "FAILED"].includes(next.status)) {
-              return "分析在取消请求生效前已进入终态；现有科学结果未被覆盖。";
-            }
-            return current;
-          });
-          // QUERY_DATA is a terminal, non-scientific handoff. Clear any
-          // optimistic local planning state immediately so a completed
-          // read-only query cannot continue to render as a failed analysis.
-          if (next.status === "ANSWERED") {
-            setState("idle");
-            setError("");
-          }
-          if (
-            next.status === "PLAN_READY" &&
-            agent2DispatchRef.current !== agent2TurnId
-          ) {
-            agent2DispatchRef.current = agent2TurnId;
-            void dispatchAgent2ResearchTurn(agent2TurnId).catch(async (reason) => {
-              if (!active) return;
-              // Stop may win the narrow PLAN_READY → dispatch race. The
-              // dispatch request can then correctly return a conflict because
-              // the durable Turn is already CANCELED. Reconcile durable state
-              // before surfacing an execution error so a successful stop is
-              // never presented as a failed research run.
-              try {
-                const latest = await getAgent2ExecutionProgress(agent2TurnId, {
-                  signal: controller.signal,
-                });
-                if (!active) return;
-                setAgent2Progress(latest);
-                if (shouldSuppressAgent2DispatchError(latest.status)) {
-                  setError("");
-                  return;
-                }
-              } catch {
-                // Preserve the original dispatch error when durable state is
-                // temporarily unavailable.
-              }
-              setError(
-                reason instanceof Error ? reason.message : "研究执行失败",
-              );
-            });
-          }
-          if (agent2ProgressNeedsRefresh(next.status)) {
-            timer = window.setTimeout(() => {
-              // A completed timer is no longer pending. Clearing the handle
-              // lets a transport failure schedule restart reconciliation
-              // instead of mistaking the already-fired poll for active work.
-              timer = undefined;
-              refresh();
-            }, RESEARCH_CANCELLING_POLL_INTERVAL_MS);
-          }
-        })
-        .catch((reason) => {
-          if (active && !requestWasAborted(reason)) {
-            // A transport failure is not a durable workflow failure. Preserve
-            // the last projection and keep reconciling after an API restart.
-            setAgent2RecoveryState("reconnecting");
-            scheduleReconnect();
-          }
-        })
-        .finally(() => {
-          inFlight = false;
-        });
-    };
-    const controller = new AbortController();
-    refresh();
-    const onOnline = () => refresh();
-    const onVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        reconnectAttempt = 0;
-        refresh();
-      }
-    };
-    window.addEventListener("online", onOnline);
-    document.addEventListener("visibilitychange", onVisibilityChange);
+    setAgent2CancelState("idle");
+    setAgent2DispatchNotice("");
+    setAgent2DispatchRetryable(false);
+    setAgent2RecoveryState({ status: "connected", turnId: agent2TurnId || "" });
+    if (!agent2TurnId) return;
+    const execution = watchAgent2Execution(agent2TurnId, {
+      progress: (next) => {
+        setAgent2Progress(next);
+        if (next.status === "ANSWERED") {
+          setState("idle");
+          setError("");
+        }
+      },
+      recovery: (value) => setAgent2RecoveryState({ ...value, turnId: agent2TurnId }),
+      cancellation: (state, notice) => {
+        setAgent2CancelState(state);
+        setAgent2CancelNotice(notice);
+      },
+      dispatch: (notice, retryable) => {
+        setAgent2DispatchNotice(notice);
+        setAgent2DispatchRetryable(retryable);
+      },
+    });
+    agent2ExecutionRef.current = execution;
     return () => {
-      active = false;
-      controller.abort();
-      window.removeEventListener("online", onOnline);
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-      if (timer) clearTimeout(timer);
+      execution.dispose();
+      agent2ExecutionRef.current = null;
     };
-  }, [agent2TurnId]);
+  }, [agent2TurnId, projectId, sessionId]);
 
   useEffect(() => {
     if (
@@ -1461,289 +1548,88 @@ export function ResearchPage({
     )
       return;
     let active = true;
-    void getResearchSession(session.id)
+    const controller = new AbortController();
+    const currentSessionId = session.id;
+    void readSessionRequest((signal) => getResearchSession(currentSessionId, signal), controller.signal)
       .then((full) => {
-        if (active) setSession(full);
-      })
-      .catch(() => {
-        // Durable Turn progress remains authoritative. Normal reconnect and
-        // reload paths can retrieve the persisted message after a transient
-        // conversation refresh failure.
-      });
-    return () => {
-      active = false;
-    };
-  }, [agent2Progress?.status, agent2TurnId, session?.id]);
-
-  useEffect(() => {
-    if (!agent2TurnId) {
-      setAgent2ContextManifest(null);
-      setAgent2ContextManifests([]);
-      setAgent2ContextManifestLoadState("idle");
-      setShowFullContextManifest(false);
-      setContextManifestWindowStart(0);
-      return;
-    }
-    setShowFullContextManifest(false);
-    setContextManifestWindowStart(0);
-    setAgent2ContextManifestLoadState("loading");
-    let active = true;
-    void getAgent2ContextManifest(agent2TurnId)
-      .then((detail) => {
-        if (active) {
-          if (!detail?.manifest) throw new Error("CONTEXT_MANIFEST_UNAVAILABLE");
-          setAgent2ContextManifest(detail.manifest);
-          setAgent2ContextManifests(
-            detail.manifests?.length
-              ? detail.manifests
-              : [{ operation: detail.manifest.operation, manifest: detail.manifest }],
-          );
-          setAgent2ContextManifestLoadState("ready");
-        }
+        if (!active) return;
+        validateResearchSession(full, projectId, currentSessionId);
+        setSession(full);
+        setSessionLoadState("ready");
       })
       .catch(() => {
         if (active) {
-          setAgent2ContextManifest(null);
-          setAgent2ContextManifests([]);
-          setAgent2ContextManifestLoadState("error");
+          setSessionLoadState("error");
+          setSessionLoadError("研究对话暂时无法更新，请重新加载对话。");
         }
       });
     return () => {
       active = false;
+      controller.abort();
     };
-  }, [
-    agent2ContextManifestReloadKey,
-    agent2Progress?.status,
-    agent2TurnId,
-  ]);
+  }, [agent2Progress?.status, agent2TurnId, session?.id, projectId]);
 
   useEffect(() => {
-    if (!session?.id) {
-      setSessionMemory(null);
-      return;
-    }
-    let active = true;
-    void getAgent2SessionMemory(projectId, session.id)
-      .then((memory) => {
-        if (active) setSessionMemory(memory);
-      })
-      .catch(() => {
-        if (active) setSessionMemory(null);
-      });
-    return () => {
-      active = false;
-    };
-  }, [projectId, session?.id]);
-
-  async function removePinnedResult(resultId: string) {
-    if (!session?.id || sessionMemoryMutation) return;
-    setSessionMemoryMutation(true);
-    setSessionMemoryError("");
-    try {
-      setSessionMemory(
-        await unpinAgent2Result(projectId, session.id, resultId),
-      );
-    } catch (reason) {
-      setSessionMemoryError(
-        reason instanceof Error ? reason.message : "固定结果移除失败",
-      );
-    } finally {
-      setSessionMemoryMutation(false);
-    }
-  }
-
-  async function removePinnedObject(
-    objectRef: Agent2SessionMemory["pinned_object_refs"][number],
-  ) {
-    if (
-      !session?.id ||
-      sessionMemoryMutation ||
-      !objectRef.object_id ||
-      !objectRef.version_id ||
-      !objectRef.project_id ||
-      !objectRef.object_type
-    )
-      return;
-    setSessionMemoryMutation(true);
-    setSessionMemoryError("");
-    try {
-      setSessionMemory(
-        await unpinAgent2Object(projectId, session.id, {
-          object_id: objectRef.object_id,
-          version_id: objectRef.version_id,
-          project_id: objectRef.project_id,
-          object_type: objectRef.object_type,
-          display_name: objectRef.display_name,
-        }),
-      );
-    } catch (reason) {
-      setSessionMemoryError(
-        reason instanceof Error ? reason.message : "固定来源移除失败",
-      );
-    } finally {
-      setSessionMemoryMutation(false);
-    }
-  }
-
-  useEffect(() => {
-    if (!session?.id || !agent2TurnId) {
-      setAgent2Turns([]);
-      return;
-    }
-    let active = true;
-    void listAgent2ResearchTurns(projectId, session.id)
-      .then((items) => {
-        if (!active) return;
-        setAgent2Turns(items);
-        const recoveredTurn = resolveAgent2TurnForRecovery(
-          items,
-          projectId,
-          session.id,
-          agent2TurnId,
-        );
-        if (!recoveredTurn) return;
-        setSession((current) => {
-          if (!current || current.id !== session.id) return current;
-          const currentMessages = current.messages || [];
-          if (
-            currentMessages.some(
-              (message) => message.id === recoveredTurn.user_message.id,
-            )
-          ) {
-            return current;
-          }
-          return {
-            ...current,
-            messages: [
-              ...currentMessages,
-              {
-                id: recoveredTurn.user_message.id,
-                session_id: session.id,
-                role: "user",
-                content: recoveredTurn.user_message.content,
-                created_at: recoveredTurn.created_at,
-              },
-            ],
-          };
-        });
-      })
-      .catch(() => {
-        if (active) setAgent2Turns([]);
-      });
-    return () => {
-      active = false;
-    };
-  }, [projectId, session?.id, agent2TurnId]);
-
-  useEffect(() => {
-    if (!editTurnId) {
-      setEditingResult(null);
-      setEditingTurn(null);
-      setEditingLoadState("idle");
-      return;
-    }
-    let active = true;
-    setEditingTurn(null);
-    setEditingResult(null);
-    setQuestion("");
-    setEditingLoadState("loading");
-    void Promise.allSettled([
-      getAgent2ResearchTurn(editTurnId),
-      getAgent2ResearchTurnResult(editTurnId),
-    ])
-      .then(([turnResult, scientificResult]) => {
-        if (!active) return;
-        if (turnResult.status !== "fulfilled") {
-          setEditingTurn(null);
-          setEditingResult(null);
-          setEditingLoadState("error");
-          setError("原研究问题暂时无法读取，历史结果仍保持不变。");
-          return;
-        }
-        setEditingTurn(turnResult.value);
-        setQuestion(turnResult.value.user_message.content);
-        setEditingResult(
-          scientificResult.status === "fulfilled"
-            ? scientificResult.value
-            : null,
-        );
-        setEditingLoadState("ready");
-      })
-      .catch(() => {
-        if (!active) return;
-        setEditingTurn(null);
-        setEditingResult(null);
-        setEditingLoadState("error");
-        setError("原研究问题暂时无法读取，历史结果仍保持不变。");
-      });
-    return () => {
-      active = false;
-    };
-  }, [editTurnId]);
+    if (!session?.id || !agent2TurnId) return;
+    const recoveredTurn = resolveAgent2TurnForRecovery(agent2Turns, projectId, session.id, agent2TurnId);
+    if (!recoveredTurn) return;
+    setSession((current) => {
+      if (!current || current.id !== recoveredTurn.research_session_id ||
+          (current.projectId || current.project_id) !== projectId) return current;
+      const messages = current.messages || [];
+      if (messages.some((message) => message.id === recoveredTurn.user_message.id)) return current;
+      return { ...current, messages: [...messages, {
+        id: recoveredTurn.user_message.id, session_id: current.id, role: "user",
+        content: recoveredTurn.user_message.content, created_at: recoveredTurn.created_at,
+      }] };
+    });
+  }, [agent2Turns, projectId, session?.id, agent2TurnId]);
 
   async function cancelAgent2Turn() {
-    if (!agent2TurnId || agent2CancelPending) return;
-    setAgent2CancelPending(true);
-    setAgent2CancelNotice("");
     setError("");
+    await agent2ExecutionRef.current?.cancel();
+  }
+
+  async function retryAgent2Turn(action: ResultResearchAction = "rerun") {
+    if (!agent2TurnId || !session || !canResearch || !selectedSessionIsWritable || submitInFlightRef.current || resultActionRef.current) return;
+    if (!userModels.some((item) => item.provider === selectedProvider && item.model === selectedModel)) {
+      setError("请先在研究设置中选择可用模型。"); return;
+    }
+    const owner = Symbol(); resultActionRef.current = owner;
+    const actionScope = resultActionScope;
+    const controller = new AbortController(); branchReadRef.current = controller;
+    const owns = () => resultActionRef.current === owner && currentResultActionScope.current === actionScope;
+    setAgent2RetryPending(true); setResultActionPending(true); setError("");
     try {
-      const result = await cancelAgent2Execution(agent2TurnId);
-      setAgent2Progress((current) =>
-        current ? { ...current, status: result.status } : current,
-      );
-      setAgent2CancelNotice(
-        result.status === "CANCELED"
-          ? ""
-          : "取消请求已记录，正在等待运行中的科学步骤安全结束。",
-      );
-    } catch (reason) {
-      // A fast scientific execution may finish between the last progress poll
-      // and the user's Stop click. Re-read durable state before presenting a
-      // false cancellation failure. Scientific completion wins this race and
-      // must remain explicit rather than being overwritten as CANCELED.
-      try {
-        const latest = await getAgent2ExecutionProgress(agent2TurnId);
-        setAgent2Progress(latest);
-        if (["COMPLETED", "PARTIAL", "FAILED", "CANCELED"].includes(latest.status)) {
-          setAgent2CancelNotice(
-            latest.status === "CANCELED"
-              ? ""
-              : "分析在取消请求生效前已进入终态；现有科学结果未被覆盖。",
-          );
-          return;
-        }
-      } catch {
-        // Preserve the original cancellation failure when durable state is
-        // temporarily unavailable.
+      const exactTurn = await readBranchTurn(projectId, session.id, agent2TurnId, controller.signal);
+      if (!owns()) return;
+      let input: Parameters<typeof admitResearchTurn>[2] = agent2RetryInput(exactTurn);
+      if (action === "reinterpret") {
+        const result = await readBranchResult(projectId, agent2TurnId, controller.signal);
+        if (!owns()) return;
+        if (!result) throw new Error("科学结果暂时无法读取，请重新读取后再解读。");
+        input = resultFollowUpInput("reinterpret", result);
       }
-      setError(reason instanceof Error ? reason.message : "取消请求未能提交");
+      const next = await createAgent2ResearchTurn(projectId, session.id, {
+        ...input, admission_key: createAgent2AdmissionKey(), autonomy_mode: autonomyMode,
+      });
+      if (!owns()) return;
+      carryUnsentDraft(next.turn_id);
+      router.push(`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(session.id)}?turn=${encodeURIComponent(next.turn_id)}${action === "rerun" ? `&retryOf=${encodeURIComponent(exactTurn.turn_id)}` : ""}`);
+    } catch (reason) {
+      if (owns()) setError(scientistFacingResearchRequestError(reason));
     } finally {
-      setAgent2CancelPending(false);
+      controller.abort();
+      if (owns()) { resultActionRef.current = null; branchReadRef.current = null; setAgent2RetryPending(false); setResultActionPending(false); }
     }
   }
 
-  async function retryAgent2Turn() {
-    if (!agent2TurnId || !session || agent2RetryPending) return;
-    setAgent2RetryPending(true);
-    setError("");
-    try {
-      const exactTurn = await getAgent2ResearchTurn(agent2TurnId);
-      const next = await createAgent2ResearchTurn(
-        projectId,
-        session.id,
-        {
-          ...agent2RetryInput(exactTurn),
-          admission_key: createAgent2AdmissionKey(),
-        },
-      );
-      router.push(
-        `/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(session.id)}?turn=${encodeURIComponent(next.turn_id)}&retryOf=${encodeURIComponent(exactTurn.turn_id)}`,
-      );
-    } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "重试请求未能提交");
-    } finally {
-      setAgent2RetryPending(false);
-    }
+  function carryUnsentDraft(turnId: string) {
+    if (!session) return;
+    const draft = questionInputRef.current?.value ?? question;
+    const key = researchComposerDraftKey(projectId, session.id, turnId);
+    pendingDraftHandoffRef.current = { key, draft };
+    storeComposerDraft(key, draft);
   }
 
   function editAgent2Turn() {
@@ -1755,11 +1641,13 @@ export function ResearchPage({
     setMobilePanel("timeline");
     router.push(
       `/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(session.id)}?turn=${encodeURIComponent(agent2TurnId)}&edit=${encodeURIComponent(agent2TurnId)}`,
+      { scroll: false },
     );
   }
 
   function continueAgent2Research() {
     if (!agent2TurnId) return;
+    const focusOrigin = document.activeElement;
     // Continue is a composer action. Keep the control reachable on mobile
     // even when the user invoked it from the Workbench presentation tab.
     setMobilePanel("timeline");
@@ -1768,72 +1656,167 @@ export function ResearchPage({
       "继续研究会保留当前会话与已授权的精确上下文；只有提交新问题后才会开始新的处理。",
     );
     requestAnimationFrame(() => {
-      questionInputRef.current?.focus();
-      questionInputRef.current?.scrollIntoView?.({ block: "nearest" });
+      if (currentSubmitScope.current !== submitLifetime || document.activeElement !== focusOrigin) return;
+      const input = questionInputRef.current;
+      if (!input || input === focusOrigin) return;
+      input.focus({ preventScroll: true });
+      input.scrollIntoView?.({ block: "nearest" });
     });
+  }
+
+  async function runResultResearch(action: ResultResearchAction, result: Agent2ResearchTurnResult) {
+    if (!session?.id || !canResearch || !selectedSessionIsWritable) throw new Error("当前研究不可修改，请检查访问权限。");
+    if (result.research_turn_id !== agent2TurnId) throw new Error("分析结果与当前研究不匹配，请重新读取。");
+    if (!userModels.some((item) => item.provider === selectedProvider && item.model === selectedModel)) throw new Error("请先在研究设置中选择可用模型。");
+    if (submitInFlightRef.current || resultActionRef.current) throw new Error("正在提交研究，请稍候。");
+    const owner = Symbol(); resultActionRef.current = owner;
+    const scope = resultActionScope;
+    setResultActionPending(true);
+    try {
+      const next = await createAgent2ResearchTurn(projectId, session.id, {
+        ...resultFollowUpInput(action, result, selectedAgent2Turn), admission_key: createAgent2AdmissionKey(), autonomy_mode: autonomyMode,
+      });
+      if (resultActionRef.current !== owner || currentResultActionScope.current !== scope) return;
+      carryUnsentDraft(next.turn_id);
+      router.push(`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(session.id)}?turn=${encodeURIComponent(next.turn_id)}`);
+    } finally {
+      if (resultActionRef.current === owner) { resultActionRef.current = null; setResultActionPending(false); }
+    }
   }
 
   function clampConversationWidth(value: number): number {
     if (!Number.isFinite(value)) return conversationWidth;
     const workbenchWidth =
       workbenchRef.current?.getBoundingClientRect().width || 1280;
-    const maximum = Math.min(760, Math.max(320, workbenchWidth - 480));
+    const maximum = Math.min(760, Math.max(320, workbenchWidth - 487));
     return Math.round(Math.min(maximum, Math.max(320, value)));
   }
 
+  function chooseConversationWidth(value: number) {
+    const width = clampConversationWidth(value);
+    conversationPreferredWidthRef.current = width;
+    setConversationWidth(width);
+  }
+
+  // Modern Turn reads have their own scoped subscriptions. Selecting a Turn or
+  // editing its question must not invalidate the shared project/session page.
+  const pageRunId = agent2TurnId ? undefined : runId;
+  const pageTurnId = sessionId ? undefined : agent2TurnId;
   useEffect(() => {
     let active = true;
-    setSession(null);
-    setScope(null);
-    setJob(null);
-    setEvents([]);
-    setArtifacts([]);
-    setInterpretation(null);
-    setEvidence(null);
-    setError("");
-    setState("idle");
-    postRunMessageRef.current = null;
-    failedRunMessageRef.current = null;
-    // An edit route is a conversation action even when it retains the
-    // completed Turn in the query string. Keep the mobile view on the
-    // composer rather than defaulting back to the scientific workbench.
-    setMobilePanel(
-      editTurnId
-        ? "timeline"
-        : runId || agent2TurnId
-          ? "workbench"
-          : "timeline",
-    );
-    setPageLoadState("loading");
+    const controller = new AbortController();
+    const scopeKey = JSON.stringify([projectId, sessionId, pageRunId, pageTurnId, datasetId, fresh, hasExplicitScientificHandoff]);
+    const preservePage = pageReadScopeRef.current === scopeKey && pageLoadState === "ready";
+    pageReadScopeRef.current = scopeKey;
+    if (!preservePage) {
+      setSession(null);
+      setHistory(null);
+      setSessions([]);
+      setScope(null);
+      setJob(null);
+      setEvents([]);
+      setArtifacts([]);
+      setInterpretation(null);
+      setEvidence(null);
+      setRunReadFailures([]);
+      setRunReadPending(false);
+      setError("");
+      setState("idle");
+      postRunMessageRef.current = null;
+      failedRunMessageRef.current = null;
+    }
+    if (!preservePage) setPageLoadState("loading");
+    if (!preservePage) setSessionLoadState("loading");
     setPageLoadError("");
-    setRunResolutionState(
-      runId && !agent2TurnId ? "loading" : runId ? "settled" : "idle",
+    setProjectHistoryReadState("loading");
+    if (!preservePage) setRunResolutionState(
+      pageRunId ? "loading" : "idle",
     );
-    void Promise.all([
-      listResearchSessions(projectId),
-      getProjectHistory(projectId),
-    ])
-      .then(([items, nextHistory]) => {
-        if (!active) return;
-        setSessions(items);
-        setHistory(nextHistory);
+    let targetSessionId = sessionId;
+    if (!targetSessionId && !pageTurnId && !pageRunId) {
+      try { targetSessionId = window.sessionStorage.getItem(pendingSessionKey) || undefined; }
+      catch { /* An explicit URL still recovers the conversation without storage. */ }
+    }
+    let pendingReads = 0;
+    let hasReadableContent = preservePage;
+    const readFailures = new Set<string>();
+    const showReadFailures = () => {
+      const labels = [...readFailures].filter((label) => label !== "当前对话");
+      setPageLoadError(labels.length ? `暂时无法读取：${labels.join("、")}。已打开的内容和输入仍然保留。` : "");
+    };
+    async function readPagePart<T>(label: string, request: (signal: AbortSignal) => Promise<T>, accept: (value: T) => void, reject: () => void = () => {}): Promise<T | null> {
+      pendingReads += 1;
+      try {
+        const value = await readSessionRequest(request, controller.signal);
+        if (!active) return null;
+        accept(value);
+        hasReadableContent = true;
         setPageLoadState("ready");
-        const runSession = runId
-          ? items.find((item) => researchSessionReferencesRun(item, runId))
+        readFailures.delete(label);
+        showReadFailures();
+        return value;
+      } catch {
+        if (active) { readFailures.add(label); showReadFailures(); reject(); }
+        return null;
+      } finally {
+        pendingReads -= 1;
+        if (active && pendingReads === 0 && !hasReadableContent) setPageLoadState("error");
+      }
+    }
+    let sessionRequest: Promise<ResearchSession | null> | null = null;
+    const readSelectedSession = (id?: string) => {
+      if (sessionRequest) return sessionRequest;
+      if (!preservePage) setSessionLoadState("loading");
+      setSessionLoadError("");
+      sessionRequest = readPagePart("当前对话", async (signal) => {
+        let ownerId = id;
+        if (!ownerId && pageTurnId) {
+          const turn = await getAgent2ResearchTurn(pageTurnId, { signal });
+          ownerId = turn?.research_session_id;
+          if (typeof ownerId !== "string" || !ownerId.trim()) throw new Error("Research turn owner missing");
+          validateBranchTurn(turn, projectId, ownerId, pageTurnId);
+        }
+        signal.throwIfAborted();
+        if (!ownerId) throw new Error("Research session owner missing");
+        return validateResearchSession(await getResearchSession(ownerId, signal), projectId, ownerId);
+      }, (full) => {
+        targetSessionId = full.id;
+        setSession(full);
+        setSessions((current) => current.some((item) => item.id === full.id) ? current : [full, ...current]);
+        setSessionLoadState("ready");
+      }, () => {
+        if (!preservePage) setSession(null);
+        setSessionLoadState("error");
+        setSessionLoadError("这条研究记录暂时无法读取，请重试。");
+      });
+      return sessionRequest;
+    };
+    // Resolve old Turn links from their saved owner before opening a conversation.
+    // Neither an exact session nor a Turn depends on directory/history reads.
+    if (targetSessionId || pageTurnId) void readSelectedSession(targetSessionId);
+    const pendingCreation = hasPendingResearchSessionCreation(projectId, datasetId, pendingSessionKey);
+    const explicitNewResearch = !targetSessionId && !pageRunId && !pageTurnId && (fresh || hasExplicitScientificHandoff || pendingCreation);
+    if (explicitNewResearch) setSessionLoadState("ready");
+    const directoryRequest = readPagePart("研究记录列表", (signal) => listResearchSessions(projectId, signal), (items) => {
+        validateSessionDirectory(items, projectId);
+        setSessions((current) => {
+          const exact = current.find((item) => item.id === targetSessionId);
+          return exact && !items.some((item) => item.id === exact.id) ? [exact, ...items] : items;
+        });
+        if (pageTurnId) return;
+        const runSession = pageRunId
+          ? items.find((item) => researchSessionReferencesRun(item, pageRunId))
           : undefined;
         // An explicit session id is an authoritative navigation target. When a
         // historical run is not yet normalized onto that session, retain the
         // requested session rather than turning a valid route into a missing
         // conversation error. A run-only route still requires an explicit
         // persisted run binding and must not fall back to an unrelated session.
-        const selected = runId
-          ? runSession ||
-            (sessionId
-              ? items.find((item) => item.id === sessionId)
-              : undefined)
-          : sessionId
-            ? items.find((item) => item.id === sessionId)
-            : fresh || hasExplicitScientificHandoff
+        const selected = targetSessionId
+          ? items.find((item) => item.id === targetSessionId)
+          : pageRunId
+            ? runSession
+            : fresh || hasExplicitScientificHandoff || pendingCreation
               ? undefined
               : items.find(
                   (item) =>
@@ -1841,47 +1824,44 @@ export function ResearchPage({
                       String(item.status || "active").toLowerCase(),
                     ),
                 );
-        if (selected) {
-          setSessionLoadState("loading");
-          setSessionLoadError("");
-          void getResearchSession(selected.id)
-            .then((full) => {
-              if (!active) return;
-              setSession(full);
-              setSessionLoadState("ready");
-            })
-            .catch((reason) => {
-              if (!active) return;
-              setSession(null);
-              setSessionLoadState("error");
-              setSessionLoadError(
-                reason instanceof Error
-                  ? reason.message
-                  : "研究会话暂时无法读取",
-              );
-            });
+        const requestedSessionId = selected?.id || targetSessionId;
+        if (requestedSessionId) {
+          void readSelectedSession(requestedSessionId);
         } else {
-          setSessionLoadState(sessionId ? "error" : "ready");
-          setSessionLoadError(sessionId ? "研究会话不存在或已不可访问。" : "");
+          setSessionLoadState(targetSessionId ? "error" : "ready");
+          setSessionLoadError(targetSessionId ? "研究会话不存在或已不可访问。" : "");
         }
-        if (datasetId && !runId && !sessionId) {
-          void resolveExplicitDatasetScope(projectId, datasetId)
+    }, () => {
+      if (!targetSessionId && !pageTurnId && !explicitNewResearch && !preservePage) {
+        setSessionLoadState("error");
+        setSessionLoadError("研究记录列表暂时无法读取，请重试后继续。");
+      }
+    });
+    void readPagePart("项目数据", (signal) => getProjectHistory(projectId, { signal }), (nextHistory) => {
+        const historyIds = [nextHistory.project.id, nextHistory.project.projectId].filter(Boolean);
+        if (!historyIds.length || historyIds.some((id) => id !== projectId)) throw new Error("Project history mismatch");
+        setHistory(nextHistory);
+        setProjectHistoryReadState("ready");
+        if (datasetId && !pageRunId && !sessionId) {
+          // Opening Research reads its source; scientific admission belongs to
+          // the user's submission, after any exact selection is validated.
+          void readSessionRequest(async () => {
+            const [dataset, profile] = await Promise.all([getDataset(datasetId), getDatasetProfile(datasetId)]);
+            if ((dataset.datasetId || dataset.id) !== datasetId || profile.datasetId !== datasetId) throw new Error("Research source identity mismatch");
+            return { status: "READY" as const, dataset_id: datasetId, dataset_name: dataset.name, profile_id: profile.profileId || profile.id };
+          }, controller.signal)
             .then((selectedScope) => {
               if (active) setScope(selectedScope);
             })
-            .catch((reason) => {
+            .catch(() => {
               if (!active) return;
               setScope(null);
-              setPageLoadError(
-                reason instanceof Error
-                  ? reason.message
-                  : "所选数据暂时无法读取。",
-              );
+              setPageLoadError("所选数据暂时无法读取，请重新加载后再试。问题仍会保留。");
             });
         }
-        if (runId && !agent2TurnId) {
+        if (pageRunId) {
           const historicalRun = nextHistory.analyses.find(
-            (item) => item.jobId === runId,
+            (item) => item.jobId === pageRunId,
           );
           if (historicalRun) {
             const historicalDataset = nextHistory.datasets.find(
@@ -1896,68 +1876,81 @@ export function ResearchPage({
                   }
                 : null,
             );
-            setJob({ ok: true, job_id: runId, plan: null });
-            setState(researchRunState(historicalRun.status));
+            setJob((current) => current?.job_id === pageRunId ? current : { ok: true, job_id: pageRunId, plan: null });
+            if (!preservePage) setState(researchRunState(historicalRun.status));
+            let pendingReads = 0;
+            async function readRunPart<T>(label: string, request: (signal: AbortSignal) => Promise<T>, accept: (value: T) => void): Promise<T> {
+              pendingReads += 1;
+              setRunReadPending(true);
+              try {
+                const value = await readSessionRequest(request, controller.signal);
+                if (!active) throw new Error("Run read cancelled");
+                accept(value);
+                setRunReadFailures((current) => current.filter((item) => item !== label));
+                return value;
+              } catch (reason) {
+                if (active) setRunReadFailures((current) => current.includes(label) ? current : [...current, label]);
+                throw reason;
+              } finally {
+                pendingReads -= 1;
+                if (active && pendingReads === 0) setRunReadPending(false);
+              }
+            }
+            const readEvidence = (interpretationId: string) => readRunPart("解读依据", (signal) => getPlannerInterpretationEvidence(interpretationId, { signal }), (value) => {
+              if (value.interpretationId !== interpretationId) throw new Error("Interpretation evidence mismatch");
+              setEvidence(value);
+            }).catch(() => undefined);
+            // Show successful sections immediately. Optional run records must
+            // not hold saved scientific results behind a shared loading state.
             void Promise.allSettled([
-              getPlannerJob(runId),
-              getPlannerJobEvents(runId),
-              getPlannerJobArtifacts(runId),
-              getPlannerJobInterpretations(runId),
+              readRunPart("运行详情", (signal) => getPlannerJob(pageRunId, { signal }), (detail) => {
+                validateLegacyJob(detail, pageRunId, projectId);
+                setJob((current) => current ? {
+                  ...current,
+                  plan: detail.analysisPlan || current.plan,
+                  plan_id: detail.planId || current.plan_id,
+                  plan_hash: detail.planHash || current.plan_hash,
+                } : current);
+              }),
+              readRunPart("运行记录", (signal) => getPlannerJobEvents(pageRunId, 0, { signal }), (value) => setEvents((items) => mergeJobEvents(items, value))),
+              readRunPart("科学结果", (signal) => getPlannerJobArtifacts(pageRunId, { signal }), (value) => setArtifacts((items) => mergeArtifacts(items, value)))
+                .finally(() => { if (active) setRunResolutionState("settled"); }),
+              readRunPart("结果解读", (signal) => getPlannerJobInterpretations(pageRunId, { signal }), (value) => {
+                const saved = value.interpretations?.at(-1) || null;
+                setInterpretation((current) => saved || current);
+                setInterpretationStatus((current) => saved ? saved.completeness === "COMPLETE" ? "ready" : "limited" : current);
+                setEvidence((current) => !saved || current?.interpretationId === saved.interpretationId ? current : null);
+                if (saved) void readEvidence(saved.interpretationId);
+                else setRunReadFailures((current) => current.filter((item) => item !== "解读依据"));
+              }),
             ]).then(
-              ([
+              async ([
                 detailResult,
-                eventResult,
-                artifactResult,
+                ,
+                ,
                 interpretationResult,
               ]) => {
                 if (!active) return;
-                if (detailResult.status === "fulfilled") {
-                  const detail = detailResult.value;
-                  setJob((current) =>
-                    current
-                      ? {
-                          ...current,
-                          plan: detail.analysisPlan || current.plan,
-                          plan_id: detail.planId || current.plan_id,
-                          plan_hash: detail.planHash || current.plan_hash,
-                        }
-                      : current,
-                  );
-                }
-                if (eventResult.status === "fulfilled")
-                  setEvents(mergeJobEvents([], eventResult.value));
-                if (artifactResult.status === "fulfilled")
-                  setArtifacts(mergeArtifacts([], artifactResult.value));
                 const historyInterpretations =
                   interpretationResult.status === "fulfilled"
                     ? interpretationResult.value
                     : null;
                 const existingInterpretation =
                   historyInterpretations?.interpretations?.at(-1) || null;
-                setInterpretation(existingInterpretation);
-                setInterpretationStatus(
-                  existingInterpretation
-                    ? existingInterpretation.completeness === "COMPLETE"
-                      ? "ready"
-                      : "limited"
-                    : "idle",
-                );
-                if (existingInterpretation)
-                  void getPlannerInterpretationEvidence(
-                    existingInterpretation.interpretationId,
-                  )
-                    .then(setEvidence)
-                    .catch(() => setEvidence(null));
-                const owner = runSession || selected;
+                const directory = await directoryRequest;
+                const loadedSession = await sessionRequest;
+                const knownOwnerId = directory?.find((item) => researchSessionReferencesRun(item, pageRunId))?.id || historicalRun.researchSessionId;
+                const owner = knownOwnerId && loadedSession?.id !== knownOwnerId ? null : loadedSession;
+                if (!active) return;
                 if (
                   existingInterpretation &&
                   owner &&
-                  !researchSessionReferencesRun(owner, runId, "post_run")
+                  !researchSessionReferencesRun(owner, pageRunId, "post_run")
                 ) {
                   void createResearchAssistantProjection(owner.id, {
                     phase: "post_run",
                     datasetId: historicalRun.datasetId,
-                    runId,
+                    runId: pageRunId,
                   })
                     .then((message) => {
                       if (active) appendSessionMessage(message);
@@ -1970,6 +1963,7 @@ export function ResearchPage({
                     ? detailResult.value.planHash
                     : null;
                 if (
+                  interpretationResult.status === "fulfilled" &&
                   !existingInterpretation &&
                   owner &&
                   (historicalState === "complete" ||
@@ -1977,7 +1971,7 @@ export function ResearchPage({
                   planHash
                 ) {
                   setInterpretationStatus("loading");
-                  void createScientificInterpretation(runId, planHash)
+                  void createScientificInterpretation(pageRunId, planHash, controller.signal)
                     .then((result) => {
                       if (!active) return;
                       const recovered = result.interpretation || null;
@@ -1989,18 +1983,14 @@ export function ResearchPage({
                             : "limited"
                           : "error",
                       );
+                      if (!recovered) setRunReadFailures((items) => items.includes("结果解读") ? items : [...items, "结果解读"]);
                       if (recovered) {
-                        void getPlannerInterpretationEvidence(
-                          recovered.interpretationId,
-                        )
-                          .then((value) => {
-                            if (active) setEvidence(value);
-                          })
-                          .catch(() => undefined);
+                        setEvidence((current) => current?.interpretationId === recovered.interpretationId ? current : null);
+                        void readEvidence(recovered.interpretationId);
                         void createResearchAssistantProjection(owner.id, {
                           phase: "post_run",
                           datasetId: historicalRun.datasetId,
-                          runId,
+                          runId: pageRunId,
                         })
                           .then((message) => {
                             if (active) appendSessionMessage(message);
@@ -2009,18 +1999,21 @@ export function ResearchPage({
                       }
                     })
                     .catch(() => {
-                      if (active) setInterpretationStatus("error");
+                      if (active) {
+                        setInterpretationStatus("error");
+                        setRunReadFailures((items) => items.includes("结果解读") ? items : [...items, "结果解读"]);
+                      }
                     });
                 }
                 if (
                   historicalState === "failed" &&
                   owner &&
-                  !researchSessionReferencesRun(owner, runId, "failed")
+                  !researchSessionReferencesRun(owner, pageRunId, "failed")
                 ) {
                   void createResearchAssistantProjection(owner.id, {
                     phase: "failed",
                     datasetId: historicalRun.datasetId,
-                    runId,
+                    runId: pageRunId,
                     failureCode: "JOB_FAILED",
                   })
                     .then((message) => {
@@ -2028,30 +2021,17 @@ export function ResearchPage({
                     })
                     .catch(() => undefined);
                 }
-                const failures = [
-                  detailResult,
-                  eventResult,
-                  artifactResult,
-                  interpretationResult,
-                ].filter((item) => item.status === "rejected").length;
-                if (failures === 4)
-                  setError("历史分析结果暂时无法读取，请稍后重试。");
-                else if (failures > 0)
-                  setError("部分运行记录暂时无法读取；已保留当前可用结果。");
                 setRunResolutionState("settled");
               },
             );
           } else {
             setRunResolutionState("settled");
+            setRunReadPending(false);
           }
         }
-      })
-      .catch((reason) => {
-        if (!active) return;
-        setPageLoadError(
-          reason instanceof Error ? reason.message : "研究内容加载失败",
-        );
-        setPageLoadState("error");
+      }, () => {
+        setProjectHistoryReadState("error");
+        setRunReadPending(false);
       });
     const refreshPersistedState = () => {
       setReloadKey((current) => current + 1);
@@ -2063,24 +2043,28 @@ export function ResearchPage({
     document.addEventListener("visibilitychange", refreshOnVisible);
     return () => {
       active = false;
+      controller.abort();
       window.removeEventListener("online", refreshPersistedState);
       document.removeEventListener("visibilitychange", refreshOnVisible);
     };
   }, [
-    agent2TurnId,
+    pendingSessionKey,
     datasetId,
-    editTurnId,
     fresh,
     hasExplicitScientificHandoff,
     projectId,
     reloadKey,
-    runId,
+    pageRunId,
+    pageTurnId,
     sessionId,
   ]);
 
   useEffect(() => {
-    if (!sessionHistoryOpen) return;
-    sessionHistorySearchRef.current?.focus();
+    if (sessionHistoryOpen) sessionHistorySearchRef.current?.focus();
+  }, [sessionHistoryOpen]);
+
+  useEffect(() => {
+    if (!sessionHistoryOpen || sessionRenameTarget || sessionActionConfirmation) return;
     const closeOnPointerDown = (event: PointerEvent) => {
       const target = event.target as Node | null;
       if (
@@ -2102,7 +2086,7 @@ export function ResearchPage({
       document.removeEventListener("pointerdown", closeOnPointerDown);
       document.removeEventListener("keydown", closeOnEscape);
     };
-  }, [sessionHistoryOpen]);
+  }, [sessionHistoryOpen, Boolean(sessionRenameTarget || sessionActionConfirmation)]);
 
   function closeSessionHistory(restoreFocus = true) {
     setSessionHistoryOpen(false);
@@ -2114,52 +2098,87 @@ export function ResearchPage({
 
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
+    const newScope = providerChoiceRef.current?.key !== providerSettingsKey;
+    if (providerScopeRef.current !== providerSettingsKey) {
+      providerScopeRef.current = providerSettingsKey;
+      setUserModels([]);
+      setSelectedProvider("");
+      setSelectedModel("");
+      setResearchSettingsOpen(false);
+    }
     setProviderLoadState("loading");
-    void Promise.all([getPlannerProviderStatus(), listPlannerProviders()])
-      .then(([nextStatus, nextProviders]) => {
-        if (!active) return;
-        setProviderStatus(nextStatus);
-        const available = nextProviders.providers.filter(
-          (item) =>
-            !item.developerOnly &&
-            (item.secretConfigured || item.execution === "live"),
-        );
+    const timer = window.setTimeout(() => {
+      controller.abort();
+      if (active) setProviderLoadState("error");
+    }, 10_000);
+    void getUserModels({ signal: controller.signal })
+      .then((settings) => {
+        if (!active || controller.signal.aborted) return;
+        const selected = settings.selected.map((item) => ({ ...item,
+          label: settings.connections?.find((connection) => connection.provider === item.provider)?.label || item.label,
+        }));
+        setUserModels(selected);
+        const available: ProviderOption[] = Array.from(new Set(selected.map((item) => item.provider))).map((provider) => ({
+          id: provider, provider, label: provider.startsWith("platform:") ? "平台提供" : selected.find((item) => item.provider === provider)?.label || settings.label,
+          secretConfigured: true, models: selected.filter((item) => item.provider === provider).map((item) => item.model),
+        }));
         setProviderOptions(available);
-        const first =
-          available.find((item) => item.provider === nextStatus.provider) ||
-          available[0];
-        setSelectedProvider(first?.provider || "");
-        setSelectedModel(
-          nextStatus.model || first?.defaultModel || first?.models?.[0] || "",
-        );
+        setProviderStatus({ ok: selected.length > 0, status: selected.length ? "ready" : "not_configured" });
+        let preferred: UserModel | undefined = newScope ? selected[0] : selected.find((item) => item.provider === providerChoiceRef.current?.provider && item.model === providerChoiceRef.current?.model);
+        try {
+          const saved = JSON.parse(window.sessionStorage.getItem(providerSettingsKey) || "null");
+          const choice = newScope ? saved : providerChoiceRef.current;
+          if (newScope && choice?.provider && choice?.model) preferred = selected.find((item) => item.provider === choice.provider && item.model === choice.model);
+          if (newScope) setThinkingMode(["quick", "standard", "deep"].includes(saved?.thinkingMode) ? saved.thinkingMode : "standard");
+          if (newScope) setAutonomyMode(["STANDARD", "BOUNDED_AUTONOMOUS"].includes(saved?.autonomyMode) ? saved.autonomyMode : "STANDARD");
+        } catch {
+          // Fall back to available account models when local settings cannot be read.
+        }
+        setSelectedProvider(preferred?.provider || "");
+        setSelectedModel(preferred?.model || "");
+        providerChoiceRef.current = { key: providerSettingsKey, provider: preferred?.provider || "", model: preferred?.model || "" };
         setProviderLoadState("ready");
       })
       .catch(() => {
-        if (!active) return;
-        setProviderStatus(null);
-        setProviderOptions([]);
+        if (!active || controller.signal.aborted) return;
         setProviderLoadState("error");
-      });
+      }).finally(() => window.clearTimeout(timer));
     return () => {
       active = false;
+      controller.abort();
+      window.clearTimeout(timer);
     };
-  }, [providerReloadKey]);
+  }, [providerReloadKey, providerSettingsKey]);
 
-  const selectedProviderOption = providerOptions.find(
-    (item) => item.provider === selectedProvider,
-  );
-  const selectedModels = selectedProviderOption?.models?.length
-    ? selectedProviderOption.models
-    : selectedProviderOption?.allowedModels ||
-      providerStatus?.allowedModels ||
-      [];
+  useEffect(() => {
+    // Persist the draft's choices only after this exact scope has restored its
+    // available models. Route changes and failed catalogue reads must not
+    // overwrite another scope's saved settings with transient/default state.
+    const choice = providerChoiceRef.current;
+    if (providerLoadState !== "ready" || choice?.key !== providerSettingsKey
+      || !selectedProvider || !selectedModel
+      || choice.provider !== selectedProvider || choice.model !== selectedModel) return;
+    try {
+      window.sessionStorage.setItem(providerSettingsKey, JSON.stringify({
+        provider: selectedProvider, model: selectedModel, thinkingMode, autonomyMode,
+      }));
+    } catch { /* The in-memory choice remains usable when storage is unavailable. */ }
+  }, [providerLoadState, providerSettingsKey, selectedProvider, selectedModel, thinkingMode, autonomyMode]);
+
+  useEffect(() => {
+    const refresh = () => setProviderReloadKey((value) => value + 1);
+    window.addEventListener("mdi:models-changed", refresh);
+    return () => window.removeEventListener("mdi:models-changed", refresh);
+  }, []);
+
   const branchChoices = useMemo(
-    () => researchBranchChoices(agent2Turns, agent2TurnId),
-    [agent2TurnId, agent2Turns],
+    () => researchBranchChoices(agent2Turns, navigationTurnId, branchRootTurnId),
+    [navigationTurnId, agent2Turns, branchRootTurnId],
   );
   const branchNavigation = useMemo(
-    () => researchBranchNavigation(agent2Turns, agent2TurnId),
-    [agent2TurnId, agent2Turns],
+    () => researchBranchNavigation(agent2Turns, navigationTurnId, branchRootTurnId),
+    [navigationTurnId, agent2Turns, branchRootTurnId],
   );
   const branchDescriptors = useMemo(
     () =>
@@ -2173,11 +2192,26 @@ export function ResearchPage({
   const selectedAgent2Turn = useMemo(
     () =>
       agent2Turns.find(
-        (turn) => (turn.id || turn.turn_id) === agent2TurnId,
+        (turn) => (turn.id || turn.turn_id) === navigationTurnId,
       ) || null,
-    [agent2TurnId, agent2Turns],
+    [navigationTurnId, agent2Turns],
   );
   const selectedTurnMessageId = selectedAgent2Turn?.user_message.id || null;
+  const sessionResultTurn = !agent2TurnId && !runId && !editTurnId && !fresh && !hasExplicitScientificHandoff
+    ? selectedAgent2Turn : null;
+  const workbenchScope = JSON.stringify([submitScope, navigationTurnId]);
+  useEffect(() => {
+    if (!agent2TurnId || editTurnId || !(resultTargetSnapshotId || resultTargetItemId)) return;
+    setWorkbenchVisibility({ scope: workbenchScope, open: true });
+    setWorkbenchView("results");
+    setMobilePanel("workbench");
+  }, [agent2TurnId, editTurnId, resultTargetSnapshotId, resultTargetItemId, workbenchScope, resultOpenRequest]);
+  const selectedTurnMessageIds = useMemo(
+    () => navigationTurnId
+      ? selectedAgent2Turn?.message_ids ?? (selectedTurnMessageId ? [selectedTurnMessageId] : [])
+      : undefined,
+    [navigationTurnId, selectedAgent2Turn?.message_ids, selectedTurnMessageId],
+  );
   const retryLineage = useMemo(
     () => retryLineageForTurn(agent2Turns, agent2TurnId, retryOfTurnId),
     [agent2TurnId, agent2Turns, retryOfTurnId],
@@ -2186,33 +2220,88 @@ export function ResearchPage({
     agent2Progress,
     agent2TurnId,
   );
+  const answerDraft = useResearchAnswerStream(agent2TurnId ?? null, activeAgent2Progress?.status, () => {
+    agent2ExecutionRef.current?.refresh();
+  });
   const activeAgent2ContextManifest = agent2ContextManifestForTurn(
     agent2ContextManifest,
-    agent2TurnId,
-  );
-  const visibleContextManifestItems = contextManifestRenderItems(
-    activeAgent2ContextManifest,
-    showFullContextManifest,
-    contextManifestWindowStart,
+    navigationTurnId,
   );
   const composerDraftKey = useMemo(
     () =>
       researchComposerDraftKey(
         projectId,
-        session?.id || sessionId,
-        agent2TurnId,
+        sessionId || session?.id,
+        editTurnId ? `edit:${editTurnId}` : agent2TurnId,
       ),
-    [agent2TurnId, projectId, session?.id, sessionId],
+    [agent2TurnId, editTurnId, projectId, session?.id, sessionId],
   );
+  const currentComposerIdentity = useRef({ key: composerDraftKey, scope: submitScope });
+  currentComposerIdentity.current = { key: composerDraftKey, scope: submitScope };
+  const materials = useResearchMaterials(projectId, composerDraftKey);
+  const [materialPickerKey, setMaterialPickerKey] = useState<string | null>(null);
+  const materialPickerTrigger = useRef<HTMLElement | null>(null);
+  useEffect(() => setMaterialPickerKey(null), [composerDraftKey]);
+  async function loadInitialMaterials(signal: AbortSignal): Promise<ResearchMaterials> {
+    if (materials.value) return materials.value;
+    if (materials.error) return { items: [], selections: [] };
+    const sourceTurnId = editTurnId || continueTurnId || agent2TurnId;
+    if (sourceTurnId && session && (editTurnId || continueTurnId || !hasExplicitScientificHandoff)) {
+      const [turn, result] = await Promise.all([
+        readBranchTurn(projectId, session.id, sourceTurnId, signal),
+        readBranchResult(projectId, sourceTurnId, signal),
+      ]);
+      const refs = result?.source_object_refs.length ? result.source_object_refs : turn.context?.scope || [];
+      return { items: refs.map(ref => ({ ref })), selections: result?.scientific_selections || turn.context?.scientific_selection || [] };
+    }
+    if (activeViewerContext && !viewerSelectionError) {
+      const ref = activeViewerContext.selection ? selectionToResearchObjectRef(activeViewerContext.selection) : {
+        project_id: projectId, object_id: activeViewerContext.sourceRef.objectId,
+        version_id: activeViewerContext.sourceRef.versionId, object_type: activeViewerContext.sourceRef.objectType,
+        display_name: activeViewerContext.sourceRef.displayName,
+      };
+      const selected = activeViewerContext.selection;
+      let locator = selected ? apiSemanticLocator(selected) : {};
+      if (selected && ["TRAJECTORY_FRAME", "TRAJECTORY_ATOM", "VOLUMETRIC_FIELD"].includes(selected.selectionType)) {
+        const projection = await getScientificViewerProjection(ref.object_id, ref.version_id, signal);
+        const context = decodeWorkspaceSelectionUrl(viewerContext!.selectionToken!);
+        const exact = projection.project_id === projectId && projection.object_id === ref.object_id && projection.version_id === ref.version_id;
+        const bound = exact ? (selected.selectionType === "VOLUMETRIC_FIELD" ? volumetricVersionLocator(context, projection) : trajectoryVersionLocator(context, projection)) : null;
+        if (!bound) throw new Error("所选科学位置无法绑定到此版本。");
+        locator = bound;
+      }
+      return { items: [{ ref }], selections: selected ? [{ contract_version: "1.0", object_ref: ref,
+        viewer_id: selected.viewerId, selection_type: selected.selectionType, display_label: selected.displayLabel,
+        semantic_locator: locator,
+        evidence_locator: selected.evidenceLocator ? { field_locator: selected.evidenceLocator } : undefined }] : [] };
+    }
+    const sourceDatasetId = datasetId || session?.datasetId || session?.dataset_id;
+    if (sourceDatasetId && !datasetSelection.error && !viewerSelectionError) {
+      if (!datasetSelection.selection && !sampleRef) {
+        const catalog = await getDatasetResearchSources(sourceDatasetId, signal);
+        if (catalog.projectId !== projectId || catalog.datasetId !== sourceDatasetId || catalog.resources.length > 64 ||
+            catalog.resources.some(source => source.datasetId !== sourceDatasetId)) throw new Error("材料来源范围无法确认。");
+        const items = [];
+        for (const source of catalog.resources) items.push(await admitResearchMaterial(projectId, source, signal));
+        return { items, selections: [] };
+      }
+      const resolved = await resolveExplicitDatasetScope(projectId, sourceDatasetId, datasetSelection.selection);
+      signal.throwIfAborted();
+      const refs = datasetResearchRefs(resolved, sampleRef);
+      return { items: (refs?.objectRefs || []).map(ref => ({ ref, datasetId: sourceDatasetId })), selections: refs?.selections || [] };
+    }
+    return { items: [], selections: [] };
+  }
 
   useEffect(() => {
     if (!composerDraftKey || typeof window === "undefined") return;
-    let savedDraft = "";
-    try {
-      savedDraft = window.sessionStorage.getItem(composerDraftKey) || "";
-    } catch {
-      // A blocked browser storage policy must not block Research itself.
+    let savedDraft = readComposerDraft(composerDraftKey);
+    const handoff = pendingDraftHandoffRef.current;
+    if (handoff?.key === composerDraftKey) {
+      savedDraft = handoff.draft;
+      pendingDraftHandoffRef.current = null;
     }
+    composerDraftCache.current.set(composerDraftKey, savedDraft);
     restoredDraftRef.current = {
       key: composerDraftKey,
       skipPersistence: true,
@@ -2227,16 +2316,51 @@ export function ResearchPage({
       restored.skipPersistence = false;
       return;
     }
-    try {
-      if (question) {
-        window.sessionStorage.setItem(composerDraftKey, question);
-      } else {
-        window.sessionStorage.removeItem(composerDraftKey);
-      }
-    } catch {
-      // Keep the in-memory draft usable when browser storage is unavailable.
-    }
+    storeComposerDraft(composerDraftKey, question);
   }, [composerDraftKey, question]);
+
+  useEffect(() => {
+    const accepted = (event: Event) => {
+      const detail = (event as CustomEvent<{ key: string; scope: string; draft: string }>).detail;
+      if (!detail || typeof detail.key !== "string" || typeof detail.scope !== "string" || typeof detail.draft !== "string") return;
+      const current = currentComposerIdentity.current;
+      if (current.key === detail.key && current.scope !== detail.scope) {
+        event.preventDefault();
+        return;
+      }
+      if (composerDraftCache.current.get(detail.key) === detail.draft) composerDraftCache.current.set(detail.key, "");
+      if (current.key === detail.key && current.scope === detail.scope) {
+        setQuestion(draft => draft === detail.draft ? "" : draft);
+      }
+    };
+    window.addEventListener("mdi:research-draft-accepted", accepted);
+    return () => window.removeEventListener("mdi:research-draft-accepted", accepted);
+  }, []);
+
+  useEffect(() => {
+    if (!editTurnId) { seededEditDraftKeyRef.current = null; return; }
+    if (!editingTurn || seededEditDraftKeyRef.current === composerDraftKey) return;
+    seededEditDraftKeyRef.current = composerDraftKey;
+    if (editedDraftKeyRef.current !== composerDraftKey) setQuestion((draft) => draft || editingTurn.user_message.content);
+  }, [editTurnId, editingTurn, composerDraftKey]);
+
+  useEffect(() => {
+    if (!editTurnId) { editComposerFocusRef.current = null; return; }
+    editComposerFocusRef.current = { key: composerDraftKey, origin: document.activeElement, handled: false };
+    // A slow source read must not pull the user out of a dialog, another
+    // panel, or text they have already started editing.
+    const keepUserFocus = (event: Event) => {
+      const request = editComposerFocusRef.current;
+      if (request && event.target !== request.origin) request.handled = true;
+    };
+    document.addEventListener("focusin", keepUserFocus);
+    document.addEventListener("pointerdown", keepUserFocus);
+    return () => {
+      editComposerFocusRef.current = null;
+      document.removeEventListener("focusin", keepUserFocus);
+      document.removeEventListener("pointerdown", keepUserFocus);
+    };
+  }, [composerDraftKey, editTurnId, submitLifetime]);
 
   useEffect(() => {
     if (!activeAgent2Progress) return;
@@ -2253,102 +2377,226 @@ export function ResearchPage({
   }, [activeAgent2Progress?.status, agent2TurnId]);
 
   function revealActiveContextManifest() {
-    setMobilePanel("timeline");
-    window.requestAnimationFrame(() => {
-      const disclosure = contextManifestRef.current;
-      if (!disclosure) return;
-      disclosure.open = true;
-      disclosure.scrollIntoView?.({
-        block: "nearest",
-        behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
-          ? "auto"
-          : "smooth",
-      });
-      disclosure.querySelector<HTMLElement>("summary")?.focus();
-    });
+    const opener = document.activeElement;
+    contextReturnFocusRef.current = opener instanceof HTMLElement && opener.closest("#research-timeline-panel")
+      ? opener : contextManifestTriggerRef.current;
+    workbenchFocusRef.current = { scope: workbenchScope, target: "context", from: opener };
+    setWorkbenchVisibility({ scope: workbenchScope, open: true });
+    setWorkbenchView("context");
+    setMobilePanel("workbench");
   }
 
-  useEffect(() => {
-    if (!selectedTurnMessageId) return;
-    const frame = window.requestAnimationFrame(() => {
-      const container = conversationHistoryRef.current;
-      const message = container?.querySelector<HTMLElement>(
-        `[data-message-id="${CSS.escape(selectedTurnMessageId)}"]`,
-      );
-      if (!container || !message || typeof container.scrollTo !== "function")
-        return;
-      const containerRect = container.getBoundingClientRect();
-      const messageRect = message.getBoundingClientRect();
-      const top =
-        container.scrollTop +
-        messageRect.top -
-        containerRect.top -
-        Math.max(16, (container.clientHeight - messageRect.height) / 2);
-      container.scrollTo({ top: Math.max(0, top), behavior: "auto" });
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [selectedTurnMessageId]);
+  function closeContextPanel() {
+    if (contextManifestRef.current) contextManifestRef.current.open = false;
+    workbenchFocusRef.current = { scope: workbenchScope, target: "return", from: document.activeElement };
+    setWorkbenchVisibility({ scope: workbenchScope, open: false });
+    setWorkbenchView("results");
+    setMobilePanel("timeline");
+  }
+
+  function revealScientificWorkbench() {
+    const opener = document.activeElement;
+    contextReturnFocusRef.current = opener instanceof HTMLElement ? opener : contextManifestTriggerRef.current;
+    workbenchFocusRef.current = { scope: workbenchScope, target: "results", from: opener };
+    setWorkbenchVisibility({ scope: workbenchScope, open: true });
+    setWorkbenchView("results");
+    setMobilePanel("workbench");
+  }
 
   const hasAuthoritativeTurnPresentation =
-    Boolean(agent2TurnId) &&
-    Boolean(
-      activeAgent2Progress &&
-        ["COMPLETED", "PARTIAL"].includes(activeAgent2Progress.status),
-    );
+    Boolean(agent2TurnId) && hasAgent2ResultPresentation(activeAgent2Progress);
 
   useEffect(() => {
     // A failed/canceled run is actionable from the conversation surface:
     // retry, continue and edit controls live beside the persisted timeline.
-    // When a history link opens with `run=`, the initial mobile selection is
-    // the workbench; move to the timeline once durable progress confirms the
-    // terminal failure so recovery actions are immediately visible.
+    // Direct Turn links and returning from Edit need the same recovery surface
+    // as a run-history link. React only to route/terminal-state changes so a
+    // subsequent manual switch to the workbench remains respected.
     if (
-      runId &&
+      (runId || agent2TurnId) &&
       activeAgent2Progress &&
+      !(hasAuthoritativeTurnPresentation && (resultTargetSnapshotId || resultTargetItemId)) &&
       ["FAILED", "CANCELED"].includes(activeAgent2Progress.status)
     ) {
       setMobilePanel("timeline");
     }
-  }, [activeAgent2Progress, runId]);
+  }, [activeAgent2Progress?.turn_id, activeAgent2Progress?.status, runId, agent2TurnId, editTurnId, hasAuthoritativeTurnPresentation, resultTargetSnapshotId, resultTargetItemId]);
 
-  async function ensureSession() {
+  async function ensureSession(owns: () => boolean) {
     if (session) return session;
     const created = await createResearchSession(
       projectId,
       question.slice(0, 48) || "新研究",
-      datasetId,
+      datasetId || (runId ? scope?.dataset_id : undefined),
+      pendingSessionKey,
     );
+    if (!owns()) return null;
+    const key = researchComposerDraftKey(projectId, created.id, agent2TurnId);
+    materials.copyTo(key);
+    const draft = questionInputRef.current?.value ?? question;
+    pendingDraftHandoffRef.current = { key, draft };
+    storeComposerDraft(key, draft);
+    storeComposerDraft(composerDraftKey, "");
+    try {
+      window.sessionStorage.setItem(pendingSessionKey, created.id);
+    } catch {
+      // The in-memory handoff still retains input during session creation.
+    }
     setSession(created);
     setSessions((items) => [created, ...items]);
+    acknowledgeResearchSessionCreation(created.creationKey);
+    if (["archived", "trashed"].includes(created.status.toLowerCase())) {
+      throw new Error("原对话已归档或在回收站，请恢复该对话后再发送。输入已保留。");
+    }
     return created;
   }
 
-  async function persistResearchFailureProjection(
+  async function persistResearchProjection(
     sessionId: string,
-    failureCode = "RESEARCH_SERVICE_UNAVAILABLE",
+    projection: ResearchAssistantProjection,
+    owns: () => boolean = () => true,
   ) {
     try {
-      const failure = await createResearchAssistantProjection(sessionId, {
-        phase: "failed",
-        failureCode,
-      });
-      appendSessionMessage(failure);
+      const message = await createResearchAssistantProjection(sessionId, projection);
+      if (owns()) appendSessionMessage(message);
     } catch {
-      // The inline error remains visible when the durable failure projection
-      // cannot be written; never mask the original request failure.
+      // A narrative projection does not own execution state. The inline
+      // feedback and durable Job remain authoritative if this write fails.
+    }
+  }
+
+  function clearQuestionIfUnchanged(
+    submittedDraft: string,
+    admittedTurn?: { sessionId: string; turnId: string },
+  ) {
+    try {
+      window.sessionStorage.removeItem(pendingSessionKey);
+    } catch {
+      // A confirmed request still clears its in-memory composer below.
+    }
+    if (!admittedTurn && pendingDraftHandoffRef.current) {
+      const handoff = pendingDraftHandoffRef.current;
+      if (handoff.draft === submittedDraft) handoff.draft = "";
+      storeComposerDraft(handoff.key, handoff.draft);
+    }
+    if (admittedTurn) {
+      materials.set(null);
+      materials.clearKey(researchComposerDraftKey(projectId, admittedTurn.sessionId, editTurnId ? `edit:${editTurnId}` : agent2TurnId));
+      // Admission navigates to a new Turn. Carry only the unsent draft, not
+      // the submitted message, across that route's storage-key change.
+      const currentDraft = questionInputRef.current?.value ?? submittedDraft;
+      const draft = currentDraft === submittedDraft ? "" : currentDraft;
+      const key = researchComposerDraftKey(
+        projectId,
+        admittedTurn.sessionId,
+        admittedTurn.turnId,
+      )!;
+      pendingDraftHandoffRef.current = { key, draft };
+      storeComposerDraft(key, draft);
+    }
+    setQuestion((currentDraft) =>
+      currentDraft === submittedDraft ? "" : currentDraft,
+    );
+  }
+
+  function readComposerDraft(key: string) {
+    if (!composerDraftWriteFailures.current.has(key)) {
+      try { return window.sessionStorage.getItem(key) || ""; } catch { /* Use this page's latest draft. */ }
+    }
+    return composerDraftCache.current.get(key) || "";
+  }
+
+  function storeComposerDraft(key: string, draft: string) {
+    composerDraftCache.current.set(key, draft);
+    try {
+      if (draft) window.sessionStorage.setItem(key, draft);
+      else window.sessionStorage.removeItem(key);
+      composerDraftWriteFailures.current.delete(key);
+    } catch {
+      // Readable old storage must not override a newer draft after a failed write.
+      composerDraftWriteFailures.current.add(key);
+    }
+  }
+
+  function acknowledgeComposerDraft(submittedDraft: string, admittedSessionId: string) {
+    const key = researchComposerDraftKey(projectId, admittedSessionId, editTurnId ? `edit:${editTurnId}` : agent2TurnId);
+    const current = currentComposerIdentity.current;
+    // A different source handoff may reuse this route's draft key. Its text is
+    // now owned by that source choice even when the words have not changed.
+    if (current.key === key && current.scope !== submitScope) return;
+    const saved = readComposerDraft(key);
+    if (saved !== submittedDraft) return;
+    // Reception belongs to the original draft independently of navigation.
+    // A remounted original composer also reconciles the confirmed receipt.
+    const receipt = new CustomEvent("mdi:research-draft-accepted", {
+      cancelable: true, detail: { key, scope: submitScope, draft: submittedDraft },
+    });
+    if (!window.dispatchEvent(receipt)) return;
+    storeComposerDraft(key, "");
+  }
+
+  async function submitBranchQuestion(submittedDraft: string, submittedQuestion: string) {
+    const selectedMaterials = materials.value;
+    const sourceTurnId = editTurnId || continueTurnId || agent2TurnId;
+    if (!sourceTurnId || !session || !canResearch || !selectedSessionIsWritable || submitInFlightRef.current || resultActionRef.current) return;
+    const owner = Symbol(); resultActionRef.current = owner;
+    const actionScope = resultActionScope;
+    const controller = new AbortController(); branchReadRef.current = controller;
+    const owns = () => resultActionRef.current === owner && currentResultActionScope.current === actionScope;
+    const performanceAttemptId = beginResearchPerformanceAttempt(); scheduleResearchSubmitAcknowledgement(performanceAttemptId);
+    setResultActionPending(true); setError(""); setState("planning");
+    try {
+      const [original, result] = editTurnId
+        ? [validateBranchTurn(editingTurn!, projectId, session.id, sourceTurnId), editingResult]
+        : await Promise.all([readBranchTurn(projectId, session.id, sourceTurnId, controller.signal), readBranchResult(projectId, sourceTurnId, controller.signal)]);
+      if (!owns()) return;
+      const resultId = result?.result_snapshot_id || result?.result_id;
+      const input = agent2ContinueInput(original, submittedQuestion, editTurnId ? undefined : resultId);
+      if (editTurnId && result?.source_object_refs.length) {
+        input.ui_context = { ...input.ui_context, active_object_refs: result.source_object_refs, selection_refs: result.source_object_refs,
+          explicit_object_refs: result.source_object_refs, scientific_selections: result.scientific_selections || original.context?.scientific_selection || [] };
+      }
+      if (selectedMaterials) input.ui_context = materialsContext(selectedMaterials, projectId);
+      const created = await createAgent2ResearchTurn(projectId, session.id, { ...input, autonomy_mode: autonomyMode, admission_key: createAgent2AdmissionKey() });
+      acknowledgeComposerDraft(submittedDraft, session.id);
+      if (!owns()) return;
+      bindResearchPerformanceTurn(performanceAttemptId, created.turn_id);
+      clearQuestionIfUnchanged(submittedDraft, { sessionId: session.id, turnId: created.turn_id });
+      setContinueTurnId(null); setMobilePanel("workbench");
+      router.push(`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(session.id)}?turn=${encodeURIComponent(created.turn_id)}`);
+    } catch (reason) {
+      if (owns()) { setState("failed"); setError(scientistFacingResearchRequestError(reason)); }
+    } finally {
+      controller.abort();
+      if (owns()) { resultActionRef.current = null; branchReadRef.current = null; setResultActionPending(false); }
     }
   }
 
   async function submitQuestion() {
+    if (materials.pending || materials.error || (!materials.value && (viewerSelectionError || datasetSelection.error))) return;
+    const selectedMaterials = materials.value;
+    if (!userModels.some((item) => item.provider === selectedProvider && item.model === selectedModel)) {
+      setError("请先打开模型设置，探测并保存至少一个对话模型。");
+      setState("failed");
+      return;
+    }
     if (!editBranchSubmissionAllowed(editTurnId, editingLoadState, editingTurn)) {
       setError(
-        "原研究问题暂时无法读取，无法安全创建编辑分支。请返回原研究后重试。",
+        "原研究尚未读全，请重新读取后提交。草稿仍保留。",
       );
       return;
     }
-    if (!question.trim()) return;
-    if (submitInFlightRef.current) return;
-    submitInFlightRef.current = true;
+    const submittedDraft = question;
+    const submittedQuestion = submittedDraft.trim();
+    if (!submittedQuestion) return;
+    if (submitInFlightRef.current || resultActionRef.current) return;
+    setWorkbenchView("results");
+    if (editTurnId || continueTurnId || (agent2TurnId && !hasExplicitScientificHandoff)) {
+      await submitBranchQuestion(submittedDraft, submittedQuestion); return;
+    }
+    const owner = Symbol();
+    submitInFlightRef.current = owner;
+    const owns = () => submitInFlightRef.current === owner && isCurrentSubmissionScope();
     const admissionKey = createAgent2AdmissionKey();
     const performanceAttemptId = beginResearchPerformanceAttempt();
     scheduleResearchSubmitAcknowledgement(performanceAttemptId);
@@ -2362,94 +2610,33 @@ export function ResearchPage({
     setError("");
     setState("planning");
     let activeSession: ResearchSession | null = null;
+    let legacyMessageSaved = false;
   try {
-      activeSession = await ensureSession();
-      // A persisted session carries the authoritative Dataset scope for
-      // follow-up questions. Keep explicit route handoffs first, then use the
-      // session binding before asking the broad project scope resolver.
+      activeSession = await ensureSession(owns);
+      if (!activeSession || !owns()) return;
+      if (selectedMaterials) {
+        const created = await createAgent2ResearchTurn(projectId, activeSession.id, {
+          message: submittedQuestion, admission_key: admissionKey, autonomy_mode: autonomyMode,
+          ui_context: materialsContext(selectedMaterials, projectId),
+        });
+        acknowledgeComposerDraft(submittedDraft, activeSession.id);
+        if (!owns()) return;
+        bindResearchPerformanceTurn(performanceAttemptId, created.turn_id);
+        clearQuestionIfUnchanged(submittedDraft, { sessionId: activeSession.id, turnId: created.turn_id });
+        setMobilePanel("workbench");
+        router.push(`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(activeSession.id)}?turn=${encodeURIComponent(created.turn_id)}`);
+        return;
+      }
+      // Explicit route handoffs and a persisted Dataset binding retain their
+      // source. An unscoped question belongs to the conversation itself.
       const activeDatasetId =
         datasetId || activeSession.datasetId || activeSession.dataset_id || undefined;
-      if (editTurnId && editingTurn) {
-        const resultRefs = editingResult?.source_object_refs || [];
-        const scopeRefs = editingTurn.context?.scope || [];
-        const selectionRefs = editingTurn.context?.selection || scopeRefs;
-        const refs = resultRefs.length ? resultRefs : scopeRefs;
-        const scientificSelections =
-          editingResult?.scientific_selections ||
-          editingTurn.context?.scientific_selection ||
-          [];
-        const created = await createAgent2ResearchTurn(
-          projectId,
-          activeSession.id,
-          {
-            message: question.trim(),
-            admission_key: admissionKey,
-            reply_to_turn_id: editTurnId,
-            autonomy_mode: autonomyMode,
-            ui_context: {
-              active_object_refs: refs,
-              selection_refs: resultRefs.length ? refs : selectionRefs,
-              scientific_selections: scientificSelections,
-              explicit_object_refs: refs,
-              explicit_result_ids: [],
-              explicit_finding_refs: [],
-            },
-          },
-        );
-        bindResearchPerformanceTurn(performanceAttemptId, created.turn_id);
-        router.push(
-          `/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(activeSession.id)}?turn=${encodeURIComponent(created.turn_id)}`,
-        );
-        return;
-      }
-      if (continueTurnId) {
-        const exactTurn = await getAgent2ResearchTurn(continueTurnId);
-        // A canceled/failed Turn may legitimately have no readable Result.
-        // In that case Continue remains a new bounded request. When a
-        // persisted snapshot is available, carry its snapshot identity
-        // explicitly because child-turn context intentionally excludes
-        // implicit historical Result candidates.
-        let reusableResult: Agent2ResearchTurnResult | null = null;
-        try {
-          reusableResult = await getAgent2ResearchTurnResult(continueTurnId);
-        } catch (reason) {
-          if (!(reason instanceof Agent2ReadError) || reason.status !== 404) {
-            throw reason;
-          }
-        }
-        const reusableResultId =
-          reusableResult?.result_snapshot_id || reusableResult?.result_id;
-        const created = await createAgent2ResearchTurn(
-          projectId,
-          activeSession.id,
-          {
-            ...agent2ContinueInput(exactTurn, question, reusableResultId),
-            autonomy_mode: autonomyMode,
-            admission_key: admissionKey,
-          },
-        );
-        bindResearchPerformanceTurn(performanceAttemptId, created.turn_id);
-        continuationNoticeTurnRef.current = created.turn_id;
-        setAgent2ContinuationNotice(
-          reusableResultId
-            ? `已将精确结果 ${reusableResultId} 作为复用候选；只有问题超出其证据范围时才会规划新分析。`
-            : "原研究没有可复用的科学结果；本次继续将创建新的科学执行，历史 ResearchTurn 保持不变。",
-        );
-        setContinueTurnId(null);
-        setQuestion("");
-        setState("planning");
-        setMobilePanel("workbench");
-        router.push(
-          `/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(activeSession.id)}?turn=${encodeURIComponent(created.turn_id)}`,
-        );
-        return;
-      }
       if (activeSearchResultContextId) {
         const created = await createAgent2ResearchTurn(
           projectId,
           activeSession.id,
           {
-            message: question.trim(),
+            message: submittedQuestion,
             admission_key: admissionKey,
             autonomy_mode: autonomyMode,
             ui_context: {
@@ -2462,9 +2649,14 @@ export function ResearchPage({
             },
           },
         );
+        acknowledgeComposerDraft(submittedDraft, activeSession.id);
+        if (!owns()) return;
         bindResearchPerformanceTurn(performanceAttemptId, created.turn_id);
         setSearchContextCandidateActive(false);
-        setQuestion("");
+        clearQuestionIfUnchanged(submittedDraft, {
+          sessionId: activeSession.id,
+          turnId: created.turn_id,
+        });
         setState("planning");
         setMobilePanel("workbench");
         router.push(
@@ -2482,7 +2674,7 @@ export function ResearchPage({
               object_type: activeViewerContext.sourceRef.objectType,
               display_name: activeViewerContext.sourceRef.displayName,
             };
-        const scientificSelections = activeViewerContext.selection
+        const scientificSelections: Agent2ScientificSelection[] = activeViewerContext.selection
           ? [
               {
                 contract_version: "1.0" as const,
@@ -2502,11 +2694,27 @@ export function ResearchPage({
               },
             ]
           : [];
+        if (["TRAJECTORY_FRAME", "TRAJECTORY_ATOM", "VOLUMETRIC_FIELD"].includes(activeViewerContext.selection?.selectionType || "")) {
+          const isVolume = activeViewerContext.selection?.selectionType === "VOLUMETRIC_FIELD";
+          const controller = new AbortController(); scientificSelectionRead.current = controller;
+          try {
+            const projection = await readSessionRequest(signal => getScientificViewerProjection(objectRef.object_id, objectRef.version_id, signal), controller.signal);
+            if (!owns() || currentViewerSelectionKey.current !== viewerSelectionKey || controller.signal.aborted) return;
+            const context = decodeWorkspaceSelectionUrl(viewerContext!.selectionToken!);
+            const locator = projection.object_id === objectRef.object_id && projection.version_id === objectRef.version_id && projection.project_id === projectId ? (isVolume ? volumetricVersionLocator(context, projection) : trajectoryVersionLocator(context, projection)) : null;
+            if (!locator) throw new DatasetSourceSelectionError(isVolume ? "所选体数据字段无法在此精确版本中确认。请返回数据重新选择；问题已保留，尚未提交分析。" : "所选轨迹位置无法在此精确版本中确认。请返回数据重新选择；问题已保留，尚未提交分析。");
+            scientificSelections[0].semantic_locator = locator; scientificSelections[0].evidence_locator = locator;
+          } catch (reason) {
+            if (!owns() || controller.signal.aborted || currentViewerSelectionKey.current !== viewerSelectionKey) return;
+            if (reason instanceof DatasetSourceSelectionError) throw reason;
+            throw new DatasetSourceSelectionError(isVolume ? "暂时无法读取所选体数据的精确版本，请重试。问题已保留，尚未提交分析。" : "暂时无法读取所选轨迹的精确版本，请重试。问题已保留，尚未提交分析。");
+          } finally { controller.abort(); if (scientificSelectionRead.current === controller) scientificSelectionRead.current = null; }
+        }
         const created = await createAgent2ResearchTurn(
           projectId,
           activeSession.id,
           {
-            message: question.trim(),
+            message: submittedQuestion,
             admission_key: admissionKey,
             autonomy_mode: autonomyMode,
             // A deep-linked Viewer context is already an explicit, exact object/version
@@ -2523,9 +2731,14 @@ export function ResearchPage({
             },
           },
         );
+        acknowledgeComposerDraft(submittedDraft, activeSession.id);
+        if (!owns()) return;
         bindResearchPerformanceTurn(performanceAttemptId, created.turn_id);
         if (contextCandidateFromSearch) setSearchContextCandidateActive(false);
-        setQuestion("");
+        clearQuestionIfUnchanged(submittedDraft, {
+          sessionId: activeSession.id,
+          turnId: created.turn_id,
+        });
         setState("planning");
         setMobilePanel("workbench");
         router.push(
@@ -2533,18 +2746,34 @@ export function ResearchPage({
         );
         return;
       }
-      const nextScope = activeDatasetId
-        ? await resolveExplicitDatasetScope(projectId, activeDatasetId)
-        : await resolveResearchScope(projectId, question.trim());
+      if (!activeDatasetId) {
+        const created = await createAgent2ResearchTurn(projectId, activeSession.id, {
+          message: submittedQuestion, admission_key: admissionKey, autonomy_mode: autonomyMode,
+          ui_context: {
+            active_object_refs: [], selection_refs: [], explicit_object_refs: [],
+            scientific_selections: [], explicit_result_ids: [], explicit_finding_refs: [],
+          },
+        });
+        acknowledgeComposerDraft(submittedDraft, activeSession.id);
+        if (!owns()) return;
+        bindResearchPerformanceTurn(performanceAttemptId, created.turn_id);
+        clearQuestionIfUnchanged(submittedDraft, { sessionId: activeSession.id, turnId: created.turn_id });
+        setMobilePanel("timeline");
+        router.push(`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(activeSession.id)}?turn=${encodeURIComponent(created.turn_id)}`);
+        return;
+      }
+      const nextScope = await resolveExplicitDatasetScope(projectId, activeDatasetId, datasetSelection.selection);
+      if (!owns()) return;
       setScope(nextScope);
       const activeSessionId = activeSession.id;
       const persistLegacyUserMessage = async () => {
         const savedMessage = await createResearchMessage(
           activeSessionId,
-          question.trim(),
+          submittedQuestion,
           activeDatasetId,
         );
-        setSession((current) =>
+        legacyMessageSaved = true;
+        if (owns()) setSession((current) =>
           current
             ? {
                 ...current,
@@ -2553,42 +2782,19 @@ export function ResearchPage({
             : current,
         );
       };
-      if (nextScope.status === "UNSUPPORTED") {
-        await persistLegacyUserMessage();
-        const reply = await createResearchAssistantProjection(
-          activeSession.id,
-          { phase: "unsupported", datasetName: nextScope.dataset_name },
-        );
-        appendSessionMessage(reply);
-        setState("unsupported");
-        return;
-      }
-      if (nextScope.status === "NEEDS_CLARIFICATION") {
-        await persistLegacyUserMessage();
-        const reply = await createResearchAssistantProjection(
-          activeSession.id,
-          {
-            phase: "clarification",
-            candidates: nextScope.candidates?.map((item) => item.name) || [],
-          },
-        );
-        appendSessionMessage(reply);
-        setState("clarification");
-        return;
-      }
       if (!nextScope.dataset_id) throw new Error("没有找到可用于分析的数据");
       const resolvedDatasetId = nextScope.dataset_id;
       const explicitDataset = datasetResearchRefs(
         nextScope,
         sampleRef ||
-          question.match(/\bmat-[A-Za-z0-9][A-Za-z0-9_.-]*\b/i)?.[0],
+          submittedQuestion.match(/\bmat-[A-Za-z0-9][A-Za-z0-9_.-]*\b/i)?.[0],
       );
       if (explicitDataset) {
         const created = await createAgent2ResearchTurn(
           projectId,
           activeSession.id,
           {
-            message: question.trim(),
+            message: submittedQuestion,
             admission_key: admissionKey,
             autonomy_mode: autonomyMode,
             ui_context: {
@@ -2603,8 +2809,13 @@ export function ResearchPage({
             },
           },
         );
+        acknowledgeComposerDraft(submittedDraft, activeSession.id);
+        if (!owns()) return;
         bindResearchPerformanceTurn(performanceAttemptId, created.turn_id);
-        setQuestion("");
+        clearQuestionIfUnchanged(submittedDraft, {
+          sessionId: activeSession.id,
+          turnId: created.turn_id,
+        });
         setState("planning");
         setMobilePanel("workbench");
         router.push(
@@ -2614,7 +2825,7 @@ export function ResearchPage({
       }
       await persistLegacyUserMessage();
       const nextJob = await createPlannerJob({
-        userPrompt: question.trim(),
+        userPrompt: submittedQuestion,
         projectId,
         datasetId: resolvedDatasetId,
         profileId: nextScope.profile_id,
@@ -2625,15 +2836,15 @@ export function ResearchPage({
         intentSchemaVersion: "1.0",
         researchSessionId: activeSession.id,
       });
-      setJob(nextJob);
+      if (owns()) setJob(nextJob);
       if (!nextJob.ok || !nextJob.job_id) {
-        setState(
+        if (owns()) setState(
           nextJob.capability_outcome === "NEEDS_CLARIFICATION"
             ? "capability-clarification"
             : "failed",
         );
-        setError(plannerFailureMessage(nextJob));
-        const failure = await createResearchAssistantProjection(
+        if (owns()) setError(plannerFailureMessage(nextJob));
+        void persistResearchProjection(
           activeSession.id,
           {
             phase: "failed",
@@ -2641,161 +2852,43 @@ export function ResearchPage({
             datasetId: nextScope.dataset_id,
             failureCode: plannerFailureCode(nextJob),
           },
+          isCurrentSubmissionScope,
         );
-        appendSessionMessage(failure);
         return;
       }
-      const preRun = await createResearchAssistantProjection(activeSession.id, {
+      // Begin tracking the admitted Job before requesting optional narration.
+      // A slow provider must not delay recovery links or terminal feedback.
+      acknowledgeComposerDraft(submittedDraft, activeSession.id);
+      if (owns()) {
+        setState("running");
+        persistRunLink(nextJob.job_id);
+        clearQuestionIfUnchanged(submittedDraft);
+        setMobilePanel("workbench");
+      }
+      void persistResearchProjection(activeSession.id, {
         phase: "pre_run",
         datasetName: nextScope.dataset_name,
         datasetId: resolvedDatasetId,
         runId: nextJob.job_id,
-        question: question.trim(),
+        question: submittedQuestion,
         provider: selectedProvider || undefined,
         model: selectedModel || undefined,
         thinkingMode,
         useProvider: true,
-      });
-      appendSessionMessage(preRun);
-      setState("running");
-      persistRunLink(nextJob.job_id);
-      setQuestion("");
-      setMobilePanel("workbench");
+      }, isCurrentSubmissionScope);
     } catch (reason) {
-      setState("failed");
-      setError(scientistFacingResearchRequestError(reason));
-      if (activeSession && !(reason instanceof Agent2ReadError)) {
-        await persistResearchFailureProjection(activeSession.id);
+      if (owns()) {
+        setState("failed");
+        setError(scientistFacingResearchRequestError(reason));
+      }
+      if (activeSession && legacyMessageSaved && !(reason instanceof Agent2ReadError) && !(reason instanceof Agent2AdmissionUnconfirmedError) && !(reason instanceof DatasetSourceSelectionError)) {
+        void persistResearchProjection(activeSession.id, {
+          phase: "failed",
+          failureCode: "RESEARCH_SERVICE_UNAVAILABLE",
+        }, isCurrentSubmissionScope);
       }
     } finally {
-      submitInFlightRef.current = false;
-    }
-  }
-
-  async function confirmScope(datasetId: string) {
-    if (!question.trim() || !scope || !datasetId) return;
-    if (submitInFlightRef.current) return;
-    submitInFlightRef.current = true;
-    const admissionKey = createAgent2AdmissionKey();
-    setEvents([]);
-    setArtifacts([]);
-    setInterpretation(null);
-    setEvidence(null);
-    setInterpretationStatus("idle");
-    setError("");
-    setState("planning");
-    let activeSession: ResearchSession | null = null;
-    try {
-      const candidate = scope.candidates?.find(
-        (item) => item.dataset_id === datasetId,
-      );
-      activeSession = await ensureSession();
-      const savedSelection = await createResearchMessage(
-        activeSession.id,
-        `使用 ${candidate?.name || "所选数据"} 继续分析。`,
-        datasetId,
-      );
-      setSession((current) =>
-        current
-          ? {
-              ...current,
-              datasetId,
-              dataset_id: datasetId,
-              messages: [...(current.messages || []), savedSelection],
-            }
-          : current,
-      );
-      const resolvedDataset = await resolveExplicitDatasetScope(projectId, datasetId);
-      setScope(resolvedDataset);
-      const explicitDataset = datasetResearchRefs(
-        resolvedDataset,
-        sampleRef ||
-          question.match(/\bmat-[A-Za-z0-9][A-Za-z0-9_.-]*\b/i)?.[0],
-      );
-      if (explicitDataset) {
-        const created = await createAgent2ResearchTurn(
-          projectId,
-          activeSession.id,
-          {
-            message: question.trim(),
-            admission_key: admissionKey,
-            autonomy_mode: autonomyMode,
-            ui_context: {
-              active_object_refs: explicitDataset.objectRefs,
-              selection_refs: explicitDataset.selections.length
-                ? [explicitDataset.selections[0].object_ref]
-                : [],
-              scientific_selections: explicitDataset.selections,
-              explicit_object_refs: explicitDataset.objectRefs,
-              explicit_result_ids: [],
-              explicit_finding_refs: [],
-            },
-          },
-        );
-        setQuestion("");
-        setState("planning");
-        setMobilePanel("workbench");
-        router.push(
-          `/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(activeSession.id)}?turn=${encodeURIComponent(created.turn_id)}`,
-        );
-        return;
-      }
-      const nextJob = await createPlannerJob({
-        userPrompt: question.trim(),
-        projectId,
-        datasetId,
-        profileId: candidate?.profile_id,
-        enqueue: true,
-        provider: selectedProvider || undefined,
-        model: selectedModel || undefined,
-        thinkingMode,
-        intentSchemaVersion: "1.0",
-        researchSessionId: activeSession.id,
-      });
-      setJob(nextJob);
-      if (!nextJob.ok || !nextJob.job_id) {
-        setState(
-          nextJob.capability_outcome === "NEEDS_CLARIFICATION"
-            ? "capability-clarification"
-            : "failed",
-        );
-        setError(plannerFailureMessage(nextJob));
-        const failure = await createResearchAssistantProjection(
-          activeSession.id,
-          {
-            phase: "failed",
-            datasetName: candidate?.name,
-            datasetId,
-            failureCode: plannerFailureCode(nextJob),
-          },
-        );
-        appendSessionMessage(failure);
-        return;
-      }
-      const preRun = await createResearchAssistantProjection(activeSession.id, {
-        phase: "pre_run",
-        datasetName: candidate?.name,
-        datasetId,
-        runId: nextJob.job_id,
-        question: question.trim(),
-        provider: selectedProvider || undefined,
-        model: selectedModel || undefined,
-        thinkingMode,
-        useProvider: true,
-      });
-      appendSessionMessage(preRun);
-      setState("running");
-      persistRunLink(nextJob.job_id);
-      setQuestion("");
-      setMobilePanel("workbench");
-    } catch (reason) {
-      setState("failed");
-      setError(scientistFacingResearchRequestError(reason));
-      if (activeSession && !(reason instanceof Agent2ReadError)) {
-        await persistResearchFailureProjection(activeSession.id);
-      }
-    } finally {
-      submitInFlightRef.current = false;
+      if (owns()) submitInFlightRef.current = null;
     }
   }
 
@@ -2815,149 +2908,138 @@ export function ResearchPage({
     window.requestAnimationFrame(() => questionInputRef.current?.focus());
   }
 
-  async function changeSessionLifecycle(
-    item: ResearchSession,
-    next: "ACTIVE" | "ARCHIVED" | "TRASHED",
-  ) {
-    const label =
-      next === "TRASHED"
-        ? "移入回收站"
-        : next === "ARCHIVED"
-          ? "归档"
-          : "恢复研究记录";
-    if (
-      typeof window !== "undefined" &&
-      next !== "ACTIVE" &&
-      !window.confirm(`${label}“${item.title}”？历史研究结果与精确来源仍会保留。`)
-    )
-      return;
-    sessionLifecycleFocusRef.current =
-      document.activeElement instanceof HTMLElement
-        ? document.activeElement
-        : null;
-    setSessionLifecycleBusy(item.id);
-    setSessionLifecycleNotice("");
+  function restoreRunQuestion() {
+    const originalQuestion = history?.analyses.find((item) => item.jobId === job?.job_id)?.userQuestion?.trim() || job?.plan?.goal?.trim();
+    setQuestion((draft) => draft.trim() ? draft : originalQuestion || "");
+    setMobilePanel("timeline");
+    requestAnimationFrame(() => {
+      questionInputRef.current?.focus();
+      questionInputRef.current?.scrollIntoView?.({ block: "nearest" });
+    });
+  }
+
+  function rememberSessionActionFocus() {
+    sessionLifecycleFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  }
+  function restoreSessionActionFocus() {
+    const origin = sessionLifecycleFocusRef.current;
+    window.requestAnimationFrame(() => {
+      if (origin?.isConnected) origin.focus();
+      else sessionHistoryFilterRefs.current.get(sessionHistoryStatus)?.focus();
+    });
+  }
+  async function refreshSessionDirectory() {
+    if (sessionOperation.pending || sessionDirectoryReadRef.current) return;
+    const controller = new AbortController(); sessionDirectoryReadRef.current = controller;
+    setSessionDirectoryReading(true); setSessionDirectoryError("");
     try {
-      const updated = await updateResearchSession(item.id, { lifecycle: next });
-      setSessions((items) =>
-        items.map((candidate) =>
-          candidate.id === updated.id ? updated : candidate,
-        ),
-      );
-      if (session?.id === updated.id) setSession(updated);
-      setSessionLifecycleNotice(
-        `“${item.title}”已${next === "TRASHED" ? "移入回收站" : next === "ARCHIVED" ? "归档" : "恢复"}。`,
-      );
-    } catch (reason) {
-      setError(
-        reason instanceof Error ? reason.message : "研究记录状态更新失败",
-      );
+      const items = validateSessionDirectory(await readSessionRequest((signal) => listResearchSessions(projectId, signal), controller.signal), projectId);
+      if (controller.signal.aborted || sessionDirectoryReadRef.current !== controller) return;
+      setSessions(items);
+      setSession((current) => {
+        const saved = current && items.find((item) => item.id === current.id);
+        return current && saved ? { ...current, ...saved } : current;
+      });
+      sessionOperation.reconciled();
+    } catch {
+      if (!controller.signal.aborted) setSessionDirectoryError("研究记录暂时无法更新，已读取的记录和输入仍然保留。");
     } finally {
-      setSessionLifecycleBusy(null);
-      const origin = sessionLifecycleFocusRef.current;
-      window.requestAnimationFrame(() => {
-        if (origin?.isConnected) {
-          origin.focus();
-          return;
+      if (sessionDirectoryReadRef.current === controller) { sessionDirectoryReadRef.current = null; setSessionDirectoryReading(false); }
+    }
+  }
+  function acceptSessionUpdate(updated: ResearchSession) {
+    setSessions((items) => items.map((item) => item.id === updated.id ? { ...item, ...updated } : item)
+      .sort((left, right) => Number(Boolean(right.pinned)) - Number(Boolean(left.pinned))));
+    setSession((current) => current?.id === updated.id ? { ...current, ...updated } : current);
+  }
+  async function updateSessionRecord(item: ResearchSession, changes: { title?: string; pinned?: boolean; lifecycle?: "ACTIVE" | "ARCHIVED" | "TRASHED" }, label: string) {
+    if (!canResearch || sessionOperation.locked() || sessionDirectoryReading) return false;
+    setSessionLifecycleBusy(item.id); setSessionLifecycleNotice("");
+    const saved = await sessionOperation.run(label, (signal) => updateResearchSession(item.id, changes, signal), (updated) => {
+      validateResearchSession(updated, projectId, item.id);
+      if ((changes.title !== undefined && updated.title !== changes.title) ||
+          (changes.pinned !== undefined && Boolean(updated.pinned) !== changes.pinned) ||
+          (changes.lifecycle && updated.status.toUpperCase() !== changes.lifecycle)) throw new Error("Session update mismatch");
+      acceptSessionUpdate(updated);
+    });
+    setSessionLifecycleBusy(null);
+    return saved;
+  }
+  function sessionActionLabel(action: ResearchSessionBulkAction) {
+    return ({ ARCHIVE: "归档", TRASH: "移入回收站", RESTORE: "恢复", PIN: "置顶", UNPIN: "取消置顶" })[action];
+  }
+  async function executeSessionAction(target: { items: ResearchSession[]; action: ResearchSessionBulkAction; bulk: boolean }) {
+    if (!canResearch || !target.items.length || sessionOperation.locked() || sessionDirectoryReading) return;
+    const label = sessionActionLabel(target.action);
+    let saved = false;
+    if (!target.bulk) {
+      const lifecycle = target.action === "ARCHIVE" ? "ARCHIVED" : target.action === "TRASH" ? "TRASHED" : "ACTIVE";
+      saved = await updateSessionRecord(target.items[0], { lifecycle }, `${label}研究记录`);
+      if (saved) setSessionLifecycleNotice(`“${target.items[0].title}”已${label}。`);
+    } else {
+      setSessionBulkBusy(true); setSessionLifecycleNotice("");
+      saved = await sessionOperation.run(`${label}研究记录`, async (signal) => {
+        for (let offset = 0; offset < target.items.length; offset += 100) {
+          signal.throwIfAborted();
+          const ids = target.items.slice(offset, offset + 100).map((item) => item.id);
+          const result = await bulkUpdateResearchSessions(projectId, ids, target.action, signal);
+          signal.throwIfAborted();
+          if (result.action !== target.action || result.count !== ids.length || result.sessionIds.length !== ids.length || new Set(result.sessionIds).size !== ids.length || result.sessionIds.some((id) => !ids.includes(id))) throw new Error("Session bulk response mismatch");
+          const update = (item: ResearchSession) => !ids.includes(item.id) ? item : {
+            ...item,
+            ...(["PIN", "UNPIN"].includes(target.action) ? { pinned: target.action === "PIN" } : { status: target.action === "ARCHIVE" ? "archived" : target.action === "TRASH" ? "trashed" : "active" }),
+          };
+          setSessions((items) => items.map(update).sort((left, right) => Number(Boolean(right.pinned)) - Number(Boolean(left.pinned))));
+          setSession((current) => current ? update(current) : current);
+          setSelectedSessionIds((current) => current.filter((id) => !ids.includes(id)));
+          setSessionActionConfirmation((current) => current ? { ...current, items: current.items.filter((item) => !ids.includes(item.id)) } : current);
         }
-        sessionHistoryFilterRefs.current.get(sessionHistoryStatus)?.focus();
-      });
-    }
-  }
-
-  async function toggleSessionPinned(item: ResearchSession) {
-    setSessionLifecycleBusy(item.id);
-    try {
-      const updated = await updateResearchSession(item.id, {
-        pinned: !item.pinned,
-      });
-      setSessions((items) =>
-        items
-          .map((candidate) =>
-            candidate.id === updated.id ? updated : candidate,
-          )
-          .sort(
-            (left, right) =>
-              Number(Boolean(right.pinned)) - Number(Boolean(left.pinned)),
-          ),
-      );
-      if (session?.id === updated.id) setSession(updated);
-    } catch (reason) {
-      setError(
-        reason instanceof Error ? reason.message : "研究记录固定状态更新失败",
-      );
-    } finally {
-      setSessionLifecycleBusy(null);
-    }
-  }
-
-  async function applySessionBulkAction(action: ResearchSessionBulkAction) {
-    if (!selectedSessionIds.length) return;
-    const actionLabel =
-      action === "ARCHIVE"
-        ? "归档"
-        : action === "TRASH"
-          ? "移入回收站"
-          : action === "RESTORE"
-            ? "恢复"
-            : action === "PIN"
-              ? "固定"
-              : "取消固定";
-    if (
-      typeof window !== "undefined" &&
-      ["ARCHIVE", "TRASH"].includes(action) &&
-      !window.confirm(
-        `${actionLabel}所选 ${selectedSessionIds.length} 项研究记录？该操作会原子执行，历史结果与精确来源仍会保留。`,
-      )
-    )
-      return;
-    setSessionBulkBusy(true);
-    try {
-      await bulkUpdateResearchSessions(projectId, selectedSessionIds, action);
-      const refreshed = await listResearchSessions(projectId);
-      setSessions(refreshed);
-      if (session) {
-        const refreshedCurrent = refreshed.find(
-          (candidate) => candidate.id === session.id,
-        );
-        if (refreshedCurrent) setSession(refreshedCurrent);
-      }
-      setSelectedSessionIds([]);
-    } catch (reason) {
-      setError(
-        reason instanceof Error ? reason.message : "研究记录批量更新失败",
-      );
-    } finally {
+      }, () => {});
       setSessionBulkBusy(false);
     }
+    if (saved) { setSessionActionConfirmation(null); restoreSessionActionFocus(); }
   }
-
+  async function changeSessionLifecycle(item: ResearchSession, next: "ACTIVE" | "ARCHIVED" | "TRASHED") {
+    if (sessionOperation.locked() || sessionDirectoryReading) return;
+    rememberSessionActionFocus();
+    const target = { items: [item], action: (next === "ACTIVE" ? "RESTORE" : next === "ARCHIVED" ? "ARCHIVE" : "TRASH") as ResearchSessionBulkAction, bulk: false };
+    if (next === "ACTIVE") await executeSessionAction(target);
+    else setSessionActionConfirmation(target);
+  }
+  async function toggleSessionPinned(item: ResearchSession) {
+    rememberSessionActionFocus();
+    await updateSessionRecord(item, { pinned: !item.pinned }, item.pinned ? "取消置顶" : "置顶研究记录");
+  }
+  async function applySessionBulkAction(action: ResearchSessionBulkAction) {
+    if (sessionOperation.locked() || sessionDirectoryReading) return;
+    const items = filteredSessions.filter((item) => selectedSessionIds.includes(item.id));
+    if (!items.length) return;
+    rememberSessionActionFocus();
+    const target = { items, action, bulk: true };
+    if (["ARCHIVE", "TRASH"].includes(action)) setSessionActionConfirmation(target);
+    else await executeSessionAction(target);
+  }
   function openSessionRename(item: ResearchSession) {
-    setSessionRenameTarget(item);
-    setSessionRenameValue(item.title);
+    if (sessionOperation.locked() || sessionDirectoryReading) return;
+    rememberSessionActionFocus();
+    setSessionRenameTarget(item); setSessionRenameValue(item.title);
   }
-
+  function closeSessionRename() {
+    sessionOperation.dismiss(); setSessionRenameTarget(null);
+  }
   async function renameSession() {
     if (!sessionRenameTarget || !sessionRenameValue.trim()) return;
-    setSessionLifecycleBusy(sessionRenameTarget.id);
-    try {
-      const updated = await updateResearchSession(sessionRenameTarget.id, {
-        title: sessionRenameValue.trim(),
-      });
-      setSessions((items) =>
-        items.map((candidate) =>
-          candidate.id === updated.id ? updated : candidate,
-        ),
-      );
-      if (session?.id === updated.id) setSession(updated);
-      setSessionRenameTarget(null);
-      setSessionRenameValue("");
-    } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "研究记录改名失败");
-    } finally {
-      setSessionLifecycleBusy(null);
+    if (await updateSessionRecord(sessionRenameTarget, { title: sessionRenameValue.trim() }, "重命名")) {
+      setSessionRenameTarget(null); setSessionRenameValue("");
     }
   }
+  const sessionManagementFeedback = <>
+    {sessionOperation.error || sessionDirectoryError ? <div className="research-session-operation-error" role="alert">
+      {sessionOperation.error ? <p>{sessionOperation.error}</p> : null}
+      {sessionDirectoryError ? <p>{sessionDirectoryError}</p> : null}
+      {sessionOperation.uncertain || sessionDirectoryError ? <button type="button" className="product-secondary-action" disabled={sessionDirectoryReading || sessionOperation.pending} onClick={() => void refreshSessionDirectory()}>{sessionDirectoryReading ? "正在读取…" : "重新读取研究记录"}</button> : null}
+    </div> : null}
+  </>;
 
   function handleSessionHistoryFilterKey(
     event: ReactKeyboardEvent<HTMLButtonElement>,
@@ -2998,6 +3080,7 @@ export function ResearchPage({
       next = "workbench";
     if (!next) return;
     event.preventDefault();
+    if (next === "workbench") setWorkbenchVisibility({ scope: workbenchScope, open: true });
     if (next !== current) setMobilePanel(next);
     (next === "timeline"
       ? mobileTimelineTabRef
@@ -3015,128 +3098,90 @@ export function ResearchPage({
     );
   }
 
+  const [legacyTerminalJob, setLegacyTerminalJob] = useState<{ jobId: string; detail: PlannerJobDetail } | null>(null);
+  const legacyJobContext = useRef({ job, scope, session, interpretation, history });
+  legacyJobContext.current = { job, scope, session, interpretation, history };
   useEffect(() => {
     const jobId = job?.job_id;
-    // An explicit ResearchTurn is the execution-state authority. Project
-    // history may retain its related Job id for provenance/navigation, but
-    // the legacy poller must not run alongside the Turn progress projection.
-    if (agent2TurnId || !jobId || state !== "running") return;
-    let active = true;
-    let inFlight = false;
-    let lastSeq = 0;
-    let timer: number | undefined;
+    // A ResearchTurn owns its own progress; only watch an admitted legacy job.
+    if (agent2TurnId || !jobId || (!["planning", "running"].includes(state) && legacyTerminalJob?.jobId !== jobId)) return;
+    return watchLegacyJob(jobId, projectId, {
+      events: (value) => setEvents((items) => mergeJobEvents(items, value)),
+      artifacts: (value) => { setArtifacts((items) => mergeArtifacts(items, value)); setRunResolutionState("settled"); },
+      failure: (part, failed) => {
+        setRunReadFailures((items) => failed ? items.includes(part) ? items : [...items, part] : items.filter((item) => item !== part));
+        if (part === "科学结果" && failed) setRunResolutionState("settled");
+        if (!runId) setRunReadPending(false);
+      },
+      detail: (detail) => {
+        setState(researchRunState(detail.status));
+        if (legacyJobIsTerminal(detail.status)) setLegacyTerminalJob({ jobId, detail });
+      },
+    });
+    // Changing the displayed state or loading a plan must not cancel final reads.
+  }, [agent2TurnId, job?.job_id, projectId, runId, sessionId, reloadKey]);
+
+  useEffect(() => {
+    const context = legacyJobContext.current;
+    const jobId = context.job?.job_id;
+    if (agent2TurnId || !jobId || legacyTerminalJob?.jobId !== jobId || sessionLoadState !== "ready") return;
+    const owner = context.session;
+    const writableOwner = owner && (!sessionId || owner.id === sessionId) &&
+      (owner.project_id || owner.projectId) === projectId && projectRoleAllows(context.history?.project.role, "research") &&
+      String(context.history?.project.status || "active").toLowerCase() === "active" &&
+      String(owner.status || "active").toLowerCase() === "active" &&
+      (!runId || researchSessionReferencesRun(owner, jobId) ||
+        context.history?.analyses.some((item) => item.jobId === jobId && item.researchSessionId === owner.id));
+    if (!writableOwner || !owner) return;
+    const status = String(legacyTerminalJob.detail.status).toLowerCase();
+    if (["cancelled", "canceled"].includes(status)) return;
     const controller = new AbortController();
-    const poll = async () => {
-      if (!active || inFlight) return;
-      inFlight = true;
+    const fail = (part: string) => {
+      if (!controller.signal.aborted) setRunReadFailures((items) => items.includes(part) ? items : [...items, part]);
+    };
+    const projectMessage = async (phase: "post_run" | "failed") => {
+      const ref = phase === "failed" ? failedRunMessageRef : postRunMessageRef;
+      if (ref.current === jobId || researchSessionReferencesRun(owner, jobId, phase)) return;
+      ref.current = jobId;
       try {
-        const [detail, nextEvents, nextArtifacts] = await Promise.all([
-          getPlannerJob(jobId, { signal: controller.signal }),
-          getPlannerJobEvents(jobId, lastSeq, { signal: controller.signal }),
-          getPlannerJobArtifacts(jobId, { signal: controller.signal }),
-        ]);
-        if (!active) return;
-        if (nextEvents.length) {
-          lastSeq = Math.max(
-            lastSeq,
-            ...nextEvents.map((item) => item.seq || 0),
-          );
-          setEvents((items) => mergeJobEvents(items, nextEvents));
+        const message = await readSessionRequest(() => createResearchAssistantProjection(owner.id, {
+          phase, datasetName: context.scope?.dataset_name, datasetId: context.scope?.dataset_id,
+          runId: jobId, ...(phase === "failed" ? { failureCode: "JOB_FAILED" } : {}),
+        }), controller.signal);
+        if (!controller.signal.aborted) {
+          appendSessionMessage(message);
+          setRunReadFailures((items) => items.filter((item) => item !== "对话结果"));
         }
-        setArtifacts((items) => mergeArtifacts(items, nextArtifacts));
-        const status = String(detail.status || "").toLowerCase();
-        if (["completed", "partial_success", "failed"].includes(status)) {
-          setState(
-            status === "completed"
-              ? "complete"
-              : status === "partial_success"
-                ? "partial"
-                : "failed",
-          );
-          if (
-            status === "failed" &&
-            session?.id &&
-            failedRunMessageRef.current !== jobId
-          ) {
-            failedRunMessageRef.current = jobId;
-            void createResearchAssistantProjection(session.id, {
-              phase: "failed",
-              datasetName: scope?.dataset_name,
-              datasetId: scope?.dataset_id,
-              runId: jobId,
-              failureCode: "JOB_FAILED",
-            })
-              .then(appendSessionMessage)
-              .catch(() => {
-                failedRunMessageRef.current = null;
-              });
-          }
-          if (
-            (status === "completed" || status === "partial_success") &&
-            job.plan_hash
-          ) {
-            setInterpretationStatus("loading");
-            void createScientificInterpretation(jobId, job.plan_hash)
-              .then((result) => {
-                if (!active) return;
-                const nextInterpretation = result.interpretation || null;
-                setInterpretation(nextInterpretation);
-                if (nextInterpretation)
-                  void getPlannerInterpretationEvidence(
-                    nextInterpretation.interpretationId,
-                  )
-                    .then((nextEvidence) => {
-                      if (active) setEvidence(nextEvidence);
-                    })
-                    .catch(() => {
-                      if (active) setEvidence(null);
-                    });
-                setInterpretationStatus(
-                  nextInterpretation
-                    ? nextInterpretation.completeness === "COMPLETE"
-                      ? "ready"
-                      : "limited"
-                    : "error",
-                );
-                if (session?.id && postRunMessageRef.current !== jobId) {
-                  postRunMessageRef.current = jobId;
-                  void createResearchAssistantProjection(session.id, {
-                    phase: "post_run",
-                    datasetName: scope?.dataset_name,
-                    datasetId: scope?.dataset_id,
-                    runId: jobId,
-                  })
-                    .then(appendSessionMessage)
-                    .catch(() => {
-                      postRunMessageRef.current = null;
-                    });
-                }
-              })
-              .catch(() => {
-                if (active) setInterpretationStatus("error");
-              });
-          }
-          return;
-        }
-        timer = window.setTimeout(poll, 1400);
-      } catch (reason) {
-        if (active && !requestWasAborted(reason)) {
-          setError(
-            reason instanceof Error ? reason.message : "无法更新分析进度",
-          );
-          timer = window.setTimeout(poll, 2500);
-        }
-      } finally {
-        inFlight = false;
+      } catch { ref.current = null; fail("对话结果"); }
+    };
+    if (status === "failed") {
+      void projectMessage("failed").finally(() => { if (!controller.signal.aborted) setRunReadPending(false); });
+    } else {
+      const planHash = legacyTerminalJob.detail.planHash || context.job?.plan_hash;
+      if (planHash) {
+        setInterpretationStatus("loading");
+        void createScientificInterpretation(jobId, planHash, controller.signal).then((result) => {
+          if (controller.signal.aborted) return;
+          const saved = result.interpretation || null;
+          setInterpretation(saved);
+          setInterpretationStatus(saved ? saved.completeness === "COMPLETE" ? "ready" : "limited" : "error");
+          if (!saved) { fail("结果解读"); return; }
+          setRunReadFailures((items) => items.filter((item) => item !== "结果解读"));
+          setEvidence((current) => current?.interpretationId === saved.interpretationId ? current : null);
+          void readSessionRequest((signal) => getPlannerInterpretationEvidence(saved.interpretationId, { signal }), controller.signal).then((value) => {
+            if (controller.signal.aborted) return;
+            if (value.interpretationId !== saved.interpretationId) throw new Error("Interpretation evidence mismatch");
+            setEvidence(value);
+            setRunReadFailures((items) => items.filter((item) => item !== "解读依据"));
+          }).catch(() => fail("解读依据"));
+          void projectMessage("post_run");
+        }).catch(() => {
+          if (!controller.signal.aborted) { setInterpretationStatus("error"); fail("结果解读"); }
+        }).finally(() => { if (!controller.signal.aborted) setRunReadPending(false); });
       }
-    };
-    void poll();
-    return () => {
-      active = false;
-      controller.abort();
-      if (timer) clearTimeout(timer);
-    };
-  }, [agent2TurnId, job, scope?.dataset_id, scope?.dataset_name, session?.id, state]);
+    }
+    return () => controller.abort();
+  }, [legacyTerminalJob, agent2TurnId, job?.job_id, projectId, runId, sessionId, session?.id, session?.status, sessionLoadState, history?.project.role, history?.project.status, reloadKey]);
 
   const messages = dedupeResearchTimelineMessages(
     (session?.messages || []).filter(researchMessageVisibleInTimeline),
@@ -3149,9 +3194,51 @@ export function ResearchPage({
         showFullConversation,
         10,
         conversationWindowStart,
+        selectedTurnMessageIds,
       ),
-    [messages, selectedTurnMessageId, showFullConversation, conversationWindowStart],
+    [messages, selectedTurnMessageId, selectedTurnMessageIds, showFullConversation, conversationWindowStart],
   );
+  // Session messages and the branch directory refresh independently. Retain
+  // the saved stream completion until its replacement is actually visible.
+  const showAnswerDraft = Boolean(answerDraft?.text) && !conversationWindow.visible.some(message =>
+    message.id === answerDraft?.messageId || (message.role === "assistant" &&
+      message.payload?.turnId === agent2TurnId && message.payload?.messageKind === "ASSISTANT_FINAL"),
+  );
+  const answerStreaming = showAnswerDraft && answerDraft?.phase !== "completed";
+  const completedAnswerVisible = Boolean(
+    (showAnswerDraft && answerDraft?.phase === "completed") ||
+    (agent2TurnId && conversationWindow.visible.some(message =>
+      message.role === "assistant" && message.content.trim() &&
+      message.payload?.turnId === agent2TurnId && message.payload?.messageKind === "ASSISTANT_FINAL")),
+  );
+  const conversationReady = Boolean(answerDraft?.text) ||
+    ["ANSWERED", "NEEDS_CLARIFICATION", "UNSUPPORTED", "PLAN_REJECTED"].includes(activeAgent2Progress?.status || "");
+  const revealedConversation = useRef({ turnId: agent2TurnId, revealed: false });
+  useEffect(() => {
+    if (revealedConversation.current.turnId !== agent2TurnId) {
+      revealedConversation.current = { turnId: agent2TurnId, revealed: false };
+    }
+    // A saved answer or clarification also belongs in the conversation on a
+    // narrow screen. Reveal once per Turn; completion and reconnects must not
+    // override a later manual visit to the workbench.
+    if (agent2TurnId && conversationReady && !(resultTargetSnapshotId || resultTargetItemId) && !revealedConversation.current.revealed) {
+      revealedConversation.current.revealed = true;
+      setMobilePanel("timeline");
+    }
+  }, [agent2TurnId, conversationReady, resultTargetSnapshotId, resultTargetItemId]);
+  const savedTurnAnswer = agent2TurnId ? conversationWindow.visible.find(message =>
+    message.role === "assistant" && message.payload?.turnId === agent2TurnId &&
+    message.payload?.messageKind === "ASSISTANT_FINAL") : undefined;
+  const conversationScroll = useConversationScroll({
+    scope: JSON.stringify([projectId, sessionId, agent2TurnId || runId || navigationTurnId]),
+    viewportRef: conversationHistoryRef,
+    focusMessageId: selectedTurnMessageId,
+    answerId: showAnswerDraft ? answerDraft?.responseId : savedTurnAnswer?.id,
+    answerText: showAnswerDraft ? answerDraft?.text : savedTurnAnswer?.content,
+    streaming: answerStreaming,
+    answerPending: ["RECEIVED", "RESOLVING_CONTEXT", "ORCHESTRATING", "INTERPRETING"].includes(activeAgent2Progress?.status || ""),
+    ready: pageLoadState === "ready",
+  });
   const hiddenConversationCount =
     conversationWindow.hiddenBefore + conversationWindow.hiddenAfter;
 
@@ -3159,9 +3246,6 @@ export function ResearchPage({
     setShowFullConversation(false);
     setConversationWindowStart(0);
   }, [session?.id, agent2TurnId]);
-  const historicalRuns = (history?.analyses || []).filter(
-    (item) => item.jobId !== job?.job_id,
-  );
   const projectLifecycle = String(
     history?.project?.status || "active",
   ).toLowerCase();
@@ -3176,13 +3260,40 @@ export function ResearchPage({
   const selectedSessionIsTrashed =
     Boolean(session) && selectedSessionLifecycle === "trashed";
   const selectedSessionIsWritable =
-    !session || selectedSessionLifecycle === "active";
+    sessionLoadState === "ready" &&
+    (!agent2TurnId || Boolean(session)) &&
+    (!session || selectedSessionLifecycle === "active");
+  useEffect(() => {
+    const request = editComposerFocusRef.current;
+    if (!editTurnId || !request || request.key !== composerDraftKey || request.handled ||
+        editingLoadState !== "ready" || !canResearch || !selectedSessionIsWritable ||
+        !history || mobilePanel !== "timeline") return;
+    const frame = window.requestAnimationFrame(() => {
+      if (editComposerFocusRef.current !== request || request.handled || currentSubmitScope.current !== submitLifetime) return;
+      request.handled = true;
+      const input = questionInputRef.current;
+      const focused = document.activeElement;
+      if (!input || focused === input) return;
+      // A successful retry removes its button, returning focus to the body.
+      if (focused !== request.origin && !(focused === document.body && !request.origin?.isConnected)) return;
+      input.focus({ preventScroll: true });
+      input.scrollIntoView?.({ block: "nearest" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [composerDraftKey, editTurnId, editingLoadState, canResearch, selectedSessionIsWritable, history, mobilePanel, submitLifetime]);
+  const memorySessionId = session && (session.projectId || session.project_id) === projectId && (!sessionId || session.id === sessionId) ? session.id : undefined;
+  const sessionContext = useSessionMemory(projectId, memorySessionId, canResearch && selectedSessionIsWritable);
+  const sessionMemory = sessionContext.memory;
+
   useEffect(() => {
     if (
       !retryRequested ||
       !agent2TurnId ||
       !session?.id ||
       !selectedSessionIsWritable ||
+      !canResearch ||
+      providerLoadState !== "ready" ||
+      !userModels.some((item) => item.provider === selectedProvider && item.model === selectedModel) ||
       !activeAgent2Progress ||
       !["FAILED", "CANCELED"].includes(activeAgent2Progress.status) ||
       autoRetryTurnRef.current === agent2TurnId
@@ -3196,9 +3307,15 @@ export function ResearchPage({
     agent2TurnId,
     retryRequested,
     selectedSessionIsWritable,
+    canResearch, providerLoadState, selectedProvider, selectedModel, userModels,
     session?.id,
   ]);
-  const starterPrompts = researchStarterPrompts(history);
+  const starterDataset = history?.datasets.find((dataset) => dataset.datasetId === datasetId);
+  const starterPrompts = researchStarterPrompts(
+    history && starterDataset ? { ...history, datasets: [starterDataset] } : history,
+  ).map((prompt) => datasetId && prompt.id === "project-overview"
+    ? { ...prompt, question: "概览所选数据与可用分析" }
+    : prompt);
   const showResearchStarter =
     sessionLoadState === "ready" &&
     selectedSessionIsWritable &&
@@ -3212,21 +3329,67 @@ export function ResearchPage({
     interpretation,
     evidence,
     events,
-    agent2Progress,
+    agent2Progress: activeAgent2Progress || (sessionResultTurn?.turn_id === sessionResultProgress?.turn_id ? sessionResultProgress : null),
   });
+  const workbenchOpen = workbenchVisibility?.scope === workbenchScope
+    ? workbenchVisibility.open
+    : hasScientificWorkbenchContent || workbenchView === "context";
+  useLayoutEffect(() => {
+    const request = workbenchFocusRef.current;
+    workbenchFocusRef.current = null;
+    if (!request || request.scope !== workbenchScope) return;
+    // The destination must be visible before focusing it, including on mobile.
+    // Finish in this commit so a delayed frame cannot steal a later interaction.
+    if (document.activeElement !== request.from && document.activeElement !== document.body) return;
+    if (request.target === "return") {
+      const opener = contextReturnFocusRef.current;
+      (opener?.isConnected ? opener : contextManifestTriggerRef.current)?.focus();
+    } else if (request.target === "results") {
+      document.getElementById("research-results-panel")?.focus();
+    } else {
+      const disclosure = contextManifestRef.current;
+      if (!disclosure) {
+        contextPanelRef.current?.focus();
+        return;
+      }
+      disclosure.open = true;
+      disclosure.scrollIntoView?.({ block: "nearest", behavior: "auto" });
+      disclosure.querySelector<HTMLElement>("summary")?.focus();
+    }
+  }, [workbenchScope, workbenchVisibility, workbenchOpen, workbenchView, mobilePanel]);
   const researchLayoutMode = hasScientificWorkbenchContent
     ? "scientific-workbench"
     : "asking";
-  useEffect(() => {
-    if (conversationWidthCustomizedRef.current) return;
-    const target = defaultResearchConversationWidth(
-      hasScientificWorkbenchContent,
-    );
-    const workbenchWidth =
-      workbenchRef.current?.getBoundingClientRect().width || 1280;
-    const maximum = Math.min(760, Math.max(320, workbenchWidth - 480));
-    setConversationWidth(Math.round(Math.min(maximum, Math.max(320, target))));
-  }, [hasScientificWorkbenchContent]);
+  const waitingForTurnProgress = Boolean(agent2TurnId && !activeAgent2Progress);
+  useLayoutEffect(() => {
+    const workbench = workbenchRef.current;
+    if (!workbench) return;
+    // Measure after loading has mounted the workspace, and whenever the shell
+    // changes size. Keep the splitter's value and the rendered columns aligned.
+    const fitConversation = () => {
+      const width = workbench.getBoundingClientRect().width || 1280;
+      const maximum = Math.round(Math.min(760, Math.max(320, width - 487)));
+      setConversationMaxWidth(maximum);
+      setConversationWidth((previous) => {
+        // A branch read temporarily has no progress. Preserve its current split
+        // until the selected Turn is known; still clamp it when the canvas shrinks.
+        const target = conversationPreferredWidthRef.current ?? (waitingForTurnProgress
+          ? previous
+          : defaultResearchConversationWidth(hasScientificWorkbenchContent, width));
+        return Math.round(Math.min(maximum, Math.max(320, target)));
+      });
+    };
+    fitConversation();
+    const observer = typeof ResizeObserver === "undefined"
+      ? null
+      : new ResizeObserver(fitConversation);
+    observer?.observe(workbench);
+    window.addEventListener("resize", fitConversation);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", fitConversation);
+    };
+  }, [hasScientificWorkbenchContent, waitingForTurnProgress, pageLoadState]);
   const normalizedSessionQuery = sessionHistoryQuery
     .trim()
     .toLocaleLowerCase("zh-CN");
@@ -3254,6 +3417,104 @@ export function ResearchPage({
         item.title.toLocaleLowerCase("zh-CN").includes(normalizedSessionQuery))
     );
   });
+  useEffect(() => {
+    const visible = new Set(filteredSessions.map((item) => item.id));
+    setSelectedSessionIds((current) => current.some((id) => !visible.has(id)) ? current.filter((id) => visible.has(id)) : current);
+  }, [sessions, normalizedSessionQuery, sessionHistoryStatus]);
+  const branchVersionNavigation = branchChoices.length > 1 &&
+            branchNavigation &&
+            session?.id ? (
+              <nav
+                ref={branchNavigationRef}
+                className="research-branch-switcher conversation-branch-switcher"
+                aria-label="研究分支"
+              >
+                {branchNavigation.previous ? (
+                  <Link
+                    className="research-branch-step"
+                    scroll={false}
+                    aria-label={`上一个研究分支：${researchBranchDescriptor(agent2Turns, branchNavigation.previous).title}`}
+                    href={`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(session.id)}?turn=${encodeURIComponent(branchNavigation.previous.id || branchNavigation.previous.turn_id)}&branchRoot=${encodeURIComponent(branchNavigation.rootId)}`}
+                  >
+                    ‹
+                  </Link>
+                ) : (
+                  <span
+                    className="research-branch-step disabled"
+                    aria-hidden="true"
+                  >
+                    ‹
+                  </span>
+                )}
+                <details className="research-branch-list" onToggle={(event) => {
+                  const disclosure = event.currentTarget;
+                  if (event.target !== disclosure || !disclosure.open) return;
+                  const scroller = disclosure.closest<HTMLElement>(".conversation-history");
+                  const summary = disclosure.querySelector<HTMLElement>(":scope > summary");
+                  const list = disclosure.querySelector<HTMLElement>(":scope > ol");
+                  if (!scroller?.clientHeight || !summary || !list) return;
+                  const viewportTop = scroller.getBoundingClientRect().top + scroller.clientTop;
+                  const summaryTop = summary.getBoundingClientRect().top;
+                  // Keep the trigger visible even when a long list exceeds the pane.
+                  const listBottom = Math.min(list.getBoundingClientRect().bottom, summaryTop + scroller.clientHeight);
+                  const offset = summaryTop < viewportTop
+                    ? summaryTop - viewportTop
+                    : Math.max(0, listBottom - viewportTop - scroller.clientHeight);
+                  scroller.scrollTop += offset;
+                }} onKeyDown={(event) => {
+                  if (event.key === "Escape") {
+                    event.preventDefault(); event.currentTarget.open = false;
+                    event.currentTarget.querySelector<HTMLElement>("summary")?.focus();
+                  }
+                }} onBlur={(event) => {
+                  if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget as Node)) event.currentTarget.open = false;
+                }}>
+                  <summary aria-label={`查看全部 ${branchDescriptors.length} 个分支`}>{branchNavigation.currentIndex + 1} / {branchNavigation.choices.length} <span aria-hidden="true">⌄</span></summary>
+                  <ol>
+                    {branchDescriptors.map((descriptor, index) => (
+                      <li key={descriptor.turnId}>
+                        <Link
+                          scroll={false}
+                          href={`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(session.id)}?turn=${encodeURIComponent(descriptor.turnId)}&branchRoot=${encodeURIComponent(branchNavigation.rootId)}`}
+                          aria-current={
+                            descriptor.turnId === currentBranchDescriptor?.turnId
+                              ? "page"
+                              : undefined
+                          }
+                        >
+                          <strong>
+                            {index + 1}. {descriptor.title}
+                          </strong>
+                        </Link>
+                        <details className={conversationStyles.branchDetails}>
+                          <summary aria-label={`分支 ${index + 1} 详情`}>详情</summary>
+                          <p>{descriptor.title}</p>
+                          <p>{descriptor.sourceTitle ? `源自“${descriptor.sourceTitle}”` : descriptor.sourceTurnId ? "来源问题未在当前列表中" : "原始研究问题"}</p>
+                          <p>ResearchTurn <code>{descriptor.turnId}</code><br />消息修订 <code>{descriptor.messageRevisionId}</code></p>
+                        </details>
+                      </li>
+                    ))}
+                  </ol>
+                </details>
+                {branchNavigation.next ? (
+                  <Link
+                    className="research-branch-step"
+                    scroll={false}
+                    aria-label={`下一个研究分支：${researchBranchDescriptor(agent2Turns, branchNavigation.next).title}`}
+                    href={`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(session.id)}?turn=${encodeURIComponent(branchNavigation.next.id || branchNavigation.next.turn_id)}&branchRoot=${encodeURIComponent(branchNavigation.rootId)}`}
+                  >
+                    ›
+                  </Link>
+                ) : (
+                  <span
+                    className="research-branch-step disabled"
+                    aria-hidden="true"
+                  >
+                    ›
+                  </span>
+                )}
+              </nav>
+            ) : null;
   if (pageLoadState === "loading")
     return (
       <RequireProductAuth>
@@ -3280,7 +3541,7 @@ export function ResearchPage({
           >
             <div className="product-state" role="alert">
               <h1>研究内容暂时无法加载</h1>
-              <p>项目数据和研究记录没有丢失。请检查服务连接后重试。</p>
+              <p>暂时无法读取项目数据或研究记录，请重试。</p>
               <button
                 type="button"
                 className="product-primary-action"
@@ -3288,12 +3549,6 @@ export function ResearchPage({
               >
                 重新加载
               </button>
-              {pageLoadError ? (
-                <details>
-                  <summary>技术详情</summary>
-                  <p>{pageLoadError}</p>
-                </details>
-              ) : null}
             </div>
           </section>
         </ProductShell>
@@ -3302,6 +3557,13 @@ export function ResearchPage({
   return (
     <RequireProductAuth>
       <ProductShell projectId={projectId}>
+        {materialPickerKey === composerDraftKey && history ? <ResearchMaterialPicker
+          key={composerDraftKey} projectId={projectId}
+          datasets={history.datasets.filter(item => item.status !== "trashed")}
+          loadInitial={loadInitialMaterials} returnFocus={materialPickerTrigger.current}
+          onClose={() => { setMobilePanel("timeline"); setMaterialPickerKey(null); }}
+          onApply={value => { materials.set(value); setMobilePanel("timeline"); setMaterialPickerKey(null); }}
+        /> : null}
         <a className="skip-link" href="#research-primary-content">
           跳到研究工作台
         </a>
@@ -3309,8 +3571,9 @@ export function ResearchPage({
           ref={workbenchRef}
           id="research-primary-content"
           tabIndex={-1}
-          className="research-workbench"
+          className={`research-workbench ${conversationStyles.workbench}`}
           data-layout-mode={researchLayoutMode}
+          data-workbench-open={workbenchOpen}
           aria-label="项目研究工作台"
           style={
             {
@@ -3357,30 +3620,34 @@ export function ResearchPage({
               aria-selected={mobilePanel === "workbench"}
               tabIndex={mobilePanel === "workbench" ? 0 : -1}
               onKeyDown={(event) => handleMobileTabKey(event, "workbench")}
-              onClick={() => setMobilePanel("workbench")}
+              onClick={() => { setWorkbenchVisibility({ scope: workbenchScope, open: true }); setMobilePanel("workbench"); }}
             >
               工作台
             </button>
           </nav>
+                {agent2TurnId && ((agent2RecoveryState.turnId === agent2TurnId && agent2RecoveryState.status !== "connected") || agent2CancelState === "confirming" || agent2DispatchNotice) ? (
+                  <p
+                    className={conversationStyles.progressNotice + " research-reconnect-notice"}
+                    role="status"
+                    aria-label="研究进度提示"
+                    aria-live="polite"
+                  >
+                    <span>{agent2RecoveryState.turnId === agent2TurnId && agent2RecoveryState.status === "unavailable"
+                      ? <>{agent2RecoveryState.message}{activeAgent2Progress ? " 当前显示上次读取的状态。" : ""}{agent2CancelState === "confirming" ? " 取消结果仍未确认。" : ""}</>
+                      : agent2CancelState === "confirming" ? agent2CancelNotice : agent2RecoveryState.turnId === agent2TurnId && agent2RecoveryState.status === "reconnecting" ? (activeAgent2Progress ? "进度暂未确认，当前显示上次读取的状态。" : "研究进度暂时无法读取，请重试。") : agent2DispatchNotice}</span>
+                    {" "}<button type="button" className="product-link-button" onClick={() => agent2ExecutionRef.current?.refresh()}>重新读取进度</button>
+                    {agent2DispatchRetryable ? <button type="button" className="product-link-button" onClick={() => agent2ExecutionRef.current?.retryDispatch()}>重试开始分析</button> : null}
+                  </p>
+                ) : null}
           <aside
             id="research-timeline-panel"
             role="tabpanel"
             aria-labelledby="research-timeline-tab"
-            className={`conversation-pane ${mobilePanel === "timeline" ? "mobile-panel-active" : "mobile-panel-inactive"}`}
+            className={`conversation-pane ${conversationStyles.pane} ${mobilePanel === "timeline" ? "mobile-panel-active" : "mobile-panel-inactive"}`}
           >
             <header>
               <div className="research-timeline-heading">
-                <p className="product-kicker">
-                  {history?.project.name
-                    ? `${scientistProjectLabel(history.project.name, projectId)} · 研究时间线`
-                    : "项目研究 · 研究时间线"}
-                </p>
-                <h1>研究时间线</h1>
-                {session?.title ? (
-                  <strong className="research-timeline-session-title">
-                    {session.title}
-                  </strong>
-                ) : null}
+                <h1 title={session?.title || undefined}>对话</h1>
                 {selectedSessionIsArchived || selectedSessionIsTrashed ? (
                   <span
                     className="research-session-lifecycle-badge"
@@ -3391,16 +3658,28 @@ export function ResearchPage({
                 ) : null}
               </div>
               <div className="research-timeline-actions">
-                {activeAgent2ContextManifest ? (
-                  <button
-                    type="button"
-                    className="product-secondary-action"
-                    aria-controls="research-context-manifest"
-                    onClick={revealActiveContextManifest}
-                  >
-                    本次上下文
-                  </button>
-                ) : null}
+                {canResearch && (session || hasExplicitScientificHandoff) && !selectedSessionIsArchived && !selectedSessionIsTrashed ? <Link
+                  className={conversationStyles.newConversation}
+                  href={freshResearchHref(projectId)} scroll={false}
+                  aria-label="新建对话" title="新建对话"
+                ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg></Link> : null}
+                {hasScientificWorkbenchContent ? <button type="button" className="product-secondary-action"
+                  aria-label="本次科学结果" aria-controls="research-results-panel"
+                  aria-expanded={workbenchOpen && workbenchView === "results"}
+                  onClick={workbenchOpen && workbenchView === "results" ? closeContextPanel : revealScientificWorkbench}>
+                  结果
+                </button> : null}
+                <button
+                  ref={contextManifestTriggerRef}
+                  type="button"
+                  className="product-secondary-action"
+                  aria-label="本次上下文"
+                  aria-expanded={workbenchOpen && workbenchView === "context"}
+                  aria-controls="research-context-panel"
+                  onClick={workbenchView === "context" && mobilePanel === "workbench" ? closeContextPanel : revealActiveContextManifest}
+                >
+                  上下文
+                </button>
                 {session &&
                 canResearch &&
                 (selectedSessionIsArchived || selectedSessionIsTrashed) ? (
@@ -3414,7 +3693,7 @@ export function ResearchPage({
                     <button
                       type="button"
                       className="product-secondary-action"
-                      disabled={sessionLifecycleBusy === session.id}
+                      disabled={sessionOperation.pending || sessionOperation.uncertain || sessionDirectoryReading}
                       onClick={() =>
                         void changeSessionLifecycle(session, "ACTIVE")
                       }
@@ -3521,6 +3800,8 @@ export function ResearchPage({
                       </button>
                     ))}
                   </div>
+                  {!sessionRenameTarget && !sessionActionConfirmation ? sessionManagementFeedback : null}
+                  {!sessionLifecycleNotice && sessionOperation.notice ? <p className="research-session-lifecycle-notice" role="status">{sessionOperation.notice}</p> : null}
                   {sessionLifecycleNotice ? (
                     <p className="sr-only" role="status" aria-live="polite">
                       {sessionLifecycleNotice}
@@ -3534,7 +3815,7 @@ export function ResearchPage({
                       <div>
                         <button
                           type="button"
-                          disabled={!filteredSessions.length || sessionBulkBusy}
+                          disabled={!filteredSessions.length || sessionBulkBusy || sessionOperation.pending}
                           onClick={() =>
                             setSelectedSessionIds((current) =>
                               filteredSessions.every((item) =>
@@ -3568,14 +3849,14 @@ export function ResearchPage({
                         <div>
                           <button
                             type="button"
-                            disabled={sessionBulkBusy}
+                            disabled={sessionBulkBusy || sessionOperation.pending || sessionOperation.uncertain || sessionDirectoryReading}
                             onClick={() => void applySessionBulkAction("PIN")}
                           >
                             列表置顶
                           </button>
                           <button
                             type="button"
-                            disabled={sessionBulkBusy}
+                            disabled={sessionBulkBusy || sessionOperation.pending || sessionOperation.uncertain || sessionDirectoryReading}
                             onClick={() => void applySessionBulkAction("UNPIN")}
                           >
                             取消列表置顶
@@ -3583,7 +3864,7 @@ export function ResearchPage({
                           {sessionHistoryStatus === "current" ? (
                             <button
                               type="button"
-                              disabled={sessionBulkBusy}
+                              disabled={sessionBulkBusy || sessionOperation.pending || sessionOperation.uncertain || sessionDirectoryReading}
                               onClick={() =>
                                 void applySessionBulkAction("ARCHIVE")
                               }
@@ -3593,7 +3874,7 @@ export function ResearchPage({
                           ) : (
                             <button
                               type="button"
-                              disabled={sessionBulkBusy}
+                              disabled={sessionBulkBusy || sessionOperation.pending || sessionOperation.uncertain || sessionDirectoryReading}
                               onClick={() =>
                                 void applySessionBulkAction("RESTORE")
                               }
@@ -3605,7 +3886,7 @@ export function ResearchPage({
                             <button
                               type="button"
                               className="danger"
-                              disabled={sessionBulkBusy}
+                              disabled={sessionBulkBusy || sessionOperation.pending || sessionOperation.uncertain || sessionDirectoryReading}
                               onClick={() =>
                                 void applySessionBulkAction("TRASH")
                               }
@@ -3641,24 +3922,24 @@ export function ResearchPage({
                             history,
                           )}
                           title={item.title}
+                          truncateTitle
                           description={`${item.pinned ? "列表置顶 · " : ""}${researchSessionStatusLabel(item.status)}`}
-                          trailing={item.pinned ? "列表置顶" : undefined}
                           actions={canResearch ? [
                             {
                               label: item.pinned ? "取消列表置顶" : "列表置顶",
-                              disabled: sessionLifecycleBusy === item.id,
+                              disabled: sessionOperation.pending || sessionOperation.uncertain || sessionDirectoryReading,
                               onSelect: () => void toggleSessionPinned(item),
                             },
                             {
                               label: "重命名",
-                              disabled: sessionLifecycleBusy === item.id,
+                              disabled: sessionOperation.pending || sessionOperation.uncertain || sessionDirectoryReading,
                               onSelect: () => openSessionRename(item),
                             },
                             ...(status === "trashed"
                               ? [
                                   {
                                     label: "恢复研究记录",
-                                    disabled: sessionLifecycleBusy === item.id,
+                                    disabled: sessionOperation.pending || sessionOperation.uncertain || sessionDirectoryReading,
                                     onSelect: () =>
                                       void changeSessionLifecycle(item, "ACTIVE"),
                                   },
@@ -3667,14 +3948,14 @@ export function ResearchPage({
                                 ? [
                                     {
                                       label: "恢复到当前研究",
-                                      disabled: sessionLifecycleBusy === item.id,
+                                      disabled: sessionOperation.pending || sessionOperation.uncertain || sessionDirectoryReading,
                                       onSelect: () =>
                                         void changeSessionLifecycle(item, "ACTIVE"),
                                     },
                                     {
                                       label: "移入回收站",
                                       destructive: true,
-                                      disabled: sessionLifecycleBusy === item.id,
+                                      disabled: sessionOperation.pending || sessionOperation.uncertain || sessionDirectoryReading,
                                       onSelect: () =>
                                         void changeSessionLifecycle(item, "TRASHED"),
                                     },
@@ -3682,14 +3963,14 @@ export function ResearchPage({
                                 : [
                                     {
                                       label: "归档",
-                                      disabled: sessionLifecycleBusy === item.id,
+                                      disabled: sessionOperation.pending || sessionOperation.uncertain || sessionDirectoryReading,
                                       onSelect: () =>
                                         void changeSessionLifecycle(item, "ARCHIVED"),
                                     },
                                     {
                                       label: "移入回收站",
                                       destructive: true,
-                                      disabled: sessionLifecycleBusy === item.id,
+                                      disabled: sessionOperation.pending || sessionOperation.uncertain || sessionDirectoryReading,
                                       onSelect: () =>
                                         void changeSessionLifecycle(item, "TRASHED"),
                                     },
@@ -3717,111 +3998,46 @@ export function ResearchPage({
                 </div>
               )}
             </header>
-            {branchChoices.length > 1 &&
-            branchNavigation &&
-            session?.id ? (
-              <nav
-                className="research-branch-switcher conversation-branch-switcher"
-                aria-label="研究分支"
-              >
-                <span className="research-branch-switcher-label">研究分支</span>
-                {branchNavigation.previous ? (
-                  <Link
-                    className="research-branch-step"
-                    aria-label={`上一个研究分支：${researchBranchDescriptor(agent2Turns, branchNavigation.previous).title}`}
-                    href={`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(session.id)}?turn=${encodeURIComponent(branchNavigation.previous.id || branchNavigation.previous.turn_id)}`}
-                  >
-                    ‹
-                  </Link>
-                ) : (
-                  <span
-                    className="research-branch-step disabled"
-                    aria-hidden="true"
-                  >
-                    ‹
-                  </span>
-                )}
-                <div className="research-branch-current">
-                  <div>
-                    <strong>
-                      {branchNavigation.currentIndex + 1} /{" "}
-                      {branchNavigation.choices.length}
-                    </strong>
-                    <span title={currentBranchDescriptor?.title}>
-                      {currentBranchDescriptor?.title}
-                    </span>
-                  </div>
-                  <small className="research-branch-source">
-                    {currentBranchDescriptor?.sourceTitle
-                      ? `源自“${currentBranchDescriptor.sourceTitle}”`
-                      : currentBranchDescriptor?.sourceTurnId
-                        ? "来源问题未在当前分支列表中"
-                        : "原始研究问题"}
-                  </small>
-                </div>
-                {branchNavigation.next ? (
-                  <Link
-                    className="research-branch-step"
-                    aria-label={`下一个研究分支：${researchBranchDescriptor(agent2Turns, branchNavigation.next).title}`}
-                    href={`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(session.id)}?turn=${encodeURIComponent(branchNavigation.next.id || branchNavigation.next.turn_id)}`}
-                  >
-                    ›
-                  </Link>
-                ) : (
-                  <span
-                    className="research-branch-step disabled"
-                    aria-hidden="true"
-                  >
-                    ›
-                  </span>
-                )}
-                <details className="research-branch-list">
-                  <summary>查看全部 {branchDescriptors.length} 个分支</summary>
-                  <ol>
-                    {branchDescriptors.map((descriptor, index) => (
-                      <li key={descriptor.turnId}>
-                        <Link
-                          href={`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(session.id)}?turn=${encodeURIComponent(descriptor.turnId)}`}
-                          aria-current={
-                            descriptor.turnId === currentBranchDescriptor?.turnId
-                              ? "page"
-                              : undefined
-                          }
-                        >
-                          <strong>
-                            {index + 1}. {descriptor.title}
-                          </strong>
-                          <span>
-                            {descriptor.sourceTitle
-                              ? `源自“${descriptor.sourceTitle}”`
-                              : descriptor.sourceTurnId
-                                ? "来源问题未在当前列表中"
-                                : "原始研究问题"}
-                          </span>
-                          <small>
-                            ResearchTurn <code>{descriptor.turnId}</code>
-                            {" · "}
-                            消息修订 <code>{descriptor.messageRevisionId}</code>
-                          </small>
-                        </Link>
-                      </li>
-                    ))}
-                  </ol>
-                </details>
-              </nav>
+            <div className="conversation-branch-region">
+            {(contextNavigation.directory.pending || contextNavigation.directory.failed) ? (
+              <div className="research-navigation-notice" role="status">
+                <span>{contextNavigation.directory.pending
+                  ? "正在读取分支记录…"
+                  : contextNavigation.directory.data ? "分支记录暂未更新，仍显示上次读取的内容。" : "分支记录暂时无法读取。"}</span>
+                {contextNavigation.directory.failed ? <button type="button" className="product-link-button" onClick={() => { directoryRetryFocus.current = contextNavigation.directory.scope; contextNavigation.directory.retry(); }}>重新读取分支记录</button> : null}
+              </div>
             ) : null}
+            {!conversationWindow.visible.some((message) => message.id === selectedTurnMessageId) ? branchVersionNavigation : null}
+            </div>
+            {researchSettingsOpen ? <ResearchSettings
+              models={userModels} provider={selectedProvider} model={selectedModel} thinkingMode={thinkingMode} autonomyMode={autonomyMode}
+              busy={state === "planning" || state === "running"} loadState={providerLoadState}
+              onModel={(choice) => { providerChoiceRef.current = { key: providerSettingsKey, provider: choice.provider, model: choice.model }; setSelectedProvider(choice.provider); setSelectedModel(choice.model); }}
+              onThinking={setThinkingMode} onAutonomy={setAutonomyMode} onRetry={() => setProviderReloadKey((value) => value + 1)} onClose={() => setResearchSettingsOpen(false)}
+            /> : null}
+            {sessionActionConfirmation ? <ProductModal
+              eyebrow=""
+              title={`${sessionActionLabel(sessionActionConfirmation.action)}${sessionActionConfirmation.items.length > 1 ? ` ${sessionActionConfirmation.items.length} 项` : ""}研究记录`}
+              description={sessionActionConfirmation.action === "TRASH" ? "移入回收站后仍可恢复，历史问题、结果与来源会保留。" : "归档后可以继续查看历史内容，需要继续研究时可恢复。"}
+              returnFocus={sessionLifecycleFocusRef.current}
+              onClose={() => { sessionOperation.dismiss(); setSessionActionConfirmation(null); }}
+              footer={<><button type="button" className="product-secondary-action" onClick={() => { sessionOperation.dismiss(); setSessionActionConfirmation(null); }}>取消</button><button type="button" className={sessionActionConfirmation.action === "TRASH" ? "product-danger-action" : "product-primary-action"} disabled={sessionOperation.pending || sessionOperation.uncertain || sessionDirectoryReading} onClick={() => void executeSessionAction(sessionActionConfirmation)}>{sessionOperation.pending ? "正在保存…" : `确认${sessionActionLabel(sessionActionConfirmation.action)}`}</button></>}
+            >
+              <ul className="research-session-confirm-items">{sessionActionConfirmation.items.map((item) => <li key={item.id}>{item.title}</li>)}</ul>
+              {sessionManagementFeedback}
+            </ProductModal> : null}
             {sessionRenameTarget ? (
               <ProductModal
-                eyebrow="研究记录"
+                eyebrow=""
                 title="重命名研究"
-                description="名称用于组织和检索，不会修改历史问题、ResearchTurn、科学结果或来源版本。"
-                onClose={() => setSessionRenameTarget(null)}
+                returnFocus={sessionLifecycleFocusRef.current}
+                onClose={closeSessionRename}
                 footer={
                   <>
                     <button
                       type="button"
                       className="product-secondary-action"
-                      onClick={() => setSessionRenameTarget(null)}
+                      onClick={closeSessionRename}
                     >
                       取消
                     </button>
@@ -3830,7 +4046,7 @@ export function ResearchPage({
                       className="product-primary-action"
                       disabled={
                         !sessionRenameValue.trim() ||
-                        sessionLifecycleBusy === sessionRenameTarget.id
+                        sessionOperation.pending || sessionOperation.uncertain || sessionDirectoryReading
                       }
                       onClick={() => void renameSession()}
                     >
@@ -3841,325 +4057,36 @@ export function ResearchPage({
                   </>
                 }
               >
-                <label className="product-field">
+                <label className="product-field research-session-name-field">
                   <span>研究名称</span>
                   <input
                     value={sessionRenameValue}
+                    disabled={sessionOperation.pending}
                     maxLength={200}
                     onChange={(event) => setSessionRenameValue(event.target.value)}
                   />
                 </label>
+                {sessionManagementFeedback}
               </ProductModal>
             ) : null}
-            <div className="conversation-history" ref={conversationHistoryRef}>
-              {sessionMemory &&
-              (sessionMemory.pinned_object_refs.length ||
-                sessionMemory.pinned_result_refs.length ||
-                sessionMemory.session_constraints.length ||
-                sessionMemory.active_research_goal) ? (
-                <section
-                  className="research-memory-strip"
-                  aria-label="当前研究会话上下文"
-                >
-                  <strong>本会话上下文</strong>
-                  <div>
-                    {sessionMemory.active_research_goal ? (
-                      <span>目标：{sessionMemory.active_research_goal}</span>
-                    ) : null}
-                    {sessionMemory.session_constraints.map((item) => (
-                      <span key={item.id}>约束：{item.statement}</span>
-                    ))}
-                    {sessionMemory.pinned_object_refs.map((item, index) => (
-                      <span
-                        className="research-memory-chip"
-                        key={`${item.object_id || "object"}-${item.version_id || index}`}
-                      >
-                        <span>上下文对象 {item.display_name || `#${index + 1}`}</span>
-                        {item.object_id &&
-                        item.version_id &&
-                        item.project_id &&
-                        item.object_type ? (
-                          <button
-                            type="button"
-                            className="research-memory-chip-remove"
-                            aria-label={`从本会话上下文移除对象 ${item.display_name || `#${index + 1}`}`}
-                            onClick={() => void removePinnedObject(item)}
-                            disabled={sessionMemoryMutation}
-                          >
-                            ×
-                          </button>
-                        ) : null}
-                      </span>
-                    ))}
-                    {sessionMemory.pinned_result_refs.map((resultId, index) => (
-                      <span className="research-memory-chip" key={`result-${resultId}`}>
-                        <span>上下文结果 {index + 1}</span>
-                        <button
-                          type="button"
-                          className="research-memory-chip-remove"
-                          aria-label={`从本会话上下文移除结果 ${index + 1}`}
-                          onClick={() => void removePinnedResult(resultId)}
-                          disabled={sessionMemoryMutation}
-                        >
-                          ×
-                        </button>
-                      </span>
-                    ))}
-                  </div>
+            <div className="conversation-history" id="research-conversation-history" role="region" aria-label="对话内容" tabIndex={0} ref={conversationHistoryRef}>
+              {showResearchStarter && history && (activeViewerContext || incompleteViewerContext) ? (
+                <section className="research-starter" aria-labelledby="research-starter-title">
+                  <h2 id="research-starter-title">{viewerSelectionError ? "先确认本次研究范围" : "研究所选数据"}</h2>
+                  {!canResearch ? <p>你可以查看来源与已有结果，当前权限不能发起新研究。</p> : null}
                 </section>
-              ) : null}
-              {sessionMemoryError ? (
-                <p className="product-form-error research-memory-error" role="alert">
-                  {sessionMemoryError}
-                </p>
-              ) : null}
-              {agent2TurnId &&
-              agent2ContextManifestLoadState === "error" &&
-              !activeAgent2ContextManifest ? (
-                <div className="research-memory-error" role="status">
-                  <strong>本次研究的上下文清单暂时无法读取</strong>
-                  <p>
-                    研究结果和精确来源不会因此改变；重新读取只会检查已保存的上下文记录。
-                  </p>
-                  <button
-                    type="button"
-                    className="product-link-button"
-                    onClick={() =>
-                      setAgent2ContextManifestReloadKey((current) => current + 1)
-                    }
-                  >
-                    重新读取上下文
-                  </button>
-                </div>
-              ) : null}
-              {activeAgent2ContextManifest ? (
-                <details
-                  ref={contextManifestRef}
-                  id="research-context-manifest"
-                  className="research-memory-strip research-context-manifest"
-                  aria-label="本次研究使用的上下文"
-                >
-                  <summary>
-                    <span>本次研究使用的上下文</span>
-                    <small>
-                      用于{contextOperationLabel(activeAgent2ContextManifest.operation)}
-                      · {activeAgent2ContextManifest.included_items.length} 项
-                    </small>
-                  </summary>
-                  <div className="research-context-manifest-summary">
-                    <span>精确来源与版本已保留</span>
-                    <span>
-                      {activeAgent2ContextManifest.input_state === "ACTUAL"
-                        ? "这是调用时实际使用的上下文"
-                        : "这是发送前的上下文预览"}
-                    </span>
-                    <span data-state={activeAgent2ContextManifest.compaction_state}>
-                      {activeAgent2ContextManifest.compaction_state === "COMPACTED"
-                        ? "较早对话已压缩"
-                        : "无需压缩"}
-                    </span>
-                    <span data-state={activeAgent2ContextManifest.truncation_state}>
-                      {activeAgent2ContextManifest.truncation_state === "TRUNCATED"
-                        ? "部分非关键上下文未纳入"
-                        : "关键上下文完整"}
-                    </span>
-                  </div>
-                  {agent2ContextManifests.length > 1 ? (
-                    <div className="research-context-manifest-operations" role="group" aria-label="已记录的操作上下文">
-                      {agent2ContextManifests.map((entry, index) => (
-                        <span key={`${entry.operation}-${entry.manifest.context_manifest_id}`}>
-                          {contextOperationSequenceLabel(
-                            agent2ContextManifests,
-                            index,
-                          )}
-                        </span>
-                      ))}
-                    </div>
-                  ) : null}
-                  {activeAgent2ContextManifest.included_items.length > 8 ? (
-                    <button
-                      type="button"
-                      className="product-link-button research-context-manifest-toggle"
-                      aria-controls="research-context-manifest-items"
-                      aria-expanded={showFullContextManifest}
-                      onClick={() => {
-                        setShowFullContextManifest((current) => {
-                          setContextManifestWindowStart(0);
-                          return !current;
-                        });
-                      }}
-                    >
-                      {showFullContextManifest
-                        ? "收起上下文列表"
-                        : `查看全部上下文（${activeAgent2ContextManifest.included_items.length} 项）`}
-                    </button>
-                  ) : null}
-                  <ul id="research-context-manifest-items">
-                    {visibleContextManifestItems.map((item) => (
-                        <li key={item.item_id}>
-                          <strong>{contextKindLabel(item.kind)}</strong>
-                          <div>
-                            <span>
-                              {contextInclusionReasonLabel(
-                                item.inclusion_reason,
-                              )}
-                            </span>
-                            <small>
-                              {contextSelectionLabel(item.selection_mode)} ·{" "}
-                              {contextRoleLabel(item.context_role)} ·{" "}
-                              {contextItemSupportEligible(item)
-                                ? "可支持科学主张"
-                                : "不作为独立科学依据"}{" "}
-                              · {contextAuthorityLabel(item.authority_class)} ·{" "}
-                              {contextFreshnessLabel(item.freshness)}
-                            </small>
-                          </div>
-                          {item.exact_object_version_id ? (
-                            <details className="research-context-source">
-                              <summary>来源版本已锁定</summary>
-                              <code>{item.exact_object_version_id}</code>
-                            </details>
-                          ) : item.result_ref ? (
-                            <details className="research-context-source">
-                              <summary>结果身份已锁定</summary>
-                              <code>{item.result_ref}</code>
-                            </details>
-                          ) : null}
-                          {item.was_compacted || item.was_truncated ? (
-                            <small className="research-context-transform">
-                              {item.was_compacted ? "对话内容已安全压缩" : ""}
-                              {item.was_compacted && item.was_truncated ? " · " : ""}
-                              {item.was_truncated ? "非关键内容已裁剪" : ""}
-                            </small>
-                          ) : null}
-                        </li>
-                    ))}
-                  </ul>
-                  {showFullContextManifest ? (
-                    <div className="research-context-manifest-window-controls">
-                      {contextManifestWindowStart > 0 ? (
-                        <button
-                          type="button"
-                          className="product-link-button research-context-manifest-toggle"
-                          aria-controls="research-context-manifest-items"
-                          onClick={() =>
-                            setContextManifestWindowStart((current) =>
-                              Math.max(0, current - CONTEXT_MANIFEST_RENDER_WINDOW),
-                            )
-                          }
-                        >
-                          查看上一组上下文
-                        </button>
-                      ) : null}
-                      {contextManifestWindowStart + CONTEXT_MANIFEST_RENDER_WINDOW <
-                      activeAgent2ContextManifest.included_items.length ? (
-                        <button
-                          type="button"
-                          className="product-link-button research-context-manifest-toggle"
-                          aria-controls="research-context-manifest-items"
-                          onClick={() =>
-                            setContextManifestWindowStart((current) =>
-                              Math.min(
-                                current + CONTEXT_MANIFEST_RENDER_WINDOW,
-                                Math.max(
-                                  0,
-                                  activeAgent2ContextManifest.included_items.length -
-                                    CONTEXT_MANIFEST_RENDER_WINDOW,
-                                ),
-                              ),
-                            )
-                          }
-                        >
-                          继续显示上下文（已显示 {contextManifestWindowStart + 1}–
-                          {Math.min(
-                            contextManifestWindowStart + CONTEXT_MANIFEST_RENDER_WINDOW,
-                            activeAgent2ContextManifest.included_items.length,
-                          )} / {activeAgent2ContextManifest.included_items.length}）
-                        </button>
-                      ) : null}
-                    </div>
-                  ) : null}
-                  {activeAgent2ContextManifest.excluded_items.length ? (
-                    <p className="research-context-manifest-excluded">
-                      为保持本次研究聚焦，有 {activeAgent2ContextManifest.excluded_items.length}{" "}
-                      项较低优先级内容未纳入；精确科学来源、版本、约束和量化事实不会被静默替换。
-                    </p>
-                  ) : null}
-                  <details
-                    className="research-context-technical"
-                    aria-label="上下文审计详情"
-                  >
-                    <summary>审计详情</summary>
-                    <dl>
-                      <div>
-                        <dt>上下文清单</dt>
-                        <dd><code>{activeAgent2ContextManifest.context_manifest_id}</code></dd>
-                      </div>
-                      <div>
-                        <dt>策略版本</dt>
-                        <dd>{activeAgent2ContextManifest.policy_version}</dd>
-                      </div>
-                      {activeAgent2ContextManifest.invocation_role ? (
-                        <div>
-                          <dt>模型职责</dt>
-                          <dd>{contextOperationLabel(activeAgent2ContextManifest.operation)}</dd>
-                        </div>
-                      ) : null}
-                      {activeAgent2ContextManifest.prompt_template_version ? (
-                        <div>
-                          <dt>提示模板版本</dt>
-                          <dd>{activeAgent2ContextManifest.prompt_template_version}</dd>
-                        </div>
-                      ) : null}
-                      {activeAgent2ContextManifest.serialized_input_version ? (
-                        <div>
-                          <dt>输入表示版本</dt>
-                          <dd>{activeAgent2ContextManifest.serialized_input_version}</dd>
-                        </div>
-                      ) : null}
-                      <div>
-                        <dt>输入预算</dt>
-                        <dd>{activeAgent2ContextManifest.input_budget} tokens</dd>
-                      </div>
-                      <div>
-                        <dt>实际估算</dt>
-                        <dd>{activeAgent2ContextManifest.estimated_input_tokens} tokens</dd>
-                      </div>
-                      <div>
-                        <dt>上下文指纹</dt>
-                        <dd><code>{activeAgent2ContextManifest.context_fingerprint}</code></dd>
-                      </div>
-                    </dl>
-                    {activeAgent2ContextManifest.excluded_items.length ? (
-                      <ul className="research-context-manifest-exclusion-list">
-                        {(activeAgent2ContextManifest.excluded_item_details || []).map((item) => (
-                          <li key={`${item.item_id}-${item.reason}`}>
-                            <strong>{item.item_id}</strong>：{item.detail}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
-                    {activeAgent2ContextManifest.serialized_input ? (
-                      <details className="research-context-serialized-input">
-                        <summary>模型实际收到的有界表示</summary>
-                        <pre>
-                          {JSON.stringify(activeAgent2ContextManifest.serialized_input, null, 2)}
-                        </pre>
-                      </details>
-                    ) : null}
-                  </details>
-                </details>
-              ) : null}
-              {showResearchStarter && history ? (
+              ) : showResearchStarter && history ? (
                 <ResearchStarter
                   projectId={projectId}
                   datasetCount={history.datasets.length}
+                  selectedDataset={datasetId ? { id: datasetId, name: starterDataset?.name || datasetId, sampleRef, sourceSelectionToken, hasSourceSelection: Boolean(datasetSelection.selection || datasetSelection.error) } : undefined}
                   canResearch={canResearch}
                   projectStatus={projectLifecycle}
                   prompts={starterPrompts}
                   onTryQuestion={trySuggestedQuestion}
                 />
               ) : null}
+              {pageLoadError ? <div className="conversation-load-state error" role="alert"><p>{pageLoadError}</p><button type="button" className="product-secondary-action" onClick={() => setReloadKey((value) => value + 1)}>重新读取研究内容</button></div> : null}
               {sessionLoadState === "loading" ? (
                 <p className="conversation-load-state" role="status">
                   正在恢复研究对话…
@@ -4168,7 +4095,7 @@ export function ResearchPage({
               {sessionLoadState === "error" ? (
                 <div className="conversation-load-state error" role="alert">
                   <strong>研究对话暂时无法读取</strong>
-                  <p>已有分析结果没有丢失，请重新加载对话</p>
+                  <p>{sessionLoadError || "请重新加载对话，确认这条研究记录的当前状态。"}</p>
                   <button
                     type="button"
                     className="product-secondary-action"
@@ -4235,6 +4162,7 @@ export function ResearchPage({
               ) : null}
               <div
                 className="conversation-stream"
+                ref={conversationScroll.contentRef}
                 role="log"
                 aria-label="研究对话"
                 aria-live="off"
@@ -4264,28 +4192,41 @@ export function ResearchPage({
                           <strong>当前分支问题</strong>
                         ) : null}
                       </div>
-                      <p>{displayResearchMessage(message)}</p>
+                      {message.role === "assistant" ? (
+                        <ResearchReplyContent text={displayResearchMessage(message)} scientific={message.payload?.source === "agent2_scientific_interpreter"} />
+                      ) : <p>{displayResearchMessage(message)}</p>}
+                      {isSelectedTurnMessage ? branchVersionNavigation : null}
                     </article>
                   );
                 })}
-                {activeAgent2Progress ? (
+                {showAnswerDraft && answerDraft ? <article className="conversation-message assistant" aria-label={answerDraft.phase === "completed" ? "研究助手消息" : "正在生成的研究回答"} aria-busy={answerDraft.phase !== "completed"}>
+                  <div className="conversation-message-meta">
+                    <span>研究助手</span>
+                    {answerDraft.phase === "reconnecting" ? <span role="status">正在重新连接…</span> : null}
+                  </div>
+                  <ResearchReplyContent text={answerDraft.text} streaming={answerDraft.phase !== "completed"} scientific={answerDraft.scientific} />
+                </article> : null}
+                {activeAgent2Progress && !answerStreaming ? (
                   <ResearchExecutionActivity
                     progress={activeAgent2Progress}
+                    completedAnswerVisible={completedAnswerVisible}
                     onCancel={() => void cancelAgent2Turn()}
-                    cancelPending={agent2CancelPending}
+                    cancelPending={agent2CancelState === "submitting"}
+                    cancelUnconfirmed={agent2CancelState === "confirming"}
                     onRetry={
-                      selectedSessionIsWritable
+                      selectedSessionIsWritable && canResearch
                         ? () => void retryAgent2Turn()
                         : undefined
                     }
                     onContinue={
-                      selectedSessionIsWritable
+                      selectedSessionIsWritable && canResearch
                         ? continueAgent2Research
                         : undefined
                     }
                     retryPending={agent2RetryPending}
+                    onReinterpret={selectedSessionIsWritable && canResearch ? () => void retryAgent2Turn("reinterpret") : undefined}
                     onEdit={
-                      selectedSessionIsWritable
+                      selectedSessionIsWritable && canResearch
                         ? editAgent2Turn
                         : undefined
                     }
@@ -4297,52 +4238,31 @@ export function ResearchPage({
                     role="status"
                     aria-label="研究重试关系"
                   >
-                    <strong>已创建新的 ResearchTurn</strong>
-                    <span>
-                      这是一次新的执行 lineage；原未完成运行及其失败证据仍被保留，不会被覆盖。
-                    </span>
+                    <strong>本次为重新分析</strong>
                     <Link
                       className="product-link-button"
                       href={`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(session.id)}?turn=${encodeURIComponent(retryLineage.source.turn_id)}`}
                     >
-                      查看保留的原运行
+                      查看原分析
                     </Link>
                     <details>
-                      <summary>研究身份</summary>
+                      <summary>分支标识</summary>
                       <span>
-                        新 ResearchTurn <code>{retryLineage.current.turn_id}</code>
+                        当前 <code>{retryLineage.current.turn_id}</code>
                       </span>
                       <span>
-                        来源 ResearchTurn <code>{retryLineage.source.turn_id}</code>
+                        来源 <code>{retryLineage.source.turn_id}</code>
                       </span>
                     </details>
                   </section>
                 ) : null}
-                {agent2CancelNotice ? (
+                {agent2CancelNotice && agent2CancelState !== "confirming" ? (
                   <p
                     className="research-cancel-notice"
                     role="status"
                     aria-live="polite"
                   >
                     {agent2CancelNotice}
-                  </p>
-                ) : null}
-                {agent2ContinuationNotice ? (
-                  <p
-                    className="research-cancel-notice"
-                    role="status"
-                    aria-live="polite"
-                  >
-                    {agent2ContinuationNotice}
-                  </p>
-                ) : null}
-                {agent2TurnId && agent2RecoveryState === "reconnecting" ? (
-                  <p
-                    className="research-reconnect-notice"
-                    role="status"
-                    aria-live="polite"
-                  >
-                    研究服务连接暂时中断；服务器上的研究仍在继续，正在重新同步已保存状态…
                   </p>
                 ) : null}
                 {error && activeAgent2Progress ? (
@@ -4352,6 +4272,7 @@ export function ResearchPage({
                 ) : null}
                 {agent2TurnId &&
                 activeAgent2Progress &&
+                !activeAgent2Progress.warnings.some((warning) => warning.code === "INTERPRETATION_GROUNDING_REJECTED") &&
                 ["COMPLETED", "PARTIAL"].includes(activeAgent2Progress.status) ? (
                   <ScientificReportAction
                     projectId={projectId}
@@ -4370,53 +4291,22 @@ export function ResearchPage({
                   />
                 )}
               </div>
-              {historicalRuns.length ? (
-                <section className="timeline-past-runs" aria-label="历史研究">
-                  {historicalRuns.slice(0, 6).map((run) => {
-                    const status = effectiveResearchRunStatus(run);
-                    return (
-                      <Link
-                        key={run.jobId}
-                        href={researchRunHref(
-                          projectId,
-                          run.jobId,
-                          sessions,
-                          run.researchSessionId,
-                          run.researchTurnId,
-                        )}
-                        className="timeline-past-run"
-                      >
-                        <span>
-                          {run.archived
-                            ? "已归档"
-                            : status === "completed"
-                              ? "✓ 分析完成"
-                              : status === "partial"
-                                ? "部分完成"
-                                : status === "failed"
-                                  ? "分析失败"
-                                  : status === "canceled"
-                                    ? "已取消"
-                                    : "查看运行"}
-                        </span>
-                        <strong>{researchRunTitle(run)}</strong>
-                        <small>
-                          {run.stepCount} 个步骤 ·{" "}
-                          {status === "failed" || status === "canceled"
-                            ? "查看过程"
-                            : "查看结果"}
-                        </small>
-                      </Link>
-                    );
-                  })}
-                </section>
-              ) : null}
             </div>
+            {conversationScroll.showJump ? <button
+              type="button"
+              className={conversationStyles.jumpToLatest}
+              ref={conversationScroll.jumpButtonRef}
+              aria-label="回到对话底部"
+              aria-controls="research-conversation-history"
+              title="回到对话底部"
+              onClick={conversationScroll.jumpToLatest}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 5v14m-6-6 6 6 6-6" /></svg>
+            </button> : null}
             {history &&
             canResearch &&
-            sessionLoadState !== "error" &&
-            selectedSessionIsWritable &&
-            history.datasets.length ? (
+            sessionLoadState === "ready" &&
+            selectedSessionIsWritable ? (
               <form
                 className="research-composer"
                 onSubmit={(event) => {
@@ -4427,23 +4317,52 @@ export function ResearchPage({
                 {editTurnId ? (
                   <div
                     id="research-edit-status"
-                    className="research-edit-notice"
+                    className="research-edit-notice research-composer-edit-mode"
                     role={editingLoadState === "error" ? "alert" : "status"}
                   >
-                    <strong>正在编辑上一条问题</strong>
                     <span>
                       {editingLoadState === "loading"
-                        ? "正在读取原问题…"
+                        ? "正在读取原问题和来源…"
                         : editingLoadState === "error"
-                          ? "原问题暂时无法读取；为避免丢失历史上下文，编辑与提交已停用。"
-                          : "提交后会创建新的研究分支，历史结果不会被修改。"}
+                          ? "原研究暂未读全。可以继续编辑草稿，重新读取后再提交。"
+                          : "编辑问题"}
                     </span>
+                    <div className="research-edit-actions">
+                      {editSource.failed ? <button type="button" className="product-secondary-action" disabled={editSource.pending} onClick={() => {
+                        editComposerFocusRef.current = { key: composerDraftKey, origin: document.activeElement, handled: false };
+                        editSource.retry();
+                      }}>
+                        {editSource.pending ? "正在读取原研究…" : "重新读取原研究"}
+                      </button> : null}
+                      <Link className="product-link-button" scroll={false} href={`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(session?.id || sessionId || "")}?turn=${encodeURIComponent(editTurnId)}`}>返回原研究</Link>
+                    </div>
                   </div>
                 ) : null}
-                <label htmlFor="research-question">
-                  {editTurnId ? "编辑问题" : "询问此项目中的数据"}
+                <label className="sr-only" htmlFor="research-question">
+                  {editTurnId ? "编辑问题" : "研究问题"}
                 </label>
-                {contextCandidateFromSearch && searchContextCandidateActive ? (
+                {materials.error ? <p role="alert">{materials.error}</p> : null}
+                {!materials.value ? <>
+                {datasetSelection.selection || datasetSelection.error ? <div className="research-composer-source" role={datasetSelection.error ? "alert" : "status"} id="research-dataset-source">
+                  <div><strong>{datasetSelection.error ? "需要重新选择数据" : datasetSelection.selection?.family === "volumetric" ? "已指定 1 个体数据字段" : datasetSelection.selection?.family === "trajectory" ? (datasetSelection.selection.context.primary?.kind === "TRAJECTORY_ATOM" ? "已指定轨迹中的 1 个原子" : "已指定 1 个轨迹帧") : datasetSelection.selection?.family === "structure" ? "已指定 1 个原子" : datasetSelection.selection?.family === "phonon" ? (datasetSelection.selection.context.primary?.kind === "PHONON_DOS_POINT" ? "已指定 1 个声子态密度点" : "已指定 1 个声子模式") : datasetSelection.selection?.context.primary?.kind === "ELECTRONIC_BAND_STATE" ? "已指定 1 个能带状态" : "已指定 1 个态密度点"}</strong><span>{datasetSelection.error || datasetSelection.selection?.label}</span></div>
+                  <Link className="product-secondary-action" href={`/projects/${encodeURIComponent(projectId)}/data?dataset=${encodeURIComponent(datasetId || "")}${datasetSelection.selection && sourceSelectionToken ? `&selection=${encodeURIComponent(sourceSelectionToken)}` : ""}`}>{datasetSelection.error ? "返回来源数据重新选择" : datasetSelection.selection?.family === "volumetric" ? "查看所选体数据字段" : datasetSelection.selection?.family === "trajectory" ? "查看所选轨迹位置" : datasetSelection.selection?.family === "structure" ? "查看所选原子" : datasetSelection.selection?.family === "phonon" ? (datasetSelection.selection.context.primary?.kind === "PHONON_DOS_POINT" ? "查看所选态密度点" : "查看所选声子模式") : "查看所选电子数据"}</Link>
+                </div> : null}
+                {incompleteViewerContext ? <div className="research-composer-source" role="alert" id="research-viewer-source"><p>{viewerSelectionError}</p><Link className="product-secondary-action" href={`/projects/${encodeURIComponent(projectId)}/data`}>返回项目数据</Link></div> : activeViewerContext && !contextCandidateFromSearch && !viewerSelectionError ? (
+                  <button type="button" id="research-viewer-source" className={conversationStyles.composerSource}
+                    aria-label="查看本次数据上下文" aria-controls="research-context-panel" onClick={revealActiveContextManifest}>
+                    <span><strong>{activeViewerContext.sourceRef.displayName}</strong><span>{activeViewerContext.selection?.displayLabel || "完整数据版本"}</span></span>
+                    <span aria-hidden="true">›</span>
+                  </button>
+                ) : activeViewerContext && viewerSelectionError ? (
+                  <div className="research-composer-source" role={viewerSelectionError ? "alert" : "status"} id="research-viewer-source">
+                    <div><strong>{activeViewerContext.sourceRef.displayName}</strong><span>{viewerSelectionError || activeViewerContext.selection?.displayLabel || "使用此完整版本"}</span></div>
+                    <div className="product-row-actions">
+                      <Link className="product-secondary-action" href={`/projects/${encodeURIComponent(projectId)}/data?object=${encodeURIComponent(activeViewerContext.sourceRef.objectId)}&version=${encodeURIComponent(activeViewerContext.sourceRef.versionId)}${!viewerSelectionError && activeViewerContext.selection && viewerContext?.selectionToken ? `&selection=${encodeURIComponent(viewerContext.selectionToken)}` : ""}`}>{viewerSelectionError ? "返回数据重新选择" : "查看所选来源"}</Link>
+                      {viewerSelectionError ? <button type="button" className="product-secondary-action" onClick={() => setWholeViewerVersionKey(viewerSelectionKey)}>使用此完整版本</button> : null}
+                    </div>
+                  </div>
+                ) : null}
+                {contextCandidateFromSearch && searchContextCandidateActive && !viewerSelectionError ? (
                   <div
                     className="research-composer-context-candidate"
                     role="status"
@@ -4454,7 +4373,7 @@ export function ResearchPage({
                       <small>
                         {activeSearchResultContextId
                           ? "检索中选择的科学结果，提交问题后才会进入实际 Context Used。"
-                          : `${activeViewerContext?.sourceRef.displayName || "检索中选择的科学数据"}，提交问题后才会进入实际 Context Used。`}
+                          : `${activeViewerContext?.sourceRef.displayName || "检索中选择的科学数据"}${activeViewerContext?.selection ? ` · ${activeViewerContext.selection.displayLabel}` : ""}，提交问题后才会进入实际 Context Used。`}
                       </small>
                     </span>
                     <button
@@ -4466,123 +4385,56 @@ export function ResearchPage({
                     </button>
                   </div>
                 ) : null}
+                </> : null}
                 <textarea
                   ref={questionInputRef}
                   id="research-question"
-                  aria-label={editTurnId ? "编辑问题" : "询问此项目中的数据"}
+                  aria-label={editTurnId ? "编辑问题" : "研究问题"}
                   aria-describedby={
                     [
                       editTurnId ? "research-edit-status" : null,
-                      ["planning", "running"].includes(state) && agent2TurnId
-                        ? "research-running-draft-status"
-                        : null,
+                      !materials.value && (datasetSelection.selection || datasetSelection.error) ? "research-dataset-source" : null,
+                      !materials.value && (incompleteViewerContext || (activeViewerContext && (!contextCandidateFromSearch || viewerSelectionError))) ? "research-viewer-source" : null,
                     ]
                       .filter(Boolean)
                       .join(" ") || undefined
                   }
                   value={question}
-                  onChange={(event) => setQuestion(event.target.value)}
-                  placeholder="描述要比较、检查或解释的材料科学问题"
+                  onChange={(event) => { editedDraftKeyRef.current = composerDraftKey; setQuestion(event.target.value); }}
+                  placeholder="输入研究问题…"
                   rows={3}
-                  disabled={Boolean(editTurnId) && editingLoadState !== "ready"}
                 />
-                {["planning", "running"].includes(state) && agent2TurnId ? (
-                  <p
-                    id="research-running-draft-status"
-                    className="research-composer-draft-status"
-                  >
-                    可以先起草下一条问题。草稿仅保存在当前浏览器标签页，刷新后可恢复；
-                    不会修改或重新提交正在运行的研究。
-                  </p>
-                ) : null}
                 <div className="research-composer-footer">
-                  <label className="research-autonomy-control">
-                    <input
-                      type="checkbox"
-                      checked={autonomyMode === "BOUNDED_AUTONOMOUS"}
-                      onChange={(event) =>
-                        setAutonomyMode(
-                          event.target.checked
-                            ? "BOUNDED_AUTONOMOUS"
-                            : "STANDARD",
-                        )
-                      }
-                      disabled={state === "planning" || state === "running"}
-                    />
-                    <span>有界多步研究</span>
-                  </label>
-                  <details className="research-model-menu">
-                    <summary>
-                      {providerLoadState === "loading"
-                        ? "正在读取模型"
-                        : selectedModel ||
-                          selectedProviderOption?.label ||
-                          "模型"}{" "}
-                      ·{" "}
-                      {thinkingMode === "deep"
-                        ? "深入"
-                        : thinkingMode === "quick"
-                          ? "快速"
-                          : "标准"}
-                    </summary>
-                    <div className="research-model-controls">
-                      <label>
-                        模型
-                        <select
-                          aria-label="本次分析模型"
-                          value={selectedModel}
-                          onChange={(event) =>
-                            setSelectedModel(event.target.value)
-                          }
-                          disabled={!selectedModels.length}
-                        >
-                          {selectedModels.length ? (
-                            selectedModels.map((item) => (
-                              <option key={item} value={item}>
-                                {item}
-                              </option>
-                            ))
-                          ) : (
-                            <option value="">由 Provider 决定</option>
-                          )}
-                        </select>
-                      </label>
-                      <label>
-                        思考深度
-                        <select
-                          aria-label="思考深度"
-                          value={thinkingMode}
-                          onChange={(event) =>
-                            setThinkingMode(
-                              event.target.value as
-                                | "quick"
-                                | "standard"
-                                | "deep",
-                            )
-                          }
-                        >
-                          <option value="quick">快速</option>
-                          <option value="standard">标准</option>
-                          <option value="deep">深入</option>
-                        </select>
-                      </label>
-                    </div>
-                  </details>
-                  {["planning", "running"].includes(state) && agent2TurnId ? (
+                  <div className={materialStyles.composerTools}>
+                  <button type="button" className={materialStyles.trigger}
+                    aria-label={materials.value ? `选择材料，已选 ${materials.value.items.length} 项` : "选择材料"} aria-haspopup="dialog"
+                    aria-expanded={materialPickerKey === composerDraftKey}
+                    disabled={materials.pending || state === "planning" || state === "running" || resultActionPending}
+                    onClick={event => { materialPickerTrigger.current = event.currentTarget; setMaterialPickerKey(composerDraftKey); }}>
+                    <span aria-hidden="true">＋</span><span>{materials.value ? `材料 · ${materials.value.items.length}` : "材料"}</span>
+                  </button>
+                  <button type="button" className="research-settings-trigger" aria-label="研究设置" aria-haspopup="dialog" aria-expanded={researchSettingsOpen} onClick={() => setResearchSettingsOpen(true)}>
+                    <span>{selectedModel || (providerLoadState === "loading" ? "正在读取模型…" : "选择模型")}</span><span aria-hidden="true">⌄</span>
+                  </button>
+                  </div>
+                  {agent2TurnId && (answerStreaming || canCancelResearchTurn(activeAgent2Progress?.status) || isResearchCancellationPending(activeAgent2Progress?.status) || agent2CancelState !== "idle") ? (
                     <button
                       type="button"
                       className="product-danger-action research-composer-stop"
-                      aria-label="从输入区取消当前分析"
+                      aria-label={answerStreaming ? "停止生成" : "从输入区取消当前分析"}
                       onClick={() => void cancelAgent2Turn()}
-                      disabled={agent2CancelPending}
+                      disabled={agent2CancelState !== "idle" || isResearchCancellationPending(activeAgent2Progress?.status)}
                     >
-                      {agent2CancelPending ? "正在取消…" : "取消当前分析"}
+                      {agent2CancelState === "submitting" ? "正在提交取消…" : agent2CancelState === "confirming" ? "等待取消确认" : answerStreaming ? "停止生成" : "取消当前分析"}
                     </button>
                   ) : (
                     <button
                       type="submit"
                       className="product-primary-action"
                       disabled={
+                        materials.pending || Boolean(materials.error || (!materials.value && (viewerSelectionError || datasetSelection.error))) ||
+                        resultActionPending ||
+                        !userModels.some((item) => item.provider === selectedProvider && item.model === selectedModel) ||
                         !question.trim() ||
                         state === "planning" ||
                         state === "running" ||
@@ -4597,26 +4449,21 @@ export function ResearchPage({
                         ? "正在准备…"
                         : state === "running"
                           ? "正在分析…"
-                          : "开始分析"}
+                          : "发送"}
                     </button>
                   )}
                 </div>
-                {autonomyMode === "BOUNDED_AUTONOMOUS" ? (
-                  <p className="research-autonomy-preview" role="note">
-                    Agent 可在固定边界内追加有科学依据的分析；问题得到回答、证据不足或达到研究上限时会停止。你仍可随时取消当前分析。
-                  </p>
-                ) : null}
-                {providerLoadState === "error" ? (
+                {providerLoadState === "error" && !researchSettingsOpen ? (
                   <div className="research-provider-notice" role="alert">
                     <span>
-                      模型状态暂时无法读取；提交时会由服务端再次验证。
+                      {userModels.length ? "模型列表暂未更新，当前选择仍保留。" : "模型暂时无法读取，请重试后发送。"}
                     </span>
                     <button
                       type="button"
                       className="product-link-button"
                       onClick={() => setProviderReloadKey((value) => value + 1)}
                     >
-                      重试
+                      重新读取模型
                     </button>
                   </div>
                 ) : providerStatus &&
@@ -4664,7 +4511,7 @@ export function ResearchPage({
                 className="research-composer research-composer-readonly"
                 role="status"
               >
-                正在确认项目权限…
+                {projectHistoryReadState === "error" ? "项目权限暂时无法确认。请重新读取研究内容后再发送。" : "正在确认项目权限…"}
               </div>
             )}
           </aside>
@@ -4676,26 +4523,19 @@ export function ResearchPage({
             aria-label="调整研究对话宽度"
             aria-orientation="vertical"
             aria-valuemin={320}
-            aria-valuemax={760}
+            aria-valuemax={conversationMaxWidth}
             aria-valuenow={conversationWidth}
             aria-valuetext={`${conversationWidth} 像素对话宽度`}
             onPointerDown={(event) => {
-              conversationWidthCustomizedRef.current = true;
               event.currentTarget.setPointerCapture(event.pointerId);
-              setConversationWidth(
-                clampConversationWidth(
-                  event.clientX -
-                    (workbenchRef.current?.getBoundingClientRect().left || 0),
-                ),
+              chooseConversationWidth(
+                event.clientX - (workbenchRef.current?.getBoundingClientRect().left || 0),
               );
             }}
             onPointerMove={(event) => {
               if (event.currentTarget.hasPointerCapture(event.pointerId))
-                setConversationWidth(
-                  clampConversationWidth(
-                    event.clientX -
-                      (workbenchRef.current?.getBoundingClientRect().left || 0),
-                  ),
+                chooseConversationWidth(
+                  event.clientX - (workbenchRef.current?.getBoundingClientRect().left || 0),
                 );
             }}
             onPointerUp={(event) => {
@@ -4703,46 +4543,210 @@ export function ResearchPage({
                 event.currentTarget.releasePointerCapture(event.pointerId);
             }}
             onKeyDown={(event) => {
-              if (event.key === "ArrowLeft") {
-                event.preventDefault();
-                conversationWidthCustomizedRef.current = true;
-                setConversationWidth((value) =>
-                  clampConversationWidth(value - 16),
-                );
-              }
-              if (event.key === "ArrowRight") {
-                event.preventDefault();
-                conversationWidthCustomizedRef.current = true;
-                setConversationWidth((value) =>
-                  clampConversationWidth(value + 16),
-                );
-              }
-              if (event.key === "Home") {
-                event.preventDefault();
-                conversationWidthCustomizedRef.current = true;
-                setConversationWidth(clampConversationWidth(320));
-              }
-              if (event.key === "End") {
-                event.preventDefault();
-                conversationWidthCustomizedRef.current = true;
-                setConversationWidth(clampConversationWidth(760));
-              }
+              const requested = event.key === "ArrowLeft" ? conversationWidth - 16
+                : event.key === "ArrowRight" ? conversationWidth + 16
+                : event.key === "Home" ? 320
+                : event.key === "End" ? 760 : null;
+              if (requested === null) return;
+              event.preventDefault();
+              chooseConversationWidth(requested);
             }}
           />
           <section
             id="research-workbench-panel"
             role="tabpanel"
             aria-labelledby="research-workbench-tab"
-            className={`research-workbench-pane ${mobilePanel === "workbench" ? "mobile-panel-active" : "mobile-panel-inactive"}`}
+            className={`research-workbench-pane ${conversationStyles.detailPane} ${mobilePanel === "workbench" ? "mobile-panel-active" : "mobile-panel-inactive"}`}
           >
+            <div className={conversationStyles.workbenchHeader}>
+            <div className={conversationStyles.workbenchTabs} role="tablist" aria-label="研究详情">
+              {(["results", "context"] as const).map((view) => (
+                <button key={view} type="button" role="tab"
+                  id={`research-detail-${view}-tab`}
+                  aria-controls={`research-${view}-panel`}
+                  aria-selected={workbenchView === view}
+                  tabIndex={workbenchView === view ? 0 : -1}
+                  onClick={() => { if (view === "context") revealActiveContextManifest(); else setWorkbenchView("results"); }}
+                  onKeyDown={(event) => {
+                    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+                    event.preventDefault();
+                    const next = event.key === "Home" ? "results" : event.key === "End" ? "context" : view === "results" ? "context" : "results";
+                    setWorkbenchView(next);
+                    document.getElementById(`research-detail-${next}-tab`)?.focus();
+                  }}
+                >{view === "results" ? "结果" : "上下文"}</button>
+              ))}
+            </div>
+            <button type="button" className={conversationStyles.closeWorkbench} aria-label="收起工作台"
+              onClick={closeContextPanel}>收起</button>
+            </div>
+            <div id="research-context-panel" ref={contextPanelRef} className={conversationStyles.contextPanel}
+              role="tabpanel" aria-labelledby="research-detail-context-tab" hidden={workbenchView !== "context"} tabIndex={-1}
+              onKeyDown={(event) => { if (event.key === "Escape") { event.preventDefault(); closeContextPanel(); } }}>
+              {materials.value || materials.error || activeViewerContext || datasetId || !navigationTurnId ? <section className={conversationStyles.contextSelection} aria-label="准备发送的上下文">
+                <h2>待使用的数据</h2>
+                {materials.value ? <>
+                  <ul className={materialStyles.contextList}>{materials.value.items.map(item => <li key={materialKey(item.ref)}>
+                    <Link href={`/projects/${encodeURIComponent(projectId)}/data?object=${encodeURIComponent(item.ref.object_id)}&version=${encodeURIComponent(item.ref.version_id)}`}>{item.ref.display_name || materialTypes[item.ref.object_type] || item.ref.object_type}</Link>
+                    <span>{materialTypes[item.ref.object_type]} · 版本 {item.ref.version_id.slice(0, 8)}</span>
+                    {materials.value!.selections.filter(s => materialKey(s.object_ref) === materialKey(item.ref)).map((s, index) => <span key={index}>{s.display_label}</span>)}
+                  </li>)}</ul>
+                  <button type="button" className="product-link-button" disabled={state === "planning" || state === "running" || resultActionPending} onClick={() => materials.set(null)}>恢复原来源</button>
+                </> : materials.error ? <p role="alert">{materials.error}</p> : activeViewerContext ? <>
+                  <p>{activeViewerContext.sourceRef.displayName}</p>
+                  <p>{viewerSelectionError || activeViewerContext.selection?.displayLabel || "完整数据版本"}</p>
+                  <Link href={`/projects/${encodeURIComponent(projectId)}/data?object=${encodeURIComponent(activeViewerContext.sourceRef.objectId)}&version=${encodeURIComponent(activeViewerContext.sourceRef.versionId)}${!viewerSelectionError && activeViewerContext.selection && viewerContext?.selectionToken ? `&selection=${encodeURIComponent(viewerContext.selectionToken)}` : ""}`}>打开来源数据</Link>
+                </> : datasetId ? <>
+                  <p>{starterDataset?.name || "所选数据集"}</p>
+                  {datasetSelection.selection?.label ? <p>{datasetSelection.selection.label}</p> : null}
+                  {datasetSelection.error ? <p role="alert">{datasetSelection.error}</p> : null}
+                  <Link href={`/projects/${encodeURIComponent(projectId)}/data?dataset=${encodeURIComponent(datasetId)}${sourceSelectionToken ? `&selection=${encodeURIComponent(sourceSelectionToken)}` : ""}`}>查看所选数据</Link>
+                </> : <>
+                  <p>{agent2TurnId ? "没有另外指定下一次提问的数据。" : "尚未指定研究数据。"}</p>
+                  <Link href={`/projects/${encodeURIComponent(projectId)}/data`}>选择数据</Link>
+                </>}
+              </section> : null}
+              {sessionMemory &&
+              (sessionMemory.pinned_object_refs.length ||
+                sessionMemory.pinned_result_refs.length ||
+                sessionMemory.session_constraints.length ||
+                sessionMemory.active_research_goal) ? (
+                <section
+                  className="research-memory-strip"
+                  aria-label="当前研究会话上下文"
+                >
+                  <strong>本会话上下文</strong>
+                  <div>
+                    {sessionMemory.active_research_goal ? (
+                      <span>目标：{sessionMemory.active_research_goal}</span>
+                    ) : null}
+                    {sessionMemory.session_constraints.map((item) => (
+                      <span key={item.id}>约束：{item.statement}</span>
+                    ))}
+                    {sessionMemory.pinned_object_refs.map((item, index) => (
+                      <span
+                        className="research-memory-chip"
+                        key={`${item.object_id || "object"}-${item.version_id || index}`}
+                      >
+                        <span>上下文对象 {item.display_name || `#${index + 1}`}</span>
+                        {item.object_id &&
+                        item.version_id &&
+                        item.project_id &&
+                        item.object_type && canResearch && selectedSessionIsWritable ? (
+                          <button
+                            type="button"
+                            className="research-memory-chip-remove"
+                            aria-label={`从本会话上下文移除对象 ${item.display_name || `#${index + 1}`}`}
+                            onClick={() => void sessionContext.setSourcesPinned([item], false)}
+                            disabled={!sessionContext.canUpdate}
+                          >
+                            ×
+                          </button>
+                        ) : null}
+                      </span>
+                    ))}
+                    {sessionMemory.pinned_result_refs.map((resultId, index) => (
+                      <span className="research-memory-chip" key={`result-${resultId}`}>
+                        <span>上下文结果 {index + 1}</span>
+                        {canResearch && selectedSessionIsWritable ? <button
+                          type="button"
+                          className="research-memory-chip-remove"
+                          aria-label={`从本会话上下文移除结果 ${index + 1}`}
+                          onClick={() => void sessionContext.setResultPinned(resultId, false)}
+                          disabled={!sessionContext.canUpdate}
+                        >
+                          ×
+                        </button> : null}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
+              <SessionMemoryNotice context={sessionContext} />
+              {navigationTurnId &&
+              (contextNavigation.context.failed || contextNavigation.context.pending) ? (
+                <div className="research-memory-error" role="status">
+                  <span>{contextNavigation.context.pending ? "正在读取本次上下文…" : activeAgent2ContextManifest
+                    ? "上下文暂未更新，仍显示上次读取的内容。"
+                    : "本次研究的上下文清单暂时无法读取"}</span>
+                  {contextNavigation.context.failed ? <button
+                    type="button"
+                    className="product-link-button"
+                    onClick={() => { contextRetryFocus.current = contextNavigation.context.scope; contextNavigation.context.retry(); }}
+                  >
+                    重新读取上下文
+                  </button> : null}
+                </div>
+              ) : null}
+              {activeAgent2ContextManifest ? (
+                <details
+                  key={contextNavigation.context.scope}
+                  ref={contextManifestRef}
+                  id="research-context-manifest"
+                  className={conversationStyles.contextManifest}
+                  aria-label="本次研究使用的上下文"
+                  onKeyDown={(event) => {
+                    if (event.key === "Escape") {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      closeContextPanel();
+                    }
+                  }}
+                >
+                  <summary>本次研究使用的上下文</summary>
+                  {!agent2TurnId && selectedAgent2Turn ? <Link className="product-link-button" href={`/projects/${encodeURIComponent(projectId)}/research/${encodeURIComponent(selectedAgent2Turn.research_session_id)}?turn=${encodeURIComponent(selectedAgent2Turn.turn_id)}`}>打开这次研究</Link> : null}
+                  <ResearchContextContents
+                    key={activeAgent2ContextManifest.context_manifest_id}
+                    manifest={activeAgent2ContextManifest}
+                    manifests={agent2ContextManifests}
+                    projectId={projectId}
+                    resultSources={contextNavigation.context.data?.result_sources}
+                    onOpenResult={() => {
+                      setResultOpenRequest(value => value + 1);
+                      setWorkbenchView("results");
+                      setMobilePanel("workbench");
+                      document.getElementById("research-detail-results-tab")?.focus();
+                    }}
+                    toolLabel={(id, fallback) => USER_FACING_TOOL_STEPS[id] || fallback}
+                  />
+                </details>
+              ) : null}
+              {!agent2TurnId && contextNavigation.directory.pending ? <p role="status">正在读取研究记录…</p> : null}
+              {!agent2TurnId && contextNavigation.directory.failed ? <div role="alert"><p>研究记录暂时无法读取。</p><button type="button" className="product-secondary-action" onClick={contextNavigation.directory.retry}>重新读取研究记录</button></div> : null}
+              {(navigationTurnId || Boolean(session?.messages?.length)) && !activeAgent2ContextManifest && !contextNavigation.context.pending && !contextNavigation.context.failed && !contextNavigation.directory.pending && !contextNavigation.directory.failed ? (
+                <section className={conversationStyles.contextSelection}>
+                  <h2>调用记录</h2>
+                  <p>{navigationTurnId || session?.messages?.length ? "这段对话尚无已记录的调用上下文。" : "尚无调用记录。"}</p>
+                </section>
+              ) : null}
+            </div>
+            <div id="research-results-panel" className={conversationStyles.resultsPanel} role="tabpanel" aria-labelledby="research-detail-results-tab" hidden={workbenchView !== "results"} tabIndex={-1}>
+            {sessionResultTurn ? <ResearchSessionResult key={`${projectId}:${sessionResultTurn.research_session_id}:${sessionResultTurn.turn_id}`}
+              projectId={projectId} sessionId={sessionResultTurn.research_session_id} turnId={sessionResultTurn.turn_id}
+              onProgress={setSessionResultProgress} onTerminal={() => setReloadKey(value => value + 1)} /> : null}
+            {!agent2TurnId && runReadFailures.length > 0 ? (
+              <div className="research-result-read-error" role="alert">
+                <p>暂时无法读取：{runReadFailures.join("、")}。</p>
+                {runReadFailures.includes("运行详情") ? <p>进度暂未确认，当前显示上次读取的状态。</p> : null}
+                <p>已打开的内容仍可查看。</p>
+                <button type="button" className="product-secondary-action" disabled={runReadPending} onClick={() => { setRunReadPending(true); setReloadKey((value) => value + 1); }}>{runReadPending ? "正在读取…" : "重新读取分析结果"}</button>
+              </div>
+            ) : null}
             {hasAuthoritativeTurnPresentation ? (
               <>
                 <Agent2ScientificPresentation
                   turnId={agent2TurnId as string}
+                  resultTarget={resultTargetSnapshotId || resultTargetItemId ? {
+                    snapshotId: resultTargetSnapshotId || "", itemId: resultTargetItemId || "", requestKey: resultOpenRequest,
+                  } : undefined}
+                  progress={activeAgent2Progress}
                   projectId={projectId}
                   sessionId={session?.id}
-                  sessionMemory={sessionMemory}
-                  onSessionMemoryChange={setSessionMemory}
+                  context={sessionContext}
+                  onContinue={selectedSessionIsWritable && canResearch ? continueAgent2Research : undefined}
+                  onEdit={selectedSessionIsWritable && canResearch ? editAgent2Turn : undefined}
+                  onRun={selectedSessionIsWritable && canResearch ? runResultResearch : undefined}
+                  canModify={selectedSessionIsWritable && canResearch}
                 />
                 <LiteratureEvidencePanel
                   projectId={projectId}
@@ -4750,7 +4754,28 @@ export function ResearchPage({
                 />
               </>
             ) : null}
-            {!hasAuthoritativeTurnPresentation ? (
+            {agent2TurnId && !hasAuthoritativeTurnPresentation ? <ResearchTurnResultState
+              turnId={agent2TurnId} progress={activeAgent2Progress}
+              unconfirmed={agent2RecoveryState.turnId === agent2TurnId && agent2RecoveryState.status !== "connected"}
+              onOpenTimeline={() => {
+                const opener = document.activeElement;
+                setMobilePanel("timeline");
+                window.requestAnimationFrame(() => {
+                  if (document.activeElement !== opener && document.activeElement !== document.body) return;
+                  const target = conversationHistoryRef.current?.querySelector<HTMLElement>(".research-execution-activity") || conversationHistoryRef.current;
+                  if (target) { target.tabIndex = -1; target.focus(); target.scrollIntoView?.({ block: "nearest" }); }
+                });
+              }}
+            /> : null}
+            {!agent2TurnId && !sessionResultTurn && !history ? (
+              <div className="research-state idle" role="status">
+                <h2>{projectHistoryReadState === "error" ? "项目数据暂时无法读取" : "正在读取项目数据…"}</h2>
+                {projectHistoryReadState === "error" ? <button type="button" className="product-secondary-action" onClick={() => setReloadKey((value) => value + 1)}>重新读取项目数据</button> : null}
+              </div>
+            ) : null}
+            {!agent2TurnId && !sessionResultTurn && history && showResearchStarter && hasExplicitScientificHandoff ? (
+              <section className="research-state idle"><h2>尚无分析结果</h2></section>
+            ) : !agent2TurnId && !sessionResultTurn && history ? (
               <ResearchWorkbenchContent
                 projectId={projectId}
                 state={state}
@@ -4763,11 +4788,13 @@ export function ResearchPage({
                 evidence={evidence}
                 error={error}
                 runResolutionState={runResolutionState}
+                resultsUnavailable={runReadFailures.includes("科学结果")}
                 history={history}
-                onConfirmScope={confirmScope}
                 onTryQuestion={trySuggestedQuestion}
+                onRestoreQuestion={canResearch ? restoreRunQuestion : undefined}
               />
             ) : null}
+            </div>
           </section>
         </section>
       </ProductShell>
@@ -4807,26 +4834,36 @@ export function mergeArtifacts(
   );
 }
 
-async function createScientificInterpretation(jobId: string, planHash: string) {
-  try {
-    const strict = await createPlannerJobInterpretation(jobId, planHash, {
-      mode: "STRICT_PROVIDER",
-      idempotencyKey: `research-scientific-interpretation:${jobId}`,
-    });
-    if (strict.interpretation) return strict;
-  } catch {
-    // A grounded deterministic interpretation keeps verified results readable
-    // when the configured provider is temporarily unavailable.
-  }
-  return createPlannerJobInterpretation(jobId, planHash, {
-    mode: "DETERMINISTIC",
-    idempotencyKey: `research-deterministic-interpretation:${jobId}`,
-  });
+async function createScientificInterpretation(jobId: string, planHash: string, signal: AbortSignal) {
+  const validate = (interpretation: GroundedScientificInterpretation) => {
+    if (!interpretation.interpretationId || (interpretation.sourceJobId && interpretation.sourceJobId !== jobId) ||
+        (interpretation.sourcePlanHash && interpretation.sourcePlanHash !== planHash)) throw new Error("Interpretation source mismatch");
+  };
+  const saved = await readSessionRequest((requestSignal) => getPlannerJobInterpretations(jobId, { signal: requestSignal }), signal);
+  if (saved.jobId && saved.jobId !== jobId) throw new Error("Job interpretations mismatch");
+  const existing = saved.interpretations.at(-1);
+  if (existing) { validate(existing); return { interpretation: existing }; }
+  const create = async (mode: "STRICT_PROVIDER" | "DETERMINISTIC", idempotencyKey: string) => {
+    const value = await readSessionRequest((requestSignal) => createPlannerJobInterpretation(jobId, planHash, {
+      mode, idempotencyKey, signal: requestSignal,
+    }), signal);
+    if ((value.sourceJobId && value.sourceJobId !== jobId) ||
+        (value.sourcePlanHash && value.sourcePlanHash !== planHash)) throw new Error("Interpretation response mismatch");
+    if (value.interpretation) validate(value.interpretation);
+    return value;
+  };
+  const strict = await create("STRICT_PROVIDER", `research-scientific-interpretation:${jobId}`);
+  if (strict.interpretation) return strict;
+  // A transport timeout does not prove the original write failed. Only a
+  // definitive provider/validation outcome permits a different fallback.
+  if (!["PROVIDER_FAILED", "VALIDATION_FAILED"].includes(strict.outcome)) return strict;
+  return create("DETERMINISTIC", `research-deterministic-interpretation:${jobId}`);
 }
 
 function ResearchStarter({
   projectId,
   datasetCount,
+  selectedDataset,
   canResearch,
   projectStatus,
   prompts,
@@ -4834,11 +4871,34 @@ function ResearchStarter({
 }: {
   projectId: string;
   datasetCount: number;
+  selectedDataset?: { id: string; name: string; sampleRef?: string; sourceSelectionToken?: string; hasSourceSelection?: boolean };
   canResearch: boolean;
   projectStatus: string;
   prompts: ResearchStarterPrompt[];
   onTryQuestion: (question: string) => void;
 }) {
+  // Carry the original dataset version back to Data. Research admission still
+  // resolves scientific authority through the existing dataset bridge.
+  let returnSelection = "";
+  if (selectedDataset?.sourceSelectionToken && selectedDataset.sampleRef) {
+    try {
+      const selection = decodeWorkspaceSelectionUrl(selectedDataset.sourceSelectionToken);
+      const primary = selection.primary;
+      if (!selection.cleared && selection.compatibility === "EXACT" && primary?.kind === "DATASET_SAMPLE"
+        && primary.projectId === projectId && primary.datasetId === selectedDataset.id
+        && primary.sampleRef === selectedDataset.sampleRef) returnSelection = selectedDataset.sourceSelectionToken;
+    } catch { /* Invalid navigation context must not select a different source. */ }
+  }
+  if (canResearch && !selectedDataset) {
+    return <section className="research-starter" aria-labelledby="research-starter-title">
+      <h2 id="research-starter-title">想研究什么？</h2>
+      <div className="research-starter-questions">
+        {["解释元素周期表的排列规律", "共价键、离子键和金属键有什么区别？"].map(question =>
+          <button key={question} type="button" onClick={() => onTryQuestion(question)}>{question}</button>
+        )}
+      </div>
+    </section>;
+  }
   if (!datasetCount) {
     const projectIsArchived = projectStatus === "archived";
     const projectIsTrashed = projectStatus === "trashed";
@@ -4895,7 +4955,12 @@ function ResearchStarter({
       aria-labelledby="research-starter-title"
     >
       <p className="product-kicker">研究起点</p>
-      <h2 id="research-starter-title">从 {datasetCount} 个项目数据集开始</h2>
+      <h2 id="research-starter-title">{selectedDataset ? `围绕 ${selectedDataset.name} 开始研究` : `从 ${datasetCount} 个项目数据集开始`}</h2>
+      {selectedDataset && !selectedDataset.hasSourceSelection ? <div className="research-starter-scope" role="note" aria-label="本次研究的数据范围">
+        <span>{selectedDataset.sampleRef ? "已指定 1 个样本" : "已指定数据集"}</span>
+        {selectedDataset.sampleRef ? <code>{selectedDataset.sampleRef}</code> : null}
+        <Link href={`/projects/${projectId}/data?dataset=${encodeURIComponent(selectedDataset.id)}${selectedDataset.sampleRef ? `&sample=${encodeURIComponent(selectedDataset.sampleRef)}` : ""}${returnSelection ? `&selection=${encodeURIComponent(returnSelection)}` : ""}`}>查看来源数据</Link>
+      </div> : null}
       <p>
         {canResearch
           ? "选择一个与当前数据匹配的方向；问题只会填入下方输入框，由你确认后开始分析。"
@@ -4938,9 +5003,10 @@ function ResearchWorkbenchContent({
   evidence,
   error,
   runResolutionState,
+  resultsUnavailable = false,
   history,
-  onConfirmScope,
   onTryQuestion,
+  onRestoreQuestion,
 }: {
   projectId: string;
   state: ResearchState;
@@ -4953,9 +5019,10 @@ function ResearchWorkbenchContent({
   evidence: InterpretationEvidenceResponse | null;
   error: string;
   runResolutionState: "idle" | "loading" | "settled";
+  resultsUnavailable?: boolean;
   history: ProjectHistory | null;
-  onConfirmScope: (datasetId: string) => Promise<void>;
   onTryQuestion: (question: string) => void;
+  onRestoreQuestion?: () => void;
 }) {
   const resultArtifacts = projectScientificArtifacts(artifacts);
   const [highlightedArtifactId, setHighlightedArtifactId] = useState<
@@ -4994,8 +5061,6 @@ function ResearchWorkbenchContent({
         </details>
       </div>
     );
-  if (state === "clarification")
-    return <ClarificationState scope={scope} onConfirm={onConfirmScope} />;
   if (state === "capability-clarification")
     return (
       <CapabilityClarificationState
@@ -5006,13 +5071,12 @@ function ResearchWorkbenchContent({
   if (state === "idle")
     return (
       <div className="research-state idle">
-        <p className="product-kicker">当前研究上下文</p>
-        <h2>项目数据与最近研究</h2>
-        <p>这里保留可用于分析的数据范围，以及已经完成的研究结果。</p>
+        <h2>可用数据</h2>
+        <p>打开数据集查看内容、选择样本，再围绕具体数据继续研究。</p>
         <section className="research-idle-section">
           <header>
-            <strong>项目数据</strong>
             <span>{history?.datasets.length || 0} 个数据集</span>
+            <Link href={`/projects/${projectId}/data`}>查看全部数据</Link>
           </header>
           {history?.datasets.slice(0, 4).map((dataset) => (
             <Link
@@ -5020,48 +5084,22 @@ function ResearchWorkbenchContent({
               href={`/projects/${projectId}/data?dataset=${dataset.datasetId}`}
               className="research-context-row"
             >
-              <strong>{dataset.name}</strong>
-              <span>
+              <div>
+                <strong>{dataset.name}</strong>
+                <span>
                 {dataset.profile?.rowCount ??
                   dataset.profile?.objectCount ??
                   "—"}{" "}
                 个记录 ·{" "}
                 {researchDatasetTypeLabel(dataset.profile?.datasetType)}
-              </span>
+                </span>
+              </div>
+              <span aria-hidden="true">查看 →</span>
             </Link>
           ))}
           {!history?.datasets.length && (
             <p className="research-context-empty">
               上传数据后，可在这里查看当前研究范围。
-            </p>
-          )}
-        </section>
-        <section className="research-idle-section">
-          <header>
-            <strong>最近研究</strong>
-            <Link href={`/projects/${projectId}/reports`}>查看报告</Link>
-          </header>
-          {history?.analyses.slice(0, 3).map((run) => (
-            <Link
-              key={run.jobId}
-              href={researchRunHref(
-                projectId,
-                run.jobId,
-                [],
-                run.researchSessionId,
-                run.researchTurnId,
-              )}
-              className="research-context-row"
-            >
-              <strong>{researchRunTitle(run)}</strong>
-              <span>
-                {researchSessionStatusLabel(effectiveResearchRunStatus(run))}
-              </span>
-            </Link>
-          ))}
-          {!history?.analyses.length && (
-            <p className="research-context-empty">
-              完成第一次研究后，结果会保留在这里。
             </p>
           )}
         </section>
@@ -5095,6 +5133,8 @@ function ResearchWorkbenchContent({
                 ? "科学结果"
                 : state === "partial"
                   ? "部分结果"
+                  : state === "canceled"
+                    ? "分析已取消"
                   : "分析未完成"}
           </p>
           <h2>
@@ -5124,15 +5164,22 @@ function ResearchWorkbenchContent({
           ) : null}
         </div>
       </header>
+      {state === "failed" && jobId ? (
+        <section className="research-run-recovery" role="status" aria-label="分析失败与恢复">
+          <p>{researchRunFailureMessage(events)}</p>
+          <p>{resultArtifacts.length ? "已保存的科学输出仍保留在下方，可继续查看。" : "本次运行尚无可展示的科学结果。"}</p>
+          {onRestoreQuestion ? <button type="button" className="product-secondary-action" onClick={onRestoreQuestion}>修改问题后重试</button> : null}
+        </section>
+      ) : null}
       <section className="live-results">
-        <div className="result-heading">
+        {state !== "failed" || resultArtifacts.length ? <div className="result-heading">
           <h3>{state === "running" ? "本次分析" : "主要结果"}</h3>
           <span>
             {resultArtifacts.length
               ? `${resultArtifacts.length} 个科学输出`
               : scope?.dataset_name || ""}
           </span>
-        </div>
+        </div> : null}
         {primaryArtifact ? (
           <ResearchArtifactFigure
             artifact={primaryArtifact}
@@ -5146,9 +5193,11 @@ function ResearchWorkbenchContent({
           />
         ) : runResolutionState === "loading" ? (
           <div className="result-empty product-loading" role="status">
-            正在读取已持久化科学结果…
+            正在读取分析结果…
           </div>
-        ) : (
+        ) : resultsUnavailable ? (
+          <div className="result-empty">科学结果暂时无法读取，请重试。</div>
+        ) : state === "failed" ? null : (
           <div className="result-empty">
             {state === "running" ? (
               <>
@@ -5162,12 +5211,12 @@ function ResearchWorkbenchContent({
           </div>
         )}
         {supportingArtifacts.length ? (
-          <details className="report-supporting-results">
-            <summary>支持性结果 · {supportingArtifacts.length} 项</summary>
-            <div className="report-artifact-list">
-              {supportingArtifacts.map((artifact) => (
+          <section className="report-supporting-results" aria-label="补充结果">
+            {supportingArtifacts.map((artifact) => (
+              <details key={artifact.artifactId || artifact.id} className="report-supplementary-result">
+                <summary>{artifact.resultTitle}</summary>
                 <ResearchArtifactFigure
-                  key={artifact.artifactId || artifact.id}
+                  showHeading={false}
                   artifact={artifact}
                   highlighted={
                     artifactReference(artifact) === highlightedArtifactId
@@ -5176,14 +5225,20 @@ function ResearchWorkbenchContent({
                   datasetId={datasetId}
                   jobId={jobId}
                   artifacts={artifacts}
-                      />
-                    ))}
-                  </div>
-          </details>
+                />
+              </details>
+            ))}
+          </section>
         ) : null}
         {(state === "complete" || state === "partial") && (
           <section className="finding-block">
-            <h3>主要发现</h3>
+            <h3>
+              {resultArtifacts.length ||
+              userFacingClaims(interpretation).length ||
+              groundedNarrative.finding
+                ? "主要发现"
+                : "状态说明"}
+            </h3>
             {interpretationStatus === "loading" ? (
               <p role="status">正在整理科学结论…</p>
             ) : userFacingClaims(interpretation).length ? (
@@ -5203,7 +5258,9 @@ function ResearchWorkbenchContent({
               <p>{groundedNarrative.finding}</p>
             ) : (
               <p>
-                本次分析已生成可复核的图表与数据表；当前解释没有足够的用户级科学结论。
+                {resultArtifacts.length
+                  ? "本次分析已生成可复核的图表与数据表；当前解释没有足够的用户级科学结论。"
+                  : "当前未读取到可展示的科学输出；请打开分析报告查看执行状态与依据。"}
               </p>
             )}
             <h3>限制</h3>
@@ -5217,8 +5274,12 @@ function ResearchWorkbenchContent({
               <p>
                 {groundedNarrative.limitation ||
                   (interpretationStatus === "error"
-                    ? "科学结论暂时无法读取；结果仍可查看。"
-                    : "解释仅适用于本次分析所使用的数据与证据。")}
+                    ? resultArtifacts.length
+                      ? "科学结论暂时无法读取；结果仍可查看。"
+                      : "科学结论暂时无法读取；请从分析报告核对本次运行。"
+                    : resultArtifacts.length
+                      ? "解释仅适用于本次分析所使用的数据与证据。"
+                      : "当前没有可展示的科学输出；结果解释需要先读取持久化输出。")}
               </p>
             )}
             {evidence?.evidenceItems?.length ? (
@@ -5356,6 +5417,7 @@ function ResearchWorkbenchContent({
 
 function ResearchArtifactFigure({
   artifact,
+  showHeading = true,
   highlighted = false,
   projectId,
   datasetId,
@@ -5363,6 +5425,7 @@ function ResearchArtifactFigure({
   artifacts,
 }: {
   artifact: ProjectedScientificArtifact;
+  showHeading?: boolean;
   highlighted?: boolean;
   projectId: string;
   datasetId?: string;
@@ -5374,16 +5437,10 @@ function ResearchArtifactFigure({
       id={artifactDomId(artifact)}
       className={`artifact-result result-role-${artifact.resultRole.toLowerCase()}${highlighted ? " evidence-target" : ""}`}
     >
-      <header className="artifact-result-heading">
-        <span>
-          {artifact.resultRole === "PRIMARY_FIGURE"
-            ? "权威图表"
-            : artifact.resultRole === "PRIMARY_TABLE"
-              ? "权威数据表"
-              : artifactLabel(artifact.type)}
-        </span>
+      {showHeading && artifact.type !== "metrics_json" ? <header className="artifact-result-heading">
+        {artifactLabel(artifact.type) !== artifact.resultTitle ? <span>{artifactLabel(artifact.type)}</span> : null}
         <strong>{artifact.resultTitle}</strong>
-      </header>
+      </header> : null}
       {jobId ? (
         <LazyScientificResultViewer
           projectId={projectId}
@@ -5393,12 +5450,6 @@ function ResearchArtifactFigure({
           artifacts={artifacts}
         />
       ) : null}
-      <p>
-        {artifact.resultRole === "PRIMARY_FIGURE" ||
-        artifact.resultRole === "PRIMARY_TABLE"
-          ? "图表与单位来自本次分析的已验证结果。"
-          : "支持性科学输出，供结果复核使用。"}
-      </p>
     </article>
   );
 }
@@ -5441,6 +5492,10 @@ function InlineRunProcess({
       .map(eventStepId)
       .filter((value): value is string => value !== null),
   );
+  const failedSteps = new Set(
+    events.filter((event) => event.eventType === "tool.failed").map(eventStepId)
+      .filter((value): value is string => value !== null),
+  );
   return (
     <details className="timeline-run-process" open={!complete}>
       <summary>
@@ -5452,6 +5507,8 @@ function InlineRunProcess({
             ? "需要确认分析方法"
             : state === "failed"
               ? "分析未完成 · 查看过程"
+              : state === "canceled"
+                ? "分析已取消 · 查看过程"
               : state === "partial"
                 ? "部分完成 · 查看过程"
                 : state === "planning"
@@ -5459,6 +5516,9 @@ function InlineRunProcess({
                   : "分析中 · 查看过程"}
       </summary>
       <div className="timeline-process-body" role="status">
+        {state === "canceled" ? (
+          <p>本次分析已取消，取消前已保存的输出仍可查看。</p>
+        ) : null}
         {datasetLabel && (
           <p>
             ✓ 已确定分析数据
@@ -5474,6 +5534,7 @@ function InlineRunProcess({
               state,
               completedSteps,
               activeSteps,
+              failedSteps,
             );
             const projection = userFacingPlanStep(
               step.purpose,
@@ -5486,12 +5547,15 @@ function InlineRunProcess({
                 <span>
                   {stepState === "complete"
                     ? "✓"
+                    : stepState === "failed"
+                      ? "×"
                     : stepState === "active"
                       ? "●"
                       : "○"}
                 </span>
                 <div>
                   <strong>{projection.purpose}</strong>
+                  {stepState === "failed" ? <small>此步骤执行失败</small> : null}
                   {projection.reason && <small>{projection.reason}</small>}
                 </div>
               </li>
@@ -5523,9 +5587,11 @@ export function runProcessStepState(
   state: ResearchState,
   completedSteps: ReadonlySet<string>,
   activeSteps: ReadonlySet<string>,
-): "complete" | "active" | "pending" {
+  failedSteps: ReadonlySet<string> = new Set(),
+): "complete" | "active" | "pending" | "failed" {
   if (state === "complete") return "complete";
   if (stepId && completedSteps.has(stepId)) return "complete";
+  if (stepId && failedSteps.has(stepId)) return "failed";
   if (state === "running" && stepId && activeSteps.has(stepId)) return "active";
   return "pending";
 }
@@ -5643,7 +5709,7 @@ export function scientistFacingResearchRequestError(reason: unknown): string {
       return message;
     }
   }
-  return "研究请求暂时无法完成。没有创建新的分析运行；已完成的科学结果仍然保留。";
+  return "研究请求暂时无法完成。请重新打开当前研究检查最新进度后再重试；已完成的科学结果仍然保留。";
 }
 
 function plannerFailureMessage(result: PlannerJobCreateResult) {
@@ -5873,9 +5939,14 @@ function userFacingClaims(
 
 export function displayResearchMessage(message: ResearchMessage): string {
   if (message.role !== "assistant") return message.content;
+  if (message.payload?.messageKind === "ASSISTANT_FINAL" &&
+      (message.payload.source !== "agent2_scientific_interpreter" || message.payload.responseFormat === "markdown")) {
+    return message.content;
+  }
   let text = message.content;
-  if (message.payload?.messageKind === "ASSISTANT_FINAL") {
-    const scientificBody = text
+  if (message.payload?.messageKind === "ASSISTANT_FINAL"
+      && message.payload.source === "agent2_scientific_interpreter") {
+    const scientificBody = scientificNarrativeText(text)
       .replace(/^[^\n]*\n/u, "")
       .split(/\n\s*(?:限制：|可考虑的后续方向：)/u, 1)[0];
     const cleanScientificText = (value: string) => value
@@ -6238,51 +6309,6 @@ function artifactLabel(type: string | undefined) {
         volumetric_payload_json: "体数据",
       } as Record<string, string>
     )[String(type || "").toLowerCase()] || "科学结果"
-  );
-}
-
-function ClarificationState({
-  scope,
-  onConfirm,
-}: {
-  scope: ScopeResolution | null;
-  onConfirm: (datasetId: string) => Promise<void>;
-}) {
-  const candidates = scope?.candidates || [];
-  const [selected, setSelected] = useState(candidates[0]?.dataset_id || "");
-  return (
-    <div className="research-state">
-      <p className="product-kicker">需要确认</p>
-      <h2>本次分析可以使用多个数据集。</h2>
-      <p>{scope?.reason || "请选择本次主要分析数据。"}</p>
-      {candidates.length ? (
-        <fieldset>
-          <legend>选择本次主要分析数据</legend>
-          {candidates.map((candidate) => (
-            <label key={candidate.dataset_id}>
-              <input
-                type="radio"
-                name="scope-dataset"
-                value={candidate.dataset_id}
-                checked={selected === candidate.dataset_id}
-                onChange={() => setSelected(candidate.dataset_id)}
-              />
-              {candidate.name} · {candidate.semantics.join("、")}
-            </label>
-          ))}
-        </fieldset>
-      ) : null}
-      <p className="product-form-hint">
-        确认后会在当前研究会话中继续，不会创建跨数据集的单个运行。
-      </p>
-      <button
-        className="product-primary-action"
-        disabled={!selected}
-        onClick={() => void onConfirm(selected)}
-      >
-        确认数据范围
-      </button>
-    </div>
   );
 }
 

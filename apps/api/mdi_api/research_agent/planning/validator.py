@@ -11,6 +11,8 @@ class CapabilityPlanValidator:
     def validate(self, *, plan: CapabilityPlan, resolution: CapabilityResolution, decision: ResearchTurnDecision, context: dict[str, Any], registry: Any) -> CapabilityPlan:
         candidate_by_key = {f"cap_{index}": item for index, item in enumerate(sorted(resolution.candidates, key=lambda item: (item.planning_priority, item.capability_id, item.capability_version)), 1)}
         used_requirements: set[str] = set()
+        subjects_by_requirement: dict[str, set[str]] = {}
+        subjects_by_step: dict[str, set[str]] = {}
         step_ids = {step.step_id for step in plan.steps}
         if len(step_ids) != len(plan.steps):
             raise CapabilityPlanInvalid("duplicate plan step", code="CAPABILITY_PLAN_INVALID")
@@ -18,6 +20,7 @@ class CapabilityPlanValidator:
         raw_refs = [*(context.get("selection_refs_json") or []), *(context.get("active_scope_refs_json") or [])]
         source_refs = {f"obj_{index}": item for index, item in enumerate(raw_refs, 1)}
         for step in plan.steps:
+            step_subjects: set[str] = set()
             candidate = candidate_by_key.get(step.capability_ref_key)
             if candidate is None or candidate.eligibility not in {CapabilityEligibility.ELIGIBLE, CapabilityEligibility.CONDITIONAL}:
                 raise CapabilityPlanInvalid("unknown or ineligible capability", code="CAPABILITY_PLAN_UNKNOWN_REFERENCE")
@@ -49,7 +52,14 @@ class CapabilityPlanValidator:
                 if requirement.requirement_id not in candidate.satisfies_requirement_ids:
                     continue
                 for key, value in requirement.constraints.items():
-                    authorized_parameters[str(parameter_mapping.get(key) or key)] = value
+                    parameter = str(parameter_mapping.get(key) or key)
+                    if parameter in authorized_parameters and authorized_parameters[parameter] != value:
+                        raise CapabilityPlanInvalid(
+                            "conflicting scientific constraints require separate analyses; "
+                            "per-material parameter binding is not yet supported",
+                            code="CAPABILITY_PLAN_PARAMETER_AUTHORITY_INVALID",
+                        )
+                    authorized_parameters[parameter] = value
             if step.parameters != authorized_parameters:
                 raise CapabilityPlanInvalid(
                     "capability parameters must exactly match authorized scientific constraints; "
@@ -75,6 +85,7 @@ class CapabilityPlanValidator:
                                 "source reference is not authorized for the capability input slot",
                                 code="CAPABILITY_PLAN_PORT_MISMATCH",
                             )
+                        step_subjects.add(binding.source_ref_key)
                     if binding.kind == CapabilityBindingKind.PLANNED_OUTPUT:
                         edges += 1
                         if binding.producer_step_id not in step_ids or binding.producer_step_id == step.step_id:
@@ -98,16 +109,30 @@ class CapabilityPlanValidator:
                         output = next((item for item in registry.require(producer_candidate.capability_id, producer_candidate.capability_version).output_slots if item.name == binding.producer_output_slot), None)
                         if output is None or not ((output.scientific_object_type in slot.accepted_object_types) or (output.result_type in slot.accepted_object_types)):
                             raise CapabilityPlanInvalid("producer/consumer port mismatch", code="CAPABILITY_PLAN_PORT_MISMATCH")
+                        step_subjects.update(subjects_by_step[producer.step_id])
                     elif binding.kind == CapabilityBindingKind.PREVIOUS_RESULT:
                         if binding.result_ref_key not in candidate.reusable_result_bindings.get(slot_name, []):
                             raise CapabilityPlanInvalid("unknown or incompatible result binding", code="CAPABILITY_PLAN_UNKNOWN_REFERENCE")
+                        step_subjects.update(candidate.reusable_result_source_ref_keys.get(slot_name, {}).get(binding.result_ref_key or "", []))
             for slot in manifest.input_slots:
                 count = len(step.input_bindings.get(slot.name, []))
                 if count < slot.min_count or (slot.max_count is not None and count > slot.max_count):
                     raise CapabilityPlanInvalid("required capability input is not bound", code="CAPABILITY_PLAN_PORT_MISMATCH")
+            subjects_by_step[step.step_id] = step_subjects
+            for requirement_id in step.satisfies_requirement_ids:
+                subjects_by_requirement.setdefault(requirement_id, set()).update(step_subjects)
         if edges > 16:
             raise CapabilityPlanInvalid("dependency limit exceeded")
         required = {item.requirement_id for item in decision.scientific_requirements if item.criticality.value == "REQUIRED"}
         if not required.issubset(used_requirements):
             raise CapabilityPlanInvalid("required requirement omitted", code="CAPABILITY_PLAN_UNSATISFIED_REQUIREMENT")
+        for requirement in decision.scientific_requirements:
+            if requirement.requirement_id not in used_requirements:
+                continue
+            missing_subjects = set(requirement.subject_ref_keys) - subjects_by_requirement.get(requirement.requirement_id, set())
+            if missing_subjects:
+                raise CapabilityPlanInvalid(
+                    f"required subject coverage omitted for {requirement.requirement_id}: {', '.join(sorted(missing_subjects))}",
+                    code="CAPABILITY_PLAN_UNSATISFIED_REQUIREMENT",
+                )
         return plan

@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from enum import Enum
 import json
+import math
 import re
 from typing import Any, Literal
 from uuid import UUID
@@ -76,6 +77,8 @@ class ResearchTurnEventType(str, Enum):
     ORCHESTRATION_COMPLETED = "ORCHESTRATION_COMPLETED"
     CLARIFICATION_REQUESTED = "CLARIFICATION_REQUESTED"
     DIRECT_ANSWER_READY = "DIRECT_ANSWER_READY"
+    ASSISTANT_RESPONSE_DELTA = "ASSISTANT_RESPONSE_DELTA"
+    ASSISTANT_RESPONSE_RESET = "ASSISTANT_RESPONSE_RESET"
     PLAN_REQUESTED = "PLAN_REQUESTED"
     CAPABILITY_RESOLUTION_STARTED = "CAPABILITY_RESOLUTION_STARTED"
     CAPABILITY_RESOLUTION_COMPLETED = "CAPABILITY_RESOLUTION_COMPLETED"
@@ -150,7 +153,7 @@ class ResolvedReference(BaseModel):
 
 
 class ScientificSelectionContext(BaseModel):
-    """Bounded semantic viewer selection captured as turn evidence."""
+    """Bounded viewer-reported subject selection, not computed evidence."""
 
     model_config = ConfigDict(extra="forbid")
 
@@ -178,6 +181,8 @@ class ScientificSelectionContext(BaseModel):
                     raise ValueError("selection locator values must be JSON scalars")
                 if isinstance(scalar, str) and len(scalar) > 512:
                     raise ValueError("selection locator strings must be bounded")
+                if isinstance(scalar, float) and not math.isfinite(scalar):
+                    raise ValueError("selection locator numbers must be finite")
         if len(json.dumps(value, sort_keys=True, separators=(",", ":"))) > 8192:
             raise ValueError("selection locator payload is too large")
         return value
@@ -435,6 +440,7 @@ class RequirementManifest(BaseModel):
     description: str = Field(min_length=1, max_length=1024)
     scientific_domain: str = Field(default="generic", min_length=1, max_length=96)
     accepted_object_types: list[str] = Field(default_factory=list)
+    requires_material: bool = True
     constraint_schema: dict[str, Any] = Field(default_factory=lambda: {"type": "object", "additionalProperties": False})
     status: Literal["ACTIVE", "EXPERIMENTAL", "DEPRECATED"] = "ACTIVE"
 
@@ -522,6 +528,13 @@ class ResearchTurnUIContext(BaseModel):
     explicit_finding_refs: list[str] = Field(default_factory=list, max_length=16)
 
 
+class ResearchModelSelection(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    provider: str = Field(min_length=1, max_length=80)
+    model: str = Field(min_length=1, max_length=128)
+    thinking_mode: Literal["quick", "standard", "deep"] = "standard"
+
+
 class CreateResearchTurnRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -530,6 +543,17 @@ class CreateResearchTurnRequest(BaseModel):
     reply_to_turn_id: UUID | None = None
     autonomy_mode: AutonomyMode = AutonomyMode.STANDARD
     admission_key: str | None = Field(default=None, min_length=1, max_length=128)
+    model_selection: ResearchModelSelection | None = None
+    requested_action: Literal["INTERPRET_RESULT"] | None = None
+
+    @model_validator(mode="after")
+    def validate_requested_action(self) -> "CreateResearchTurnRequest":
+        if self.requested_action is not None:
+            if self.ui_context is None or len(self.ui_context.explicit_result_ids) != 1:
+                raise ValueError("重新解释需要选择一份明确的科学结果。")
+            if self.autonomy_mode != AutonomyMode.STANDARD:
+                raise ValueError("重新解释不能同时启动自主分析。")
+        return self
 
     @field_validator("message")
     @classmethod

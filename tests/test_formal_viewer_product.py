@@ -3,10 +3,12 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
 from pymatgen.core import Lattice, Structure
 
 from mdi_adapters import StructureViewer3DAdapter
 from mdi_adapters.context import ToolExecutionContext
+from mdi_adapters.errors import ToolExecutionError
 from mdi_api.routers.tools import list_mvp_tools
 from mdi_artifact_core import validate_viewer_scene, validate_viewer_scene_manifest
 from mdi_llm import MockLLMProvider, PlannerRequest
@@ -93,6 +95,57 @@ def test_formal_adapter_emits_current_inert_scene_and_manifest(tmp_path: Path) -
     assert manifest["capabilities"]["renderer_included"] is False
     assert validate_viewer_scene(scene).valid
     assert validate_viewer_scene_manifest(manifest).valid
+
+
+@pytest.mark.parametrize("source,object_type,expected_bonds", [
+    (Structure.from_spacegroup("Fd-3m", Lattice.cubic(5.43), ["Si"], [[0, 0, 0]]), "Structure", 16),
+    ({"symbols": ["O", "H", "H"], "positions": [[0, 0, 0], [0.9572, 0, 0], [-0.2399872, 0.927297, 0]]}, "Atoms", 2),
+])
+def test_formal_radius_connections_execute_and_export_their_actual_method(tmp_path, source, object_type, expected_bonds):
+    payloads = _execute_radius_viewer(tmp_path, source, object_type)
+    scene = payloads["viewer_scene.json"]
+    assert validate_viewer_scene(scene).valid
+    assert validate_viewer_scene_manifest(payloads["viewer_scene_manifest.json"]).valid
+    assert len(scene["scene"]["bonds"]) == expected_bonds
+    assert scene["metadata"]["connectivity"]["method"] == "covalent_radii"
+    assert scene["metadata"]["connectivity"]["radius_scale"] == 1.15
+    assert scene["metadata"]["connectivity"]["authoritative"] is False
+    assert "10.1039/B801115J" in scene["metadata"]["connectivity"]["radius_reference"]
+    assert payloads["recipe.json"]["normalized_params"]["bond_method"] == "covalent_radii"
+    assert "bond_cutoff_angstrom" not in payloads["recipe.json"]["normalized_params"]
+    if object_type == "Atoms":
+        assert [(bond["from"], bond["to"]) for bond in scene["scene"]["bonds"]] == [(0, 1), (0, 2)]
+    else:
+        assert all(bond["distance_angstrom"] == pytest.approx(5.43 * 3 ** 0.5 / 4) for bond in scene["scene"]["bonds"])
+
+
+def test_formal_radius_connections_keep_missing_values_and_hard_search_limits_explicit(tmp_path):
+    missing = _execute_radius_viewer(tmp_path / "missing", {"symbols": ["Og", "H"], "positions": [[0, 0, 0], [0.5, 0, 0]]}, "Atoms")
+    assert missing["viewer_scene.json"]["scene"]["bonds"] == []
+    assert any(warning["code"] == "VIEWER_SCENE_RADII_UNAVAILABLE" for warning in missing["viewer_scene.json"]["warnings"])
+    with pytest.raises(ToolExecutionError) as error:
+        _execute_radius_viewer(tmp_path / "large-search", Structure(Lattice.cubic(0.1), ["Si"], [[0, 0, 0]]), "Structure")
+    assert error.value.code == "TOOL_RESOURCE_LIMIT"
+    assert error.value.details["errorType"] == "VIEWER_NEIGHBOR_OFFSET_LIMIT"
+
+
+def _execute_radius_viewer(root, source, object_type):
+    registry = load_manifests()
+    tool = registry.get_tool_by_id("structure.viewer_3d")
+    context = ToolExecutionContext(
+        job_id="radius-viewer", project_id="project", dataset_id="dataset",
+        tool_id=tool.toolId, tool_version=tool.version, adapter_version="1.0.0",
+        registry_version=registry.version, artifact_root=root, tool_call_id="radius-call",
+        object_store={"source": source}, resource_limits=tool.resourceLimits,
+    )
+    request = ToolExecutionRequest(
+        jobId="radius-viewer", stepId="view", toolId=tool.toolId,
+        inputRefs=[{"refType": "normalized_object", "ref": "source", "objectType": object_type}],
+        params={"include_bonds": True, "bond_method": "covalent_radii"},
+        artifactTypes=["structure_json", "table_json", "summary_md", "recipe_json"],
+    )
+    artifacts = StructureViewer3DAdapter().execute(context, request)
+    return {item.name: json.loads((root / item.storageKey).read_text(encoding="utf-8")) for item in artifacts if item.name.endswith(".json")}
 
 
 def _plan_for(prompt: str) -> dict:

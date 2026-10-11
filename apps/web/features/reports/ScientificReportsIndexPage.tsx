@@ -1,47 +1,66 @@
 "use client";
 
 import { ProductLink as Link } from "../../shared/layout/ProductNavigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getProjectHistory, type ProjectHistory } from "../../app/lib/planner-api";
-import { researchRunTitle } from "../../app/lib/research-display";
+import { researchRunSourceDatasets, researchRunTitle } from "../../app/lib/research-display";
+import { SourceDatasetList } from "../../shared/ui/SourceDatasetList";
 import {
   bulkUpdateScientificReportLifecycle,
   createScientificReportRevision,
   getScientificReportDependencyImpact,
   listScientificReports,
-  type ScientificReportDependencyImpact,
+
   type ScientificReportView,
   updateScientificReportLifecycle,
   updateScientificReportOrganization,
 } from "../../app/lib/scientific-report-api";
 import { ManagedObjectRow, ProductModal } from "../../shared/ui/ObjectManagement";
 import { ProductShell, RequireProductAuth } from "../../shared/layout/ProductShell";
+import { readReportContent } from "./report-read";
+import { useReportOperation } from "./use-report-operation";
+import { useDependencyPreview } from "../../shared/ui/DependencyPreview";
 
 const REPORT_PAGE_SIZE = 12;
+
+function assertSameReport(original: ScientificReportView, updated: ScientificReportView) {
+  if (updated.report_id !== original.report_id || updated.project_id !== original.project_id || updated.snapshot_id !== original.snapshot_id) {
+    throw new Error("Report identity mismatch");
+  }
+}
+
+async function readReportImpact(reportId: string, signal?: AbortSignal) {
+  const result = await getScientificReportDependencyImpact(reportId, signal);
+  if (result.entity !== "scientific_report" || result.entityId !== reportId) throw new Error("Report dependency identity mismatch");
+  return result;
+}
 
 export function ScientificReportsIndexPage({
   projectId,
 }: {
   projectId: string;
 }) {
+  return <ScientificReportsIndexContent key={projectId} projectId={projectId} />;
+}
+
+function ScientificReportsIndexContent({ projectId }: { projectId: string }) {
   const [grounded, setGrounded] = useState<ScientificReportView[]>([]);
   const [history, setHistory] = useState<ProjectHistory | null>(null);
-  const [state, setState] = useState<"loading" | "ready" | "error">("loading");
+  const [readStates, setReadStates] = useState<Record<"reports" | "history", "loading" | "ready" | "error">>({ reports: "loading", history: "loading" });
+  const requests = useRef(new Map<"reports" | "history", AbortController>());
   const [filter, setFilter] = useState<
     "active" | "archived" | "trashed" | "all"
   >("active");
   const [query, setQuery] = useState("");
   const [groundedLimit, setGroundedLimit] = useState(REPORT_PAGE_SIZE);
   const [legacyLimit, setLegacyLimit] = useState(REPORT_PAGE_SIZE);
-  const [busyReportId, setBusyReportId] = useState<string | null>(null);
   const [selectedReportIds, setSelectedReportIds] = useState<string[]>([]);
   const [selectionMode, setSelectionMode] = useState(false);
-  const [bulkBusy, setBulkBusy] = useState(false);
-  const [lifecycleError, setLifecycleError] = useState<string | null>(null);
-  const [impactPreview, setImpactPreview] = useState<{
-    report: ScientificReportView;
-    impact: ScientificReportDependencyImpact;
-  } | null>(null);
+  const operation = useReportOperation();
+  const { reconciled, isPending } = operation;
+  const [impactReport, setImpactReport] = useState<ScientificReportView | null>(null);
+  const impact = useDependencyPreview(impactReport ? [{ id: impactReport.report_id, label: impactReport.title }] : [], readReportImpact);
+  const impactPreview = impactReport && impact.complete ? { report: impactReport, impact: impact.items[0] } : null;
   const [renameEditor, setRenameEditor] = useState<{
     report: ScientificReportView;
     title: string;
@@ -50,25 +69,53 @@ export function ScientificReportsIndexPage({
     report: ScientificReportView;
     title: string;
   } | null>(null);
+  const dialogOpen = Boolean(renameEditor || revisionEditor || impactReport);
   useEffect(() => {
-    let active = true;
-    void Promise.allSettled([
-      listScientificReports(projectId),
-      getProjectHistory(projectId),
-    ]).then(([reports, legacy]) => {
-      if (!active) return;
-      if (reports.status === "fulfilled") setGrounded(reports.value.items);
-      if (legacy.status === "fulfilled") setHistory(legacy.value);
-      setState(
-        reports.status === "fulfilled" || legacy.status === "fulfilled"
-          ? "ready"
-          : "error",
-      );
-    });
+    if (!dialogOpen) return;
+    const bodyOverflow = document.body.style.overflow;
+    const rootOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
     return () => {
-      active = false;
+      document.body.style.overflow = bodyOverflow;
+      document.documentElement.style.overflow = rootOverflow;
     };
-  }, [projectId]);
+  }, [dialogOpen]);
+  const loadDirectory = useCallback(async (key: "reports" | "history") => {
+    if (isPending()) return;
+    requests.current.get(key)?.abort();
+    const controller = new AbortController();
+    requests.current.set(key, controller);
+    setReadStates((current) => ({ ...current, [key]: "loading" }));
+    try {
+      if (key === "reports") {
+        const result = await readReportContent((signal) => listScientificReports(projectId, signal), controller.signal);
+        if (controller.signal.aborted) return;
+        if (result.items.some((item) => item.project_id !== projectId || !item.report_id) || new Set(result.items.map((item) => item.report_id)).size !== result.items.length) throw new Error("Report identity mismatch");
+        setGrounded(result.items);
+        reconciled();
+      } else {
+        const result = await readReportContent((signal) => getProjectHistory(projectId, { signal, forceRefresh: true }), controller.signal);
+        if (controller.signal.aborted) return;
+        if (result.project.projectId !== projectId) throw new Error("History project mismatch");
+        setHistory(result);
+      }
+      setReadStates((current) => ({ ...current, [key]: "ready" }));
+    } catch {
+      if (!controller.signal.aborted) setReadStates((current) => ({ ...current, [key]: "error" }));
+    } finally {
+      if (requests.current.get(key) === controller) requests.current.delete(key);
+    }
+  }, [projectId, reconciled, isPending]);
+  useEffect(() => {
+    void loadDirectory("reports");
+    void loadDirectory("history");
+    const pending = requests.current;
+    return () => {
+      for (const controller of pending.values()) controller.abort();
+      pending.clear();
+    };
+  }, [loadDirectory]);
   const normalizedQuery = query.trim().toLocaleLowerCase("zh-CN");
   const legacyReports = useMemo(
     () =>
@@ -85,13 +132,11 @@ export function ScientificReportsIndexPage({
           return false;
         }
         if (!normalizedQuery) return true;
-        const dataset = history?.datasets.find(
-          (candidate) => candidate.datasetId === item.datasetId,
-        );
+        const sources = researchRunSourceDatasets(item, history?.datasets || []);
         return [
           researchRunTitle(item),
           item.userQuestion,
-          dataset?.name,
+          ...sources.map((source) => source.name),
           ...(item.toolIds || []),
         ]
           .filter(Boolean)
@@ -157,139 +202,91 @@ export function ScientificReportsIndexPage({
   function toggleAllReports() {
     setSelectedReportIds(allSelected ? [] : selectableReports.map((report) => report.report_id));
   }
+  const writesBlocked = operation.pending || operation.uncertain || readStates.reports !== "ready";
   async function bulkLifecycle(next: "ACTIVE" | "ARCHIVED") {
     const targets = next === "ARCHIVED" ? selectedActiveReports : selectedArchivedReports;
-    if (!targets.length || bulkBusy) return;
-    setBulkBusy(true);
-    setLifecycleError(null);
-    try {
-      const result = await bulkUpdateScientificReportLifecycle(
-        projectId,
-        targets.map((report) => report.report_id),
-        next,
-      );
-      setGrounded((items) =>
-        items.map((item) =>
-          result.items.find((value) => value.report_id === item.report_id) || item
-        ),
-      );
-      setSelectedReportIds([]);
-    } catch {
-      setLifecycleError(
-        "批量报告状态未更新；所选报告保持原状态，可检查权限或服务后重试。",
-      );
-    } finally {
-      setBulkBusy(false);
-    }
-  }
-  async function changeLifecycle(
-    report: ScientificReportView,
-    next: "ACTIVE" | "ARCHIVED" | "TRASHED",
-    confirmed = false,
-  ) {
-    if (next === "TRASHED" && !confirmed) {
-      setBusyReportId(report.report_id);
-      setLifecycleError(null);
-      try {
-        const impact = await getScientificReportDependencyImpact(report.report_id);
-        setImpactPreview({ report, impact });
-      } catch {
-        setLifecycleError("报告依赖影响暂时无法读取，未执行回收站操作。");
-      } finally {
-        setBusyReportId(null);
+    if (!targets.length || writesBlocked || requests.current.has("reports")) return;
+    await operation.run(next === "ARCHIVED" ? "批量归档" : "批量恢复", async (signal) => {
+      for (let start = 0; start < targets.length; start += 100) {
+        signal.throwIfAborted();
+        const batch = targets.slice(start, start + 100);
+        const ids = batch.map((report) => report.report_id);
+        const result = await bulkUpdateScientificReportLifecycle(projectId, ids, next, signal);
+        signal.throwIfAborted();
+        if (result.lifecycle !== next || result.count !== ids.length || result.reportIds.length !== ids.length ||
+          new Set(result.reportIds).size !== ids.length || result.reportIds.some((id) => !ids.includes(id)) ||
+          result.items.length !== ids.length || new Set(result.items.map((item) => item.report_id)).size !== ids.length) throw new Error("Report batch mismatch");
+        for (const updated of result.items) {
+          const original = batch.find((item) => item.report_id === updated.report_id);
+          if (!original || updated.lifecycle_status !== next) throw new Error("Report batch mismatch");
+          assertSameReport(original, updated);
+        }
+        setGrounded((items) => items.map((item) => result.items.find((value) => value.report_id === item.report_id) || item));
+        setSelectedReportIds((current) => current.filter((id) => !ids.includes(id)));
       }
-      return;
-    }
-    setBusyReportId(report.report_id);
-    setLifecycleError(null);
-    try {
-      const updated = await updateScientificReportLifecycle(
-        report.report_id,
-        next,
-      );
-      setGrounded((items) =>
-        items.map((item) =>
-          item.report_id === updated.report_id ? updated : item,
-        ),
-      );
-    } catch {
-      setLifecycleError("报告状态更新失败，请检查服务连接后重试。");
-    } finally {
-      setBusyReportId(null);
-    }
+    }, () => {});
   }
-  async function changeOrganization(
-    report: ScientificReportView,
-    changes: { title?: string | null; pinned?: boolean },
-  ) {
-    setBusyReportId(report.report_id);
-    setLifecycleError(null);
-    try {
-      const updated = await updateScientificReportOrganization(report.report_id, changes);
-      setGrounded((items) =>
-        items.map((item) => item.report_id === updated.report_id ? updated : item),
-      );
-      setRenameEditor(null);
-    } catch {
-      setLifecycleError("报告组织信息更新失败；科学报告快照未发生变化。");
-    } finally {
-      setBusyReportId(null);
-    }
+  async function changeLifecycle(report: ScientificReportView, next: "ACTIVE" | "ARCHIVED" | "TRASHED", confirmed = false) {
+    if (writesBlocked || requests.current.has("reports") || operation.locked()) return;
+    if (next === "TRASHED" && !confirmed) { setImpactReport(report); return; }
+    if (next === "TRASHED" && impactPreview?.report.report_id !== report.report_id) return;
+    await operation.run(next === "TRASHED" ? "移入回收站" : next === "ARCHIVED" ? "归档报告" : "恢复报告",
+      (signal) => updateScientificReportLifecycle(report.report_id, next, signal), (updated) => {
+        assertSameReport(report, updated);
+        if (updated.lifecycle_status !== next) throw new Error("Report status mismatch");
+        setGrounded((items) => items.map((item) => item.report_id === updated.report_id ? updated : item));
+        setImpactReport(null);
+      });
+  }
+  async function changeOrganization(report: ScientificReportView, changes: { title?: string | null; pinned?: boolean }) {
+    if (writesBlocked || requests.current.has("reports")) return;
+    const editor = renameEditor;
+    await operation.run(changes.title !== undefined ? "保存名称" : changes.pinned ? "置顶报告" : "取消置顶",
+      (signal) => updateScientificReportOrganization(report.report_id, changes, signal), (updated) => {
+        assertSameReport(report, updated);
+        if ((changes.title !== undefined && updated.title !== changes.title) ||
+          (changes.pinned !== undefined && updated.pinned !== changes.pinned)) throw new Error("Report organization mismatch");
+        setGrounded((items) => items.map((item) => item.report_id === updated.report_id ? updated : item));
+        setRenameEditor((current) => current === editor ? null : current);
+      });
   }
   async function createRevision() {
-    if (!revisionEditor || !revisionEditor.title.trim()) return;
-    setBusyReportId(revisionEditor.report.report_id);
-    setLifecycleError(null);
-    try {
-      const created = await createScientificReportRevision(
-        revisionEditor.report.report_id,
-        {
-          reason: "USER_REVISION",
-          title: revisionEditor.title.trim(),
-        },
-      );
-      setGrounded((items) => [created, ...items]);
-      setRevisionEditor(null);
-    } catch {
-      setLifecycleError(
-        "报告修订创建失败；原报告、ScientificResult 与精确来源均未改变。",
-      );
-    } finally {
-      setBusyReportId(null);
-    }
+    if (!revisionEditor || !revisionEditor.title.trim() || writesBlocked || requests.current.has("reports")) return;
+    const editor = revisionEditor, original = editor.report;
+    await operation.run("创建修订", (signal) => createScientificReportRevision(original.report_id, {
+      reason: "USER_REVISION", title: editor.title.trim(),
+    }, signal), (created) => {
+      if (!created.report_id || created.report_id === original.report_id || created.project_id !== projectId ||
+        created.parent_report_id !== original.report_id || created.parent_snapshot_id !== original.snapshot_id ||
+        created.revision_group_id !== (original.revision_group_id || original.report_id) ||
+        created.scientific_result_snapshot_id !== original.scientific_result_snapshot_id ||
+        created.research_turn_id !== original.research_turn_id) throw new Error("Report revision mismatch");
+      setGrounded((items) => [created, ...items.filter((item) => item.report_id !== created.report_id)]);
+      setRevisionEditor((current) => current === editor ? null : current);
+    });
   }
+  const feedback = <>
+    {operation.pending ? <p role="status">正在保存，请稍候…</p> : null}
+    {operation.error ? <div className="product-form-error" role="alert"><p>{operation.error}</p>
+      {operation.uncertain ? <button type="button" className="product-secondary-action" disabled={readStates.reports === "loading"} onClick={() => void loadDirectory("reports")}>{readStates.reports === "loading" ? "正在重新读取…" : "重新读取报告"}</button> : null}
+    </div> : null}
+    {operation.notice ? <p role="status">{operation.notice}</p> : null}
+  </>;
   return (
     <RequireProductAuth>
       <ProductShell projectId={projectId}>
         <section className="document-page scientific-report-index" aria-labelledby="scientific-reports-page-title">
-          <header className="product-page-heading">
-            <p className="product-kicker">项目报告</p>
-            <h1 id="scientific-reports-page-title">科学报告</h1>
-            <p>
-              将已验证的研究结果整理为可阅读、可引用、可复现的持久科学记录。
-            </p>
+          <header className="product-page-heading report-directory-header">
+            <div><h1 id="scientific-reports-page-title">报告</h1><p>阅读研究结论、图表与分析结果。</p></div>
+            <button type="button" className="product-secondary-action" disabled={operation.pending || readStates.reports === "loading" || readStates.history === "loading"} onClick={() => { void loadDirectory("reports"); void loadDirectory("history"); }}>刷新列表</button>
           </header>
-          {state === "loading" ? (
-            <div className="product-loading" role="status" aria-live="polite">
-              正在加载项目报告…
-            </div>
-          ) : null}
-          {state === "error" ? (
-            <div className="product-state" role="alert">
-              <h2>报告列表暂时无法加载</h2>
-              <p>已生成的报告仍保存在项目中，请检查服务连接后重试。</p>
-            </div>
-          ) : null}
-          {lifecycleError ? (
-            <div className="product-state" role="alert">
-              {lifecycleError}
-            </div>
-          ) : null}
+          {(["reports", "history"] as const).map((key) => readStates[key] === "loading" ? <p key={key} className="report-directory-read-state" role="status">{key === "reports" ? "正在读取研究报告…" : "正在读取分析记录…"}</p> : readStates[key] === "error" ? <div key={key} className="report-directory-read-state" role="alert"><strong>{key === "reports" ? "研究报告暂时无法读取" : "分析记录暂时无法读取"}</strong><p>保留已读取的内容，请重试以确认完整列表。</p><button type="button" className="product-secondary-action" onClick={() => void loadDirectory(key)}>{key === "reports" ? "重新加载报告" : "重新加载分析记录"}</button></div> : null)}
+          {!renameEditor && !revisionEditor && !impactReport ? feedback : null}
           {renameEditor ? (
             <ProductModal
-              eyebrow="报告组织"
+              eyebrow=""
               title="重命名报告"
-              description="仅修改项目中的显示名称；不可变报告快照、ScientificResult、证据与精确来源保持不变。"
+              description="修改列表中显示的名称，报告正文与来源记录会保留。"
               onClose={() => setRenameEditor(null)}
               footer={
                 <>
@@ -303,7 +300,7 @@ export function ScientificReportsIndexPage({
                   <button
                     type="button"
                     className="product-primary-action"
-                    disabled={!renameEditor.title.trim() || busyReportId === renameEditor.report.report_id}
+                    disabled={!renameEditor.title.trim() || writesBlocked}
                     onClick={() => void changeOrganization(renameEditor.report, { title: renameEditor.title.trim() })}
                   >
                     保存名称
@@ -315,22 +312,20 @@ export function ScientificReportsIndexPage({
               <input
                 id="scientific-report-title-override"
                 value={renameEditor.title}
+                disabled={operation.pending}
                 maxLength={256}
-                autoFocus
                 onChange={(event) =>
                   setRenameEditor((current) => current ? { ...current, title: event.target.value } : current)
                 }
               />
-              <p className="product-form-hint">
-                原始快照标题仍保留在审计和复现数据中。
-              </p>
+              {feedback}
             </ProductModal>
           ) : null}
           {revisionEditor ? (
             <ProductModal
-              eyebrow="不可变报告修订"
+              eyebrow=""
               title="创建新修订"
-              description="新修订沿用同一 ScientificResult、解释与精确源版本；不会重新运行科学计算，也不会修改旧报告。"
+              description="使用已有结果创建一个新版本，旧版仍可阅读。这不会重新执行分析。"
               onClose={() => setRevisionEditor(null)}
               footer={
                 <>
@@ -346,7 +341,7 @@ export function ScientificReportsIndexPage({
                     className="product-primary-action"
                     disabled={
                       !revisionEditor.title.trim() ||
-                      busyReportId === revisionEditor.report.report_id
+                      writesBlocked
                     }
                     onClick={() => void createRevision()}
                   >
@@ -361,8 +356,8 @@ export function ScientificReportsIndexPage({
               <input
                 id="scientific-report-revision-title"
                 value={revisionEditor.title}
+                disabled={operation.pending}
                 maxLength={256}
-                autoFocus
                 onChange={(event) =>
                   setRevisionEditor((current) =>
                     current
@@ -371,62 +366,53 @@ export function ScientificReportsIndexPage({
                   )
                 }
               />
-              <p className="product-form-hint">
-                旧版保持可读；新修订只改变报告沟通层，不改变科学事实。
-              </p>
+              {feedback}
             </ProductModal>
           ) : null}
-          {impactPreview ? (
+          {impactReport ? (
             <ProductModal
-              eyebrow="报告管理"
+              eyebrow=""
               title="移入回收站前确认"
-              description="报告将离开当前工作列表；受保护的科学记录与精确来源不会被删除。"
-              onClose={() => setImpactPreview(null)}
+              description={`“${impactReport.title}”将移入回收站，之后可以恢复。`}
+              onClose={() => setImpactReport(null)}
               footer={
                 <>
                   <button
                     type="button"
                     className="product-secondary-action"
-                    onClick={() => setImpactPreview(null)}
+                    onClick={() => setImpactReport(null)}
                   >
                     取消
                   </button>
                   <button
                     type="button"
                     className="product-primary-action"
-                    onClick={() => {
-                      const pending = impactPreview;
-                      setImpactPreview(null);
-                      void changeLifecycle(pending.report, "TRASHED", true);
-                    }}
+                    disabled={!impactPreview || writesBlocked}
+                    onClick={() => void changeLifecycle(impactReport, "TRASHED", true)}
                   >
                     确认移入回收站
                   </button>
                 </>
               }
             >
-              <p>
-                “{impactPreview.report.title}”仍被 {impactPreview.impact.dependencyCount} 项科学记录引用。
-                回收站操作不会删除或改写这些记录。
-              </p>
-              {impactPreview.impact.dependencies.length ? (
-                <ul>
-                  {impactPreview.impact.dependencies.slice(0, 8).map((item) => (
+              {impact.pendingCount ? <p role="status">正在检查关联内容…</p> : null}
+              {impact.entries.some((entry) => entry.error) ? <div role="alert" className="product-form-error"><p>暂时无法检查关联内容，请重试后再确认。</p><button type="button" className="product-secondary-action" onClick={impact.retry}>重新检查</button></div> : null}
+              {impactPreview ? <p>已有研究和来源数据会保留。</p> : null}
+              {impactPreview?.impact.dependencies.length ? (
+                <details><summary>查看 {impactPreview.impact.dependencyCount} 项关联内容</summary><ul>
+                  {impactPreview.impact.dependencies.map((item) => (
                     <li key={`${item.kind}:${item.id}`}>
                       <strong>
-                        {item.href ? <Link href={item.href}>{item.label}</Link> : item.label}
-                      </strong>{" "}
-                      <code>{item.id}</code>
+                        {item.href ? <Link href={item.href}>{item.kind === "SCIENTIFIC_RESULT" ? "分析结果" : item.label}</Link> : item.kind === "SCIENTIFIC_RESULT" ? "分析结果" : item.label}
+                      </strong>
                     </li>
                   ))}
-                </ul>
+                </ul></details>
               ) : null}
-              <p>
-                ✓ 从当前报告发现中移除 · ✓ 保留历史研究与 exact source provenance
-              </p>
+              {feedback}
             </ProductModal>
           ) : null}
-          {state === "ready" ? (
+          {(
             <>
               <div className="scientific-report-discovery">
                 <label htmlFor="scientific-report-search">
@@ -435,7 +421,7 @@ export function ScientificReportsIndexPage({
                     id="scientific-report-search"
                     type="search"
                     value={query}
-                    placeholder="按标题、科学内容、数据或方法搜索"
+                    placeholder="搜索标题、数据或分析方法"
                     onChange={(event) => {
                       setQuery(event.target.value);
                       setGroundedLimit(REPORT_PAGE_SIZE);
@@ -446,22 +432,21 @@ export function ScientificReportsIndexPage({
                   />
                 </label>
                 <p aria-live="polite">
-                  找到 {visibleGrounded.length} 份已验证报告
-                  {legacyReports.length ? `和 ${legacyReports.length} 份历史运行报告` : ""}
+                  {readStates.reports !== "ready" ? "报告数量待确认" : `${visibleGrounded.length} 份研究报告`}
+                  {readStates.history !== "ready" ? " · 分析记录数量待确认" : ` · ${legacyReports.length} 条分析记录`}
                 </p>
               </div>
-              <section
+              {grounded.length > 0 ? <section
                 className="scientific-report-index-section"
                 aria-labelledby="grounded-reports"
               >
                 <div className="scientific-report-index-heading">
                   <div>
-                    <p className="product-kicker">已验证结果</p>
-                    <h2 id="grounded-reports">已验证科学报告</h2>
+                    <h2 id="grounded-reports">研究报告</h2>
                   </div>
-                  <span>{visibleGrounded.length} 份</span>
+
                 </div>
-                <div
+                <div className="report-directory-tools"><div
                   className="product-filter-row"
                   role="group"
                   aria-label="报告状态筛选"
@@ -478,7 +463,7 @@ export function ScientificReportsIndexPage({
                           setGroundedLimit(REPORT_PAGE_SIZE);
                           setSelectedReportIds([]);
                           setSelectionMode(false);
-                          setLifecycleError(null);
+
                         }}
                       >
                         {value === "active"
@@ -518,35 +503,16 @@ export function ScientificReportsIndexPage({
                             全选
                           </label>
                           <span>{selectedVisibleCount} 份已选择</span>
-                          <span className="scientific-report-bulk-filter">当前筛选</span>
-                        </div>
-                        <div className="scientific-report-bulk-selection-tools" role="group" aria-label="报告选择">
-                          <button
-                            type="button"
-                            className="product-link-button"
-                            onClick={toggleAllReports}
-                            aria-pressed={allSelected}
-                          >
-                            {allSelected ? "清空报告" : "全选报告"}
-                          </button>
-                          {selectedVisibleCount ? (
-                            <button
-                              type="button"
-                              className="product-link-button"
-                              onClick={() => setSelectedReportIds([])}
-                            >
-                              清除选择
-                            </button>
-                          ) : null}
+
                         </div>
                         {selectedActiveReports.length ? (
                           <button
                             type="button"
                             className="product-secondary-action"
                             onClick={() => void bulkLifecycle("ARCHIVED")}
-                            disabled={bulkBusy}
+                            disabled={writesBlocked}
                           >
-                            {bulkBusy ? "批量处理中…" : `归档 ${selectedActiveReports.length} 份`}
+                            {operation.pending ? "批量处理中…" : `归档 ${selectedActiveReports.length} 份`}
                           </button>
                         ) : null}
                         {selectedArchivedReports.length ? (
@@ -554,9 +520,9 @@ export function ScientificReportsIndexPage({
                             type="button"
                             className="product-secondary-action"
                             onClick={() => void bulkLifecycle("ACTIVE")}
-                            disabled={bulkBusy}
+                            disabled={writesBlocked}
                           >
-                            {bulkBusy ? "批量处理中…" : `恢复 ${selectedArchivedReports.length} 份`}
+                            {operation.pending ? "批量处理中…" : `恢复 ${selectedArchivedReports.length} 份`}
                           </button>
                         ) : null}
                         <button
@@ -573,7 +539,7 @@ export function ScientificReportsIndexPage({
                     )}
                   </div>
                 ) : null}
-                <div className="report-list report-managed-list">
+                </div><div className="report-list report-managed-list">
                   {displayedGrounded.map((report) => {
                     const status = String(
                       report.lifecycle_status || "ACTIVE",
@@ -612,10 +578,10 @@ export function ScientificReportsIndexPage({
                           toggleReportSelection(report.report_id)
                         }
                         actions={
-                          busyReportId === report.report_id
+                          writesBlocked
                             ? [
                                 {
-                                  label: "处理中…",
+                                  label: operation.uncertain ? "请先重新读取报告" : operation.pending ? "处理中…" : "正在读取报告…",
                                   disabled: true,
                                 },
                               ]
@@ -694,14 +660,15 @@ export function ScientificReportsIndexPage({
                       />
                     );
                   })}
-                  {visibleGrounded.length === 0 ? (
-                    <div className="product-state">
-                      <h3>{normalizedQuery ? "没有匹配的已验证报告" : "当前筛选下没有报告"}</h3>
+                  {visibleGrounded.length === 0 && readStates.reports === "ready" ? (
+                    <div className="report-directory-empty">
+                      <h3>{normalizedQuery ? "没有匹配的研究报告" : "当前筛选下没有报告"}</h3>
                       <p>
                         {normalizedQuery
                           ? "尝试缩短关键词，或切换报告状态。"
-                          : "已生成的报告仍保留在其他状态筛选中。"}
+                          : grounded.length ? "切换报告状态查看其他已生成报告。" : "完成研究分析后，可将结果整理为科学报告。"}
                       </p>
+                      <button className="product-secondary-action" type="button" onClick={() => { setQuery(""); setFilter("all"); }}>显示全部报告</button>
                     </div>
                   ) : null}
                 </div>
@@ -713,11 +680,11 @@ export function ScientificReportsIndexPage({
                       setGroundedLimit((value) => value + REPORT_PAGE_SIZE)
                     }
                   >
-                    加载更多已验证报告（还剩{" "}
+                    加载更多研究报告（还剩{" "}
                     {visibleGrounded.length - displayedGrounded.length} 份）
                   </button>
                 ) : null}
-              </section>
+              </section> : null}
               {legacyReports.length ? (
                 <section
                   className="scientific-report-index-section"
@@ -725,22 +692,13 @@ export function ScientificReportsIndexPage({
                 >
                   <div className="scientific-report-index-heading">
                     <div>
-                      <p className="product-kicker">历史运行</p>
-                      <h2 id="legacy-reports">历史运行报告</h2>
+                      <h2 id="legacy-reports">分析记录</h2>
                     </div>
-                    <span>{legacyReports.length} 份</span>
+                    <span>查看已完成分析的结果</span>
                   </div>
                   <div className="report-list">
                     {displayedLegacy.map((run) => {
-                      const dataset = history?.datasets.find(
-                        (item) => item.datasetId === run.datasetId,
-                      );
-                      const contextLabel =
-                        run.researchContextKind === "RESEARCH_TURN"
-                          ? "可恢复研究会话"
-                          : run.researchContextKind === "LEGACY_SESSION_RUN"
-                            ? "兼容历史运行"
-                            : "历史运行";
+                      const sources = researchRunSourceDatasets(run, history?.datasets || []);
                       return (
                         <Link
                           className="report-list-row"
@@ -748,17 +706,14 @@ export function ScientificReportsIndexPage({
                           href={`/projects/${projectId}/reports/${run.jobId}`}
                         >
                           <div>
-                            <span className="product-kicker">
-                              {contextLabel}
-                            </span>
                             <h3>{researchRunTitle(run)}</h3>
+                            <SourceDatasetList sources={sources} />
                             <p>
-                              {dataset?.name || "项目数据"} ·{" "}
-                              {run.artifactCount} 个结果 · {run.stepCount}{" "}
-                              个步骤
+                              {!sources.length ? `${run.sourceDatasetIds === undefined ? "项目数据" : "来源待核实"} · ` : null}
+                              {run.artifactCount} 项结果
                             </p>
                           </div>
-                          <span>阅读旧版</span>
+                          <span>查看结果 →</span>
                         </Link>
                       );
                     })}
@@ -771,14 +726,15 @@ export function ScientificReportsIndexPage({
                         setLegacyLimit((value) => value + REPORT_PAGE_SIZE)
                       }
                     >
-                      加载更多历史运行（还剩{" "}
+                      加载更多分析记录（还剩{" "}
                       {legacyReports.length - displayedLegacy.length} 份）
                     </button>
                   ) : null}
                 </section>
               ) : null}
+              {readStates.reports === "ready" && readStates.history === "ready" && !grounded.length && !legacyReports.length ? <div className="report-directory-empty"><h2>{normalizedQuery ? "没有匹配的报告或分析记录" : "还没有报告"}</h2><p>{normalizedQuery ? "试试其他关键词，或清除搜索查看全部内容。" : "完成一次研究后，可在这里查看分析结果与生成的报告。"}</p>{normalizedQuery ? <button className="product-secondary-action" type="button" onClick={() => setQuery("")}>清除搜索</button> : <Link className="product-secondary-action" href={`/projects/${projectId}/research`}>前往研究</Link>}</div> : null}
             </>
-          ) : null}
+          )}
         </section>
       </ProductShell>
     </RequireProductAuth>

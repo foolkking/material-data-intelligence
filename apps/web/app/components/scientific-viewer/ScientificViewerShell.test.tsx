@@ -16,7 +16,13 @@ describe("Agent2 Phase 9 ScientificViewerShell", () => {
     expect(screen.getByText("version-exact-1")).toBeInTheDocument();
     expect(screen.getByText("峰位来自已验证结果，不由 Viewer 推导。")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "研究此数据" })).toHaveAttribute("href", "/projects/project/research");
-    expect(screen.getByText("技术详情").closest("details")).not.toHaveAttribute("open");
+    const sourceDetails = screen.getByText("查看数据详情").closest("details");
+    expect(sourceDetails).not.toHaveAttribute("open");
+    expect(screen.getByRole("button", { name: "导出元数据摘要" })).not.toBeVisible();
+    fireEvent.click(screen.getByText("查看数据详情"));
+    expect(sourceDetails).toHaveAttribute("open");
+    expect(screen.getByRole("button", { name: "导出元数据摘要" })).toBeInTheDocument();
+    expect(screen.getByText("来源标识与查看器").closest("details")).not.toHaveAttribute("open");
     const viewer = screen.getByRole("heading", { name: "LiFePO4 RDF" }).closest("article");
     expect(viewer).toHaveAttribute("aria-labelledby");
     expect(viewer?.getAttribute("aria-labelledby")).toBe(screen.getByRole("heading", { name: "LiFePO4 RDF" }).id);
@@ -37,6 +43,7 @@ describe("Agent2 Phase 9 ScientificViewerShell", () => {
       </ScientificViewerShell>,
     );
 
+    fireEvent.click(screen.getByText("查看数据详情"));
     const additionalSummary = screen.getByText("查看其余 2 项元数据");
     const additionalDetails = additionalSummary.closest("details");
     expect(additionalDetails).not.toHaveAttribute("open");
@@ -44,6 +51,21 @@ describe("Agent2 Phase 9 ScientificViewerShell", () => {
     expect(additionalDetails).toHaveAttribute("open");
     expect(screen.getByText("Field 17")).toBeInTheDocument();
     expect(screen.getByText("value-18")).toBeInTheDocument();
+  });
+
+  it("presents readable properties without merging conflicting counts or losing source identifiers", () => {
+    const { rerender } = render(<ScientificViewerShell title="Materials" descriptor={descriptor} versionLabel="版本 1" metadata={{ columns: ["material", "value"], nRows: 2, row_count: 2, detectedFormat: "csv", dataset_id: "exact-dataset" }}><div /></ScientificViewerShell>);
+    fireEvent.click(screen.getByText("查看数据详情"));
+    expect(screen.getByText("material、value")).toBeVisible();
+    expect(screen.getAllByText("行数")).toHaveLength(1);
+    expect(screen.getByText("文件格式")).toBeVisible();
+    expect(screen.getByText("exact-dataset")).not.toBeVisible();
+    fireEvent.click(screen.getByText("来源标识与查看器"));
+    expect(screen.getByText("exact-dataset")).toBeVisible();
+    rerender(<ScientificViewerShell title="Materials" descriptor={descriptor} versionLabel="版本 1" metadata={{ nRows: 2, row_count: 3 }}><div /></ScientificViewerShell>);
+    expect(screen.getAllByText("行数")).toHaveLength(2);
+    expect(screen.getByText("2")).toBeVisible();
+    expect(screen.getByText("3")).toBeVisible();
   });
 });
 

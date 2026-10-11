@@ -1,4 +1,5 @@
 import { invalidateProductDirectories, invalidateProjectHistory } from "./planner-api";
+import { acknowledgeResearchSessionCreation, recoverResearchSessionCreation } from "./research-session-creation";
 
 const API_BASE = (
   process.env.NEXT_PUBLIC_MDI_API_BASE_URL ||
@@ -147,6 +148,7 @@ export type ScopeCandidate = {
 
 export type ResearchSession = {
   id: string;
+  creationKey?: string;
   project_id: string;
   projectId?: string;
   dataset_id?: string | null;
@@ -322,7 +324,15 @@ export function safeApiDetail(detail: unknown): string | null {
   return null;
 }
 
+export class ProductRequestError extends Error {
+  constructor(message: string, readonly status?: number) {
+    super(message);
+    this.name = "ProductRequestError";
+  }
+}
+
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  init.signal?.throwIfAborted();
   let response: Response;
   try {
     response = await fetch(`${API_BASE}${path}`, {
@@ -334,16 +344,21 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
       },
     });
   } catch {
-    throw new Error("服务暂时不可用，请检查连接后重试。");
+    init.signal?.throwIfAborted();
+    throw new ProductRequestError("服务暂时不可用，请检查连接后重试。");
   }
+  init.signal?.throwIfAborted();
   if (!response.ok) {
     if (response.status === 401) {
-      authUserCache = undefined;
+      invalidateProductAuth();
       // Read projections are authorized per session.  Never let a cached
       // project/history directory survive an expired session and become
       // visible after another user signs in in the same SPA instance.
-      invalidateProductDirectories();
-      invalidateProjectHistory();
+    }
+    // The status itself settles authentication. A stalled error body must not
+    // keep the protected route waiting or disguise a confirmed 401 as a timeout.
+    if (response.status === 401 && path === "/auth/me") {
+      throw new ProductRequestError("登录已过期，请重新登录。", 401);
     }
     if (
       response.status === 401 &&
@@ -363,85 +378,145 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     } catch {
       // Preserve the HTTP status when a non-JSON error is returned.
     }
-    throw new Error(message);
+    init.signal?.throwIfAborted();
+    throw new ProductRequestError(message, response.status);
   }
   if (response.status === 204) return undefined as T;
-  return (await response.json()) as T;
+  const result = await response.json();
+  init.signal?.throwIfAborted();
+  return result as T;
 }
 
 let authUserCache: AuthUser | null | undefined;
 let authUserRequest: Promise<AuthUser> | null = null;
+let authGeneration = 0;
 
-export const getAuthUser = () => {
+export function invalidateProductAuth() {
+  authGeneration += 1;
+  authUserCache = undefined;
+  authUserRequest = null;
+  invalidateProductDirectories();
+  invalidateProjectHistory();
+}
+
+/** Bound both transport and JSON parsing, even if an interrupted read settles late. */
+async function readAuthUser(signal?: AbortSignal): Promise<AuthUser> {
+  signal?.throwIfAborted();
+  const generation = authGeneration;
+  const controller = new AbortController();
+  const cancel = () => controller.abort(signal?.reason);
+  signal?.addEventListener("abort", cancel, { once: true });
+  let interrupt!: (reason: unknown) => void;
+  const interrupted = new Promise<never>((_, reject) => { interrupt = reject; });
+  const onAbort = () => interrupt(controller.signal.reason);
+  controller.signal.addEventListener("abort", onAbort, { once: true });
+  const timer = setTimeout(() => controller.abort(new ProductRequestError("登录状态读取超时，请重新连接。")), 10_000);
+  try {
+    const user = await Promise.race([
+      request<AuthUser>("/auth/me", { signal: controller.signal, cache: "no-store" }),
+      interrupted,
+    ]);
+    controller.signal.throwIfAborted();
+    if (generation !== authGeneration) throw new ProductRequestError("登录状态已变化，请重新连接。");
+    if (!user || typeof user.id !== "string" || !user.id.trim() || typeof user.displayName !== "string") {
+      throw new ProductRequestError("登录状态暂时无法读取，请重新连接。");
+    }
+    return user;
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener("abort", cancel);
+    controller.signal.removeEventListener("abort", onAbort);
+    controller.abort();
+  }
+}
+
+export const getAuthUser = (options: { signal?: AbortSignal } = {}) => {
+  // An owned read must not join (or poison) the shell's shared request/cache.
+  if (options.signal) return readAuthUser(options.signal);
   if (authUserCache) return Promise.resolve(authUserCache);
   if (authUserRequest) return authUserRequest;
-  authUserRequest = request<AuthUser>("/auth/me")
+  const generation = authGeneration;
+  const pending = readAuthUser()
     .then((user) => {
       authUserCache = user;
       return user;
     })
     .catch((error) => {
-      authUserCache = undefined;
+      if (generation === authGeneration) authUserCache = undefined;
       throw error;
     })
     .finally(() => {
-      authUserRequest = null;
+      if (authUserRequest === pending) authUserRequest = null;
     });
-  return authUserRequest;
+  authUserRequest = pending;
+  return pending;
 };
 
-export const login = (email: string, password: string) =>
-  request<AuthUser>("/auth/login", {
-    method: "POST",
-    body: JSON.stringify({ email, password }),
-  }).then((user) => {
-    invalidateProductDirectories();
-    invalidateProjectHistory();
+export const login = async (email: string, password: string, options: { signal?: AbortSignal } = {}) => {
+  try {
+    const user = await request<AuthUser>("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+      signal: options.signal,
+    });
+    options.signal?.throwIfAborted();
+    if (!user || typeof user.id !== "string" || !user.id.trim() || typeof user.displayName !== "string") {
+      throw new ProductRequestError("登录结果暂时无法确认，请重试。");
+    }
+    invalidateProductAuth();
     authUserCache = user;
     return user;
-  });
+  } catch (reason) {
+    options.signal?.throwIfAborted();
+    if (reason instanceof ProductRequestError) throw reason;
+    throw new ProductRequestError("登录结果暂时无法确认，请重试。");
+  }
+};
 export const logout = () =>
   request<void>("/auth/logout", { method: "POST" }).finally(() => {
-    authUserCache = undefined;
-    invalidateProductDirectories();
-    invalidateProjectHistory();
+    invalidateProductAuth();
   });
-export const updateAuthProfile = (displayName: string) =>
+export const updateAuthProfile = (displayName: string, options: { signal?: AbortSignal } = {}) =>
   request<AuthUser>("/auth/profile", {
     method: "PATCH",
     body: JSON.stringify({ displayName }),
+    signal: options.signal,
   }).then((user) => {
+    options.signal?.throwIfAborted();
     invalidateProductDirectories();
     invalidateProjectHistory();
     authUserCache = user;
     return user;
   });
-export const listAuthSessions = () =>
-  request<{ items: AuthSession[]; count: number }>("/auth/sessions");
-export const revokeAuthSession = (sessionId: string) =>
+export const listAuthSessions = (options: { signal?: AbortSignal } = {}) =>
+  request<{ items: AuthSession[]; count: number }>("/auth/sessions", { signal: options.signal, cache: "no-store" });
+export const revokeAuthSession = (sessionId: string, options: { signal?: AbortSignal } = {}) =>
   request<{ ok: boolean }>(
     `/auth/sessions/${encodeURIComponent(sessionId)}`,
-    { method: "DELETE" },
+    { method: "DELETE", signal: options.signal },
   );
-export const revokeOtherAuthSessions = () =>
+export const revokeOtherAuthSessions = (options: { signal?: AbortSignal } = {}) =>
   request<{ ok: boolean; revokedCount: number }>(
     "/auth/sessions/revoke-others",
-    { method: "POST" },
+    { method: "POST", signal: options.signal },
   );
 export const changeAuthPassword = (
   currentPassword: string,
   newPassword: string,
+  options: { signal?: AbortSignal } = {},
 ) =>
   request<{ ok: boolean; otherSessionsRevoked: number }>(
     "/auth/change-password",
     {
       method: "POST",
       body: JSON.stringify({ currentPassword, newPassword }),
+      signal: options.signal,
     },
   );
 export const deactivateAuthAccount = (
   password: string,
   confirmEmail: string,
+  options: { signal?: AbortSignal } = {},
 ) =>
   request<{
     ok: boolean;
@@ -457,6 +532,7 @@ export const deactivateAuthAccount = (
   }>("/auth/deactivate", {
     method: "POST",
     body: JSON.stringify({ password, confirmEmail }),
+    signal: options.signal,
   }).finally(() => {
     authUserCache = undefined;
     invalidateProductDirectories();
@@ -481,18 +557,21 @@ export const activateAuthAccount = (
     return user;
   });
 
-export const getPlatformAdminOverview = () =>
-  request<PlatformAdminOverview>("/api/admin/overview");
+export const getPlatformAdminOverview = (options: { signal?: AbortSignal } = {}) =>
+  request<PlatformAdminOverview>("/api/admin/overview", { signal: options.signal, cache: "no-store" });
 export const createPlatformInvitation = (
   email: string,
   displayName: string,
   expiresInDays = 7,
+  options: { signal?: AbortSignal } = {},
 ) =>
   request<PlatformInvitation>("/api/admin/invitations", {
     method: "POST",
+    signal: options.signal,
     body: JSON.stringify({ email, displayName, expiresInDays }),
   });
 export const listPlatformAdminUsers = (options?: Readonly<{
+  signal?: AbortSignal;
   query?: string;
   status?: "ALL" | "ACTIVE" | "INACTIVE";
   role?: "ALL" | "USER" | "PLATFORM_ADMIN";
@@ -514,7 +593,7 @@ export const listPlatformAdminUsers = (options?: Readonly<{
     total: number;
     limit: number;
     offset: number;
-  }>(`/api/admin/users${query ? `?${query}` : ""}`);
+  }>(`/api/admin/users${query ? `?${query}` : ""}`, { signal: options?.signal, cache: "no-store" });
 };
 export const updatePlatformAdminUser = (
   userId: string,
@@ -522,19 +601,22 @@ export const updatePlatformAdminUser = (
     platformRole?: "USER" | "PLATFORM_ADMIN";
     isActive?: boolean;
   }>,
+  options: { signal?: AbortSignal } = {},
 ) =>
   request<PlatformAdminUser>(
     `/api/admin/users/${encodeURIComponent(userId)}`,
     {
       method: "PATCH",
+      signal: options.signal,
       body: JSON.stringify(changes),
     },
   );
-export const listPlatformAdminAudit = (limit = 30) =>
+export const listPlatformAdminAudit = (limit = 30, options: { signal?: AbortSignal } = {}) =>
   request<{ items: PlatformAdminAuditItem[]; count: number }>(
     `/api/admin/audit?limit=${encodeURIComponent(String(limit))}`,
+    { signal: options.signal, cache: "no-store" },
   );
-export const listPlatformAdminProjects = (options?: Readonly<{ query?: string; limit?: number; offset?: number }>) => {
+export const listPlatformAdminProjects = (options?: Readonly<{ query?: string; limit?: number; offset?: number; signal?: AbortSignal }>) => {
   const params = new URLSearchParams();
   if (options?.query?.trim()) params.set("q", options.query.trim());
   if (options?.limit) params.set("limit", String(options.limit));
@@ -546,27 +628,28 @@ export const listPlatformAdminProjects = (options?: Readonly<{ query?: string; l
     total: number;
     limit: number;
     offset: number;
-  }>(`/api/admin/projects${query ? `?${query}` : ""}`);
+  }>(`/api/admin/projects${query ? `?${query}` : ""}`, { signal: options?.signal, cache: "no-store" });
 };
-export const listPlatformAdminProjectMembers = (projectId: string) =>
+export const listPlatformAdminProjectMembers = (projectId: string, options: { signal?: AbortSignal } = {}) =>
   request<{
     project: { id: string; name: string; ownerId: string };
     items: PlatformAdminProjectMember[];
     count: number;
-  }>(`/api/admin/projects/${encodeURIComponent(projectId)}/members`);
+  }>(`/api/admin/projects/${encodeURIComponent(projectId)}/members`, { signal: options.signal, cache: "no-store" });
 export const updatePlatformAdminProjectMember = (
   projectId: string,
   userId: string,
   role: PlatformAdminProjectMember["role"],
+  options: { signal?: AbortSignal } = {},
 ) =>
   request<{ projectId: string; userId: string; role: PlatformAdminProjectMember["role"] }>(
     `/api/admin/projects/${encodeURIComponent(projectId)}/members/${encodeURIComponent(userId)}`,
-    { method: "PUT", body: JSON.stringify({ role }) },
+    { method: "PUT", body: JSON.stringify({ role }), signal: options.signal },
   );
-export const removePlatformAdminProjectMember = (projectId: string, userId: string) =>
+export const removePlatformAdminProjectMember = (projectId: string, userId: string, options: { signal?: AbortSignal } = {}) =>
   request<{ projectId: string; userId: string; removed: boolean }>(
     `/api/admin/projects/${encodeURIComponent(projectId)}/members/${encodeURIComponent(userId)}`,
-    { method: "DELETE" },
+    { method: "DELETE", signal: options.signal },
   );
 
 // Session mutations invalidate this cache. A 30-second read window lets Data,
@@ -583,7 +666,8 @@ export const invalidateResearchSessionList = (projectId?: string) => {
   else researchSessionListRequests.clear();
 };
 
-export const listResearchSessions = (projectId: string) => {
+export const listResearchSessions = (projectId: string, signal?: AbortSignal) => {
+  if (signal) return request<ResearchSession[]>(`/projects/${encodeURIComponent(projectId)}/research-sessions`, { signal, cache: "no-store" });
   const cached = researchSessionListRequests.get(projectId);
   if (cached && cached.expiresAt > Date.now()) return cached.promise;
   const promise = request<ResearchSession[]>(
@@ -602,20 +686,23 @@ export const createResearchSession = (
   projectId: string,
   title = "新研究",
   datasetId?: string,
+  recoveryScope?: string,
 ) =>
-  request<ResearchSession>(
-    `/projects/${encodeURIComponent(projectId)}/research-sessions`,
-    {
-      method: "POST",
-      body: JSON.stringify({ title, ...(datasetId ? { datasetId } : {}) }),
-    },
+  recoverResearchSessionCreation(
+    projectId, title, datasetId, recoveryScope ?? JSON.stringify(["standalone", title]),
+    (body, signal) => request<ResearchSession>(
+      `/projects/${encodeURIComponent(projectId)}/research-sessions`,
+      { method: "POST", body: JSON.stringify(body), signal },
+    ),
   ).then((session) => {
     invalidateResearchSessionList(projectId);
+    if (recoveryScope === undefined) acknowledgeResearchSessionCreation(session.creationKey);
     return session;
   });
-export const getResearchSession = (sessionId: string) =>
+export const getResearchSession = (sessionId: string, signal?: AbortSignal) =>
   request<ResearchSession>(
     `/research-sessions/${encodeURIComponent(sessionId)}`,
+    { signal },
   );
 export const updateResearchSession = (
   sessionId: string,
@@ -624,12 +711,14 @@ export const updateResearchSession = (
     pinned?: boolean;
     lifecycle?: "ACTIVE" | "ARCHIVED" | "TRASHED";
   }>,
+  signal?: AbortSignal,
 ) =>
   request<ResearchSession>(
     `/research-sessions/${encodeURIComponent(sessionId)}`,
     {
       method: "PATCH",
       body: JSON.stringify(changes),
+      signal,
     },
   ).then((session) => {
     invalidateResearchSessionList();
@@ -639,6 +728,7 @@ export const bulkUpdateResearchSessions = (
   projectId: string,
   sessionIds: string[],
   action: ResearchSessionBulkAction,
+  signal?: AbortSignal,
 ) =>
   request<{
     action: ResearchSessionBulkAction;
@@ -649,13 +739,14 @@ export const bulkUpdateResearchSessions = (
     {
       method: "POST",
       body: JSON.stringify({ sessionIds, action }),
+      signal,
     },
   ).then((result) => {
     invalidateResearchSessionList(projectId);
     return result;
   });
-export const listSavedProductSearches = () =>
-  request<SavedProductSearch[]>("/saved-searches");
+export const listSavedProductSearches = (signal?: AbortSignal) =>
+  request<SavedProductSearch[]>("/saved-searches", { signal, cache: "no-store" });
 export const createSavedProductSearch = (
   savedSearch: Readonly<{
     name: string;
@@ -664,10 +755,12 @@ export const createSavedProductSearch = (
     project?: string;
     status?: "active" | "archived" | "trashed" | "all";
   }>,
+  signal?: AbortSignal,
 ) =>
   request<SavedProductSearch>("/saved-searches", {
     method: "POST",
     body: JSON.stringify(savedSearch),
+    signal,
   });
 export const updateSavedProductSearch = (
   savedSearchId: string,
@@ -678,42 +771,48 @@ export const updateSavedProductSearch = (
     project?: string | null;
     status?: "active" | "archived" | "trashed" | "all";
   }>,
+  signal?: AbortSignal,
 ) =>
   request<SavedProductSearch>(
     `/saved-searches/${encodeURIComponent(savedSearchId)}`,
     {
       method: "PATCH",
       body: JSON.stringify(changes),
+      signal,
     },
   );
-export const deleteSavedProductSearch = (savedSearchId: string) =>
+export const deleteSavedProductSearch = (savedSearchId: string, signal?: AbortSignal) =>
   request<{ id: string; deleted: boolean }>(
     `/saved-searches/${encodeURIComponent(savedSearchId)}`,
-    { method: "DELETE" },
+    { method: "DELETE", signal },
   );
 export const executeSavedProductSearch = (
   savedSearchId: string,
   limit = 40,
+  signal?: AbortSignal,
 ) =>
   request<SavedProductSearchExecution>(
     `/saved-searches/${encodeURIComponent(savedSearchId)}/execute`,
     {
       method: "POST",
       body: JSON.stringify({ limit }),
+      signal,
     },
   );
-export const listNotificationReadStates = () =>
-  request<NotificationReadStateCollection>("/api/notifications/read-state");
+export const listNotificationReadStates = (options: { signal?: AbortSignal } = {}) =>
+  request<NotificationReadStateCollection>("/api/notifications/read-state", options);
 export const updateNotificationReadState = (
   projectId: string,
   jobId: string,
   read: boolean,
+  options: { signal?: AbortSignal } = {},
 ) =>
   request<NotificationReadState>(
     `/api/notifications/${encodeURIComponent(projectId)}/${encodeURIComponent(jobId)}/read-state`,
     {
       method: "PATCH",
       body: JSON.stringify({ read }),
+      signal: options.signal,
     },
   );
 export const createResearchMessage = (

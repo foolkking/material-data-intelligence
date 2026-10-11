@@ -24,6 +24,7 @@ from mdi_api.input_transport import (
 from mdi_adapters import ToolExecutionContext
 from mdi_artifact_core import ArtifactPayload, LocalArtifactExporter, content_hash, stable_json_dumps
 from mdi_material_parsers import NormalizedObjectDraft, ParseResult, build_data_profile, map_normalized_phonon_resource, parse_file
+from mdi_material_parsers.profile import project_profile_recommendations
 from mdi_schemas import (
     AnalysisPlan,
     AnalysisStep,
@@ -1355,8 +1356,10 @@ def get_phase2_dataset_profile(dataset_id: str) -> dict[str, Any]:
     runtime = get_phase2_runtime()
     if dataset_id not in runtime.datasets:
         repositories = _durable_read_repositories()
-        return _api_call(lambda: _durable_dataset_profile(dataset_id, repositories))
-    return _api_call(lambda: runtime.get_dataset_profile(dataset_id))
+        saved = _api_call(lambda: _durable_dataset_profile(dataset_id, repositories))
+    else:
+        saved = _api_call(lambda: runtime.get_dataset_profile(dataset_id))
+    return project_profile_recommendations(saved, {tool.toolId for tool in runtime.registry.tools})
 
 
 def _runtime_backend_is_durable() -> bool:
@@ -1472,8 +1475,10 @@ def create_phase2_dataset_profile(dataset_id: str) -> dict[str, Any]:
     runtime = get_phase2_runtime()
     if dataset_id not in runtime.datasets:
         repositories = _durable_read_repositories()
-        return _api_call(lambda: {**_durable_dataset_profile(dataset_id, repositories), "profileGenerated": True})
-    return _api_call(lambda: runtime.create_dataset_profile(dataset_id))
+        saved = _api_call(lambda: {**_durable_dataset_profile(dataset_id, repositories), "profileGenerated": True})
+    else:
+        saved = _api_call(lambda: runtime.create_dataset_profile(dataset_id))
+    return project_profile_recommendations(saved, {tool.toolId for tool in runtime.registry.tools})
 
 
 def create_phase2_job(request: CreateJobRequest) -> dict[str, Any]:

@@ -19,7 +19,12 @@ class ScientificResultProjectionContext:
     artifacts: tuple[dict[str, Any], ...]
     artifact_payloads: dict[str, Any] = field(default_factory=dict)
     source_object_refs: tuple[Any, ...] = ()
+    scientific_selections: tuple[dict[str, Any], ...] = ()
     projector_ids: tuple[str, ...] = ()
+    projection_scope_key: str = ""
+    # Verified row identities; keep them separate from immutable fingerprint inputs.
+    analysis_plan_id: str | None = None
+    capability_plan_id: str | None = None
 
 
 @dataclass(frozen=True)

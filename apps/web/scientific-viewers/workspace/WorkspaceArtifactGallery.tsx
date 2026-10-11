@@ -1,6 +1,10 @@
 "use client";
+import { selectVolumetricField, restoredVolumetricField } from "../volumetric-viewer/volumetric-selection";
 
-import { lazy, Suspense, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import type { Agent2ScientificFact } from "../../app/lib/agent2-research-api";
+import { resultTrajectoryPoint } from "../trajectory-viewer/result-trajectory-selection";
+import { Fragment, Suspense, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import { createDeferredScientificViewer } from "../DeferredScientificViewer";
 import { getPlannerJobArtifacts, type Artifact } from "../../app/lib/planner-api";
 import type { ScientificWorkspace, WorkspacePanel, WorkspaceSelectionContext } from "../../app/lib/workspace-api";
 import { WorkspaceArtifactLoader, WorkspaceArtifactLoadError, validateArtifactScope, type WorkspaceArtifactLoadScope } from "./workspace-artifact-loader";
@@ -15,27 +19,32 @@ import {
   type WorkspaceRendererDescriptor,
 } from "../../shared/workspace/workspace-renderer-registry";
 import { artifactSelectionFromArtifact, datasetSampleIdentityFromTableRow, datasetSampleSelection, structureSiteSelection, type WorkspaceSelectionDelivery } from "../../shared/workspace/workspace-selection-runtime";
+import { clearedWorkspaceSelection } from "../../shared/workspace/workspace-selection-contract";
+import { selectPhononBandPoint, restoredPhononBandPoint, selectPhononDosPoint, restoredPhononDosPoint } from "../phonon-shared/phonon-selection";
+import { selectTrajectoryPoint, restoredTrajectoryPoint } from "../trajectory-viewer/trajectory-selection";
 import { WorkspaceHeavyViewerLease } from "./workspace-heavy-viewer-gate";
-import { normalizedPlotFigure } from "./workspace-plot-contract";
+import { plotTablePreview } from "./workspace-plot-table";
+import { formatPresentationMetricValue } from "../../app/lib/scientific-presentation";
+import { savedParameterTableRows } from "../../app/lib/scientific-report-table-data";
 
-const DatasetMaterialsExplorerPanel = lazy(() => import("../dataset-explorer/DatasetMaterialsExplorerPanel").then((module) => ({ default: module.DatasetMaterialsExplorerPanel })));
-const MaterialsMlEvaluationPanel = lazy(() => import("../materials-ml/MaterialsMlEvaluationPanel").then((module) => ({ default: module.MaterialsMlEvaluationPanel })));
-const CompositionSpaceExplorerPanel = lazy(() => import("../composition-space/CompositionSpaceExplorerPanel").then((module) => ({ default: module.CompositionSpaceExplorerPanel })));
-const ViewerSceneRendererSurface = lazy(() => import("../viewer-scene/ViewerSceneRendererSurface").then((module) => ({ default: module.ViewerSceneRendererSurface })));
-const TrajectoryViewerSurface = lazy(() => import("../trajectory-viewer/TrajectoryViewerSurface").then((module) => ({ default: module.TrajectoryViewerSurface })));
-const PhononBandPreviewPanel = lazy(() => import("../phonon-band/PhononBandPreviewPanel").then((module) => ({ default: module.PhononBandPreviewPanel })));
-const PhononDosPreviewPanel = lazy(() => import("../phonon-dos/PhononDosPreviewPanel").then((module) => ({ default: module.PhononDosPreviewPanel })));
-const PhononBandDosPreviewPanel = lazy(() => import("../phonon-band-dos/PhononBandDosPreviewPanel").then((module) => ({ default: module.PhononBandDosPreviewPanel })));
-const PhononAnimationSurface = lazy(() => import("../phonon-animation/PhononAnimationSurface").then((module) => ({ default: module.PhononAnimationSurface })));
-const BrillouinZonePreviewPanel = lazy(() => import("../brillouin-zone/BrillouinZonePreviewPanel").then((module) => ({ default: module.BrillouinZonePreviewPanel })));
-const VolumetricPreviewPanel = lazy(() => import("../volumetric-viewer/VolumetricPreviewPanel").then((module) => ({ default: module.VolumetricPreviewPanel })));
-const WorkspaceGenericPlot = lazy(() => import("./WorkspaceGenericPlot").then((module) => ({ default: module.WorkspaceGenericPlot })));
-const CoordinationResultPanel = lazy(() => import("./CoordinationResultPanel").then((module) => ({ default: module.CoordinationResultPanel })));
-const CoordinationHistogramPanel = lazy(() => import("./CoordinationHistogramPanel").then((module) => ({ default: module.CoordinationHistogramPanel })));
-const LocalEnvironmentPolyhedraPanel = lazy(() => import("./LocalEnvironmentPolyhedraPanel").then((module) => ({ default: module.LocalEnvironmentPolyhedraPanel })));
-const ExperimentalXrdComparisonPanel = lazy(() => import("./ExperimentalXrdComparisonPanel").then((module) => ({ default: module.ExperimentalXrdComparisonPanel })));
-const TrajectoryAnalyticsPanel = lazy(() => import("./TrajectoryAnalyticsPanel").then((module) => ({ default: module.TrajectoryAnalyticsPanel })));
-const ElectronicStructurePanel = lazy(() => import("./ElectronicStructurePanel").then((module) => ({ default: module.ElectronicStructurePanel })));
+const DatasetMaterialsExplorerPanel = createDeferredScientificViewer(() => import("../dataset-explorer/DatasetMaterialsExplorerPanel").then((module) => ({ default: module.DatasetMaterialsExplorerPanel })));
+const MaterialsMlEvaluationPanel = createDeferredScientificViewer(() => import("../materials-ml/MaterialsMlEvaluationPanel").then((module) => ({ default: module.MaterialsMlEvaluationPanel })));
+const CompositionSpaceExplorerPanel = createDeferredScientificViewer(() => import("../composition-space/CompositionSpaceExplorerPanel").then((module) => ({ default: module.CompositionSpaceExplorerPanel })));
+const ViewerSceneRendererSurface = createDeferredScientificViewer(() => import("../viewer-scene/ViewerSceneRendererSurface").then((module) => ({ default: module.ViewerSceneRendererSurface })));
+const TrajectoryViewerSurface = createDeferredScientificViewer(() => import("../trajectory-viewer/TrajectoryViewerSurface").then((module) => ({ default: module.TrajectoryViewerSurface })));
+const PhononBandPreviewPanel = createDeferredScientificViewer(() => import("../phonon-band/PhononBandPreviewPanel").then((module) => ({ default: module.PhononBandPreviewPanel })));
+const PhononDosPreviewPanel = createDeferredScientificViewer(() => import("../phonon-dos/PhononDosPreviewPanel").then((module) => ({ default: module.PhononDosPreviewPanel })));
+const PhononBandDosPreviewPanel = createDeferredScientificViewer(() => import("../phonon-band-dos/PhononBandDosPreviewPanel").then((module) => ({ default: module.PhononBandDosPreviewPanel })));
+const PhononAnimationSurface = createDeferredScientificViewer(() => import("../phonon-animation/PhononAnimationSurface").then((module) => ({ default: module.PhononAnimationSurface })));
+const BrillouinZonePreviewPanel = createDeferredScientificViewer(() => import("../brillouin-zone/BrillouinZonePreviewPanel").then((module) => ({ default: module.BrillouinZonePreviewPanel })));
+const VolumetricPreviewPanel = createDeferredScientificViewer(() => import("../volumetric-viewer/VolumetricPreviewPanel").then((module) => ({ default: module.VolumetricPreviewPanel })));
+const WorkspaceGenericPlot = createDeferredScientificViewer(() => import("./WorkspaceGenericPlot").then((module) => ({ default: module.WorkspaceGenericPlot })));
+const CoordinationResultPanel = createDeferredScientificViewer(() => import("./CoordinationResultPanel").then((module) => ({ default: module.CoordinationResultPanel })));
+const CoordinationHistogramPanel = createDeferredScientificViewer(() => import("./CoordinationHistogramPanel").then((module) => ({ default: module.CoordinationHistogramPanel })));
+const LocalEnvironmentPolyhedraPanel = createDeferredScientificViewer(() => import("./LocalEnvironmentPolyhedraPanel").then((module) => ({ default: module.LocalEnvironmentPolyhedraPanel })));
+const ExperimentalXrdComparisonPanel = createDeferredScientificViewer(() => import("./ExperimentalXrdComparisonPanel").then((module) => ({ default: module.ExperimentalXrdComparisonPanel })));
+const TrajectoryAnalyticsPanel = createDeferredScientificViewer(() => import("./TrajectoryAnalyticsPanel").then((module) => ({ default: module.TrajectoryAnalyticsPanel })));
+const ElectronicStructurePanel = createDeferredScientificViewer(() => import("./ElectronicStructurePanel").then((module) => ({ default: module.ElectronicStructurePanel })));
 
 export const MAX_METADATA_ARTIFACTS = 256;
 const MAX_JSON_PREVIEW_CHARS = 80_000;
@@ -199,7 +208,8 @@ function ArtifactCard({ artifact, panelState, active, selected, onOpen, onDownlo
   </li>;
 }
 
-export function ScientificArtifactRenderer({ selected, artifacts, workspace, delivery = null, onSelection = () => undefined }: Readonly<{ selected: Artifact; artifacts?: readonly Artifact[]; workspace: ScientificWorkspace; delivery?: WorkspaceSelectionDelivery | null; onSelection?: (selection: WorkspaceSelectionContext) => void }>) {
+export function ScientificArtifactRenderer({ selected, artifacts, workspace, resultFacts = [], delivery = null, onSelection: selectionHandler }: Readonly<{ selected: Artifact; artifacts?: readonly Artifact[]; workspace: ScientificWorkspace; resultFacts?: readonly Agent2ScientificFact[]; delivery?: WorkspaceSelectionDelivery | null; onSelection?: (selection: WorkspaceSelectionContext) => void }>) {
+  const onSelection = selectionHandler ?? (() => undefined);
   const artifactIndex = useMemo(() => indexArtifactsByIdentity(artifacts ?? []), [artifacts]);
   const loadedSelected = artifactIndex.get(artifactIdentity(selected) ?? "") ?? selected;
   const resolution = resolveLoadedArtifactRenderer(loadedSelected);
@@ -209,40 +219,70 @@ export function ScientificArtifactRenderer({ selected, artifacts, workspace, del
   const bundle = (artifacts ?? [loadedSelected]) as Artifact[];
   const sample = delivery?.compatibility === "EXACT" && delivery.context?.primary?.kind === "DATASET_SAMPLE" ? delivery.context.primary : null;
   const externalSampleKey = sample?.objectId && sample.sampleRef ? `${sample.objectId}:${sample.sampleRef}` : null;
+  const site = delivery?.compatibility === "EXACT" && delivery.context?.primary?.kind === "PERIODIC_SITE" ? delivery.context.primary : null;
+  const externalSiteId = site?.structureId === artifactChecksum(loadedSelected) ? site.siteId : null;
   const emitSample = (identity: Readonly<{ objectId: string; sampleRef: string; sampleKey: string }>) => onSelection(datasetSampleSelection(workspace, identity));
   const rendered = (() => { switch (descriptor.component) {
     case "DATASET": return <LazyBoundary><DatasetMaterialsExplorerPanel artifacts={bundle} externalSampleKey={externalSampleKey} onSampleSelection={emitSample} /></LazyBoundary>;
     case "ML": return <LazyBoundary><MaterialsMlEvaluationPanel artifacts={bundle} /></LazyBoundary>;
     case "COMPOSITION": return <LazyBoundary><CompositionSpaceExplorerPanel artifacts={bundle} externalSampleKey={externalSampleKey} onSampleSelection={emitSample} /></LazyBoundary>;
-    case "STRUCTURE": return <LazyBoundary><ViewerSceneRendererSurface payload={loadedSelected.content} onSiteSelection={(site) => {
-      if (!site) return;
+    case "STRUCTURE": return <LazyBoundary><ViewerSceneRendererSurface payload={loadedSelected.content} externalSiteId={externalSiteId} onSiteSelection={(site) => {
+      if (!site) { if (/^[0-9a-f]{64}$/.test(workspace.sourceReferenceHash)) onSelection(clearedWorkspaceSelection(workspace.sourceReferenceHash)); return; }
       const selection = structureSiteSelection(workspace, loadedSelected, site);
       if (selection) onSelection(selection);
     }} /></LazyBoundary>;
-    case "TRAJECTORY": return <LazyBoundary><TrajectoryViewerSurface payload={loadedSelected.content} /></LazyBoundary>;
-    case "PHONON_BAND": return <LazyBoundary><PhononBandPreviewPanel artifacts={bundle} /></LazyBoundary>;
-    case "PHONON_DOS": return <LazyBoundary><PhononDosPreviewPanel artifacts={bundle} /></LazyBoundary>;
+    case "TRAJECTORY": return <LazyBoundary><TrajectoryViewerSurface key={artifactIdentity(loadedSelected)} payload={loadedSelected.content}
+      selectedPoint={restoredTrajectoryPoint(delivery?.context, loadedSelected) ?? resultTrajectoryPoint(loadedSelected, resultFacts)} onPointSelection={workspace.sourceJobId === "source-view" ? point => {
+        if (!point) { onSelection(clearedWorkspaceSelection(workspace.sourceReferenceHash)); return; }
+        const selection = selectTrajectoryPoint(workspace, loadedSelected, point);
+        if (selection) onSelection(selection);
+      } : undefined} /></LazyBoundary>;
+    case "PHONON_BAND": return <LazyBoundary><PhononBandPreviewPanel key={artifactIdentity(loadedSelected)} selected={loadedSelected} artifacts={bundle}
+      selectedPoint={restoredPhononBandPoint(delivery?.context, loadedSelected)}
+      onPointSelection={workspace.sourceJobId === "source-view" ? point => {
+        if (!point) { onSelection(clearedWorkspaceSelection(workspace.sourceReferenceHash)); return; }
+        const selection = selectPhononBandPoint(workspace, loadedSelected, point);
+        if (selection) onSelection(selection);
+      } : undefined} /></LazyBoundary>;
+    case "PHONON_DOS": return <LazyBoundary><PhononDosPreviewPanel key={artifactIdentity(loadedSelected)} selected={loadedSelected} artifacts={bundle}
+      selectedPoint={restoredPhononDosPoint(delivery?.context, loadedSelected)}
+      onPointSelection={workspace.sourceJobId === "source-view" ? point => {
+        if (!point) { onSelection(clearedWorkspaceSelection(workspace.sourceReferenceHash)); return; }
+        const selection = selectPhononDosPoint(workspace, loadedSelected, point);
+        if (selection) onSelection(selection);
+      } : undefined} /></LazyBoundary>;
     case "PHONON_COMBINED": return <LazyBoundary><PhononBandDosPreviewPanel artifacts={bundle} /></LazyBoundary>;
     case "PHONON_ANIMATION": return <LazyBoundary><PhononAnimationSurface payload={loadedSelected.content} /></LazyBoundary>;
     case "BRILLOUIN_ZONE": return <LazyBoundary><BrillouinZonePreviewPanel artifacts={bundle} /></LazyBoundary>;
-    case "VOLUMETRIC": return <LazyBoundary><VolumetricPreviewPanel artifacts={bundle} /></LazyBoundary>;
+    case "VOLUMETRIC": {
+      const dataset = bundle.find(item => item.type === "volumetric_dataset_json");
+      return <LazyBoundary><VolumetricPreviewPanel artifacts={bundle}
+        selectedFieldId={dataset ? restoredVolumetricField(delivery?.context, dataset) : null}
+        onSelectField={dataset?.jobId === "source-view" && dataset.metadata?.sourceVersionId && dataset.sha256 ? fieldId => {
+          const selection = selectVolumetricField(workspace, dataset, fieldId);
+          if (selection) onSelection(selection);
+        } : undefined} /></LazyBoundary>;
+    }
     case "COORDINATION": return <LazyBoundary><CoordinationResultPanel artifacts={bundle} selected={loadedSelected} workspace={workspace} onSelection={onSelection} /></LazyBoundary>;
     case "COORDINATION_HISTOGRAM": return <LazyBoundary><CoordinationHistogramPanel artifacts={bundle} /></LazyBoundary>;
-    case "LOCAL_ENVIRONMENT": return <LazyBoundary><LocalEnvironmentPolyhedraPanel artifacts={bundle} selected={loadedSelected} workspace={workspace} onSelection={onSelection} /></LazyBoundary>;
+    case "LOCAL_ENVIRONMENT": return <LazyBoundary><LocalEnvironmentPolyhedraPanel artifacts={bundle} selected={loadedSelected} workspace={workspace} onSelection={selectionHandler} /></LazyBoundary>;
     case "EXPERIMENTAL_XRD": return <LazyBoundary><ExperimentalXrdComparisonPanel artifacts={bundle} selected={loadedSelected} workspace={workspace} onSelection={onSelection} /></LazyBoundary>;
-    case "TRAJECTORY_ANALYTICS": return <LazyBoundary><TrajectoryAnalyticsPanel artifacts={bundle} selected={loadedSelected} workspace={workspace} onSelection={onSelection} /></LazyBoundary>;
+    case "TRAJECTORY_ANALYTICS": return <LazyBoundary><TrajectoryAnalyticsPanel artifacts={bundle} selected={loadedSelected} workspace={workspace} onSelection={selectionHandler} /></LazyBoundary>;
     case "ELECTRONIC": return <LazyBoundary><ElectronicStructurePanel artifacts={bundle} selected={loadedSelected} workspace={workspace} onSelection={onSelection} /></LazyBoundary>;
     case "TEXT": return <TextFallback content={loadedSelected.content} />;
-    case "GENERIC_TABLE": return <TableFallback content={loadedSelected.content} descriptor={descriptor} workspace={workspace} onSelection={onSelection} />;
-    case "GENERIC_PLOT": return <PlotFallback content={loadedSelected.content} descriptor={descriptor} workspace={workspace} onSelection={onSelection} />;
+    case "GENERIC_TABLE": return loadedSelected.type === "metrics_json" && asRecord(asRecord(loadedSelected.content)?.metrics)
+      ? <MetricsFallback artifact={loadedSelected} />
+      : <TableFallback content={loadedSelected.content} descriptor={descriptor} workspace={workspace} externalSampleKey={externalSampleKey} onSelection={onSelection} />;
+    case "GENERIC_PLOT": return <PlotFallback artifact={loadedSelected} descriptor={descriptor} workspace={workspace} onSelection={onSelection} />;
     case "JSON": return <JsonFallback content={loadedSelected.content} />;
     case "STATIC_METADATA": return <StaticMetadataFallback artifact={loadedSelected} />;
     case "DOWNLOAD_ONLY": return <DownloadOnlyFallback artifact={loadedSelected} />;
     default: return <InertFallback artifact={selected} reason="RENDERER_METADATA_ONLY" />;
   } })();
-  return descriptor.heavy
+  const sourceKey = JSON.stringify([workspace.projectId, workspace.workspaceId, workspace.sourceJobId, artifactIdentity(loadedSelected), artifactVersion(loadedSelected), artifactChecksum(loadedSelected)]);
+  return <Fragment key={sourceKey}>{descriptor.heavy
     ? <WorkspaceHeavyViewerLease owner={`${workspace.workspaceId}:${artifactIdentity(selected) ?? "unknown"}`}>{rendered}</WorkspaceHeavyViewerLease>
-    : rendered;
+    : rendered}</Fragment>;
 }
 
 function WorkspaceArtifactRenderer({ selected, artifacts, workspace, delivery, onSelection }: Readonly<{ selected: Artifact; artifacts: readonly Artifact[]; workspace: ScientificWorkspace; delivery: WorkspaceSelectionDelivery | null; onSelection: (selection: WorkspaceSelectionContext) => void }>) {
@@ -251,22 +291,96 @@ function WorkspaceArtifactRenderer({ selected, artifacts, workspace, delivery, o
 
 function LazyBoundary({ children }: { children: ReactNode }) { return <Suspense fallback={<div className="workspace-gallery-state" role="status">正在加载科学查看器…</div>}>{children}</Suspense>; }
 
-function TableFallback({ content, descriptor, workspace, onSelection }: Readonly<{ content: unknown; descriptor: WorkspaceRendererDescriptor; workspace: ScientificWorkspace; onSelection: (selection: WorkspaceSelectionContext) => void }>) {
+function MetricsFallback({ artifact }: { artifact: Artifact }) {
+  const [fullValues, setFullValues] = useState(false);
+  const content = artifact.content;
+  const record = asRecord(content);
+  const metrics = asRecord(record?.metrics);
+  if (!metrics) return <JsonFallback content={content} />;
+  const undefinedR2 = metrics.r2 === null && metrics.r2Status === "undefined_constant_target";
+  const knownR2Status = undefinedR2 || (metrics.r2Status === "defined" && typeof metrics.r2 === "number" && Number.isFinite(metrics.r2));
+  const entries = Object.entries(metrics).filter(([key]) => key !== "r2Status" || !knownR2Status)
+    .map(([key, value]) => [key, key === "r2" && undefinedR2 ? "未定义（目标值为常量）" : value] as const);
+  const hasShortenedValues = entries.some(([, value]) => compactMetricValue(value) !== displayScalar(value));
+  const labels: Record<string, string> = { n: "样本数", mae: "平均绝对误差（MAE）", rmse: "均方根误差（RMSE）", r2: "决定系数（R²）", mse: "均方误差（MSE）", maxAbsError: "最大绝对误差", meanError: "平均误差" };
+  return <section className="workspace-generic-renderer" aria-label="计算指标">
+    <header className="scientific-figure-header"><div><div className="workspace-metric-heading"><h5>计算指标</h5>
+      {hasShortenedValues ? <button type="button" className="product-secondary-action" aria-pressed={fullValues} onClick={() => setFullValues((current) => !current)}>完整数值</button> : null}
+    </div>
+      {typeof record?.targetColumn === "string" ? <p>目标列：{record.targetColumn}</p> : null}
+      {typeof record?.predictionColumn === "string" ? <p>预测列：{record.predictionColumn}</p> : null}
+    </div></header>
+    <div className="workspace-table-scroll workspace-metrics-table" role="region" aria-label="计算指标表，可横向滚动" tabIndex={0}>
+      <table><caption className="sr-only">已保存的计算指标与数值</caption><thead><tr><th scope="col">指标</th><th scope="col">数值</th></tr></thead><tbody>
+        {entries.slice(0, 64).map(([key, value]) => <tr key={key}><th scope="row">{labels[key] || key}</th><td title={!fullValues && compactMetricValue(value) !== displayScalar(value) ? `完整数值：${displayScalar(value)}` : undefined}>{value === null ? "未提供" : typeof value === "object" ? "多项数值，见数据与来源" : fullValues ? displayScalar(value) : compactMetricValue(value)}</td></tr>)}
+        {!entries.length ? <tr><td colSpan={2}>结果未提供指标值。</td></tr> : null}
+      </tbody></table>
+    </div>
+    {entries.length > 64 ? <p role="note">显示前 64 / {entries.length} 项指标；完整结果保留在源文件中。</p> : null}
+    <ArtifactSourceDetails artifact={artifact} />
+  </section>;
+}
+
+function compactMetricValue(value: unknown): string {
+  if (typeof value !== "number" || !Number.isFinite(value) || Number.isInteger(value)) return displayScalar(value);
+  const formatted = formatPresentationMetricValue(String(value));
+  return Number(formatted.replace(/,/gu, "")) === value ? formatted : `≈ ${formatted}`;
+}
+
+function ArtifactSourceDetails({ artifact }: { artifact: Artifact }) {
+  return <details className="scientific-result-source"><summary>数据与来源</summary>
+      <dl>
+        {artifact.name ? <><dt>结果文件</dt><dd>{artifact.name}</dd></> : null}
+        {artifact.jobId ? <><dt>分析运行</dt><dd><code>{artifact.jobId}</code></dd></> : null}
+        {artifactIdentity(artifact) ? <><dt>结果标识</dt><dd><code>{artifactIdentity(artifact)}</code></dd></> : null}
+        {artifact.toolCallId ? <><dt>计算步骤</dt><dd><code>{artifact.toolCallId}</code></dd></> : null}
+        {artifactChecksum(artifact) ? <><dt>内容校验值</dt><dd><code>{artifactChecksum(artifact)}</code></dd></> : null}
+      </dl>
+      <JsonFallback content={artifact.content} />
+    </details>;
+}
+
+function TableFallback({ content, descriptor, workspace, externalSampleKey = null, onSelection, columnLabels = {}, ordinalColumns = [], missingLabel, sourceRowCount, sourceRowCountIsPartial = false }: Readonly<{ content: unknown; descriptor: WorkspaceRendererDescriptor; workspace: ScientificWorkspace; externalSampleKey?: string | null; onSelection: (selection: WorkspaceSelectionContext) => void; columnLabels?: Record<string, string>; ordinalColumns?: readonly string[]; missingLabel?: string; sourceRowCount?: number; sourceRowCountIsPartial?: boolean }>) {
   const hintId = `workspace-table-scroll-hint-${useId().replace(/[^A-Za-z0-9_-]/g, "")}`;
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [overflows, setOverflows] = useState(false);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
   const [visible, setVisible] = useState<Set<string> | null>(null);
+  const [columnsOpen, setColumnsOpen] = useState(false);
+  const columnsToggleRef = useRef<HTMLButtonElement>(null);
   const [page, setPage] = useState(0);
-  const allRows = tableRows(content);
+  const [selectedIdentity, setSelectedIdentity] = useState<string | null>(null);
+  useEffect(() => { setSelectedIdentity(externalSampleKey); }, [externalSampleKey]);
+  const allRows = savedParameterTableRows(content) ?? tableRows(content);
+  const tableScalar = (value: unknown) => missingLabel && value == null ? missingLabel : displayScalar(value);
   const rows = allRows.slice(0, descriptor.maximumRows);
-  const columns = [...new Set(rows.slice(0, 256).flatMap((row) => (
+  const columns = [...new Set(rows.flatMap((row) => (
     Object.keys(row).filter((key) => !DATASET_ROW_IDENTITY_FIELDS.has(key))
-  )))].slice(0, 32);
-  const previewTruncated = allRows.length > rows.length;
+  )))];
+  const totalRowCount = Math.max(allRows.length, sourceRowCount || 0);
+  const previewTruncated = sourceRowCountIsPartial || totalRowCount > rows.length;
   useEffect(() => { setPage(0); }, [query, sort, visible]);
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const measure = () => setOverflows(container.scrollWidth > container.clientWidth + 1);
+    measure();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
+    observer?.observe(container);
+    if (container.firstElementChild) observer?.observe(container.firstElementChild);
+    window.addEventListener("resize", measure);
+    return () => { observer?.disconnect(); window.removeEventListener("resize", measure); };
+  }, [content, query, sort, visible, page]);
   if (!rows.length || !columns.length) return <JsonFallback content={content} />;
-  const activeColumns = columns.filter((column) => !visible || visible.has(column));
-  const filteredRows = rows.filter((row) => !query.trim() || activeColumns.some((column) => displayScalar(row[column]).toLowerCase().includes(query.trim().toLowerCase())));
+  const hasSampleIdentities = rows.every((row) => datasetSampleIdentityFromTableRow(row, workspace.datasetId));
+  const hasSelectableRows = Boolean(workspace.datasetId && workspace.datasetVersion)
+    && rows.some((row) => datasetSampleIdentityFromTableRow(row, workspace.datasetId));
+  const defaultColumns = columns.filter((column) => !(hasSelectableRows && hasSampleIdentities) || !["objectId", "sampleRef"].includes(column));
+  const defaultVisible = defaultColumns.length ? defaultColumns : columns;
+  const activeColumns = columns.filter((column) => visible ? visible.has(column) : defaultVisible.includes(column));
+  const numericColumns = new Set(activeColumns.filter(column => rows.some(row => typeof row[column] === "number") && rows.every(row => row[column] == null || typeof row[column] === "number")));
+  const filteredRows = rows.filter((row) => !query.trim() || columns.some((column) => tableScalar(row[column]).toLowerCase().includes(query.trim().toLowerCase())));
   const orderedRows = sort ? [...filteredRows].sort((left, right) => {
     const a = displayScalar(left[sort.key]); const b = displayScalar(right[sort.key]);
     const numeric = Number(a) - Number(b);
@@ -279,49 +393,54 @@ function TableFallback({ content, descriptor, workspace, onSelection }: Readonly
   const shownStart = visibleRows.length ? page * pageSize + 1 : 0;
   const shownEnd = visibleRows.length ? page * pageSize + visibleRows.length : 0;
   const tableCount = previewTruncated
-    ? `当前显示 ${shownStart.toLocaleString("zh-CN")}-${shownEnd.toLocaleString("zh-CN")} / ${orderedRows.length.toLocaleString("zh-CN")} 个交互预览匹配行；源结果共 ${allRows.length.toLocaleString("zh-CN")} 行。`
-    : `当前显示 ${shownStart.toLocaleString("zh-CN")}-${shownEnd.toLocaleString("zh-CN")} / ${orderedRows.length.toLocaleString("zh-CN")} 行。`;
+    ? `${query.trim() ? `匹配 ${orderedRows.length.toLocaleString("zh-CN")} 行${pageCount > 1 ? `，显示 ${shownStart.toLocaleString("zh-CN")}-${shownEnd.toLocaleString("zh-CN")}` : ""}` : `显示 ${shownStart.toLocaleString("zh-CN")}-${shownEnd.toLocaleString("zh-CN")} 行`} · ${activeColumns.length} 列`
+    : `${pageCount > 1 ? `${shownStart.toLocaleString("zh-CN")}-${shownEnd.toLocaleString("zh-CN")} / ${orderedRows.length.toLocaleString("zh-CN")}` : query.trim() ? `${orderedRows.length.toLocaleString("zh-CN")} / ${rows.length.toLocaleString("zh-CN")}` : rows.length.toLocaleString("zh-CN")} 行 · ${activeColumns.length} 列`;
   const selectRow = (row: Record<string, unknown>) => {
     const identity = datasetSampleIdentityFromTableRow(row, workspace.datasetId);
-    if (identity) onSelection(datasetSampleSelection(workspace, identity));
+    if (identity) {
+      setSelectedIdentity(identity.sampleKey);
+      onSelection(datasetSampleSelection(workspace, identity));
+    }
   };
-  return <section className="workspace-generic-renderer" aria-label="已验证的数据表">
-    <header className="scientific-figure-header">
-      <div>
-        <h5>已验证的数据表</h5>
-        <p data-testid="workspace-table-count" role="status" aria-live="polite">{tableCount} 单位沿用源数据字段。</p>
-        {previewTruncated ? <p className="workspace-table-preview-note" role="note">当前为前 {rows.length.toLocaleString("zh-CN")} 行交互预览，完整数据仍保留在结果中。</p> : null}
+  return <section className="workspace-generic-renderer workspace-data-table" aria-label="数据表">
+    <header className="workspace-table-toolbar">
+      <h5 className="sr-only">数据表</h5>
+      <div className="workspace-table-tools">
+        <label><span className="sr-only">搜索</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={previewTruncated ? "搜索预览内容" : "搜索表格内容"} aria-describedby={previewTruncated ? `${hintId}-scope` : undefined} /></label>
+        <button ref={columnsToggleRef} type="button" className="product-secondary-action" aria-expanded={columnsOpen} aria-controls={`${hintId}-columns`} onClick={() => setColumnsOpen(value => !value)}>列显示</button>
       </div>
-      <label>搜索 <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索公式或属性" /></label>
+      <fieldset id={`${hintId}-columns`} className="workspace-table-columns" hidden={!columnsOpen} onKeyDown={(event) => { if (event.key === "Escape") { event.preventDefault(); setColumnsOpen(false); columnsToggleRef.current?.focus(); } }}>
+        <legend className="sr-only">显示列</legend>
+        {columns.map((column) => <label key={column}><input type="checkbox" checked={activeColumns.includes(column)} onChange={(event) => { const next = new Set(visible || defaultVisible); event.target.checked ? next.add(column) : next.delete(column); setVisible(next.size ? next : new Set([column])); }} />{columnLabels[column] || column}</label>)}
+      </fieldset>
+      <p data-testid="workspace-table-count" role="status" aria-live="polite">{tableCount}</p>
+      {previewTruncated ? <p id={`${hintId}-scope`} className="workspace-table-preview-note" role="note">{sourceRowCountIsPartial ? "当前预览" : "仅预览前"} {rows.length.toLocaleString("zh-CN")} 行（{sourceRowCountIsPartial ? "已读取系列共" : "全表"} {totalRowCount.toLocaleString("zh-CN")} 行），搜索与排序仅限预览。</p> : null}
     </header>
-    <details className="table-column-controls">
-      <summary>列显示</summary>
-      <div>{columns.map((column) => <label key={column}><input type="checkbox" checked={!visible || visible.has(column)} onChange={(event) => { const next = new Set(visible || columns); event.target.checked ? next.add(column) : next.delete(column); setVisible(next.size ? next : new Set([columns[0]])); }} />{column}</label>)}</div>
-    </details>
-    <p id={hintId} className="workspace-table-mobile-hint" role="note">
-      左右滑动查看完整属性；样本身份与选择操作固定在左侧。
-    </p>
-    <div className="workspace-table-frame">
-      <div className="workspace-table-scroll" role="region" aria-label="已验证的数据表，可横向滚动查看完整列" aria-describedby={hintId} tabIndex={0}>
+    {overflows ? <p id={hintId} className="workspace-table-mobile-hint" role="note">
+      {hasSelectableRows ? "左右滑动查看完整属性；选择操作固定在左侧。" : "左右滑动查看完整列。"}
+    </p> : null}
+    <div className="workspace-table-frame" data-overflow={overflows}>
+      <div ref={scrollRef} className="workspace-table-scroll" role="region" aria-label="数据表，可横向滚动查看完整列" aria-describedby={overflows ? hintId : undefined} tabIndex={0}>
         <table>
           <thead>
             <tr>
-              <th scope="col" className="workspace-table-identity-column">样本 / 选择</th>
-              {activeColumns.map((column) => <th key={column} scope="col"><button type="button" className="table-sort-button" onClick={() => setSort((current) => ({ key: column, direction: current?.key === column && current.direction === "asc" ? "desc" : "asc" }))}>{column}{sort?.key === column ? (sort.direction === "asc" ? " ↑" : " ↓") : ""}</button></th>)}
+              {hasSelectableRows ? <th scope="col" className="workspace-table-identity-column">选择</th> : null}
+              {activeColumns.map((column) => <th key={column} scope="col" data-ordinal={ordinalColumns.includes(column) || undefined} className={numericColumns.has(column) ? "table-number" : undefined} aria-sort={sort?.key === column ? (sort.direction === "asc" ? "ascending" : "descending") : "none"}><button type="button" className="table-sort-button" onClick={() => setSort((current) => ({ key: column, direction: current?.key === column && current.direction === "asc" ? "desc" : "asc" }))}>{columnLabels[column] || column}{sort?.key === column ? (sort.direction === "asc" ? " ↑" : " ↓") : ""}</button></th>)}
             </tr>
           </thead>
           <tbody>
+            {!visibleRows.length ? <tr><td colSpan={activeColumns.length + (hasSelectableRows ? 1 : 0)}>{previewTruncated ? "预览范围内没有匹配项。" : hasSelectableRows ? "没有匹配的样本。" : "没有匹配的数据。"}<button type="button" className="table-row-select" onClick={() => setQuery("")}>清除搜索</button></td></tr> : null}
             {visibleRows.map((row, index) => {
               const absoluteIndex = page * pageSize + index;
               const sampleIdentity = datasetSampleIdentityFromTableRow(row, workspace.datasetId);
+              const isSelected = !!sampleIdentity && selectedIdentity === sampleIdentity.sampleKey;
               return <tr key={stableRowKey(row, absoluteIndex)}>
-                <td className="workspace-table-identity-column">
-                  <button type="button" className="table-row-select" aria-label={sampleIdentity ? `选择样本 ${sampleIdentity.sampleRef}` : `第 ${absoluteIndex + 1} 行缺少稳定样本标识`} disabled={!sampleIdentity} onClick={() => selectRow(row)} onKeyDown={(event) => { if (sampleIdentity && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); selectRow(row); } }}>
-                    {sampleIdentity ? "选择" : "不可选择"}
-                  </button>
-                  <small>{sampleIdentity?.sampleRef ?? `第 ${absoluteIndex + 1} 行`}</small>
-                </td>
-                {activeColumns.map((column) => <td key={column}>{displayScalar(row[column])}</td>)}
+                {hasSelectableRows ? <td className="workspace-table-identity-column">
+                  {sampleIdentity ? <button type="button" className="table-row-select" aria-pressed={isSelected} title={sampleIdentity.sampleRef} aria-label={`选择样本 ${sampleIdentity.sampleRef}`} onClick={() => selectRow(row)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); selectRow(row); } }}>
+                    {isSelected ? "已选择" : "选择"}
+                  </button> : <span>无样本标识</span>}
+                </td> : null}
+                {activeColumns.map((column) => <td key={column} data-ordinal={ordinalColumns.includes(column) || undefined} className={typeof row[column] === "number" ? "table-number" : undefined}>{tableScalar(row[column])}</td>)}
               </tr>;
             })}
           </tbody>
@@ -336,13 +455,19 @@ const DATASET_ROW_IDENTITY_FIELDS = new Set([
   "sampleKey",
 ]);
 
-function PlotFallback({ content, descriptor, workspace, onSelection }: Readonly<{ content: unknown; descriptor: WorkspaceRendererDescriptor; workspace: ScientificWorkspace; onSelection: (selection: WorkspaceSelectionContext) => void }>) {
-  const figure = normalizedPlotFigure(content);
-  const allTraces = Array.isArray(figure?.data) ? figure.data : [];
-  const traces = allTraces.slice(0, 128);
-  const allRows = traces.flatMap((trace, traceIndex) => plotRows(trace, traceIndex, descriptor.maximumPoints));
-  const rows = allRows.slice(0, descriptor.maximumRows);
-  return <section className="workspace-generic-renderer" aria-label="科学图表"><header className="scientific-figure-header"><h5>科学图表</h5><p>{traces.length} / {allTraces.length} 个已验证数据系列用于当前交互预览</p></header><LazyBoundary><WorkspaceGenericPlot content={content} maximumPoints={descriptor.maximumPoints} /></LazyBoundary>{rows.length ? <details><summary>查看数值数据 · {rows.length} / {allRows.length} 行</summary><TableFallback content={{ rows }} descriptor={descriptor} workspace={workspace} onSelection={onSelection} /></details> : null}<p className="workspace-table-preview-note" role="note">图表和数值表是有界展示投影；完整数据仍保留在权威 Artifact 中。</p><details><summary>技术详情</summary><JsonFallback content={content} /></details></section>;
+function PlotFallback({ artifact, descriptor, workspace, onSelection }: Readonly<{ artifact: Artifact; descriptor: WorkspaceRendererDescriptor; workspace: ScientificWorkspace; onSelection: (selection: WorkspaceSelectionContext) => void }>) {
+  const content = artifact.content;
+  const preview = useMemo(() => plotTablePreview(content, descriptor.maximumRows), [content, descriptor.maximumRows]);
+  const { rows } = preview;
+  return <section className="workspace-generic-renderer" aria-label="科学图表">
+    <LazyBoundary><WorkspaceGenericPlot content={content} maximumPoints={descriptor.maximumPoints} /></LazyBoundary>
+    {rows.length ? <details><summary>查看数值数据 · {rows.length} 行</summary>
+      <TableFallback content={{ rows }} columnLabels={preview.columnLabels} ordinalColumns={["point", "row", "column", "sourceRow"]} missingLabel="缺失" sourceRowCount={preview.totalRows} sourceRowCountIsPartial={preview.omittedTraces > 0} descriptor={descriptor} workspace={workspace} onSelection={onSelection} />
+      {preview.notes.map(note => <p className="workspace-table-preview-note" role="note" key={note}>{note}</p>)}
+      {preview.omittedTraces ? <p className="workspace-table-preview-note" role="note">另有 {preview.omittedTraces} 个数据系列未展开，完整内容保留在“数据与来源”中。</p> : null}
+    </details> : null}
+    <ArtifactSourceDetails artifact={artifact} />
+  </section>;
 }
 
 function TextFallback({ content }: { content: unknown }) {
@@ -567,4 +692,3 @@ function stableRowKey(row: Record<string, unknown>, index: number) {
   return `display-row-${index}`;
 }
 function displayScalar(value: unknown) { if (typeof value === "number") return Number.isFinite(value) ? String(value) : "invalid"; if (["string", "boolean"].includes(typeof value)) return String(value).slice(0, 200); return value === null ? "null" : "[structured]"; }
-function plotRows(value: unknown, traceIndex: number, cap: number): Record<string, unknown>[] { const trace = asRecord(value); const x = Array.isArray(trace?.x) ? trace.x : []; const y = Array.isArray(trace?.y) ? trace.y : []; const values = Array.isArray(trace?.values) ? trace.values : []; const count = Math.min(Math.max(x.length, y.length, values.length), cap); return Array.from({ length: count }, (_, index) => ({ trace: traceIndex + 1, point: index + 1, x: x[index] ?? null, y: y[index] ?? null, value: values[index] ?? null })); }

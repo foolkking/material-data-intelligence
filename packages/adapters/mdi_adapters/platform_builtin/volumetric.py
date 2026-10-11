@@ -29,7 +29,7 @@ from pymatgen.core import Structure
 
 
 VOLUMETRIC_TOOL_ID = "structure.volumetric_data"
-VOLUMETRIC_ADAPTER_VERSION = "1.1.0"
+VOLUMETRIC_ADAPTER_VERSION = "1.2.0"
 VOLUMETRIC_ARTIFACT_TYPES = [
     ArtifactType.volumetric_grid_json,
     ArtifactType.volumetric_payload_json,
@@ -82,7 +82,7 @@ class VolumetricDataAdapter(BaseToolAdapter):
         if normalized["format"] != "auto" and normalized["format"] != prepared["source_format"]:
             raise _error("TOOL_INPUT_INVALID", "Explicit format does not match the parsed source.", "format_mismatch")
         prepared = _apply_quantity_hint(prepared, normalized["quantity_hint"])
-        selected = _selected_channels(prepared["channels"], normalized["field_selection"])
+        selected = _selected_channels([{**channel, "source_channel_map": [(index, 0)]} for index, channel in enumerate(prepared["channels"])], normalized["field_selection"])
         if not selected:
             raise _error("TOOL_INPUT_INVALID", "Field selection did not retain a supported source channel.", "field_selection_empty")
         try:
@@ -383,7 +383,7 @@ def _coalesce_noncollinear(channels: list[dict[str, Any]]) -> list[dict[str, Any
     by_name = {item["spin_channel"]: item for item in vectors}
     order = [by_name[f"magnetization_{axis}"] for axis in "xyz"]
     interleaved = [value for row in zip(*(item["values"] for item in order), strict=True) for value in row]
-    vector = {**order[0], "name": "magnetization_vector", "values": interleaved, "stored_components": 3, "spin_channel": "magnetization_vector"}
+    vector = {**order[0], "name": "magnetization_vector", "values": interleaved, "stored_components": 3, "spin_channel": "magnetization_vector", "source_channel_map": [(item["source_channel_map"][0][0], index) for index, item in enumerate(order)]}
     return [item for item in channels if item not in vectors] + [vector]
 
 
@@ -426,12 +426,16 @@ def _derive_collinear_channels(channels: list[dict[str, Any]]) -> list[dict[str,
             "spin_channel": name,
             "derived_formula": formula_id,
             "derived_sources": ("total", "spin_difference"),
+            "source_channel_map": [],
             "warnings": warnings,
         })
     return [*channels, *derived]
 
 
 def _channel_provenance(base: dict[str, Any], channel: dict[str, Any]) -> dict[str, Any]:
+    mappings = [{"kind": "component_remapping", "detail": f"SOURCE_CHANNEL_V1:{source_index}:{component_index}"}
+                for source_index, component_index in channel.get("source_channel_map", [])]
+    base = {**base, "transformations": [*base["transformations"], *mappings]}
     formula = channel.get("derived_formula")
     if formula not in {"COLLINEAR_SPIN_UP_V1", "COLLINEAR_SPIN_DOWN_V1"}:
         return base

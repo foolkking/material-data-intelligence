@@ -4,14 +4,62 @@ import {
   deleteEmptyProject,
   getProjectHistory,
   invalidateProjectHistory,
+  invalidateProductDirectories,
+  listProjects,
   searchProduct,
   updateDataset,
+  updateProject,
+  createProject,
+  getProjectExportManifest,
   uploadDatasetFiles,
 } from "./planner-api";
 
 afterEach(() => {
   invalidateProjectHistory();
+  invalidateProductDirectories();
   vi.unstubAllGlobals();
+});
+
+it("forwards cancellation to project updates and provenance exports", async () => {
+  const fetchMock = vi.fn().mockImplementation(async () => new Response(JSON.stringify({ id: "p", projectId: "p", name: "Materials" }), { status: 200 }));
+  vi.stubGlobal("fetch", fetchMock);
+  const signal = new AbortController().signal;
+  await updateProject("p", { name: "Materials" }, signal);
+  await getProjectExportManifest("p", signal);
+  expect(fetchMock.mock.calls.every((call) => call[1].signal === signal)).toBe(true);
+  expect(fetchMock.mock.calls[0][1].body).toBe(JSON.stringify({ name: "Materials" }));
+});
+
+it("forwards cancellation to project creation without adding unsupported admission fields", async () => {
+  const fetchMock = vi.fn().mockImplementation(async () => new Response(JSON.stringify({ id: "p", projectId: "p", name: "Materials" }), { status: 200 }));
+  vi.stubGlobal("fetch", fetchMock);
+  const signal = new AbortController().signal;
+  await createProject("Materials", signal);
+  expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining("/projects"), expect.objectContaining({ method: "POST", signal, body: JSON.stringify({ name: "Materials" }) }));
+});
+
+it("keeps owned project directory reads separate from the shell cache", async () => {
+  const fetchMock = vi.fn().mockImplementation(async () => new Response(JSON.stringify([{ id: "p", name: "Materials" }]), { status: 200 }));
+  vi.stubGlobal("fetch", fetchMock);
+  const cached = await listProjects();
+  const controller = new AbortController();
+  await listProjects({ signal: controller.signal });
+  controller.abort();
+  expect(await listProjects()).toBe(cached);
+  expect(fetchMock).toHaveBeenCalledTimes(2);
+  expect(fetchMock).toHaveBeenLastCalledWith(expect.stringContaining("/projects"), expect.objectContaining({ signal: controller.signal, cache: "no-store" }));
+});
+
+it("keeps owned cancellable history reads separate from the shared warm cache", async () => {
+  const fetchMock = vi.fn().mockImplementation(async () => new Response(JSON.stringify({ project: { projectId: "project-owned" }, datasets: [], analyses: [] }), { status: 200 }));
+  vi.stubGlobal("fetch", fetchMock);
+  const cached = await getProjectHistory("project-owned");
+  const controller = new AbortController();
+  await getProjectHistory("project-owned", { signal: controller.signal });
+  controller.abort();
+  expect(await getProjectHistory("project-owned")).toBe(cached);
+  expect(fetchMock).toHaveBeenCalledTimes(2);
+  expect(fetchMock).toHaveBeenLastCalledWith(expect.stringContaining("/projects/project-owned/history"), expect.objectContaining({ signal: controller.signal, cache: "no-store" }));
 });
 
 it("serializes bounded global-search scope and date filters", async () => {
