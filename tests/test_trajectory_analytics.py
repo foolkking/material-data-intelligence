@@ -64,7 +64,7 @@ def _payload(root: Path, artifact) -> dict:
 
 def test_registry_and_exact_msd_dependency() -> None:
     registry = load_manifests()
-    assert len(registry.tools) == 62
+    assert len(registry.tools) == 69
     for tool_id in ("trajectory.rdf", "trajectory.msd", "trajectory.diffusion"):
         tool = registry.get_tool_by_id(tool_id)
         assert tool.version == "0.1.0"

@@ -30,7 +30,7 @@
 
 ## 6. 科学工具与无材料能力
 
-**已实现、已验证。** 默认 Scientific Requirement Registry 有 **38 个 active requirements**，可执行工具注册合同为 **69 个工具**。其中七项无需先上传材料的受控工具是：
+**已实现、已验证。** 默认 Scientific Requirement Registry 有 **38 个 active requirements**，研究能力目录有 **36 个能力**，可执行工具注册合同为 **69 个工具**。其中七项无需先上传材料的受控工具是：
 
 - `reference.periodic_table`：版本化的 118 元素参考数据、周期表与筛选。
 - `reference.compare_elements`：元素属性比较。
@@ -42,9 +42,11 @@
 
 知识/方法回答无需虚构材料、Plan 或科学 Job。表达式与参数通过 schema 和受控 adapter 约束，不开放任意代码执行。
 
+当前边界：元素查询/比较提供原子序数与共价半径，缺失参考值不插补；化学式计算提供计量数和原子分数，不提供质量分数、摩尔质量、水合物或带电式解析；文本绘图限 2–128 行、2–4 列 CSV/TSV/Markdown 数值表，保留行序；曲线限四次及以下多项式、正弦、余弦、指数、自然对数和高斯函数；理想晶格支持 SC、BCC、FCC、diamond、rocksalt、CsCl、HCP，明确标注为模型。精确上限见 [参数合同](packages/tool-registry/mdi_tool_registry/project_parameters.py) 和 [元素参考合同](packages/tool-registry/mdi_tool_registry/element_reference.py)。
+
 ## 7. 多来源与跨数据集分析
 
-**已实现、已验证、代表性真实流程已验收。** AnalysisPlan 0.3 保留每个材料的精确对象版本、输入角色和执行来源；分析不能从另一个材料借事实。AnalysisPlan 0.4 也允许 PROJECT 级别的无样品运行，不伪造 Dataset。真实验收包含 Ca(OH)₂ 加用户内联 CSV 的组合分析、分别绑定的报告图，以及 cross-dataset 合同与来源校验。
+**已实现、已验证、代表性真实流程已验收。** AnalysisPlan 0.3 保留每个材料的精确对象版本、输入角色和执行来源，跨数据集流程已有代表性验收；分析不能从另一个材料借事实。AnalysisPlan 0.4 也允许 PROJECT 级别的无样品运行，不伪造 Dataset。另有 Ca(OH)₂ 加用户内联 CSV 的组合分析与分别绑定的报告图验收；这是无材料多输入流程，不能当作跨数据集覆盖证据。
 
 ## 8. 事实、证据与科学回答
 
@@ -69,6 +71,8 @@
 ## 13. 账户、模型设置与管理
 
 **已实现、已验证，代表性账户流程已验收。** 用户个人连接的 key 在服务端加密，浏览器仅写入且不回显；平台模型由管理员发布并独立授权。个人连接可并存且模型 ID 与连接身份绑定。Migration 0038 `user_model_connections` 是追加式迁移，保留既有 personal 连接。账户、授权、任务/通知和平台管理路由均在当前应用中。
+
+已有连接的模型发现、选择、重新打开和真实科学调用已检查；首次经浏览器提交密钥、管理员发布及授权操作仍需真实角色验收，见对应交接项。
 
 ## 14. 复杂科学文件与端到端验收
 

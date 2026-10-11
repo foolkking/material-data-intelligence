@@ -80,7 +80,7 @@ def _execute(tmp_path: Path, tool_id: str, payload: dict, params: dict | None = 
 
 def test_registry_has_exact_two_n5_tools_and_ports() -> None:
     registry = load_manifests()
-    assert len(registry.tools) == 62
+    assert len(registry.tools) == 69
     tools = [item.toolId for item in registry.tools if item.toolId.startswith("electronic.")]
     assert tools == ["electronic.band_structure", "electronic.dos"]
     ports = build_artifact_port_inventory(registry)

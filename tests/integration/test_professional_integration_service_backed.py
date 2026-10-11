@@ -54,11 +54,11 @@ def test_phase10n6_postgres_redis_minio_professional_integration_closure(monkeyp
         registry = load_manifests()
         ports = build_artifact_port_inventory(registry)
         inventory = {tool_id: {"version": registry.get_tool_by_id(tool_id).version, "adapter": registry.get_tool_by_id(tool_id).adapter, "ports": ports[tool_id].model_dump(mode="json"), "projector": (tool_id, "table_json") in ARTIFACT_PROJECTOR_CONTRACTS} for tool_id in TOOLS}
-        assert len(registry.tools) == 62 and all(item["projector"] for item in inventory.values())
+        assert len(registry.tools) == 69 and all(item["projector"] for item in inventory.values())
         assert ports["structure.local_environment_polyhedra"].inputPorts[0].portId == "coordination"
         assert ports["trajectory.diffusion"].inputPorts[0].portId == "msd"
 
-        payload = json.dumps({"schemaVersion": "phase10n6.service_closure.v1", "registry": 62, "profile": "2.4", "tools": inventory}, sort_keys=True, separators=(",", ":")).encode()
+        payload = json.dumps({"schemaVersion": "phase10n6.service_closure.v1", "registry": 69, "profile": "2.4", "tools": inventory}, sort_keys=True, separators=(",", ":")).encode()
         checksum = sha256(payload).hexdigest()
         minio, bucket = _minio_client()
         key = f"phase10n6/{suffix}/professional-inventory.json"

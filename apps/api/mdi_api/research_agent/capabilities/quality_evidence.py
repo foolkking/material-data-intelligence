@@ -1522,11 +1522,6 @@ def _parameter_records() -> list[CapabilityQualityEvidence]:
         "generation.ideal_crystal": "2b04e03a063b6dc97ecb93d727dd1414bd0999bde7b0f838605e80f6ebf91563",
     }
     links = [
-        _link("parameters.exact.v1", ScientificEvidenceKind.REFERENCE, ReferenceAuthority.ANALYTICAL,
-            "tests/test_project_parameters.py::test_independent_known_parameter_results",
-            "SI definitions, hand-calculated polynomial and stoichiometric values, explicit input rows and analytic crystal geometry.",
-            "Independent expected values", ["Results preserve units, formula counts, input values and ideal geometry."],
-            numeric=True, tolerance=_tolerance("declared result unit", "Floating point comparisons use a relative bound; retained input values remain exact.", relative=1e-12)),
         _link("parameters.negative.v1", ScientificEvidenceKind.DOMAIN_NEGATIVE, ReferenceAuthority.SYNTHETIC_EXACT,
             "tests/test_project_parameters.py::test_parameter_domains_reject_invalid_or_executable_inputs",
             "Invalid dimensions, absolute temperatures, function domains, expressions and malformed source tables.",
@@ -1540,10 +1535,55 @@ def _parameter_records() -> list[CapabilityQualityEvidence]:
             "Ordinary Research admission, plan, asynchronous worker, Result, interpretation and report contracts.",
             "End-to-end controlled execution", ["No Dataset is created or implicitly bound and parameter identity survives durable recovery."]),
     ]
+    exact_links = {
+        "reference.convert_units": _link(
+            "parameters.convert-units.exact.v1", ScientificEvidenceKind.REFERENCE,
+            ReferenceAuthority.ANALYTICAL,
+            "tests/test_project_parameters.py::test_independent_known_parameter_results",
+            "Versioned SI definitions and explicit temperature semantics.",
+            "Convert values using the exact requested target unit.",
+            ["Conversion results preserve the selected compatible unit and exact conversion definition."],
+            units=["target_unit"], numeric=True,
+            tolerance=_tolerance("target_unit", "Relative floating point error is bounded while source and target units remain exact.", relative=1e-12)),
+        "generation.function_curve": _link(
+            "parameters.function-curve.exact.v1", ScientificEvidenceKind.REFERENCE,
+            ReferenceAuthority.ANALYTICAL,
+            "tests/test_project_parameters.py::test_independent_known_parameter_results",
+            "Analytic polynomial definition and explicitly dimensionless numeric inputs.",
+            "Evaluate the bounded function at the saved sample coordinates.",
+            ["Function values and sample coordinates match the analytic definition."],
+            units=["dimensionless"], numeric=True,
+            tolerance=_tolerance("dimensionless", "Analytic values are checked with a relative floating point bound.", relative=1e-12)),
+        "composition.from_formula": _link(
+            "parameters.formula-composition.exact.v1", ScientificEvidenceKind.REFERENCE,
+            ReferenceAuthority.ANALYTICAL,
+            "tests/test_project_parameters.py::test_independent_known_parameter_results",
+            "Independent stoichiometric counts and atomic-fraction normalization.",
+            "Parse formula element counts and normalize atom fractions.",
+            ["Element counts and normalized atomic fractions match hand-calculated values."],
+            units=["count", "fraction"], numeric=True,
+            tolerance=_tolerance("fraction", "Atomic fractions use a relative floating point bound; stoichiometric counts are exact.", relative=1e-12)),
+        "viz.inline_xy": _link(
+            "parameters.inline-xy.source-integrity.v1", ScientificEvidenceKind.REFERENCE,
+            ReferenceAuthority.CURATED_KNOWN_RESULT,
+            "tests/test_project_parameters.py::test_independent_known_parameter_results",
+            "Exact user-supplied numeric table and its original column headers.",
+            "Preserve row order and values without numerical transformation.",
+            ["Rows, selected values and original text hash remain exact; no physical units are inferred from arbitrary headers."]),
+        "generation.ideal_crystal": _link(
+            "parameters.ideal-crystal.geometry.v1", ScientificEvidenceKind.REFERENCE,
+            ReferenceAuthority.ANALYTICAL,
+            "tests/test_project_parameters.py::test_independent_known_parameter_results",
+            "Analytic BCC unit-cell geometry and periodic first-shell distance.",
+            "Compute the exact requested ideal lattice geometry.",
+            ["Cell volume, site count and periodic nearest-neighbor distance match the analytic model."],
+            units=["angstrom", "angstrom^3", "count"], numeric=True,
+            tolerance=_tolerance("angstrom", "Analytic lengths are checked with a relative floating point bound.", relative=1e-12)),
+    }
     return [CapabilityQualityEvidence(capability_id=key, qualification_level=ScientificQualificationLevel.REFERENCE_VALIDATED,
         qualified_contract_fingerprint=fingerprints[key], applicability_domains=[description],
         known_limitations=["Only registered bounded parameter forms are supported; output is not a measured or relaxed sample."],
-        reproducibility="DETERMINISTIC", evidence=links) for key, (_title, description) in PARAMETER_TOOLS.items()]
+        reproducibility="DETERMINISTIC", evidence=[exact_links[key], *links]) for key, (_title, description) in PARAMETER_TOOLS.items()]
 
 
 def _local_environment_records() -> list[CapabilityQualityEvidence]:
@@ -1561,6 +1601,10 @@ def _local_environment_records() -> list[CapabilityQualityEvidence]:
             "tests/test_local_environment_polyhedra.py::test_missing_exact_persisted_binding_is_rejected_before_geometry",
             "A coordination input without an exact committed artifact binding.",
             "Dependency identity validation", ["Missing source identity fails before geometry is generated."]),
+        _link("local-environment.invariant.v1", ScientificEvidenceKind.INVARIANT, ReferenceAuthority.SYNTHETIC_EXACT,
+            "tests/test_local_environment_polyhedra.py::test_result_is_deterministic_and_parameter_hash_is_stable",
+            "Repeated runs using the same ordered structure, neighbors and method.",
+            "Deterministic canonical geometry and face ordering", ["Identical validated inputs produce byte-identical geometry and canonical face order."]),
         _link("local-environment.projection.v1", ScientificEvidenceKind.RESULT_PROJECTION, ReferenceAuthority.CURATED_KNOWN_RESULT,
             "tests/test_coordination_result_projection.py::test_local_environment_projects_saved_site_geometry_and_exact_dependency",
             "Registered adapter outputs and their unchanged source artifacts.",

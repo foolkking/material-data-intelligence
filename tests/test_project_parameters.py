@@ -58,16 +58,16 @@ def test_independent_known_parameter_results(tool_id):
     elif tool_id == "composition.from_formula":
         assert [row["元素"] for row in result.rows] == ["Ca", "P", "O"]
         assert [row["化学计量数"] for row in result.rows] == [3, 2, 8]
-        assert [row["原子分数"] for row in result.rows] == pytest.approx([3/13, 2/13, 8/13])
-        assert sum(row["原子百分比"] for row in result.rows) == pytest.approx(100)
+        assert [row["原子分数"] for row in result.rows] == pytest.approx([3/13, 2/13, 8/13], rel=1e-12, abs=0)
+        assert sum(row["原子百分比"] for row in result.rows) == pytest.approx(100, rel=1e-12, abs=0)
     elif tool_id == "viz.inline_xy":
         assert [list(row.values()) for row in result.rows] == [[2, 4], [0, 0], [1, 2]]
         assert result.figure["data"][0]["x"] == [2, 0, 1]
         assert result.details["textHash"] == hashlib.sha256(params["data_text"].encode()).hexdigest()
     else:
         assert len(result.model) == 2
-        assert result.model.volume == pytest.approx(27)
-        assert result.details["nearestDistance"] == pytest.approx(3 * math.sqrt(3) / 2)
+        assert result.model.volume == pytest.approx(27, rel=1e-12, abs=0)
+        assert result.details["nearestDistance"] == pytest.approx(3 * math.sqrt(3) / 2, rel=1e-12, abs=0)
         assert result.origin == "IDEAL_MODEL"
 
 

@@ -14,4 +14,4 @@ Run from the repository root:
     npm --prefix apps/web ci
     npm --prefix apps/web run dev
 
-Use the repository-root scripts/dev.ps1 for the normal full stack so the external runtime paths and proxy target are loaded consistently. Checks are npm --prefix apps/web test, npm --prefix apps/web run typecheck, and npm --prefix apps/web run build.
+Use the repository-root scripts/dev.ps1 for the normal full stack so the external runtime paths and proxy target are loaded consistently. Follow the [root README](../../README.md) for temporary environment variables, checks and isolated production builds while the frontend remains running.

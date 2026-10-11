@@ -55,18 +55,18 @@ def test_all_canonical_capabilities_have_explicit_evidence_backed_status():
     report = _quality_report()
     assert report.accepted
     assert report.error_count == 0
-    assert report.capability_count == 29
+    assert report.capability_count == 36
     assert report.qualification_counts == {
-        "DOMAIN_VALIDATED": 11,
+        "DOMAIN_VALIDATED": 13,
         "EXTERNAL_IMPLEMENTATION_SEMANTICS_VALIDATED": 12,
         "NOT_YET_SCIENTIFICALLY_QUALIFIED": 1,
-        "REFERENCE_VALIDATED": 5,
+        "REFERENCE_VALIDATED": 10,
     }
-    assert report.reference_case_count == 15
-    assert report.invariant_case_count == 11
-    assert report.domain_negative_case_count == 26
+    assert report.reference_case_count == 24
+    assert report.invariant_case_count == 12
+    assert report.domain_negative_case_count == 28
     assert report.artifact_semantics_case_count == 2
-    assert report.result_projection_case_count == 5
+    assert report.result_projection_case_count == 7
     assert report.interpretation_evaluation_case_count == 7
     assert report.report_evaluation_case_count == 2
     assert len(report.inventory_fingerprint) == 64

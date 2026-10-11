@@ -21,7 +21,7 @@ Next.js 前端调用 FastAPI。FastAPI 将身份、项目、数据集、对象�
 
 AnalysisPlan 0.3 支持精确多数据集来源；AnalysisPlan 0.4 支持不预先上传材料的 PROJECT 级能力。结果投影、事实、解释和报告都重新校验保存的输入、工具调用、artifact 和来源版本。
 
-当前合同规模是 69 个注册工具、38 个 active research requirements。迁移链当前包含追加式 0038_user_model_connections；它保留历史 personal 连接并支持独立的多连接身份。
+当前合同规模是 69 个注册工具、36 个研究能力、38 个 active research requirements；三者是不同层级的合同。迁移链当前包含追加式 0038_user_model_connections；它保留历史 personal 连接并支持独立的多连接身份。
 
 ## 当前运行拓扑
 
@@ -46,14 +46,16 @@ AnalysisPlan 0.3 支持精确多数据集来源；AnalysisPlan 0.4 支持不预�
 |---|---|
 | PostgreSQL 数据目录 | E:\1project\mdi-b0-5a1.local\data\postgres |
 | MinIO 数据目录及 bucket | E:\1project\mdi-b0-5a1.local\data\minio\mdi-artifacts |
-| 受控 artifact 工作目录 | E:\1project\mdi-b0-5a1.local\data\artifacts |
+| local artifact 后端配置目录（当前使用 MinIO） | E:\1project\mdi-b0-5a1.local\data\artifacts |
 | Redis 运行数据目录 | E:\1project\mdi-b0-5a1.local\data\redis |
 | PID、服务状态、Redis 配置 | E:\1project\mdi-b0-5a1.local\run |
 | API/Worker/存储/前端日志 | E:\1project\mdi-b0-5a1.local\logs |
 | 用户指定临时根 | C:\Users\86182\Desktop\wkkk |
 | 61 份真实样例 | C:\Users\86182\Desktop\材料智能体平台_完整61测试数据 |
 
-MDI_TEMP_ROOT、TEMP、TMP、TMPDIR 指向 wkkk；测试 scratch 使用其 pytest 子目录并保持编号隔离。临时根不是权威数据库，也没有把现有服务数据迁移到那里。用户输入、模型连接密钥和运行凭据只从外部 local.env/服务存储读取，不写入文档、prompt、artifact 或报告。
+当前运行后端为 PostgreSQL / Redis / MinIO：项目、会话、执行状态与来源关系在 PostgreSQL；上传文件和科学结果原件在 MinIO 的 mdi-artifacts bucket。备份对象存储应保留整个 data\minio 目录及其内部元数据，不能只复制单个对象目录。data\artifacts 和 data\mdi-local.db 不是当前配置的主存储。Redis 当前未启用 AOF，队列由内存承载，持久执行状态以 PostgreSQL 为准。
+
+MDI_TEMP_ROOT、TEMP、TMP、TMPDIR 指向 wkkk；测试 scratch 使用其 pytest 子目录并保持编号隔离。临时根不是权威数据库，也没有把现有服务数据迁移到那里。模型连接密钥和运行凭据来自外部 local.env 或加密服务存储，不进入 prompt、日志、artifact、报告或 Git。用户问题与明确输入按产品合同保存并参与模型上下文。
 
 ## 已验证的当前基线
 
@@ -74,6 +76,7 @@ MDI_TEMP_ROOT、TEMP、TMP、TMPDIR 指向 wkkk；测试 scratch 使用其 pytes
 3. 各真实科学数据族的完整图形、大尺寸、选择、刷新和损坏状态回归。
 4. 内置浏览器原生 ZIP/PNG 文件落盘事件的可检查证据；服务器 HTTP 下载成功不等于该项完成。
 5. 所有被接受 Research 消息的统一端到端终态回归。
+6. 首次通过浏览器填写模型密钥、管理员发布和授权的真实流程验收。
 
 不要重新执行已经取代的 M6、运行时迁移、前端源码架构迁移或仓库治理基线。不要删除真实数据、外部运行目录、用户浏览器页或临时根中的其他任务目录。
 
