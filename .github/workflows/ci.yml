@@ -4,6 +4,15 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+
 jobs:
   backend:
     runs-on: ubuntu-latest
@@ -12,9 +21,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: pip
-      - run: python -m pip install -e ".[test]"
-      - run: python -m pytest -m "not integration and not live_llm and not llm_integration"
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked --extra test
+      - run: uv run --locked --extra test python -m pytest -m "not integration and not live_llm and not llm_integration"
+
+  local-controller:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked --extra test
+      - run: uv run --locked --extra test python -m pytest tests/test_local_setup.py tests/test_local_worker_control.py tests/test_same_stack_runtime_config.py tests/test_worker_queue_manifest.py tests/test_pytest_scratch_paths.py -m "not integration"
 
   frontend:
     runs-on: ubuntu-latest

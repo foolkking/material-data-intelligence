@@ -7,6 +7,14 @@ import pytest
 
 
 _SERVICE_RUNTIME_ENVIRONMENT = (
+    "MDI_LOCAL_ROOT",
+    "MDI_DATA_ROOT",
+    "MDI_RUNTIME_ROOT",
+    "MDI_LOG_ROOT",
+    "MDI_TEMP_ROOT",
+    "MDI_CACHE_ROOT",
+    "MDI_NEXT_DIST_DIR",
+    "MDI_ARTIFACT_ROOT",
     "MDI_RUNTIME_PROFILE",
     "MDI_RUNTIME_BACKEND",
     "MDI_QUEUE_BACKEND",
@@ -60,6 +68,7 @@ def _pytest_scratch_paths(root: Path, local_root: str | None, configured: str | 
     return scratch, candidate
 
 
+@pytest.hookimpl(tryfirst=True)
 def pytest_configure(config: pytest.Config) -> None:
     """Keep temporary test artifacts outside source and persistent service data."""
     scratch, candidate = _pytest_scratch_paths(
@@ -68,6 +77,8 @@ def pytest_configure(config: pytest.Config) -> None:
         os.getenv("MDI_TEMP_ROOT"),
     )
     scratch.mkdir(parents=True, exist_ok=True)
+    # Keep cache portable too; do not depend on the original checkout name.
+    config.inicfg["cache_dir"] = str(scratch.parent / "pytest-cache")
     if candidate is None:
         # Retain pytest's numbered directories, concurrent-run isolation and
         # retention policy instead of reusing one destructively cleared folder.
@@ -99,4 +110,3 @@ def isolate_unit_runtime_environment(
 @pytest.fixture
 def repo_root() -> Path:
     return Path(__file__).resolve().parents[1]
-

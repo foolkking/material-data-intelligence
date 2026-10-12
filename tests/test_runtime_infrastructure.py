@@ -10,6 +10,7 @@ from sqlalchemy import create_engine
 from mdi_api.artifact_storage import S3CompatibleArtifactStorage, create_minio_artifact_storage_from_settings
 from mdi_api.config import load_settings
 from mdi_api.db import metadata
+from mdi_api.infrastructure.phase2.runtime import Phase2ProductRuntime
 from mdi_api.repositories import (
     InMemoryRepositoryBundle,
     SqlAlchemyJobEventRepository,
@@ -79,6 +80,41 @@ def test_local_defaults_are_external_to_repository(monkeypatch: pytest.MonkeyPat
     local_root = repo_root.with_name(f"{repo_root.name}.local")
     assert settings.database_url == f"sqlite:///{(local_root / 'data' / 'mdi-local.db').as_posix()}"
     assert Path(settings.artifact_root).resolve() == (local_root / "data" / "artifacts").resolve()
+
+
+def test_local_defaults_follow_configured_data_root(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    for name in ("DATABASE_URL", "MDI_DATABASE_URL", "POSTGRES_HOST", "POSTGRES_PORT", "POSTGRES_DB", "POSTGRES_USER", "POSTGRES_PASSWORD", "MDI_ARTIFACT_ROOT"):
+        monkeypatch.delenv(name, raising=False)
+    data_root = tmp_path / "custom data"
+    monkeypatch.setenv("MDI_LOCAL_ROOT", str(tmp_path / "runtime"))
+    monkeypatch.setenv("MDI_DATA_ROOT", str(data_root))
+
+    settings = load_settings()
+
+    assert settings.database_url == f"sqlite:///{(data_root / 'mdi-local.db').as_posix()}"
+    assert Path(settings.artifact_root).resolve() == (data_root / "artifacts").resolve()
+
+
+def test_legacy_phase2_default_artifacts_follow_external_configuration(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    artifact_root = tmp_path / "configured-artifacts"
+    monkeypatch.setenv("MDI_ARTIFACT_ROOT", str(artifact_root))
+
+    runtime = Phase2ProductRuntime()
+
+    assert runtime.artifact_root.resolve() == (artifact_root / "phase2_runtime").resolve()
+
+
+def test_queue_runtime_default_artifacts_follow_external_configuration(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    artifact_root = tmp_path / "queue-artifacts"
+    monkeypatch.setenv("MDI_ARTIFACT_ROOT", str(artifact_root))
+
+    runtime = QueueWorkerRuntime()
+
+    assert runtime.artifact_root.resolve() == artifact_root.resolve()
 
 
 def test_phase5_postgresql_job_event_lock_strategy_is_documented_and_callable() -> None:

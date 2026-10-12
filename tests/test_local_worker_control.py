@@ -140,7 +140,7 @@ def test_worker_probe_and_drain_refuse_foreign_or_replaced_identity(redis_connec
 
 
 @pytest.mark.skipif(os.name != "nt", reason="Windows project controller")
-@pytest.mark.parametrize("scenario", ["reused_pid", "foreign_executable", "busy", "app_scope", "windows_launchers"])
+@pytest.mark.parametrize("scenario", ["reused_pid", "foreign_executable", "busy", "app_scope", "windows_launchers", "unowned_listener", "custom_ports"])
 def test_powershell_controller_ownership_and_restart_scope(tmp_path, scenario):
     shell = shutil.which("pwsh")
     if not shell:
@@ -164,7 +164,21 @@ function Import-LocalEnvironment { }
 function Get-CimInstance { return $script:fakeProcess }
 function Get-Process { throw 'Unexpected process access' }
 $scenario = $args[1]
-if ($scenario -eq 'windows_launchers') {
+if ($scenario -eq 'unowned_listener') {
+  function Get-NetTCPConnection { return [pscustomobject]@{OwningProcess=777} }
+  try { Assert-OwnedListener 'api' 18005 $null; throw 'Foreign listener accepted' }
+  catch { if ($_.Exception.Message -notlike '*without a project ownership record*') { throw } }
+} elseif ($scenario -eq 'custom_ports') {
+  $env:POSTGRES_PORT='25434'; $env:MDI_POSTGRES_PORT='25434'
+  $env:MDI_WEB_PORT='13023'; $env:MDI_API_PROXY_TARGET='http://127.0.0.1:18005'
+  if ((Get-PostgresPort) -ne 25434 -or (Get-ServicePort 'frontend') -ne 13023 -or (Get-ServicePort 'api') -ne 18005) {
+    throw 'Configured ports ignored'
+  }
+  $env:POSTGRES_PORT='99999'
+  try { Get-PostgresPort; throw 'Invalid port accepted' }
+  catch { if ($_.Exception.Message -notlike 'Invalid port for postgres*') { throw } }
+} elseif ($scenario -eq 'windows_launchers') {
+  function Resolve-NpmBinary { return 'C:\node\npm.cmd' }
   $entry.file = 'C:/owned/minio.exe'; $script:fakeProcess.ExecutablePath = 'C:\owned\minio.exe'
   if (-not (Test-RecordedExecutable $entry $script:fakeProcess 'minio')) { throw 'Equivalent executable path rejected' }
   $entry.file = 'C:\node\npm.cmd'; $script:fakeProcess.ExecutablePath = Join-Path $env:SystemRoot 'System32\cmd.exe'
@@ -201,6 +215,6 @@ if ($scenario -eq 'windows_launchers') {
 ''', encoding="utf-8")
     child = subprocess.run([shell, "-NoProfile", "-File", str(script),
         str(Path(__file__).resolve().parents[1] / "scripts" / "dev.ps1"), scenario],
-        capture_output=True, text=True, timeout=20)
+        capture_output=True, text=True, encoding="utf-8", timeout=20)
     assert child.returncode == 0, child.stderr[-3000:]
     assert child.stdout.strip() == "passed"

@@ -68,7 +68,17 @@ PHASE2_TOOL_ORDER = (
     "ml.outlier_table",
 )
 
-DEFAULT_ARTIFACT_ROOT = Path("artifacts") / "phase2_runtime"
+def _default_phase2_artifact_root() -> Path:
+    """Keep the legacy local runtime outside the checkout by default."""
+    repo_root = Path(__file__).resolve().parents[3]
+    local_root = Path(
+        os.getenv("MDI_LOCAL_ROOT", str(repo_root.parent / f"{repo_root.name}.local"))
+    )
+    artifact_root = Path(os.getenv("MDI_ARTIFACT_ROOT", str(local_root / "data" / "artifacts")))
+    return artifact_root / "phase2_runtime"
+
+
+DEFAULT_ARTIFACT_ROOT = _default_phase2_artifact_root()
 
 
 def _canonical_structure_species_order(payload: Any) -> list[str] | None:
@@ -129,8 +139,8 @@ class Phase2ProductRuntime:
     Celery, MinIO, or a real LLM provider.
     """
 
-    def __init__(self, artifact_root: str | Path = DEFAULT_ARTIFACT_ROOT, registry: ToolRegistry | None = None) -> None:
-        self.artifact_root = Path(artifact_root)
+    def __init__(self, artifact_root: str | Path | None = None, registry: ToolRegistry | None = None) -> None:
+        self.artifact_root = Path(artifact_root) if artifact_root is not None else _default_phase2_artifact_root()
         self.registry = registry or load_manifests()
         self.projects: dict[str, ProjectRecord] = {}
         self.datasets: dict[str, DatasetRecord] = {}
@@ -1526,7 +1536,7 @@ def get_phase2_artifact_download(artifact_id: str) -> dict[str, Any]:
 
 def reset_phase2_runtime(artifact_root: str | Path | None = None, registry: ToolRegistry | None = None) -> Phase2ProductRuntime:
     global _PHASE2_RUNTIME
-    _PHASE2_RUNTIME = Phase2ProductRuntime(artifact_root or DEFAULT_ARTIFACT_ROOT, registry=registry)
+    _PHASE2_RUNTIME = Phase2ProductRuntime(artifact_root, registry=registry)
     return _PHASE2_RUNTIME
 
 

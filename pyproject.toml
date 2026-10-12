@@ -5,7 +5,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "material-data-intelligence"
 version = "0.1.0"
-description = "Controlled material data analysis adapters for pymatviz and MatterViz."
+description = "A controlled materials-science workspace with versioned data, asynchronous research and reproducible reports."
+readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
   "alembic>=1.13",
@@ -45,7 +46,6 @@ where = [
 ]
 
 [tool.pytest.ini_options]
-cache_dir = "../mdi-b0-5a1.local/tmp/pytest-cache"
 testpaths = ["tests"]
 pythonpath = [
   "apps/api",

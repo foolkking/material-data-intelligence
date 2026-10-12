@@ -2,9 +2,8 @@
 
 ## Active repository
 
-The active engineering repository is `E:\1project\mdi-b0-5a1`.
-`E:\1project\Material Data Intelligence` is historical reference material, not
-an active source or runtime location.
+This checkout is the active engineering repository. Historical sibling checkouts
+are reference material, not source or runtime authorities for this checkout.
 
 ## Read first
 
@@ -27,12 +26,12 @@ Use `README.md` for installation and operation.
 
 - Git contains source, executable contracts, tests, and concise current documentation; Git history contains project history.
 - Do not create phase, qualification, attempt, closure, evidence-bundle, or result-ledger files for normal development.
-- Do not place PostgreSQL, Redis, MinIO, SQLite runtime state, logs, caches, PID files, screenshots, or temporary exports in the repository.
-- Local persistent data belongs under `MDI_LOCAL_ROOT` (normally the sibling directory `mdi-b0-5a1.local`).
-- Use `C:\Users\86182\Desktop\wkkk` as this machine's temporary root for disposable work, including test scratch data, screenshots, temporary exports and isolated build workspaces. Put each task/run in its own child directory; never recursively clear the temporary root itself.
-- Set `MDI_TEMP_ROOT`, `TEMP`, `TMP` and `TMPDIR` to that path before project commands. `scripts\dev.ps1` loads the configured path from the external `local.env`; commands that bypass it must set these process variables explicitly. Pytest uses the dedicated `MDI_TEMP_ROOT\pytest` child and keeps numbered-run isolation.
+- Do not place PostgreSQL, Redis, MinIO, SQLite runtime state, logs, caches, PID files, temporary screenshots, or temporary exports in the repository.
+- Local persistent data belongs under `MDI_LOCAL_ROOT` (normally the sibling `<checkout-name>.local` directory).
+- Resolve the temporary root from the current user instruction or external `local.env` (`MDI_TEMP_ROOT`), otherwise use `<local-root>/tmp`. Keep it outside the repository. Put each task/run in its own child directory; never recursively clear the temporary root itself.
+- Set `MDI_TEMP_ROOT`, `TEMP`, `TMP` and `TMPDIR` to the task temporary path before project commands. `scripts\dev.ps1` loads the configured path from the external `local.env`; commands that bypass it must set these process variables explicitly. Pytest uses dedicated `MDI_TEMP_ROOT/pytest` and `pytest-cache` children and keeps numbered-run isolation. Unit tests never load real service credentials.
 - This temporary-path setting does not relocate persistent data, logs, service state or existing files. Keep project services and the user's browser running across work rounds.
-- Do not create a new top-level directory unless current product source or an executable contract genuinely requires it.
+- Do not create a new top-level directory unless current product source or an executable contract genuinely requires it. Explicitly approved public documentation images may live with the web assets; temporary evidence stays outside Git.
 - Update `PROJECT_STATE.md` only when current product state, architecture, scope, or operating instructions materially change.
 
 ## Change workflow
@@ -53,7 +52,7 @@ create another branch only when explicitly requested.
 - Unit/code-only work does not require the full stack.
 - Frontend-only and backend-only work should start only their required dependencies.
 - Start the full stack for real end-to-end Research or data flows.
-- Use `scripts\dev.ps1 start|status|stop|restart` for the project-owned local stack.
+- Use `scripts\dev.ps1 init|doctor|migrate|start|status|stop|restart` for the project-owned local stack.
 - Stop only processes whose ownership is verified by the project runtime state, command line, port, and local data root. Never stop unknown or shared services merely because a PID or conventional port matches.
 - Clean up task-created temporary processes when they are no longer needed.
 

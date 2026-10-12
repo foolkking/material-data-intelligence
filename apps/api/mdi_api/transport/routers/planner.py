@@ -27,9 +27,7 @@ from mdi_api.artifact_storage import create_artifact_storage_from_settings
 from mdi_api.bootstrap.repository_factory import create_repository_factory
 from mdi_api.db import (
     agent2_scientific_interpretations,
-    artifacts,
     scientific_result_snapshots,
-    tool_calls,
 )
 from mdi_api.infrastructure.persistence.bundles import InMemoryRepositoryBundle
 from mdi_api.infrastructure.scientific_results.execution_records import read_snapshot_execution_records
@@ -1951,7 +1949,7 @@ def _planner_repositories_and_runtime(*, repositories: Any, queue_runtime: Queue
                 repository_factory=factory,
                 artifact_storage=artifact_storage,
             ),
-            artifact_root=getattr(settings, "artifact_root", ".artifacts/phase2"),
+            artifact_root=settings.artifact_root,
         )
         return repos, runtime
 

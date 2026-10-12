@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   devIndicators: false,
-  distDir: process.env.MDI_NEXT_DIST_DIR || ".cache/next",
+  distDir: ".cache/next",
   experimental: {
     // Next's rewrite proxy clones request bodies before passing them through.
     // Keep that internal stream cap aligned with the existing public per-file

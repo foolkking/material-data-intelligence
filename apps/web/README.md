@@ -12,6 +12,6 @@ Scientific viewers read validated saved payloads. They may prepare a browser ren
 Run from the repository root:
 
     npm --prefix apps/web ci
-    npm --prefix apps/web run dev
+    npm --prefix apps/web run dev -- -p 3023 -H 127.0.0.1
 
 Use the repository-root scripts/dev.ps1 for the normal full stack so the external runtime paths and proxy target are loaded consistently. Follow the [root README](../../README.md) for temporary environment variables, checks and isolated production builds while the frontend remains running.

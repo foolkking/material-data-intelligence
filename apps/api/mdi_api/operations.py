@@ -49,16 +49,15 @@ _MINIO_LAST_KNOWN_COMPLETE_TTL_SECONDS = 300
 _MINIO_OBSERVATION_MAX_FUTURE_SKEW_SECONDS = 60
 _MINIO_LAST_KNOWN_COMPLETE: dict[str, dict[str, Any]] = {}
 _MINIO_LAST_KNOWN_COMPLETE_LOCK = threading.Lock()
-_MINIO_OBSERVATION_CACHE_DIRECTORY = (
-    Path(
-        os.getenv(
-            "MDI_RUNTIME_ROOT",
-            str(Path(__file__).resolve().parents[4] / ".mdi-runtime"),
-        )
-    )
-    / "cache"
-    / "minio"
-)
+
+def _default_external_root() -> Path:
+    repo_root = Path(__file__).resolve().parents[3]
+    return Path(os.getenv("MDI_LOCAL_ROOT", str(repo_root.parent / f"{repo_root.name}.local")))
+
+
+_MINIO_OBSERVATION_CACHE_DIRECTORY = Path(
+    os.getenv("MDI_CACHE_ROOT", str(_default_external_root() / "cache"))
+) / "minio"
 _RUNBOOK_ACTIONS = {
     "OPS_STALE_JOBS": (
         "OPS-RUNBOOK-STALE-JOBS",

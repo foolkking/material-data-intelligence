@@ -284,7 +284,7 @@ class QueueWorkerRuntime:
         tool_executor: ToolExecutor | None = None,
         object_store_resolver: ObjectStoreResolver | None = None,
         registry: ToolRegistry | None = None,
-        artifact_root: str | Path = ".artifacts/phase5",
+        artifact_root: str | Path | None = None,
         worker_identity: str | None = None,
         lease_seconds: int | None = None,
         renewal_seconds: int | None = None,
@@ -293,15 +293,16 @@ class QueueWorkerRuntime:
     ) -> None:
         if repositories is None and repository_factory is None:
             repositories = InMemoryRepositoryBundle.create()
+        settings = load_settings()
+        effective_artifact_root = Path(artifact_root) if artifact_root is not None else Path(settings.artifact_root)
         self.repositories = repositories
         self.repository_factory = repository_factory
-        self.artifact_storage = artifact_storage or LocalFileArtifactStorage(artifact_root)
-        self.artifact_root = Path(artifact_root)
+        self.artifact_storage = artifact_storage or LocalFileArtifactStorage(effective_artifact_root)
+        self.artifact_root = effective_artifact_root
         self.queue_backend = queue_backend or InMemoryQueueBackend()
         self.tool_executor = tool_executor
         self.object_store_resolver = object_store_resolver
         self.registry = registry or load_manifests()
-        settings = load_settings()
         self.worker_identity = worker_identity or (
             f"{socket.gethostname()}:{os.getpid()}:{uuid.uuid4().hex[:12]}"
         )
@@ -1846,7 +1847,7 @@ def create_queue_worker_runtime_from_settings() -> QueueWorkerRuntime:
         repository_factory=repository_factory,
         artifact_storage=artifact_storage,
         object_store_resolver=resolver,
-        artifact_root=getattr(settings, "artifact_root", ".artifacts/phase2"),
+        artifact_root=settings.artifact_root,
     )
 
 

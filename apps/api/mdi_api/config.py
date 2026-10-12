@@ -4,6 +4,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal, Mapping
+from sqlalchemy.engine import URL
 
 from mdi_schemas.worker_queues import (
     configured_worker_queue_names,
@@ -33,6 +34,14 @@ def _default_local_root() -> Path:
     )
 
 
+def _default_data_root() -> Path:
+    return Path(os.getenv("MDI_DATA_ROOT", str(_default_local_root() / "data")))
+
+
+def _default_artifact_root() -> Path:
+    return Path(os.getenv("MDI_ARTIFACT_ROOT", str(_default_data_root() / "artifacts")))
+
+
 class RuntimeConfigurationError(ValueError):
     """Raised before serving when a declared runtime topology is inconsistent."""
 
@@ -48,7 +57,7 @@ class ApiSettings:
     runtime_profile: RuntimeProfile = "local"
     # Resolve the development SQLite authority independently of process cwd.
     # Fresh API/worker processes may start from either the repo root or apps/api.
-    database_url: str = f"sqlite:///{(_default_local_root() / 'data' / 'mdi-local.db').as_posix()}"
+    database_url: str = f"sqlite:///{(_default_data_root() / 'mdi-local.db').as_posix()}"
     postgres_host: str = "localhost"
     postgres_port: int = 5432
     postgres_db: str = "mdi"
@@ -92,7 +101,7 @@ class ApiSettings:
     job_execution_lease_seconds: int = 90
     job_execution_renewal_seconds: int = 30
     artifact_backend: ArtifactBackend = "local"
-    artifact_root: str = str(_default_local_root() / "data" / "artifacts")
+    artifact_root: str = str(_default_artifact_root())
     # -- Test database for integration tests --
     test_database_url: str | None = None
     auth_required: bool = True
@@ -108,6 +117,8 @@ class ApiSettings:
         "http://127.0.0.1:3017",
         "http://localhost:3022",
         "http://127.0.0.1:3022",
+        "http://localhost:3023",
+        "http://127.0.0.1:3023",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
     )
@@ -134,7 +145,7 @@ def load_settings() -> ApiSettings:
             password=postgres_password,
         )
     else:
-        database_url = ApiSettings.database_url
+        database_url = f"sqlite:///{(_default_data_root() / 'mdi-local.db').as_posix()}"
 
     test_database_url = os.getenv("MDI_TEST_DATABASE_URL") or None
 
@@ -242,7 +253,7 @@ def load_settings() -> ApiSettings:
             os.getenv("MDI_ARTIFACT_BACKEND", "local"),
             {"local", "minio"},
         ),
-        artifact_root=os.getenv("MDI_ARTIFACT_ROOT", ApiSettings.artifact_root),
+        artifact_root=str(_default_artifact_root()),
         test_database_url=test_database_url,
         auth_required=_parse_bool(os.getenv("MDI_AUTH_REQUIRED", "true")),
         auth_cookie_name=os.getenv("MDI_AUTH_COOKIE_NAME", ApiSettings.auth_cookie_name),
@@ -431,8 +442,8 @@ def _conflicting_aliases(
 
 
 def _build_postgres_url(*, host: str, port: int, database: str, user: str, password: str | None) -> str:
-    credentials = user if not password else f"{user}:{password}"
-    return f"postgresql+psycopg://{credentials}@{host}:{port}/{database}"
+    return URL.create("postgresql+psycopg", username=user, password=password,
+                      host=host, port=port, database=database).render_as_string(hide_password=False)
 
 
 def _parse_bool(value: str | None) -> bool:
