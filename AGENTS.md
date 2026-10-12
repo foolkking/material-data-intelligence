@@ -37,6 +37,9 @@ Use `README.md` for installation and operation.
 
 ## Change workflow
 
+Work on `master` in this repository. The user requests a single main branch;
+create another branch only when explicitly requested.
+
 1. Read `PROJECT_STATE.md`.
 2. Inspect the relevant implementation and existing behavior tests.
 3. Make the smallest coherent change.
